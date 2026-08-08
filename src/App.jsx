@@ -2,13 +2,10 @@ import React, { useState, useEffect, useRef, createContext, useContext } from 'r
 import {
   Sparkles,
   BarChart3,
-  History as HistoryIcon,
   BookOpen,
   Copy,
   Search,
   RefreshCw,
-  Palette,
-  Check,
   Zap,
   Sliders,
   CheckCircle2,
@@ -31,56 +28,9 @@ const THEMES = {
     textAccent: 'text-emerald-400',
     bgAccent: 'bg-emerald-500',
     badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    btnGradient: 'from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950',
-    ring: 'focus:border-emerald-500'
-  },
-  midnight: {
-    id: 'midnight',
-    name: 'Midnight Blue',
-    bg: 'bg-slate-950',
-    headerBg: 'bg-indigo-950/80',
-    cardBg: 'bg-indigo-950/60',
-    innerBg: 'bg-slate-950/80',
-    border: 'border-indigo-900/50',
-    borderLight: 'border-indigo-800/60',
-    textAccent: 'text-cyan-400',
-    bgAccent: 'bg-cyan-500',
-    badgeBg: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    btnGradient: 'from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950',
-    ring: 'focus:border-cyan-500'
-  },
-  emerald: {
-    id: 'emerald',
-    name: 'Emerald Gold',
-    bg: 'bg-zinc-950',
-    headerBg: 'bg-emerald-950/80',
-    cardBg: 'bg-emerald-950/40',
-    innerBg: 'bg-zinc-950/80',
-    border: 'border-emerald-900/40',
-    borderLight: 'border-emerald-800/50',
-    textAccent: 'text-teal-300',
-    bgAccent: 'bg-teal-400',
-    badgeBg: 'bg-teal-500/10 text-teal-300 border-teal-500/20',
-    btnGradient: 'from-teal-400 to-emerald-500 hover:from-teal-300 hover:to-emerald-400 text-slate-950',
-    ring: 'focus:border-teal-400'
+    btnGradient: 'from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950'
   }
 };
-
-// Data Simulasi Keluaran Terakhir (Akan diganti fetch API)
-const LATEST_RESULTS = {
-  'Pasaran HK Pool': { tanggal: '08 Ags 2026', nomor: '7482', periode: 'HK-2841' },
-  'Pasaran SGP Pool': { tanggal: '07 Ags 2026', nomor: '1095', periode: 'SGP-1920' },
-  'Pasaran SDY Pool': { tanggal: '08 Ags 2026', nomor: '9341', periode: 'SDY-3102' },
-};
-
-// Data Historis 3 Tahun
-const HISTORICAL_DATA = [
-  { id: 1, pasaran: 'Pasaran HK Pool', tanggal: '08 Ags 2026', nomor: '7482', periode: 'HK-2841' },
-  { id: 2, pasaran: 'Pasaran HK Pool', tanggal: '07 Ags 2026', nomor: '3819', periode: 'HK-2840' },
-  { id: 3, pasaran: 'Pasaran SGP Pool', tanggal: '07 Ags 2026', nomor: '1095', periode: 'SGP-1920' },
-  { id: 4, pasaran: 'Pasaran SDY Pool', tanggal: '08 Ags 2026', nomor: '9341', periode: 'SDY-3102' },
-  { id: 5, pasaran: 'Pasaran SDY Pool', tanggal: '07 Ags 2026', nomor: '5024', periode: 'SDY-3101' },
-];
 
 const MOCK_DREAMS = [
   { kataKunci: 'Kucing', angka: '42 - 08 - 93', deskripsi: 'Simbol intuisi dan ketenangan dalam tradisi numerologi.' },
@@ -90,24 +40,39 @@ const MOCK_DREAMS = [
 
 export function AppProvider({ children }) {
   const [activeTab, setActiveTab] = useState('generator');
-  const [themeKey, setThemeKey] = useState(() => localStorage.getItem('adi_theme') || 'dark');
-  const [pasaran, setPasaran] = useState(() => localStorage.getItem('adi_pasaran') || 'Pasaran HK Pool');
-  const [metode, setMetode] = useState(() => localStorage.getItem('adi_metode') || 'AI Neural Mesh');
-  const [digitCount, setDigitCount] = useState(() => parseInt(localStorage.getItem('adi_digit_count')) || 4);
+  const [pasaran, setPasaran] = useState('Pasaran HK Pool');
+  const [metode, setMetode] = useState('AI Neural Mesh');
+  const [digitCount, setDigitCount] = useState(4);
   const [resultDigits, setResultDigits] = useState(['7', '4', '8', '2']);
   const [toastMessage, setToastMessage] = useState('');
   const [isSimulating, setIsSimulating] = useState(false);
-  const [simulationStepText, setSimulationStepText] = useState('');
+
+  // Dynamic Data States
+  const [hkData, setHkData] = useState([]);
+  const [sgpData, setSgpData] = useState([]);
+  const [sdyData, setSdyData] = useState([]);
 
   const toastTimerRef = useRef(null);
   const simIntervalRef = useRef(null);
 
+  // Fetch JSON Data Realtime
   useEffect(() => {
-    localStorage.setItem('adi_theme', themeKey);
-    localStorage.setItem('adi_pasaran', pasaran);
-    localStorage.setItem('adi_metode', metode);
-    localStorage.setItem('adi_digit_count', digitCount.toString());
-  }, [themeKey, pasaran, metode, digitCount]);
+    const fetchData = async () => {
+      try {
+        const [resHk, resSgp, resSdy] = await Promise.all([
+          fetch('./data/hk.json'),
+          fetch('./data/sgp.json'),
+          fetch('./data/sdy.json')
+        ]);
+        if (resHk.ok) setHkData(await resHk.json());
+        if (resSgp.ok) setSgpData(await resSgp.json());
+        if (resSdy.ok) setSdyData(await resSdy.json());
+      } catch (err) {
+        console.error('Gagal mengambil data:', err);
+      }
+    };
+    fetchData();
+  }, []);
 
   const showToast = (msg) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -127,7 +92,6 @@ export function AppProvider({ children }) {
   const runSimulation = () => {
     if (isSimulating) return;
     setIsSimulating(true);
-    setSimulationStepText('Proses Analisis Data...');
 
     let counter = 0;
     simIntervalRef.current = setInterval(() => {
@@ -141,10 +105,10 @@ export function AppProvider({ children }) {
     }, 80);
   };
 
-  const theme = THEMES[themeKey] || THEMES.dark;
+  const theme = THEMES.dark;
 
   return (
-    <AppContext.Provider value={{ activeTab, setActiveTab, themeKey, setThemeKey, theme, pasaran, setPasaran, metode, setMetode, digitCount, setDigitCount, resultDigits, toastMessage, showToast, isSimulating, simulationStepText, runSimulation, copyToClipboard }}>
+    <AppContext.Provider value={{ activeTab, setActiveTab, theme, pasaran, setPasaran, metode, setMetode, digitCount, setDigitCount, resultDigits, toastMessage, showToast, isSimulating, runSimulation, copyToClipboard, hkData, sgpData, sdyData }}>
       {children}
     </AppContext.Provider>
   );
@@ -165,7 +129,6 @@ function ToastNotification() {
 
 function Navbar() {
   const { activeTab, setActiveTab, theme } = useApp();
-
   return (
     <header className={`sticky top-0 z-40 ${theme.headerBg} backdrop-blur-md border-b ${theme.border}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
@@ -197,12 +160,16 @@ function Navbar() {
 }
 
 function GeneratorPanel() {
-  const { theme, pasaran, setPasaran, metode, setMetode, digitCount, setDigitCount, resultDigits, isSimulating, runSimulation, copyToClipboard } = useApp();
-  const latest = LATEST_RESULTS[pasaran] || { tanggal: '-', nomor: '----', periode: '-' };
+  const { theme, pasaran, setPasaran, metode, setMetode, resultDigits, isSimulating, runSimulation, copyToClipboard, hkData, sgpData, sdyData } = useApp();
+
+  let activeData = hkData;
+  if (pasaran === 'Pasaran SGP Pool') activeData = sgpData;
+  if (pasaran === 'Pasaran SDY Pool') activeData = sdyData;
+
+  const latest = activeData[0] || { tanggal: '-', nomor: '----', periode: '-' };
 
   return (
     <div className="space-y-6">
-      {/* Card Data Keluaran Terakhir */}
       <div className={`${theme.cardBg} border ${theme.border} rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg`}>
         <div className="flex items-center gap-3">
           <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl">
@@ -276,29 +243,27 @@ function GeneratorPanel() {
   );
 }
 
-{/* Menu Baru: Data Keluaran 3 Tahun */}
 function ResultsPanel() {
-  const { theme, copyToClipboard } = useApp();
-  const [selectedMarket, setSelectedMarket] = useState('Semua');
+  const { theme, copyToClipboard, hkData, sgpData, sdyData } = useApp();
+  const [selectedMarket, setSelectedMarket] = useState('Pasaran HK Pool');
 
-  const filteredData = selectedMarket === 'Semua' 
-    ? HISTORICAL_DATA 
-    : HISTORICAL_DATA.filter(item => item.pasaran === selectedMarket);
+  let listData = hkData;
+  if (selectedMarket === 'Pasaran SGP Pool') listData = sgpData;
+  if (selectedMarket === 'Pasaran SDY Pool') listData = sdyData;
 
   return (
     <div className={`${theme.cardBg} rounded-2xl border ${theme.border} p-6 space-y-4 shadow-xl`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
-          <h3 className="text-lg font-bold text-slate-100">Data Keluaran Resmi (Historis 3 Tahun)</h3>
-          <p className="text-xs text-slate-400">Arsip riwayat hasil keluaran nomor resmi HK, SGP, dan SDY.</p>
+          <h3 className="text-lg font-bold text-slate-100">Data Keluaran Resmi</h3>
+          <p className="text-xs text-slate-400">Arsip riwayat hasil keluaran nomor resmi.</p>
         </div>
-        
+
         <select 
           value={selectedMarket} 
           onChange={(e) => setSelectedMarket(e.target.value)}
           className={`px-3 py-2 ${theme.innerBg} border ${theme.border} rounded-xl text-xs text-slate-200 focus:outline-none`}
         >
-          <option value="Semua">Semua Pasaran</option>
           <option value="Pasaran HK Pool">Pasaran HK Pool</option>
           <option value="Pasaran SGP Pool">Pasaran SGP Pool</option>
           <option value="Pasaran SDY Pool">Pasaran SDY Pool</option>
@@ -311,17 +276,15 @@ function ResultsPanel() {
             <tr>
               <th className="py-3 px-4">Tanggal</th>
               <th className="py-3 px-4">Periode</th>
-              <th className="py-3 px-4">Pasaran</th>
               <th className="py-3 px-4">Angka Result</th>
               <th className="py-3 px-4 text-right">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/60 font-medium">
-            {filteredData.map((row) => (
+            {listData.map((row) => (
               <tr key={row.id}>
                 <td className="py-3.5 px-4 text-slate-400">{row.tanggal}</td>
                 <td className="py-3.5 px-4 text-slate-400 font-mono">{row.periode}</td>
-                <td className="py-3.5 px-4 text-slate-200">{row.pasaran}</td>
                 <td className="py-3.5 px-4">
                   <span className={`font-mono ${theme.textAccent} font-bold ${theme.innerBg} px-2.5 py-1 rounded-md border ${theme.border}`}>
                     {row.nomor}
@@ -342,11 +305,29 @@ function ResultsPanel() {
 }
 
 function AnalyticsPanel() {
-  const { theme } = useApp();
+  const { theme, hkData, sgpData, sdyData } = useApp();
+  const allData = [...hkData, ...sgpData, ...sdyData];
+
+  const digitCounts = Array(10).fill(0);
+  allData.forEach((item) => {
+    item.nomor.split('').forEach((d) => { if (!isNaN(d)) digitCounts[d]++; });
+  });
+  const maxFreq = Math.max(...digitCounts, 1);
+
   return (
     <div className={`${theme.cardBg} rounded-2xl border ${theme.border} p-6 space-y-6 shadow-xl`}>
       <h3 className="text-lg font-bold text-slate-100 border-b border-slate-800 pb-4">Matriks Frekuensi Digit (0 - 9)</h3>
-      <p className="text-xs text-slate-400">Statistik frekuensi kemunculan angka dari data historis.</p>
+      <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+        {digitCounts.map((count, digit) => (
+          <div key={digit} className={`${theme.innerBg} border ${theme.border} p-2 rounded-xl flex flex-col items-center justify-between h-40`}>
+            <span className="text-[11px] font-mono text-slate-400">{count}x</span>
+            <div className="w-full bg-slate-900 rounded-lg h-24 flex items-end p-1">
+              <div style={{ height: `${Math.round((count / maxFreq) * 100)}%` }} className={`w-full rounded-md ${count === maxFreq && count > 0 ? `bg-gradient-to-t ${theme.btnGradient}` : 'bg-slate-600'}`}></div>
+            </div>
+            <span className="font-bold text-sm text-slate-100 font-mono">{digit}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
