@@ -1,63 +1,83 @@
 import json
-import requests
-from bs4 import BeautifulSoup
+import os
 from datetime import datetime
+from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
 
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Referer': 'https://www.hongkongpools.com/live.html',
-    'X-Requested-With': 'XMLHttpRequest'
-}
-
-def fetch_live_hk_content():
-    url = "https://www.hongkongpools.com/getLiveContent"
-    
-    try:
-        response = requests.get(url, headers=HEADERS, timeout=15)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # Cari baris / elemen 1st Prize
-            # Mengambil bola angka (hkball) di area 1st Prize
-            first_prize_container = soup.find(text=lambda t: t and '1st Prize' in t)
-            if first_prize_container:
-                parent_tr = first_prize_container.find_parent('tr')
-                if parent_tr:
-                    balls = parent_tr.find_all('span', class_='hkball')
-                    digits = "".join([b.text.strip() for b in balls])
-                    
-                    if len(digits) >= 4:
-                        number_4d = digits[-4:]
-                        today_str = datetime.now().strftime("%d %b %Y")
-                        periode_str = f"HK-{datetime.now().strftime('%Y%m%d')}"
-                        
-                        return {
-                            "id": int(datetime.now().timestamp()),
-                            "tanggal": today_str,
-                            "periode": periode_str,
-                            "nomor": number_4d
-                        }
-    except Exception as e:
-        print(f"Error fetching getLiveContent: {e}")
+def scrape_hk():
+    print("[*] Memulai Playwright Browser...")
+    with sync_playwright() as p:
+        # Menjalankan Chromium Headless dengan viewport browser desktop
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            viewport={"width": 1280, "height": 720}
+        )
+        page = context.new_page()
         
-    return None
-
-def sync_hk_live():
-    live_data = fetch_live_hk_content()
-    if live_data:
-        filepath = 'public/data/hk.json'
+        url = "https://www.hongkongpools.com/"
+        print(f"[*] Membuka URL target: {url}")
+        
         try:
-            with open(filepath, 'r') as f:
-                data = json.load(f)
-        except Exception:
-            data = []
+            # Buka halaman dan tunggu hingga JS/Cloudflare selesai me-render DOM
+            page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            
+            # Tunggu elemen hkball muncul atau tunggu 5 detik
+            try:
+                page.wait_for_selector(".hkball", timeout=10000)
+            except Exception:
+                print("[!] Elemen 'hkball' belum muncul/tidak ditemukan, mencoba parsing DOM mentah...")
 
-        if not any(d.get('periode') == live_data['periode'] for d in data):
-            data.insert(0, live_data)
-            with open(filepath, 'w') as f:
-                json.dump(data[:1000], f, indent=2)
-            print("Berhasil memperbarui public/data/hk.json dari Live Draw!")
+            content = page.content()
+            soup = BeautifulSoup(content, 'html.parser')
+            balls = soup.find_all('span', class_='hkball')
+            
+            if balls:
+                # Ambil 6 bola pertama (1st Prize)
+                raw_digits = "".join([b.text.strip() for b in balls[:6]])
+                number_4d = raw_digits[-4:]
+                
+                now = datetime.now()
+                today_str = now.strftime("%d %b %Y")
+                periode_str = f"HK-{now.strftime('%Y%m%d')}"
+                
+                print(f"[+] Ditemukan Result: {raw_digits} | 4D: {number_4d}")
+                
+                result_item = {
+                    "id": int(now.timestamp()),
+                    "tanggal": today_str,
+                    "periode": periode_str,
+                    "nomor": number_4d
+                }
+                
+                # Simpan/Update ke file public/data/hk.json
+                data_dir = 'public/data'
+                os.makedirs(data_dir, exist_ok=True)
+                filepath = os.path.join(data_dir, 'hk.json')
+                
+                existing_data = []
+                if os.path.exists(filepath):
+                    try:
+                        with open(filepath, 'r') as f:
+                            existing_data = json.load(f)
+                    except Exception:
+                        existing_data = []
+                
+                # Cek agar tidak terjadi duplikasi untuk periode hari ini
+                if not any(d.get('periode') == periode_str for d in existing_data):
+                    existing_data.insert(0, result_item)
+                    with open(filepath, 'w') as f:
+                        json.dump(existing_data[:1000], f, indent=2)
+                    print(f"[+] Data berhasil disimpan ke {filepath}")
+                else:
+                    print(f"[*] Periode {periode_str} sudah tersimpan sebelumnya.")
+            else:
+                print("[-] Gagal mengekstrak elemen hkball dari halaman.")
+                
+        except Exception as e:
+            print(f"[-] Error saat scraping: {e}")
+        finally:
+            browser.close()
 
 if __name__ == '__main__':
-    sync_hk_live()
+    scrape_hk()
