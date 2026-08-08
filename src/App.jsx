@@ -10,11 +10,8 @@ import {
   Palette,
   Check,
   Zap,
-  TrendingUp,
   Sliders,
-  CheckCircle2,
-  Flame,
-  Snowflake
+  CheckCircle2
 } from 'lucide-react';
 
 const AppContext = createContext();
@@ -98,9 +95,9 @@ const THEMES = {
 };
 
 const INITIAL_HISTORY = [
-  { id: 101, pasaran: 'Pasaran HK Pool', tanggal: '05 Ags 2026', nomor: '7482', tipe: '4D', shio: 'Kuda', ganjilGenap: 'Genap', metode: 'AI Neural Mesh' },
-  { id: 102, pasaran: 'Pasaran SGP Pool', tanggal: '04 Ags 2026', nomor: '1095', tipe: '4D', shio: 'Naga', ganjilGenap: 'Ganjil', metode: 'Frekuensi Tertinggi (Hot)' },
-  { id: 103, pasaran: 'Pasaran SDY Pool', tanggal: '04 Ags 2026', nomor: '9341', tipe: '4D', shio: 'Ayam', ganjilGenap: 'Ganjil', metode: 'Monte Carlo Random' },
+  { id: 101, pasaran: 'Pasaran HK Pool', tanggal: '08 Ags 2026', nomor: '7482', tipe: '4D', shio: 'Kuda', ganjilGenap: 'Genap', metode: 'AI Neural Mesh' },
+  { id: 102, pasaran: 'Pasaran SGP Pool', tanggal: '07 Ags 2026', nomor: '1095', tipe: '4D', shio: 'Naga', ganjilGenap: 'Ganjil', metode: 'Frekuensi Tertinggi (Hot)' },
+  { id: 103, pasaran: 'Pasaran SDY Pool', tanggal: '07 Ags 2026', nomor: '9341', tipe: '4D', shio: 'Ayam', ganjilGenap: 'Ganjil', metode: 'Monte Carlo Random' },
 ];
 
 const MOCK_DREAMS = [
@@ -328,7 +325,6 @@ function GeneratorPanel() {
               <option value="Pasaran HK Pool">Pasaran HK Pool</option>
               <option value="Pasaran SGP Pool">Pasaran SGP Pool</option>
               <option value="Pasaran SDY Pool">Pasaran SDY Pool</option>
-              <option value="Pasaran MAC Pool">Pasaran MAC Pool</option>
             </select>
           </div>
 
@@ -499,14 +495,6 @@ function MobileNavigation() {
   );
 }
 
-export default function App() {
-  return (
-    <AppProvider>
-      <MainContent />
-    </AppProvider>
-  );
-}
-
 function MainContent() {
   const { activeTab, theme } = useApp();
   return (
@@ -522,5 +510,13 @@ function MainContent() {
       <Footer />
       <ToastNotification />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppProvider>
+      <MainContent />
+    </AppProvider>
   );
 }
