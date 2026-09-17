@@ -2,11 +2,22 @@ name: Build Android APK
 
 on:
   push:
-    branches: ['main']
+    branches:
+      - main
+      - 'feature/**'
+    paths-ignore:
+      - 'public/data/**'
+      - 'public/predictions/**'
+      - 'public/patterns/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -15,6 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Set up Java JDK
         uses: actions/setup-java@v4
@@ -23,7 +35,7 @@ jobs:
           java-version: '17'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build Web Assets
         run: npm run build
