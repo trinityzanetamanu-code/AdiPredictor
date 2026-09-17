@@ -338,8 +338,10 @@ def verify_results(market_cfg: dict, source_results: Dict[str, List[ParsedResult
         items = source_results.get(primary_id or "", [])
         if not items:
             raise CollectorError(f"Authoritative source gagal/tidak menghasilkan data: {primary_id}")
+        primary_cfg = next((s for s in sources if s["id"] == primary_id), {})
+        verification = "official_primary" if primary_cfg.get("authority") == "official" else "primary_source"
         return [
-            VerifiedResult(item=i, verification="official_primary", confirmations=1, source_ids=[primary_id])
+            VerifiedResult(item=i, verification=verification, confirmations=1, source_ids=[primary_id])
             for i in items
         ]
 
