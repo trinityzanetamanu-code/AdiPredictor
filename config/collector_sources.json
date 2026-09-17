@@ -1,0 +1,50 @@
+{
+  "timezone": "Asia/Jakarta",
+  "markets": {
+    "HK": {
+      "display_name": "Pasaran HK Pool",
+      "schedule": "daily",
+      "sources": [
+        {
+          "id": "livenomor_hk",
+          "name": "LiveNomor Hongkong",
+          "url": "https://livenomor.com/",
+          "parser": "weekday_grid",
+          "heading_regex": "Data Pengeluaran Hongkong\\s+{year}",
+          "enabled": true,
+          "priority": 10
+        }
+      ]
+    },
+    "SGP": {
+      "display_name": "Pasaran SGP Pool",
+      "schedule": "source_calendar",
+      "sources": [
+        {
+          "id": "livenomor_sgp",
+          "name": "LiveNomor Singapore",
+          "url": "https://livenomor.com/data-pengeluaran-singapore/",
+          "parser": "weekday_grid",
+          "heading_regex": "Data Pengeluaran Singapore\\s+{year}",
+          "enabled": true,
+          "priority": 10
+        }
+      ]
+    },
+    "SDY": {
+      "display_name": "Pasaran SDY Pool",
+      "schedule": "source_calendar",
+      "sources": [
+        {
+          "id": "livenomor_sdy",
+          "name": "LiveNomor Sydney",
+          "url": "https://livenomor.com/data-pengeluaran-sydney-2021/",
+          "parser": "weekday_grid",
+          "heading_regex": "Data Pengeluaran Sydney\\s+{year}",
+          "enabled": true,
+          "priority": 10
+        }
+      ]
+    }
+  }
+}
