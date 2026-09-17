@@ -1,0 +1,29 @@
+name: Collector Tests
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/collector.py'
+      - 'config/collector_sources.json'
+      - 'tests/**'
+      - '.github/workflows/auto-scraper.yml'
+      - '.github/workflows/collector-test.yml'
+  push:
+    branches:
+      - 'feature/collector-data-source'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 pytest
+      - name: Run collector tests
+        run: pytest -q tests/test_collector.py
+      - name: Syntax check
+        run: python -m py_compile scripts/collector.py
