@@ -251,7 +251,7 @@ def parse_sgp_official_4d(html: str, market: str, source: dict, year: int) -> Li
         r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*"
         r"(?P<day>\d{1,2})\s+(?P<month>[A-Za-z]{3})\s+(?P<year>\d{4})\s*"
         r".{0,120}?Draw\s+No\.\s*(?P<draw>\d+)\s*"
-        r".{0,180}?1st\s+Prize\s*(?P<number>\d{4})",
+        r".{0,180}?1st\s+Prize\D{0,20}(?P<number>\d{4})",
         re.I,
     )
     out: Dict[date, ParsedResult] = {}
