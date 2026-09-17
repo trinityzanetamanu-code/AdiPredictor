@@ -1,0 +1,40 @@
+name: Collector Tests
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'config/collector_sources.json'
+      - 'tests/**'
+      - '.github/workflows/auto-scraper.yml'
+      - '.github/workflows/collector-test.yml'
+  push:
+    branches:
+      - 'feature/collector-data-source'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 pytest
+      - name: Verify import path
+        run: |
+          python - <<'PY'
+          import os, sys
+          print('cwd=', os.getcwd())
+          print('sys.path[0:3]=', sys.path[:3])
+          from scripts.collector import parse_weekday_grid
+          print('collector import=PASS')
+          PY
+      - name: Run collector tests
+        run: python -m pytest -q tests/test_collector.py
+      - name: Syntax check
+        run: python -m py_compile scripts/collector.py
