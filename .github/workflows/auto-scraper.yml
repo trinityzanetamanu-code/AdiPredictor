@@ -2,8 +2,24 @@ name: Auto Result Collector
 
 on:
   schedule:
-    # Polling ringan setiap 30 menit. Collector hanya commit bila result baru terdeteksi.
+    # Scheduled workflows run from the default branch after this PR is merged.
     - cron: '*/30 * * * *'
+  push:
+    branches:
+      - 'feature/**'
+    paths:
+      - 'scripts/collector.py'
+      - 'config/collector_sources.json'
+      - 'tests/**'
+      - '.github/workflows/auto-scraper.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'scripts/collector.py'
+      - 'config/collector_sources.json'
+      - 'tests/**'
+      - '.github/workflows/auto-scraper.yml'
   workflow_dispatch:
     inputs:
       market:
@@ -21,7 +37,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: adipredictor-result-collector
+  group: adipredictor-result-collector-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -43,19 +59,31 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
 
+      - name: Parser Unit Tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
       - name: Collect Latest Results
         env:
           MARKET: ${{ github.event.inputs.market || 'ALL' }}
         run: |
-          python scripts/collector.py --market "$MARKET"
+          if [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "pull_request" ]; then
+            python scripts/collector.py --market "$MARKET" --strict
+          else
+            python scripts/collector.py --market "$MARKET"
+          fi
+
+      - name: Show Collector Diff During Validation
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        run: |
+          git status --short
+          git diff -- public/data/hk.json public/data/sgp.json public/data/sdy.json public/data/collector-status.json || true
 
       - name: Commit New Results Only
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          # collector-status.json berubah setiap pengecekan, tetapi hanya ikut commit
-          # jika setidaknya satu market JSON benar-benar berubah.
           git add public/data/hk.json public/data/sgp.json public/data/sdy.json
 
           if git diff --cached --quiet; then
