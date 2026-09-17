@@ -1,0 +1,90 @@
+{
+  "schema_version": 2,
+  "collected_at": "2026-09-18T05:59:22+07:00",
+  "target_year": 2026,
+  "timezone": "Asia/Jakarta",
+  "markets": {
+    "SGP": {
+      "market": "SGP",
+      "status": "updated",
+      "verification_mode": "primary_authoritative",
+      "successful_sources": [
+        "singaporepools_official"
+      ],
+      "parsed_counts": {
+        "singaporepools_official": 6
+      },
+      "verified_count": 6,
+      "new_count": 6,
+      "replaced_legacy_count": 0,
+      "new_results": [
+        {
+          "date": "2026-09-05",
+          "number": "9248",
+          "verification": "official_primary"
+        },
+        {
+          "date": "2026-09-06",
+          "number": "8579",
+          "verification": "official_primary"
+        },
+        {
+          "date": "2026-09-09",
+          "number": "1853",
+          "verification": "official_primary"
+        },
+        {
+          "date": "2026-09-12",
+          "number": "2710",
+          "verification": "official_primary"
+        },
+        {
+          "date": "2026-09-13",
+          "number": "9400",
+          "verification": "official_primary"
+        },
+        {
+          "date": "2026-09-16",
+          "number": "9224",
+          "verification": "official_primary"
+        }
+      ],
+      "latest": {
+        "id": 20260916,
+        "tanggal": "16 Sep 2026",
+        "periode": "SGP-5536",
+        "nomor": "9224",
+        "result_date": "2026-09-16",
+        "market": "SGP",
+        "source_id": "singaporepools_official",
+        "source_name": "Singapore Pools Official 4D",
+        "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+        "source_ids": [
+          "singaporepools_official"
+        ],
+        "collected_at": "2026-09-18T05:59:22+07:00",
+        "verification": "official_primary",
+        "confirmations": 1
+      },
+      "latest_verified": {
+        "date": "2026-09-16",
+        "number": "9224",
+        "verification": "official_primary",
+        "source_ids": [
+          "singaporepools_official"
+        ]
+      },
+      "source_errors": []
+    },
+    "HK": {
+      "market": "HK",
+      "status": "error",
+      "error": "Tidak ada result yang lolos cross-check"
+    },
+    "SDY": {
+      "market": "SDY",
+      "status": "error",
+      "error": "Tidak ada result yang lolos cross-check"
+    }
+  }
+}

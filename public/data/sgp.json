@@ -1,7 +1,139 @@
 [
-  { "id": 1, "tanggal": "07 Ags 2026", "periode": "SGP-1920", "nomor": "1095" },
-  { "id": 2, "tanggal": "05 Ags 2026", "periode": "SGP-1919", "nomor": "4421" },
-  { "id": 3, "tanggal": "03 Ags 2026", "periode": "SGP-1918", "nomor": "8103" },
-  { "id": 4, "tanggal": "02 Ags 2026", "periode": "SGP-1917", "nomor": "3379" },
-  { "id": 5, "tanggal": "01 Ags 2026", "periode": "SGP-1916", "nomor": "0912" }
+  {
+    "id": 20260916,
+    "tanggal": "16 Sep 2026",
+    "periode": "SGP-5536",
+    "nomor": "9224",
+    "result_date": "2026-09-16",
+    "market": "SGP",
+    "source_id": "singaporepools_official",
+    "source_name": "Singapore Pools Official 4D",
+    "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+    "source_ids": [
+      "singaporepools_official"
+    ],
+    "collected_at": "2026-09-18T05:59:22+07:00",
+    "verification": "official_primary",
+    "confirmations": 1
+  },
+  {
+    "id": 20260913,
+    "tanggal": "13 Sep 2026",
+    "periode": "SGP-5535",
+    "nomor": "9400",
+    "result_date": "2026-09-13",
+    "market": "SGP",
+    "source_id": "singaporepools_official",
+    "source_name": "Singapore Pools Official 4D",
+    "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+    "source_ids": [
+      "singaporepools_official"
+    ],
+    "collected_at": "2026-09-18T05:59:22+07:00",
+    "verification": "official_primary",
+    "confirmations": 1
+  },
+  {
+    "id": 20260912,
+    "tanggal": "12 Sep 2026",
+    "periode": "SGP-5534",
+    "nomor": "2710",
+    "result_date": "2026-09-12",
+    "market": "SGP",
+    "source_id": "singaporepools_official",
+    "source_name": "Singapore Pools Official 4D",
+    "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+    "source_ids": [
+      "singaporepools_official"
+    ],
+    "collected_at": "2026-09-18T05:59:22+07:00",
+    "verification": "official_primary",
+    "confirmations": 1
+  },
+  {
+    "id": 20260909,
+    "tanggal": "09 Sep 2026",
+    "periode": "SGP-5533",
+    "nomor": "1853",
+    "result_date": "2026-09-09",
+    "market": "SGP",
+    "source_id": "singaporepools_official",
+    "source_name": "Singapore Pools Official 4D",
+    "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+    "source_ids": [
+      "singaporepools_official"
+    ],
+    "collected_at": "2026-09-18T05:59:22+07:00",
+    "verification": "official_primary",
+    "confirmations": 1
+  },
+  {
+    "id": 20260906,
+    "tanggal": "06 Sep 2026",
+    "periode": "SGP-5532",
+    "nomor": "8579",
+    "result_date": "2026-09-06",
+    "market": "SGP",
+    "source_id": "singaporepools_official",
+    "source_name": "Singapore Pools Official 4D",
+    "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+    "source_ids": [
+      "singaporepools_official"
+    ],
+    "collected_at": "2026-09-18T05:59:22+07:00",
+    "verification": "official_primary",
+    "confirmations": 1
+  },
+  {
+    "id": 20260905,
+    "tanggal": "05 Sep 2026",
+    "periode": "SGP-5531",
+    "nomor": "9248",
+    "result_date": "2026-09-05",
+    "market": "SGP",
+    "source_id": "singaporepools_official",
+    "source_name": "Singapore Pools Official 4D",
+    "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+    "source_ids": [
+      "singaporepools_official"
+    ],
+    "collected_at": "2026-09-18T05:59:22+07:00",
+    "verification": "official_primary",
+    "confirmations": 1
+  },
+  {
+    "id": 1,
+    "tanggal": "07 Ags 2026",
+    "periode": "SGP-1920",
+    "nomor": "1095",
+    "result_date": "2026-08-07"
+  },
+  {
+    "id": 2,
+    "tanggal": "05 Ags 2026",
+    "periode": "SGP-1919",
+    "nomor": "4421",
+    "result_date": "2026-08-05"
+  },
+  {
+    "id": 3,
+    "tanggal": "03 Ags 2026",
+    "periode": "SGP-1918",
+    "nomor": "8103",
+    "result_date": "2026-08-03"
+  },
+  {
+    "id": 4,
+    "tanggal": "02 Ags 2026",
+    "periode": "SGP-1917",
+    "nomor": "3379",
+    "result_date": "2026-08-02"
+  },
+  {
+    "id": 5,
+    "tanggal": "01 Ags 2026",
+    "periode": "SGP-1916",
+    "nomor": "0912",
+    "result_date": "2026-08-01"
+  }
 ]
