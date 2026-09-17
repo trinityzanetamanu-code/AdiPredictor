@@ -2,10 +2,10 @@ name: Auto Result Collector
 
 on:
   schedule:
-    # Scheduled workflows run from the default branch after this PR is merged.
     - cron: '*/30 * * * *'
   push:
     branches:
+      - main
       - 'feature/**'
     paths:
       - 'scripts/collector.py'
@@ -37,13 +37,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: adipredictor-result-collector-${{ github.ref }}
+  group: adipredictor-result-collector-\${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   collect-results:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
 
     steps:
       - name: Checkout Repository
@@ -64,22 +64,21 @@ jobs:
 
       - name: Collect Latest Results
         env:
-          MARKET: ${{ github.event.inputs.market || 'ALL' }}
+          MARKET: \${{ github.event.inputs.market || 'ALL' }}
         run: |
-          if [ "${{ github.event_name }}" = "push" ] || [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "\${{ github.event_name }}" = "pull_request" ] || { [ "\${{ github.event_name }}" = "push" ] && [ "\${{ github.ref }}" != "refs/heads/main" ]; }; then
             python scripts/collector.py --market "$MARKET" --strict
           else
             python scripts/collector.py --market "$MARKET"
           fi
 
-      - name: Show Collector Diff During Validation
-        if: github.event_name == 'push' || github.event_name == 'pull_request'
+      - name: Show Collector Diff
         run: |
           git status --short
           git diff -- public/data/hk.json public/data/sgp.json public/data/sdy.json public/data/collector-status.json || true
 
-      - name: Commit New Results Only
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      - name: Commit New Results To Main
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -92,5 +91,5 @@ jobs:
           fi
 
           git add public/data/collector-status.json
-          git commit -m "data: auto-update latest lottery results [skip ci]"
+          git commit -m "data: auto-update verified lottery results [skip ci]"
           git push

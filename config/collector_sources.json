@@ -4,28 +4,47 @@
     "HK": {
       "display_name": "Pasaran HK Pool",
       "schedule": "daily",
+      "verification_mode": "crosscheck",
+      "min_confirmations": 2,
       "sources": [
         {
-          "id": "livenomor_hk",
+          "id": "hongkongpools_primary",
+          "name": "Hongkong Pools",
+          "url": "https://www.hongkongpools.com/",
+          "parser": "hk_six_digit_last4",
+          "enabled": true,
+          "priority": 10
+        },
+        {
+          "id": "livedrawhk_crosscheck",
+          "name": "LiveDraw HK Pools 6D",
+          "url": "https://www.livedrawhkpools6d.com/",
+          "parser": "hk_six_digit_last4",
+          "enabled": true,
+          "priority": 20
+        },
+        {
+          "id": "livenomor_hk_fallback",
           "name": "LiveNomor Hongkong",
           "url": "https://livenomor.com/",
           "parser": "weekday_grid",
           "heading_regex": "Data Pengeluaran Hongkong\\s+{year}",
           "enabled": true,
-          "priority": 10
+          "priority": 90
         }
       ]
     },
     "SGP": {
       "display_name": "Pasaran SGP Pool",
       "schedule": "source_calendar",
+      "verification_mode": "primary_authoritative",
+      "authoritative_source_id": "singaporepools_official",
       "sources": [
         {
-          "id": "livenomor_sgp",
-          "name": "LiveNomor Singapore",
-          "url": "https://livenomor.com/data-pengeluaran-singapore/",
-          "parser": "weekday_grid",
-          "heading_regex": "Data Pengeluaran Singapore\\s+{year}",
+          "id": "singaporepools_official",
+          "name": "Singapore Pools Official 4D",
+          "url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
+          "parser": "sgp_official_4d",
           "enabled": true,
           "priority": 10
         }
@@ -33,16 +52,25 @@
     },
     "SDY": {
       "display_name": "Pasaran SDY Pool",
-      "schedule": "source_calendar",
+      "schedule": "daily",
+      "verification_mode": "crosscheck",
+      "min_confirmations": 2,
       "sources": [
         {
-          "id": "livenomor_sdy",
-          "name": "LiveNomor Sydney",
-          "url": "https://livenomor.com/data-pengeluaran-sydney-2021/",
-          "parser": "weekday_grid",
-          "heading_regex": "Data Pengeluaran Sydney\\s+{year}",
+          "id": "grab4d_sdy",
+          "name": "GRAB4D Sydney Archive",
+          "url": "https://grab4dofficial.com/paito/sdy/amp/",
+          "parser": "date_result_table",
           "enabled": true,
           "priority": 10
+        },
+        {
+          "id": "wak100_sdy_crosscheck",
+          "name": "WAK100 Sydney History",
+          "url": "https://wak100datang.com/draw-history?m=4732",
+          "parser": "date_result_table",
+          "enabled": true,
+          "priority": 20
         }
       ]
     }

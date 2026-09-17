@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 import json
-import os
 import re
 import sys
 import time
+from collections import Counter
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -20,28 +20,17 @@ DATA_DIR = ROOT / "public" / "data"
 STATUS_PATH = DATA_DIR / "collector-status.json"
 
 DAY_INDEX = {
-    "senin": 0,
-    "selasa": 1,
-    "rabu": 2,
-    "kamis": 3,
-    "jumat": 4,
-    "jum'at": 4,
-    "sabtu": 5,
-    "minggu": 6,
-    "monday": 0,
-    "tuesday": 1,
-    "wednesday": 2,
-    "thursday": 3,
-    "friday": 4,
-    "saturday": 5,
-    "sunday": 6,
+    "senin": 0, "selasa": 1, "rabu": 2, "kamis": 3, "jumat": 4, "jum'at": 4,
+    "sabtu": 5, "minggu": 6, "monday": 0, "tuesday": 1, "wednesday": 2,
+    "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6,
 }
 
-MONTHS_ID = [
-    "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
-    "Jul", "Ags", "Sep", "Okt", "Nov", "Des"
-]
-
+MONTHS_ID = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"]
+MONTH_MAP = {
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "mei": 5, "may": 5, "jun": 6,
+    "jul": 7, "ags": 8, "agu": 8, "aug": 8, "sep": 9, "okt": 10, "oct": 10,
+    "nov": 11, "des": 12, "dec": 12,
+}
 UA = (
     "Mozilla/5.0 (Linux; Android 13; Mobile) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -57,6 +46,15 @@ class ParsedResult:
     source_id: str
     source_name: str
     source_url: str
+    period: Optional[str] = None
+
+
+@dataclass
+class VerifiedResult:
+    item: ParsedResult
+    verification: str
+    confirmations: int
+    source_ids: List[str]
 
 
 class CollectorError(RuntimeError):
@@ -74,6 +72,7 @@ def fetch_html(url: str, timeout: int = 35) -> str:
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
         "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
     }
     last_error = None
     for attempt in range(3):
@@ -84,7 +83,7 @@ def fetch_html(url: str, timeout: int = 35) -> str:
             last_error = CollectorError(f"HTTP {r.status_code}, body={len(r.text)} bytes")
         except Exception as exc:
             last_error = exc
-        time.sleep(1.5 * (attempt + 1))
+        time.sleep(1.25 * (attempt + 1))
     raise CollectorError(f"Fetch gagal untuk {url}: {last_error}")
 
 
@@ -97,6 +96,25 @@ def normalize_cell(text: str) -> str:
 def normalize_day(text: str) -> Optional[int]:
     raw = re.sub(r"[^a-zA-Z']", "", (text or "").lower())
     return DAY_INDEX.get(raw)
+
+
+def parse_date_flexible(text: str) -> Optional[date]:
+    raw = re.sub(r"\s+", " ", text or "").strip()
+    m = re.search(r"(\d{1,2})[-/](\d{1,2})[-/](\d{4})", raw)
+    if m:
+        try:
+            return date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+        except ValueError:
+            return None
+    m = re.search(r"(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})", raw)
+    if m:
+        month = MONTH_MAP.get(m.group(2).lower())
+        if month:
+            try:
+                return date(int(m.group(3)), month, int(m.group(1)))
+            except ValueError:
+                return None
+    return None
 
 
 def heading_matches(text: str, heading_regex: str, year: int) -> bool:
@@ -131,19 +149,14 @@ def score_weekday_table(table) -> Tuple[int, List[int]]:
         if len(valid_days) > best_score:
             best_days = valid_days
             best_score = len(valid_days)
-    four_digit_cells = 0
-    for c in table.find_all(["td", "th"]):
-        if normalize_cell(c.get_text(" ", strip=True)):
-            four_digit_cells += 1
+    four_digit_cells = sum(
+        1 for c in table.find_all(["td", "th"])
+        if normalize_cell(c.get_text(" ", strip=True))
+    )
     return best_score * 100 + min(four_digit_cells, 99), best_days
 
 
-def parse_weekday_grid(
-    html: str,
-    market: str,
-    source: dict,
-    year: int,
-) -> List[ParsedResult]:
+def parse_weekday_grid(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
     soup = BeautifulSoup(html, "html.parser")
     scored = []
     for t in candidate_tables(soup, source["heading_regex"], year):
@@ -152,7 +165,7 @@ def parse_weekday_grid(
     if not scored:
         raise CollectorError("Tidak ada table yang ditemukan")
     scored.sort(key=lambda x: x[0], reverse=True)
-    score, table, detected_days = scored[0]
+    score, table, _ = scored[0]
     if score < 200:
         raise CollectorError(f"Table target tidak meyakinkan, score={score}")
 
@@ -178,15 +191,11 @@ def parse_weekday_grid(
         cells = row.find_all(["td", "th"])
         if not cells:
             continue
-        # Skip obvious non-data rows, but retain blanks because blanks matter for calendar position.
         values = [normalize_cell(c.get_text(" ", strip=True)) for c in cells]
         if not any(values):
             continue
-
         for col, number in enumerate(values):
-            if not number:
-                continue
-            if col >= len(column_days):
+            if not number or col >= len(column_days):
                 continue
             day_idx = column_days[col]
             if day_idx is None:
@@ -194,26 +203,171 @@ def parse_weekday_grid(
             d = first_monday + timedelta(days=week_index * 7 + day_idx)
             if d.year != year:
                 continue
-            results.append(
-                ParsedResult(
-                    market=market,
-                    result_date=d,
-                    number=number,
-                    source_id=source["id"],
-                    source_name=source["name"],
-                    source_url=source["url"],
-                )
-            )
+            results.append(ParsedResult(
+                market=market, result_date=d, number=number,
+                source_id=source["id"], source_name=source["name"], source_url=source["url"]
+            ))
         week_index += 1
 
-    # Deduplicate by date, keeping the last occurrence if a malformed page duplicates a row.
-    dedup: Dict[date, ParsedResult] = {}
-    for item in results:
-        dedup[item.result_date] = item
+    dedup = {item.result_date: item for item in results}
     out = [dedup[d] for d in sorted(dedup)]
     if len(out) < 20:
         raise CollectorError(f"Hanya {len(out)} result valid; parser kemungkinan salah")
     return out
+
+
+def parse_hk_six_digit_last4(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
+    soup = BeautifulSoup(html, "html.parser")
+    out: Dict[date, ParsedResult] = {}
+    for row in soup.find_all("tr"):
+        text = re.sub(r"\s+", " ", row.get_text(" ", strip=True))
+        d = parse_date_flexible(text)
+        if d is None or d.year != year:
+            continue
+        mdate = re.search(r"\d{1,2}[-/]\d{1,2}[-/]\d{4}", text)
+        after = text[mdate.end():] if mdate else text
+        m6 = re.search(r"(?<!\d)(\d{6})(?!\d)", after)
+        if m6:
+            number = m6.group(1)[-4:]
+        else:
+            digits = re.findall(r"(?<!\d)(\d)(?!\d)", after)
+            if len(digits) < 6:
+                continue
+            number = "".join(digits[:6])[-4:]
+        out[d] = ParsedResult(
+            market=market, result_date=d, number=number,
+            source_id=source["id"], source_name=source["name"], source_url=source["url"]
+        )
+    results = [out[d] for d in sorted(out)]
+    if len(results) < 5:
+        raise CollectorError(f"HK six-digit parser hanya menemukan {len(results)} result")
+    return results
+
+
+def parse_sgp_official_4d(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
+    soup = BeautifulSoup(html, "html.parser")
+    text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+    pattern = re.compile(
+        r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*"
+        r"(?P<day>\d{1,2})\s+(?P<month>[A-Za-z]{3})\s+(?P<year>\d{4})\s*"
+        r".{0,120}?Draw\s+No\.\s*(?P<draw>\d+)\s*"
+        r".{0,180}?1st\s+Prize\s*(?P<number>\d{4})",
+        re.I,
+    )
+    out: Dict[date, ParsedResult] = {}
+    for m in pattern.finditer(text):
+        month = MONTH_MAP.get(m.group("month").lower())
+        if not month:
+            continue
+        d = date(int(m.group("year")), month, int(m.group("day")))
+        if d.year != year:
+            continue
+        out[d] = ParsedResult(
+            market=market, result_date=d, number=m.group("number"),
+            source_id=source["id"], source_name=source["name"], source_url=source["url"],
+            period=f"SGP-{m.group('draw')}",
+        )
+    results = [out[d] for d in sorted(out)]
+    if len(results) < 3:
+        raise CollectorError(f"SGP official parser hanya menemukan {len(results)} result")
+    return results
+
+
+def parse_date_result_table(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
+    soup = BeautifulSoup(html, "html.parser")
+    out: Dict[date, ParsedResult] = {}
+    for row in soup.find_all("tr"):
+        cells = [re.sub(r"\s+", " ", c.get_text(" ", strip=True)).strip() for c in row.find_all(["td", "th"])]
+        if not cells:
+            continue
+        d = None
+        for c in cells:
+            maybe = parse_date_flexible(c)
+            if maybe:
+                d = maybe
+                break
+        if d is None or d.year != year:
+            continue
+        number = ""
+        period = None
+        for c in cells:
+            if re.fullmatch(r"\d{4}", c):
+                number = c
+            pm = re.search(r"\b(?:SY|SDY)[-\s]*\d+\b", c, re.I)
+            if pm:
+                period = re.sub(r"\s+", "", pm.group(0)).upper().replace("SY-", "SDY-")
+        if not number:
+            continue
+        out[d] = ParsedResult(
+            market=market, result_date=d, number=number,
+            source_id=source["id"], source_name=source["name"], source_url=source["url"],
+            period=period,
+        )
+    results = [out[d] for d in sorted(out)]
+    if len(results) < 5:
+        raise CollectorError(f"Date/result parser hanya menemukan {len(results)} result")
+    return results
+
+
+PARSERS = {
+    "weekday_grid": parse_weekday_grid,
+    "hk_six_digit_last4": parse_hk_six_digit_last4,
+    "sgp_official_4d": parse_sgp_official_4d,
+    "date_result_table": parse_date_result_table,
+}
+
+
+def parse_source(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
+    parser_name = source.get("parser")
+    fn = PARSERS.get(parser_name)
+    if fn is None:
+        raise CollectorError(f"Parser belum didukung: {parser_name}")
+    return fn(html, market, source, year)
+
+
+def verify_results(market_cfg: dict, source_results: Dict[str, List[ParsedResult]]) -> List[VerifiedResult]:
+    mode = market_cfg.get("verification_mode", "primary_authoritative")
+    sources = sorted(
+        [s for s in market_cfg.get("sources", []) if s.get("enabled", True)],
+        key=lambda s: s.get("priority", 999),
+    )
+    priority = {s["id"]: s.get("priority", 999) for s in sources}
+
+    if mode == "primary_authoritative":
+        primary_id = market_cfg.get("authoritative_source_id") or (sources[0]["id"] if sources else None)
+        items = source_results.get(primary_id or "", [])
+        if not items:
+            raise CollectorError(f"Authoritative source gagal/tidak menghasilkan data: {primary_id}")
+        return [
+            VerifiedResult(item=i, verification="official_primary", confirmations=1, source_ids=[primary_id])
+            for i in items
+        ]
+
+    min_confirmations = int(market_cfg.get("min_confirmations", 2))
+    per_date: Dict[date, List[ParsedResult]] = {}
+    for items in source_results.values():
+        for item in items:
+            per_date.setdefault(item.result_date, []).append(item)
+
+    verified: List[VerifiedResult] = []
+    for d, items in per_date.items():
+        counts = Counter(i.number for i in items)
+        number, count = counts.most_common(1)[0]
+        if count < min_confirmations:
+            continue
+        agreeing = [i for i in items if i.number == number]
+        agreeing.sort(key=lambda i: priority.get(i.source_id, 999))
+        chosen = agreeing[0]
+        verified.append(VerifiedResult(
+            item=chosen,
+            verification=f"confirmed_{count}_sources",
+            confirmations=count,
+            source_ids=[i.source_id for i in agreeing],
+        ))
+    verified.sort(key=lambda v: v.item.result_date)
+    if not verified:
+        raise CollectorError("Tidak ada result yang lolos cross-check")
+    return verified
 
 
 def read_existing(market: str) -> List[dict]:
@@ -235,19 +389,22 @@ def internal_period(market: str, d: date) -> str:
     return f"{market}-{d.strftime('%Y%m%d')}"
 
 
-def canonical_record(item: ParsedResult, collected_at: str) -> dict:
+def canonical_record(v: VerifiedResult, collected_at: str) -> dict:
+    item = v.item
     return {
         "id": int(item.result_date.strftime("%Y%m%d")),
         "tanggal": format_date_id(item.result_date),
-        "periode": internal_period(item.market, item.result_date),
+        "periode": item.period or internal_period(item.market, item.result_date),
         "nomor": item.number,
         "result_date": item.result_date.isoformat(),
         "market": item.market,
         "source_id": item.source_id,
         "source_name": item.source_name,
         "source_url": item.source_url,
+        "source_ids": v.source_ids,
         "collected_at": collected_at,
-        "verification": "single_source",
+        "verification": v.verification,
+        "confirmations": v.confirmations,
     }
 
 
@@ -258,42 +415,56 @@ def normalize_existing_date(row: dict) -> Optional[date]:
             return date.fromisoformat(raw)
         except Exception:
             pass
-    # Existing legacy files don't carry result_date. We intentionally do not guess locale dates here.
+    tanggal = row.get("tanggal")
+    if tanggal:
+        return parse_date_flexible(str(tanggal))
     return None
 
 
-def merge_records(market: str, parsed: List[ParsedResult], collected_at: str) -> Tuple[List[dict], List[dict]]:
+def merge_records(market: str, verified: List[VerifiedResult], collected_at: str) -> Tuple[List[dict], List[dict], int]:
     existing = read_existing(market)
-    by_date: Dict[str, dict] = {}
-    legacy: List[dict] = []
+    existing_by_date: Dict[str, dict] = {}
+    unparsed_legacy: List[dict] = []
 
     for row in existing:
         d = normalize_existing_date(row)
         if d is None:
-            legacy.append(row)
+            unparsed_legacy.append(row)
         else:
-            by_date[d.isoformat()] = row
+            existing_by_date[d.isoformat()] = row
 
     new_rows: List[dict] = []
-    for item in parsed:
-        key = item.result_date.isoformat()
-        rec = canonical_record(item, collected_at)
-        old = by_date.get(key)
-        if old and old.get("nomor") != rec["nomor"]:
-            raise CollectorError(
-                f"CONFLICT {market} {key}: local={old.get('nomor')} remote={rec['nomor']}"
-            )
+    replaced_legacy = 0
+    for v in verified:
+        key = v.item.result_date.isoformat()
+        rec = canonical_record(v, collected_at)
+        old = existing_by_date.get(key)
         if old is None:
+            existing_by_date[key] = rec
             new_rows.append(rec)
-        by_date[key] = rec
+            continue
 
-    dated = list(by_date.values())
+        old_is_canonical = bool(old.get("result_date"))
+        if old_is_canonical:
+            if str(old.get("nomor")) != rec["nomor"]:
+                raise CollectorError(
+                    f"CONFLICT {market} {key}: local={old.get('nomor')} verified_remote={rec['nomor']}"
+                )
+            continue
+
+        if str(old.get("nomor")) != rec["nomor"]:
+            replaced_legacy += 1
+        existing_by_date[key] = rec
+        new_rows.append(rec)
+
+    dated = []
+    for key, row in existing_by_date.items():
+        row_copy = dict(row)
+        if not row_copy.get("result_date"):
+            row_copy["result_date"] = key
+        dated.append(row_copy)
     dated.sort(key=lambda r: r["result_date"], reverse=True)
-
-    # Keep legacy rows only if their number/date pair was not yet migrated. They stay below dated rows
-    # until the historical-import stage replaces them with canonical 2023-2026 records.
-    output = dated + legacy
-    return output, new_rows
+    return dated + unparsed_legacy, new_rows, replaced_legacy
 
 
 def write_market(market: str, rows: List[dict]) -> None:
@@ -303,10 +474,10 @@ def write_market(market: str, rows: List[dict]) -> None:
 
 
 def latest_dated(rows: List[dict]) -> Optional[dict]:
-    for row in rows:
-        if row.get("result_date"):
-            return row
-    return rows[0] if rows else None
+    dated = [r for r in rows if r.get("result_date")]
+    if not dated:
+        return rows[0] if rows else None
+    return max(dated, key=lambda r: r["result_date"])
 
 
 def collect_market(config: dict, market: str, year: int, collected_at: str) -> dict:
@@ -318,40 +489,48 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
     if not sources:
         raise CollectorError(f"Tidak ada source aktif untuk {market}")
 
+    source_results: Dict[str, List[ParsedResult]] = {}
     source_errors = []
-    parsed = None
-    used_source = None
     for source in sources:
         try:
             html = fetch_html(source["url"])
-            parser = source.get("parser")
-            if parser != "weekday_grid":
-                raise CollectorError(f"Parser belum didukung: {parser}")
-            candidate = parse_weekday_grid(html, market, source, year)
-            parsed = candidate
-            used_source = source
-            break
+            items = parse_source(html, market, source, year)
+            source_results[source["id"]] = items
+            latest = items[-1] if items else None
+            print(
+                f"[{market}] source={source['id']} parsed={len(items)} "
+                f"latest={latest.result_date if latest else '-'}:{latest.number if latest else '-'}"
+            )
         except Exception as exc:
             source_errors.append({"source": source["id"], "error": str(exc)})
+            print(f"[{market}] source={source['id']} ERROR: {exc}", file=sys.stderr)
 
-    if parsed is None or used_source is None:
-        raise CollectorError(f"Semua source {market} gagal: {source_errors}")
-
-    rows, new_rows = merge_records(market, parsed, collected_at)
+    verified = verify_results(market_cfg, source_results)
+    rows, new_rows, replaced_legacy = merge_records(market, verified, collected_at)
     write_market(market, rows)
     latest = latest_dated(rows)
+    latest_verified = verified[-1]
+
     return {
         "market": market,
         "status": "updated" if new_rows else "no_change",
-        "source_id": used_source["id"],
-        "source_url": used_source["url"],
-        "parsed_count": len(parsed),
+        "verification_mode": market_cfg.get("verification_mode", "primary_authoritative"),
+        "successful_sources": list(source_results.keys()),
+        "parsed_counts": {k: len(v) for k, v in source_results.items()},
+        "verified_count": len(verified),
         "new_count": len(new_rows),
+        "replaced_legacy_count": replaced_legacy,
         "new_results": [
-            {"date": r["result_date"], "number": r["nomor"]}
+            {"date": r["result_date"], "number": r["nomor"], "verification": r["verification"]}
             for r in sorted(new_rows, key=lambda x: x["result_date"])
         ],
         "latest": latest,
+        "latest_verified": {
+            "date": latest_verified.item.result_date.isoformat(),
+            "number": latest_verified.item.number,
+            "verification": latest_verified.verification,
+            "source_ids": latest_verified.source_ids,
+        },
         "source_errors": source_errors,
     }
 
@@ -359,7 +538,7 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
 def write_status(config: dict, results: List[dict], collected_at: str, year: int) -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "collected_at": collected_at,
         "target_year": year,
         "timezone": config.get("timezone", "Asia/Jakarta"),
@@ -389,11 +568,11 @@ def main() -> int:
             r = collect_market(cfg, market, year, collected_at)
             results.append(r)
             print(
-                f"[{market}] {r['status']} source={r['source_id']} "
-                f"parsed={r['parsed_count']} new={r['new_count']}"
+                f"[{market}] {r['status']} verified={r['verified_count']} "
+                f"new={r['new_count']} legacy_replaced={r['replaced_legacy_count']}"
             )
             for item in r["new_results"]:
-                print(f"  + {item['date']} = {item['number']}")
+                print(f"  + {item['date']} = {item['number']} ({item['verification']})")
         except Exception as exc:
             failures.append({"market": market, "error": str(exc)})
             print(f"[{market}] ERROR: {exc}", file=sys.stderr)
