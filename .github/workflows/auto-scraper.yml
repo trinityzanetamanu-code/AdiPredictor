@@ -37,7 +37,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: adipredictor-result-collector-\${{ github.ref }}
+  group: adipredictor-result-collector-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -57,16 +57,16 @@ jobs:
       - name: Install Collector Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4
+          pip install requests beautifulsoup4 pytest
 
       - name: Parser Unit Tests
-        run: python -m unittest discover -s tests -p 'test_*.py' -v
+        run: python -m pytest -q tests/test_collector.py
 
       - name: Collect Latest Results
         env:
-          MARKET: \${{ github.event.inputs.market || 'ALL' }}
+          MARKET: ${{ github.event.inputs.market || 'ALL' }}
         run: |
-          if [ "\${{ github.event_name }}" = "pull_request" ] || { [ "\${{ github.event_name }}" = "push" ] && [ "\${{ github.ref }}" != "refs/heads/main" ]; }; then
+          if [ "${{ github.event_name }}" = "pull_request" ] || { [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; }; then
             python scripts/collector.py --market "$MARKET" --strict
           else
             python scripts/collector.py --market "$MARKET"
