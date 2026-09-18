@@ -1,0 +1,806 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-18",
+  "items": [
+    {
+      "id": 1,
+      "kataKunci": "Kucing",
+      "angka": "42 - 08 - 93",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk kucing.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 2,
+      "kataKunci": "Burung / Terbang",
+      "angka": "19 - 77 - 54",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk burung / terbang.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 3,
+      "kataKunci": "Air / Laut",
+      "angka": "03 - 26 - 88",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk air / laut.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 4,
+      "kataKunci": "Ular",
+      "angka": "32 - 44 - 76",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk ular.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 5,
+      "kataKunci": "Anjing",
+      "angka": "11 - 25 - 62",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk anjing.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 6,
+      "kataKunci": "Ayam",
+      "angka": "05 - 34 - 71",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk ayam.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 7,
+      "kataKunci": "Ikan",
+      "angka": "14 - 37 - 82",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk ikan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 8,
+      "kataKunci": "Buaya",
+      "angka": "18 - 48 - 91",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk buaya.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 9,
+      "kataKunci": "Harimau",
+      "angka": "09 - 38 - 86",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk harimau.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 10,
+      "kataKunci": "Gajah",
+      "angka": "16 - 43 - 79",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk gajah.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 11,
+      "kataKunci": "Kuda",
+      "angka": "12 - 46 - 85",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk kuda.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 12,
+      "kataKunci": "Monyet",
+      "angka": "23 - 57 - 90",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk monyet.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 13,
+      "kataKunci": "Tikus",
+      "angka": "07 - 39 - 68",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk tikus.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 14,
+      "kataKunci": "Katak",
+      "angka": "21 - 55 - 84",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk katak.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 15,
+      "kataKunci": "Kupu-kupu",
+      "angka": "24 - 58 - 92",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk kupu-kupu.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 16,
+      "kataKunci": "Lebah",
+      "angka": "17 - 49 - 73",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk lebah.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 17,
+      "kataKunci": "Semut",
+      "angka": "13 - 36 - 64",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk semut.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 18,
+      "kataKunci": "Kambing",
+      "angka": "15 - 53 - 81",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk kambing.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 19,
+      "kataKunci": "Sapi",
+      "angka": "22 - 51 - 87",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk sapi.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 20,
+      "kataKunci": "Babi",
+      "angka": "27 - 60 - 94",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk babi.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 21,
+      "kataKunci": "Kelinci",
+      "angka": "06 - 35 - 72",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk kelinci.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 22,
+      "kataKunci": "Cicak / Kadal",
+      "angka": "31 - 56 - 83",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk cicak / kadal.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 23,
+      "kataKunci": "Laba-laba",
+      "angka": "20 - 47 - 89",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk laba-laba.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 24,
+      "kataKunci": "Udang",
+      "angka": "10 - 41 - 78",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk udang.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 25,
+      "kataKunci": "Kepiting",
+      "angka": "29 - 63 - 96",
+      "kategori": "Hewan",
+      "deskripsi": "Tafsir tradisional populer untuk kepiting.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 26,
+      "kataKunci": "Rumah",
+      "angka": "04 - 28 - 67",
+      "kategori": "Tempat",
+      "deskripsi": "Tafsir tradisional populer untuk rumah.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 27,
+      "kataKunci": "Sekolah",
+      "angka": "15 - 41 - 74",
+      "kategori": "Tempat",
+      "deskripsi": "Tafsir tradisional populer untuk sekolah.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 28,
+      "kataKunci": "Pasar",
+      "angka": "20 - 53 - 80",
+      "kategori": "Tempat",
+      "deskripsi": "Tafsir tradisional populer untuk pasar.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 29,
+      "kataKunci": "Jalan",
+      "angka": "06 - 31 - 69",
+      "kategori": "Tempat",
+      "deskripsi": "Tafsir tradisional populer untuk jalan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 30,
+      "kataKunci": "Jembatan",
+      "angka": "27 - 52 - 87",
+      "kategori": "Tempat",
+      "deskripsi": "Tafsir tradisional populer untuk jembatan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 31,
+      "kataKunci": "Gunung",
+      "angka": "10 - 47 - 83",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk gunung.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 32,
+      "kataKunci": "Hujan",
+      "angka": "02 - 35 - 70",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk hujan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 33,
+      "kataKunci": "Api",
+      "angka": "29 - 61 - 95",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk api.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 34,
+      "kataKunci": "Petir",
+      "angka": "22 - 56 - 89",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk petir.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 35,
+      "kataKunci": "Matahari",
+      "angka": "01 - 40 - 78",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk matahari.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 36,
+      "kataKunci": "Bulan",
+      "angka": "30 - 59 - 94",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk bulan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 37,
+      "kataKunci": "Bintang",
+      "angka": "33 - 63 - 97",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk bintang.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 38,
+      "kataKunci": "Sungai",
+      "angka": "08 - 37 - 75",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk sungai.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 39,
+      "kataKunci": "Pantai",
+      "angka": "14 - 50 - 90",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk pantai.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 40,
+      "kataKunci": "Hutan",
+      "angka": "18 - 46 - 84",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk hutan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 41,
+      "kataKunci": "Angin",
+      "angka": "24 - 55 - 86",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk angin.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 42,
+      "kataKunci": "Uang",
+      "angka": "08 - 45 - 81",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk uang.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 43,
+      "kataKunci": "Emas",
+      "angka": "26 - 60 - 96",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk emas.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 44,
+      "kataKunci": "Motor",
+      "angka": "34 - 65 - 98",
+      "kategori": "Kendaraan",
+      "deskripsi": "Tafsir tradisional populer untuk motor.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 45,
+      "kataKunci": "Mobil",
+      "angka": "37 - 66 - 99",
+      "kategori": "Kendaraan",
+      "deskripsi": "Tafsir tradisional populer untuk mobil.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 46,
+      "kataKunci": "Kapal",
+      "angka": "18 - 51 - 75",
+      "kategori": "Kendaraan",
+      "deskripsi": "Tafsir tradisional populer untuk kapal.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 47,
+      "kataKunci": "Pesawat",
+      "angka": "25 - 62 - 88",
+      "kategori": "Kendaraan",
+      "deskripsi": "Tafsir tradisional populer untuk pesawat.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 48,
+      "kataKunci": "Sepeda",
+      "angka": "07 - 43 - 82",
+      "kategori": "Kendaraan",
+      "deskripsi": "Tafsir tradisional populer untuk sepeda.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 49,
+      "kataKunci": "Kereta",
+      "angka": "12 - 54 - 91",
+      "kategori": "Kendaraan",
+      "deskripsi": "Tafsir tradisional populer untuk kereta.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 50,
+      "kataKunci": "Bus",
+      "angka": "16 - 49 - 79",
+      "kategori": "Kendaraan",
+      "deskripsi": "Tafsir tradisional populer untuk bus.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 51,
+      "kataKunci": "Menikah",
+      "angka": "14 - 50 - 79",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk menikah.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 52,
+      "kataKunci": "Bayi",
+      "angka": "05 - 43 - 72",
+      "kategori": "Keluarga",
+      "deskripsi": "Tafsir tradisional populer untuk bayi.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 53,
+      "kataKunci": "Orang tua",
+      "angka": "16 - 54 - 83",
+      "kategori": "Keluarga",
+      "deskripsi": "Tafsir tradisional populer untuk orang tua.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 54,
+      "kataKunci": "Teman",
+      "angka": "12 - 49 - 77",
+      "kategori": "Keluarga",
+      "deskripsi": "Tafsir tradisional populer untuk teman.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 55,
+      "kataKunci": "Anak",
+      "angka": "09 - 42 - 71",
+      "kategori": "Keluarga",
+      "deskripsi": "Tafsir tradisional populer untuk anak.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 56,
+      "kataKunci": "Saudara",
+      "angka": "13 - 48 - 80",
+      "kategori": "Keluarga",
+      "deskripsi": "Tafsir tradisional populer untuk saudara.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 57,
+      "kataKunci": "Menangis",
+      "angka": "03 - 42 - 68",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk menangis.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 58,
+      "kataKunci": "Tertawa",
+      "angka": "21 - 58 - 91",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk tertawa.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 59,
+      "kataKunci": "Jatuh",
+      "angka": "07 - 36 - 74",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk jatuh.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 60,
+      "kataKunci": "Dikejar",
+      "angka": "28 - 57 - 89",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk dikejar.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 61,
+      "kataKunci": "Meninggal / Kuburan",
+      "angka": "13 - 47 - 86",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk meninggal / kuburan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 62,
+      "kataKunci": "Pesta",
+      "angka": "24 - 55 - 93",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk pesta.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 63,
+      "kataKunci": "Makan",
+      "angka": "09 - 39 - 71",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk makan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 64,
+      "kataKunci": "Berkelahi",
+      "angka": "17 - 46 - 92",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk berkelahi.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 65,
+      "kataKunci": "Menolong orang",
+      "angka": "11 - 52 - 85",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk menolong orang.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 66,
+      "kataKunci": "Mencuri / Kehilangan",
+      "angka": "23 - 59 - 88",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk mencuri / kehilangan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 67,
+      "kataKunci": "Menemukan barang",
+      "angka": "06 - 44 - 76",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk menemukan barang.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 68,
+      "kataKunci": "Berenang",
+      "angka": "19 - 51 - 87",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk berenang.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 69,
+      "kataKunci": "Memancing",
+      "angka": "15 - 48 - 82",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk memancing.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 70,
+      "kataKunci": "Naik tangga",
+      "angka": "04 - 33 - 69",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk naik tangga.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 71,
+      "kataKunci": "Buah",
+      "angka": "11 - 46 - 80",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk buah.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 72,
+      "kataKunci": "Pohon",
+      "angka": "06 - 33 - 69",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk pohon.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 73,
+      "kataKunci": "Bunga",
+      "angka": "17 - 52 - 85",
+      "kategori": "Alam",
+      "deskripsi": "Tafsir tradisional populer untuk bunga.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 74,
+      "kataKunci": "Pintu",
+      "angka": "20 - 48 - 76",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk pintu.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 75,
+      "kataKunci": "Kunci",
+      "angka": "25 - 57 - 93",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk kunci.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 76,
+      "kataKunci": "Jam",
+      "angka": "10 - 38 - 73",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk jam.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 77,
+      "kataKunci": "Telepon / HP",
+      "angka": "27 - 61 - 95",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk telepon / hp.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 78,
+      "kataKunci": "Buku",
+      "angka": "12 - 40 - 78",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk buku.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 79,
+      "kataKunci": "Pisau",
+      "angka": "31 - 64 - 90",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk pisau.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 80,
+      "kataKunci": "Payung",
+      "angka": "08 - 35 - 74",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk payung.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 81,
+      "kataKunci": "Sepatu",
+      "angka": "14 - 53 - 81",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk sepatu.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 82,
+      "kataKunci": "Baju",
+      "angka": "18 - 49 - 87",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk baju.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 83,
+      "kataKunci": "Cincin",
+      "angka": "22 - 58 - 96",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk cincin.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 84,
+      "kataKunci": "Kalung",
+      "angka": "29 - 62 - 89",
+      "kategori": "Benda",
+      "deskripsi": "Tafsir tradisional populer untuk kalung.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 85,
+      "kataKunci": "Nasi",
+      "angka": "05 - 37 - 70",
+      "kategori": "Makanan",
+      "deskripsi": "Tafsir tradisional populer untuk nasi.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 86,
+      "kataKunci": "Roti",
+      "angka": "16 - 45 - 83",
+      "kategori": "Makanan",
+      "deskripsi": "Tafsir tradisional populer untuk roti.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 87,
+      "kataKunci": "Kopi",
+      "angka": "09 - 41 - 77",
+      "kategori": "Makanan",
+      "deskripsi": "Tafsir tradisional populer untuk kopi.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 88,
+      "kataKunci": "Teh",
+      "angka": "20 - 56 - 84",
+      "kategori": "Makanan",
+      "deskripsi": "Tafsir tradisional populer untuk teh.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 89,
+      "kataKunci": "Daging",
+      "angka": "28 - 63 - 92",
+      "kategori": "Makanan",
+      "deskripsi": "Tafsir tradisional populer untuk daging.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 90,
+      "kataKunci": "Telur",
+      "angka": "13 - 47 - 75",
+      "kategori": "Makanan",
+      "deskripsi": "Tafsir tradisional populer untuk telur.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 91,
+      "kataKunci": "Dokter / Rumah sakit",
+      "angka": "24 - 54 - 90",
+      "kategori": "Profesi",
+      "deskripsi": "Tafsir tradisional populer untuk dokter / rumah sakit.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 92,
+      "kataKunci": "Polisi",
+      "angka": "07 - 39 - 86",
+      "kategori": "Profesi",
+      "deskripsi": "Tafsir tradisional populer untuk polisi.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 93,
+      "kataKunci": "Guru",
+      "angka": "15 - 50 - 82",
+      "kategori": "Profesi",
+      "deskripsi": "Tafsir tradisional populer untuk guru.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 94,
+      "kataKunci": "Tentara",
+      "angka": "18 - 57 - 94",
+      "kategori": "Profesi",
+      "deskripsi": "Tafsir tradisional populer untuk tentara.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 95,
+      "kataKunci": "Pendeta / Gereja",
+      "angka": "12 - 46 - 79",
+      "kategori": "Profesi",
+      "deskripsi": "Tafsir tradisional populer untuk pendeta / gereja.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 96,
+      "kataKunci": "Nelayan",
+      "angka": "21 - 53 - 88",
+      "kategori": "Profesi",
+      "deskripsi": "Tafsir tradisional populer untuk nelayan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 97,
+      "kataKunci": "Petani",
+      "angka": "06 - 35 - 73",
+      "kategori": "Profesi",
+      "deskripsi": "Tafsir tradisional populer untuk petani.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 98,
+      "kataKunci": "Presiden / Raja",
+      "angka": "30 - 60 - 97",
+      "kategori": "Tokoh",
+      "deskripsi": "Tafsir tradisional populer untuk presiden / raja.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 99,
+      "kataKunci": "Hantu",
+      "angka": "23 - 55 - 91",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk hantu.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    },
+    {
+      "id": 100,
+      "kataKunci": "Setan",
+      "angka": "32 - 66 - 99",
+      "kategori": "Kejadian",
+      "deskripsi": "Tafsir tradisional populer untuk setan.",
+      "disclaimer": "Hiburan / tradisi, bukan metode statistik."
+    }
+  ]
+}
