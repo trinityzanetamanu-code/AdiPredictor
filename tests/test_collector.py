@@ -5,6 +5,8 @@ from scripts.collector import (
     parse_hk_six_digit_last4,
     parse_sgp_official_4d,
     parse_weekday_grid,
+    resolve_period_from_rule,
+    ParsedResult,
 )
 
 
@@ -100,3 +102,42 @@ def test_date_result_table_parser():
     results = parse_date_result_table(html, "SDY", source("date_result_table"), 2026)
     assert results[-1].result_date == date(2026, 9, 17)
     assert results[-1].number == "5159"
+
+
+def test_date_result_table_parser_sgp_period():
+    html = """
+    <table>
+      <tr><th>Pasaran</th><th>Tanggal</th><th>Periode</th><th>Result</th></tr>
+      <tr><td>SINGAPORE</td><td>Kamis, 17 Sep 2026</td><td>SGP-2478</td><td>2131</td></tr>
+      <tr><td>SINGAPORE</td><td>Rabu, 16 Sep 2026</td><td>SGP-2477</td><td>9224</td></tr>
+      <tr><td>SINGAPORE</td><td>Senin, 14 Sep 2026</td><td>SGP-2476</td><td>5470</td></tr>
+      <tr><td>SINGAPORE</td><td>Minggu, 13 Sep 2026</td><td>SGP-2475</td><td>9400</td></tr>
+      <tr><td>SINGAPORE</td><td>Sabtu, 12 Sep 2026</td><td>SGP-2474</td><td>2710</td></tr>
+    </table>
+    """
+    results = parse_date_result_table(html, "SGP", source("date_result_table"), 2026)
+    assert results[-1].result_date == date(2026, 9, 17)
+    assert results[-1].number == "2131"
+    assert results[-1].period == "SGP-2478"
+
+
+def test_sgp_period_rule_from_royaltoto_anchor():
+    item = ParsedResult(
+        market="SGP",
+        result_date=date(2026, 9, 17),
+        number="2131",
+        source_id="fixture",
+        source_name="Fixture",
+        source_url="https://example.test/",
+    )
+    cfg = {
+        "period_rule": {
+            "prefix": "SGP",
+            "anchor_date": "2026-09-12",
+            "anchor_number": 2474,
+            "valid_from": "2026-01-01",
+            "weekdays": [0, 2, 3, 5, 6],
+        }
+    }
+    resolve_period_from_rule(item, cfg)
+    assert item.period == "SGP-2478"
