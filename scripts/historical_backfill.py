@@ -52,41 +52,55 @@ LIVE_SOURCES = {
 HISTORICAL_SOURCES = {
     "HK": [
         {
-            "id": "datahkpools_archive",
-            "name": "DataHKPools Archive",
-            "url": "https://datahkpools.online/",
-            "heading_regex": r"(?:Data Keluaran HK|Data HK|Data Hongkong|DATA HONGKONG)\\s+{year}",
-            "priority": 10,
-        },
-        {
-            "id": "datahktoday_archive",
-            "name": "DataHKToday Archive",
-            "url": "https://www.datahktoday.com/",
-            "heading_regex": r"(?:DATA HONGKONG|Data Hongkong|Data HK)\\s+{year}",
-            "priority": 20,
-        },
-        {
             "id": "datahk2023_archive",
             "name": "DataHK2023 Archive",
             "url": "https://datahk2023.org/",
-            "heading_regex": r"(?:Data Pengeluaran HK|Data HK|Data Hongkong)\\s+{year}",
+            "heading_regex": r"(?:Data Pengeluaran Hongkong|Data Pengeluaran HK|Data HK|Keluaran Hongkong)\s+{year}",
+            "priority": 10,
+        },
+        {
+            "id": "pengetahuan_hk_archive",
+            "name": "Pengetahuan Data HK",
+            "url": "https://www.pengetahuan.id/data-hk/",
+            "heading_regex": r"(?:Keluaran Hongkong|Data HK|Data Pengeluaran HK)\s+{year}",
+            "priority": 20,
+        },
+        {
+            "id": "datahk77_archive",
+            "name": "DataHK77 Archive",
+            "url": "https://datahk77.online/",
+            "heading_regex": r"(?:Data HK|Keluaran Hongkong|Arsip Keluaran Hongkong)\s+{year}",
             "priority": 30,
+        },
+        {
+            "id": "datahkpools_archive",
+            "name": "DataHKPools Archive",
+            "url": "https://datahkpools.online/",
+            "heading_regex": r"(?:Data Keluaran HK|Data HK|Data Hongkong|DATA HONGKONG)\s+{year}",
+            "priority": 40,
         },
     ],
     "SDY": [
         {
-            "id": "datatogel_sdy_archive",
-            "name": "DataTogel Sydney Archive",
-            "url": "https://w2.datatogel.fit/data-sdy/",
-            "heading_regex": r"(?:Data Sydney|Data SDY|Data Pengeluaran Sydney)\\s+{year}",
-            "priority": 10,
-        },
-        {
             "id": "datasydtoday_archive",
             "name": "DataSydToday Archive",
             "url": "https://www.datasydtoday.com/",
-            "heading_regex": r"(?:Data Sydney|Data SDY|DATA SYDNEY)\\s+{year}",
+            "heading_regex": r"(?:Data Sydney|Data SDY|DATA SYDNEY)\s+{year}",
+            "priority": 10,
+        },
+        {
+            "id": "dataweb_sdy_archive",
+            "name": "DataWeb Sydney Archive",
+            "url": "https://dataweb.info/",
+            "heading_regex": r"(?:Data Keluaran SDY|Data SDY|Data Sydney)\s+{year}",
             "priority": 20,
+        },
+        {
+            "id": "paficandirejo_sdy_archive",
+            "name": "PafiCandirejo Sydney Archive",
+            "url": "https://paficandirejo.org/",
+            "heading_regex": r"(?:Data Pengeluaran SDY|Data SDY|Data Sydney)\s+{year}",
+            "priority": 30,
         },
     ],
 }
@@ -259,8 +273,6 @@ def backfill_hk_sdy(market):
         key=lambda s: s.get("priority", 999),
     )
 
-    # Fetch each multi-year page once. A blocked mirror is tolerated as long
-    # as at least two independent sources can still agree for each year.
     html_by_source = {}
     source_errors = {}
     for source in configured:
@@ -270,6 +282,8 @@ def backfill_hk_sdy(market):
             source_errors[source["id"]] = str(exc)
             print(f"[{market}] {source['id']} fetch failed: {exc}")
 
+    # LiveNomor is useful as a current-year independent check, but its page
+    # structure can make historical year selection ambiguous. Restrict it to 2026.
     live_source = LIVE_SOURCES[market]
     try:
         html_by_source[live_source["id"]] = fetch_html(live_source["url"])
@@ -297,22 +311,23 @@ def backfill_hk_sdy(market):
             except Exception as exc:
                 print(f"[{market}] {year} {source['id']} parse failed: {exc}")
 
-        live_html = html_by_source.get(live_source["id"])
-        if live_html:
-            try:
-                live_rows = parse_weekday_grid(live_html, market, live_source, year)
-                parsed.append((
-                    {
-                        "id": live_source["id"],
-                        "name": live_source["name"],
-                        "url": live_source["url"],
-                        "priority": 5 if year == 2026 else 50,
-                    },
-                    live_rows,
-                ))
-                print(f"[{market}] {year} {live_source['id']} rows={len(live_rows)}")
-            except Exception as exc:
-                print(f"[{market}] {year} {live_source['id']} parse failed: {exc}")
+        if year == 2026:
+            live_html = html_by_source.get(live_source["id"])
+            if live_html:
+                try:
+                    live_rows = parse_weekday_grid(live_html, market, live_source, year)
+                    parsed.append((
+                        {
+                            "id": live_source["id"],
+                            "name": live_source["name"],
+                            "url": live_source["url"],
+                            "priority": 5,
+                        },
+                        live_rows,
+                    ))
+                    print(f"[{market}] {year} {live_source['id']} rows={len(live_rows)}")
+                except Exception as exc:
+                    print(f"[{market}] {year} {live_source['id']} parse failed: {exc}")
 
         if len(parsed) < 2:
             raise CollectorError(
@@ -320,28 +335,62 @@ def backfill_hk_sdy(market):
                 f"berhasil={len(parsed)}, errors={source_errors}"
             )
 
-        # Rank sources, then require near-perfect agreement on every overlap.
-        parsed.sort(key=lambda pair: pair[0].get("priority", 999))
-        primary_source, primary_rows = parsed[0]
+        # Build pairwise compatibility. A source is accepted only when another
+        # independent source overlaps substantially and agrees >=99.5%.
         pair_reports = []
-        for secondary_source, secondary_rows in parsed[1:]:
-            report = verify_pair(primary_rows, secondary_rows, market, year)
-            report["primary_source"] = primary_source["id"]
-            report["secondary_source"] = secondary_source["id"]
-            pair_reports.append(report)
+        compatible = {source["id"]: set() for source, _ in parsed}
+        for i in range(len(parsed)):
+            source_a, rows_a = parsed[i]
+            map_a = {x.result_date: x.number for x in rows_a}
+            for j in range(i + 1, len(parsed)):
+                source_b, rows_b = parsed[j]
+                map_b = {x.result_date: x.number for x in rows_b}
+                common_dates = sorted(set(map_a) & set(map_b))
+                matches = sum(map_a[d] == map_b[d] for d in common_dates)
+                ratio = matches / len(common_dates) if common_dates else 0.0
+                report = {
+                    "source_a": source_a["id"],
+                    "source_b": source_b["id"],
+                    "common": len(common_dates),
+                    "matches": matches,
+                    "match_ratio": ratio,
+                }
+                pair_reports.append(report)
+                min_overlap = 100 if year < 2026 else 60
+                if len(common_dates) >= min_overlap and ratio >= 0.995:
+                    compatible[source_a["id"]].add(source_b["id"])
+                    compatible[source_b["id"]].add(source_a["id"])
 
-        # Use the highest-priority source, but enrich each record with every
-        # independent source that agrees on that same date and number.
-        maps = [
-            (
-                source,
-                {item.result_date: item for item in rows},
-            )
+        # Choose the source with the most compatible peers, then by priority.
+        ranked = sorted(
+            parsed,
+            key=lambda pair: (
+                -len(compatible[pair[0]["id"]]),
+                pair[0].get("priority", 999),
+            ),
+        )
+        anchor_source, anchor_rows = ranked[0]
+        peers = compatible[anchor_source["id"]]
+        cluster = [
+            (source, rows)
             for source, rows in parsed
+            if source["id"] == anchor_source["id"] or source["id"] in peers
         ]
-        primary_map = maps[0][1]
 
-        for d, item in primary_map.items():
+        if len(cluster) < 2:
+            raise CollectorError(
+                f"{market} {year}: tidak ada cluster >=2 sumber yang cocok; "
+                f"pair_reports={pair_reports}"
+            )
+
+        maps = [
+            (source, {item.result_date: item for item in rows})
+            for source, rows in cluster
+        ]
+        anchor_map = maps[0][1]
+
+        year_verified = 0
+        for d, item in anchor_map.items():
             agreeing_ids = []
             for source, item_map in maps:
                 other = item_map.get(d)
@@ -349,7 +398,6 @@ def backfill_hk_sdy(market):
                     agreeing_ids.append(source["id"])
 
             if len(agreeing_ids) < 2:
-                # Never seed a historical draw from a single unconfirmed mirror.
                 continue
 
             old = existing.get(d.isoformat())
@@ -360,32 +408,27 @@ def backfill_hk_sdy(market):
                 agreeing_ids,
                 period=period,
             )
+            year_verified += 1
 
-        verified_for_year = [
-            d for d in combined if d.year == year
-        ]
-        if year < 2026 and len(verified_for_year) < 350:
+        minimum = 350 if year < 2026 else 200
+        if year_verified < minimum:
             raise CollectorError(
                 f"{market} {year}: verified coverage terlalu rendah "
-                f"{len(verified_for_year)} draws"
-            )
-        if year == 2026 and len(verified_for_year) < 200:
-            raise CollectorError(
-                f"{market} {year}: verified coverage terlalu rendah "
-                f"{len(verified_for_year)} draws"
+                f"{year_verified} draws; cluster={[x[0]['id'] for x in cluster]}"
             )
 
         verification_years[str(year)] = {
-            "verified_rows": len(verified_for_year),
-            "sources": [
+            "verified_rows": year_verified,
+            "cluster_sources": [source["id"] for source, _ in cluster],
+            "all_parsed_sources": [
                 {"id": source["id"], "rows": len(rows)}
                 for source, rows in parsed
             ],
             "pair_reports": pair_reports,
         }
         print(
-            f"[{market}] {year}: VERIFIED={len(verified_for_year)} "
-            f"sources={[x[0]['id'] for x in parsed]}"
+            f"[{market}] {year}: VERIFIED={year_verified} "
+            f"cluster={[x[0]['id'] for x in cluster]}"
         )
 
     rows = [combined[d] for d in sorted(combined, reverse=True)]
