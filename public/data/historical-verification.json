@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-18T10:12:52+07:00",
+  "generated_at": "2026-09-18T10:23:30+07:00",
   "target_years": [
     2023,
     2024,
@@ -14,7 +14,7 @@
         "2026-09-17"
       ],
       "historical_status": "pending_external_archive",
-      "error": "HK 2023: archive source returned 0 rows"
+      "error": "HK 2023: cross-check ratio terlalu rendah 0/257; mismatches=[{'date': '2023-01-01', 'primary': '9678', 'secondary': '9184'}, {'date': '2023-01-02', 'primary': '8671', 'secondary': '4864'}, {'date': '2023-01-03', 'primary': '1659', 'secondary': '5730'}, {'date': '2023-01-04', 'primary': '3387', 'secondary': '5991'}, {'date': '2023-01-05', 'primary': '9677', 'secondary': '9766'}]"
     },
     "SDY": {
       "rows": 260,
@@ -23,7 +23,7 @@
         "2026-09-17"
       ],
       "historical_status": "pending_external_archive",
-      "error": "SDY 2023: archive source returned 0 rows"
+      "error": "SDY 2023: cross-check ratio terlalu rendah 0/358; mismatches=[{'date': '2023-01-01', 'primary': '7553', 'secondary': '0524'}, {'date': '2023-01-02', 'primary': '9012', 'secondary': '6704'}, {'date': '2023-01-03', 'primary': '4478', 'secondary': '0928'}, {'date': '2023-01-04', 'primary': '2058', 'secondary': '3556'}, {'date': '2023-01-05', 'primary': '5068', 'secondary': '7180'}]"
     },
     "SGP": {
       "rows": 581,
