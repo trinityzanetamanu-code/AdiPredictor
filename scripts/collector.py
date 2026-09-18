@@ -293,9 +293,10 @@ def parse_date_result_table(html: str, market: str, source: dict, year: int) -> 
         for c in cells:
             if re.fullmatch(r"\d{4}", c):
                 number = c
-            pm = re.search(r"\b(?:SY|SDY)[-\s]*\d+\b", c, re.I)
+            pm = re.search(r"\b(?:HK|SD|SDY|SY|SGP)[-\s]*\d+\b", c, re.I)
             if pm:
-                period = re.sub(r"\s+", "", pm.group(0)).upper().replace("SY-", "SDY-")
+                period = re.sub(r"\s+", "", pm.group(0)).upper()
+                period = period.replace("SY-", "SD-").replace("SDY-", "SD-")
         if not number:
             continue
         out[d] = ParsedResult(
@@ -372,6 +373,47 @@ def verify_results(market_cfg: dict, source_results: Dict[str, List[ParsedResult
     return verified
 
 
+def resolve_period_from_rule(item: ParsedResult, market_cfg: dict) -> None:
+    if item.period:
+        return
+
+    rule = market_cfg.get("period_rule")
+    if not rule:
+        return
+
+    try:
+        anchor_date = date.fromisoformat(rule["anchor_date"])
+        anchor_number = int(rule["anchor_number"])
+        weekdays = {int(x) for x in rule.get("weekdays", [])}
+        valid_from = date.fromisoformat(rule.get("valid_from", rule["anchor_date"]))
+    except Exception:
+        return
+
+    d = item.result_date
+    if d < valid_from or not weekdays:
+        return
+
+    if d >= anchor_date:
+        cursor = anchor_date + timedelta(days=1)
+        offset = 0
+        while cursor <= d:
+            if cursor.weekday() in weekdays:
+                offset += 1
+            cursor += timedelta(days=1)
+        number = anchor_number + offset
+    else:
+        cursor = d + timedelta(days=1)
+        offset = 0
+        while cursor <= anchor_date:
+            if cursor.weekday() in weekdays:
+                offset += 1
+            cursor += timedelta(days=1)
+        number = anchor_number - offset
+
+    prefix = str(rule.get("prefix", item.market)).upper()
+    item.period = f"{prefix}-{number}"
+
+
 def read_existing(market: str) -> List[dict]:
     path = DATA_DIR / f"{market.lower()}.json"
     if not path.exists():
@@ -423,7 +465,12 @@ def normalize_existing_date(row: dict) -> Optional[date]:
     return None
 
 
-def merge_records(market: str, verified: List[VerifiedResult], collected_at: str) -> Tuple[List[dict], List[dict], int]:
+def merge_records(
+    market: str,
+    verified: List[VerifiedResult],
+    collected_at: str,
+    replace_existing_metadata: bool = False,
+) -> Tuple[List[dict], List[dict], int]:
     existing = read_existing(market)
     existing_by_date: Dict[str, dict] = {}
     unparsed_legacy: List[dict] = []
@@ -452,6 +499,23 @@ def merge_records(market: str, verified: List[VerifiedResult], collected_at: str
                 raise CollectorError(
                     f"CONFLICT {market} {key}: local={old.get('nomor')} verified_remote={rec['nomor']}"
                 )
+
+            if replace_existing_metadata:
+                compare_fields = (
+                    "periode",
+                    "source_id",
+                    "source_name",
+                    "source_url",
+                    "source_ids",
+                    "verification",
+                    "confirmations",
+                )
+                metadata_changed = any(
+                    old.get(field) != rec.get(field) for field in compare_fields
+                )
+                if metadata_changed:
+                    existing_by_date[key] = rec
+                    new_rows.append(rec)
             continue
 
         if str(old.get("nomor")) != rec["nomor"]:
@@ -495,8 +559,10 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
     source_errors = []
     for source in sources:
         try:
-            html = fetch_html(source["url"])
-            items = parse_source(html, market, source, year)
+            runtime_source = dict(source)
+            runtime_source["url"] = source["url"].replace("{year}", str(year))
+            html = fetch_html(runtime_source["url"])
+            items = parse_source(html, market, runtime_source, year)
             source_results[source["id"]] = items
             latest = items[-1] if items else None
             print(
@@ -508,7 +574,18 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
             print(f"[{market}] source={source['id']} ERROR: {exc}", file=sys.stderr)
 
     verified = verify_results(market_cfg, source_results)
-    rows, new_rows, replaced_legacy = merge_records(market, verified, collected_at)
+
+    for verified_item in verified:
+        resolve_period_from_rule(verified_item.item, market_cfg)
+
+    rows, new_rows, replaced_legacy = merge_records(
+        market,
+        verified,
+        collected_at,
+        replace_existing_metadata=bool(
+            market_cfg.get("replace_existing_metadata", False)
+        ),
+    )
     write_market(market, rows)
     latest = latest_dated(rows)
     latest_verified = verified[-1]
