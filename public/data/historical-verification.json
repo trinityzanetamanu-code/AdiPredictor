@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-09-18T10:12:52+07:00",
+  "target_years": [
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "markets": {
+    "HK": {
+      "rows": 260,
+      "period": [
+        "2026-01-01",
+        "2026-09-17"
+      ],
+      "historical_status": "pending_external_archive",
+      "error": "HK 2023: archive source returned 0 rows"
+    },
+    "SDY": {
+      "rows": 260,
+      "period": [
+        "2026-01-01",
+        "2026-09-17"
+      ],
+      "historical_status": "pending_external_archive",
+      "error": "SDY 2023: archive source returned 0 rows"
+    },
+    "SGP": {
+      "rows": 581,
+      "period": [
+        "2023-01-01",
+        "2026-09-16"
+      ],
+      "verification": "Singapore Pools official individual draw pages",
+      "year_counts": {
+        "2026": 111,
+        "2025": 157,
+        "2024": 156,
+        "2023": 157
+      },
+      "draw_range_scanned": [
+        4956,
+        5536
+      ]
+    }
+  }
+}
