@@ -34,21 +34,56 @@ const MARKET_META = {
 };
 
 const MOCK_DREAMS = [
-  {
-    kataKunci: 'Kucing',
-    angka: '42 - 08 - 93',
-    deskripsi: 'Simbol intuisi dan ketenangan dalam tradisi numerologi.',
-  },
-  {
-    kataKunci: 'Terbang / Burung',
-    angka: '19 - 77 - 54',
-    deskripsi: 'Melambangkan kebebasan dan visi tinggi.',
-  },
-  {
-    kataKunci: 'Air / Laut',
-    angka: '03 - 26 - 88',
-    deskripsi: 'Melambangkan kelimpahan energi dan kejernihan pikiran.',
-  },
+  { kataKunci: 'Kucing', angka: '42 - 08 - 93', deskripsi: 'Tafsir tradisional populer untuk simbol kucing.' },
+  { kataKunci: 'Burung / Terbang', angka: '19 - 77 - 54', deskripsi: 'Tafsir tradisional untuk burung atau pengalaman terbang.' },
+  { kataKunci: 'Air / Laut', angka: '03 - 26 - 88', deskripsi: 'Tafsir tradisional untuk air, laut, atau ombak.' },
+  { kataKunci: 'Ular', angka: '32 - 44 - 76', deskripsi: 'Tafsir tradisional populer untuk ular.' },
+  { kataKunci: 'Anjing', angka: '11 - 25 - 62', deskripsi: 'Tafsir tradisional populer untuk anjing.' },
+  { kataKunci: 'Ayam', angka: '05 - 34 - 71', deskripsi: 'Tafsir tradisional populer untuk ayam.' },
+  { kataKunci: 'Ikan', angka: '14 - 37 - 82', deskripsi: 'Tafsir tradisional populer untuk ikan.' },
+  { kataKunci: 'Buaya', angka: '18 - 48 - 91', deskripsi: 'Tafsir tradisional populer untuk buaya.' },
+  { kataKunci: 'Harimau', angka: '09 - 38 - 86', deskripsi: 'Tafsir tradisional populer untuk harimau.' },
+  { kataKunci: 'Gajah', angka: '16 - 43 - 79', deskripsi: 'Tafsir tradisional populer untuk gajah.' },
+  { kataKunci: 'Kuda', angka: '12 - 46 - 85', deskripsi: 'Tafsir tradisional populer untuk kuda.' },
+  { kataKunci: 'Monyet', angka: '23 - 57 - 90', deskripsi: 'Tafsir tradisional populer untuk monyet.' },
+  { kataKunci: 'Tikus', angka: '07 - 39 - 68', deskripsi: 'Tafsir tradisional populer untuk tikus.' },
+  { kataKunci: 'Katak', angka: '21 - 55 - 84', deskripsi: 'Tafsir tradisional populer untuk katak.' },
+  { kataKunci: 'Kupu-kupu', angka: '24 - 58 - 92', deskripsi: 'Tafsir tradisional populer untuk kupu-kupu.' },
+  { kataKunci: 'Lebah', angka: '17 - 49 - 73', deskripsi: 'Tafsir tradisional populer untuk lebah.' },
+  { kataKunci: 'Semut', angka: '13 - 36 - 64', deskripsi: 'Tafsir tradisional populer untuk semut.' },
+  { kataKunci: 'Rumah', angka: '04 - 28 - 67', deskripsi: 'Tafsir tradisional untuk rumah atau tempat tinggal.' },
+  { kataKunci: 'Sekolah', angka: '15 - 41 - 74', deskripsi: 'Tafsir tradisional untuk sekolah atau belajar.' },
+  { kataKunci: 'Pasar', angka: '20 - 53 - 80', deskripsi: 'Tafsir tradisional untuk pasar atau tempat ramai.' },
+  { kataKunci: 'Jalan', angka: '06 - 31 - 69', deskripsi: 'Tafsir tradisional untuk perjalanan atau jalan.' },
+  { kataKunci: 'Jembatan', angka: '27 - 52 - 87', deskripsi: 'Tafsir tradisional untuk jembatan atau penyeberangan.' },
+  { kataKunci: 'Gunung', angka: '10 - 47 - 83', deskripsi: 'Tafsir tradisional untuk gunung atau dataran tinggi.' },
+  { kataKunci: 'Hujan', angka: '02 - 35 - 70', deskripsi: 'Tafsir tradisional untuk hujan.' },
+  { kataKunci: 'Api', angka: '29 - 61 - 95', deskripsi: 'Tafsir tradisional untuk api atau kebakaran.' },
+  { kataKunci: 'Petir', angka: '22 - 56 - 89', deskripsi: 'Tafsir tradisional untuk petir atau kilat.' },
+  { kataKunci: 'Matahari', angka: '01 - 40 - 78', deskripsi: 'Tafsir tradisional untuk matahari.' },
+  { kataKunci: 'Bulan', angka: '30 - 59 - 94', deskripsi: 'Tafsir tradisional untuk bulan.' },
+  { kataKunci: 'Bintang', angka: '33 - 63 - 97', deskripsi: 'Tafsir tradisional untuk bintang.' },
+  { kataKunci: 'Uang', angka: '08 - 45 - 81', deskripsi: 'Tafsir tradisional untuk uang atau menemukan uang.' },
+  { kataKunci: 'Emas', angka: '26 - 60 - 96', deskripsi: 'Tafsir tradisional untuk emas atau perhiasan.' },
+  { kataKunci: 'Motor', angka: '34 - 65 - 98', deskripsi: 'Tafsir tradisional populer untuk sepeda motor.' },
+  { kataKunci: 'Mobil', angka: '37 - 66 - 99', deskripsi: 'Tafsir tradisional populer untuk mobil.' },
+  { kataKunci: 'Kapal', angka: '18 - 51 - 75', deskripsi: 'Tafsir tradisional untuk kapal atau perjalanan laut.' },
+  { kataKunci: 'Pesawat', angka: '25 - 62 - 88', deskripsi: 'Tafsir tradisional untuk pesawat atau perjalanan udara.' },
+  { kataKunci: 'Menikah', angka: '14 - 50 - 79', deskripsi: 'Tafsir tradisional untuk pernikahan.' },
+  { kataKunci: 'Bayi', angka: '05 - 43 - 72', deskripsi: 'Tafsir tradisional untuk bayi atau kelahiran.' },
+  { kataKunci: 'Orang tua', angka: '16 - 54 - 83', deskripsi: 'Tafsir tradisional untuk ayah, ibu, atau orang tua.' },
+  { kataKunci: 'Teman', angka: '12 - 49 - 77', deskripsi: 'Tafsir tradisional untuk teman atau sahabat.' },
+  { kataKunci: 'Menangis', angka: '03 - 42 - 68', deskripsi: 'Tafsir tradisional untuk menangis atau kesedihan.' },
+  { kataKunci: 'Tertawa', angka: '21 - 58 - 91', deskripsi: 'Tafsir tradisional untuk tertawa atau kegembiraan.' },
+  { kataKunci: 'Jatuh', angka: '07 - 36 - 74', deskripsi: 'Tafsir tradisional untuk jatuh.' },
+  { kataKunci: 'Dikejar', angka: '28 - 57 - 89', deskripsi: 'Tafsir tradisional untuk dikejar.' },
+  { kataKunci: 'Meninggal / Kuburan', angka: '13 - 47 - 86', deskripsi: 'Tafsir tradisional untuk kematian atau kuburan.' },
+  { kataKunci: 'Pesta', angka: '24 - 55 - 93', deskripsi: 'Tafsir tradisional untuk pesta atau perayaan.' },
+  { kataKunci: 'Makan', angka: '09 - 39 - 71', deskripsi: 'Tafsir tradisional untuk makan atau jamuan.' },
+  { kataKunci: 'Buah', angka: '11 - 46 - 80', deskripsi: 'Tafsir tradisional untuk buah-buahan.' },
+  { kataKunci: 'Pohon', angka: '06 - 33 - 69', deskripsi: 'Tafsir tradisional untuk pohon atau hutan.' },
+  { kataKunci: 'Bunga', angka: '17 - 52 - 85', deskripsi: 'Tafsir tradisional untuk bunga.' },
+  { kataKunci: 'Pintu', angka: '20 - 48 - 76', deskripsi: 'Tafsir tradisional untuk pintu atau gerbang.' },
 ];
 
 function marketLabel(code) {
@@ -455,63 +490,89 @@ function GeneratorPanel() {
 }
 
 function ResultsPanel() {
-  const { copyToClipboard, marketData } = useApp();
+  const { marketData } = useApp();
   const [selectedMarket, setSelectedMarket] = useState('HK');
-  const listData = marketData[selectedMarket] || [];
+  const [selectedYear, setSelectedYear] = useState('2026');
+  const sourceData = marketData[selectedMarket] || [];
+
+  const years = Array.from(
+    new Set(
+      sourceData
+        .map((row) => String(row.result_date || '').slice(0, 4))
+        .filter(Boolean),
+    ),
+  ).sort((a, b) => Number(b) - Number(a));
+
+  const listData =
+    selectedYear === 'ALL'
+      ? sourceData
+      : sourceData.filter(
+          (row) => String(row.result_date || '').slice(0, 4) === selectedYear,
+        );
+
+  useEffect(() => {
+    if (years.length && !years.includes(selectedYear)) {
+      setSelectedYear(years[0]);
+    }
+  }, [selectedMarket, sourceData.length]);
 
   return (
-    <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 space-y-4 shadow-xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+    <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-5 sm:p-6 space-y-5 shadow-xl">
+      <div className="space-y-4 border-b border-slate-800 pb-5">
         <div>
-          <h3 className="text-lg font-bold text-slate-100">Data Keluaran</h3>
-          <p className="text-xs text-slate-400">
-            Arsip remote diperbarui otomatis oleh collector GitHub.
+          <h3 className="text-lg font-bold text-slate-100">Data Keluaran Resmi</h3>
+          <p className="text-xs text-slate-400 mt-1">
+            Arsip hasil disusun seperti daftar draw: periode, tanggal, dan angka result.
           </p>
         </div>
 
-        <div className="sm:w-64">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <MarketSelect value={selectedMarket} onChange={setSelectedMarket} />
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none"
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>{year}</option>
+            ))}
+            <option value="ALL">Semua Tahun</option>
+          </select>
+        </div>
+
+        <div className="text-[11px] text-slate-500">
+          Menampilkan {listData.length} result · {marketLabel(selectedMarket)}
         </div>
       </div>
 
-      <div className="overflow-x-auto max-h-[70vh]">
-        <table className="w-full text-left text-xs">
-          <thead className="sticky top-0 bg-slate-950 text-slate-400 font-mono uppercase border-b border-slate-800">
-            <tr>
-              <th className="py-3 px-4">Tanggal</th>
-              <th className="py-3 px-4">Periode</th>
-              <th className="py-3 px-4">Angka Result</th>
-              <th className="py-3 px-4">Validasi</th>
-              <th className="py-3 px-4 text-right">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-800/60 font-medium">
-            {listData.map((row, index) => (
-              <tr key={(row.result_date || row.tanggal) + '-' + row.nomor + '-' + index}>
-                <td className="py-3.5 px-4 text-slate-400">{row.tanggal}</td>
-                <td className="py-3.5 px-4 text-slate-400 font-mono">
-                  {row.periode}
-                </td>
-                <td className="py-3.5 px-4">
-                  <span className="font-mono text-emerald-400 font-bold bg-slate-950/60 px-2.5 py-1 rounded-md border border-slate-800">
-                    {row.nomor}
-                  </span>
-                </td>
-                <td className="py-3.5 px-4 text-slate-400">
-                  {verificationLabel(row.verification)}
-                </td>
-                <td className="py-3.5 px-4 text-right">
-                  <button
-                    onClick={() => copyToClipboard(row.nomor)}
-                    className="p-1.5 hover:bg-slate-700 rounded-lg text-slate-400"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/50 max-h-[72vh] overflow-y-auto">
+        {listData.map((row, index) => (
+          <div
+            key={(row.result_date || row.tanggal) + '-' + row.nomor + '-' + index}
+            className="px-5 py-5 border-b border-slate-800/80 last:border-b-0"
+          >
+            <div className="flex items-start justify-between gap-5">
+              <div className="font-mono font-extrabold text-base text-slate-100">
+                {row.periode}
+              </div>
+              <div className="text-sm text-slate-300 text-right">
+                {row.tanggal}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <span className="inline-flex font-mono text-2xl font-black text-emerald-400 tracking-wider">
+                {row.nomor}
+              </span>
+            </div>
+          </div>
+        ))}
+
+        {!listData.length && (
+          <div className="px-5 py-10 text-center text-sm text-slate-500">
+            Data untuk pilihan ini belum tersedia.
+          </div>
+        )}
       </div>
     </div>
   );
@@ -584,33 +645,42 @@ function DreamBookPanel() {
   const { copyToClipboard } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const filtered = MOCK_DREAMS.filter((item) =>
-    item.kataKunci.toLowerCase().includes(searchQuery.toLowerCase()),
+    (item.kataKunci + ' ' + item.deskripsi)
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase()),
   );
 
   return (
-    <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 space-y-6 shadow-xl">
-      <h3 className="text-lg font-bold text-slate-100 border-b border-slate-800 pb-4">
-        Tafsir Kata Kunci
-      </h3>
+    <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-5 sm:p-6 space-y-6 shadow-xl">
+      <div className="border-b border-slate-800 pb-4">
+        <h3 className="text-lg font-bold text-slate-100">Tafsir Kata Kunci</h3>
+        <p className="text-xs text-slate-400 mt-1">
+          Koleksi tafsir tradisional untuk hiburan. Gunakan pencarian untuk menemukan kata kunci.
+        </p>
+      </div>
 
       <div className="relative">
         <Search className="w-5 h-5 absolute left-3.5 top-3 text-slate-500" />
         <input
           type="text"
-          placeholder="Cari kata kunci..."
+          placeholder="Cari: ular, motor, rumah, air..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-200 focus:outline-none"
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="text-[11px] text-slate-500">
+        {filtered.length} dari {MOCK_DREAMS.length} tafsir
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[68vh] overflow-y-auto pr-1">
         {filtered.map((item, index) => (
           <div
             key={index}
-            className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl flex justify-between items-center"
+            className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl flex justify-between items-center gap-3"
           >
-            <div>
+            <div className="min-w-0">
               <span className="font-bold text-sm text-slate-200">
                 {item.kataKunci}
               </span>
@@ -618,7 +688,7 @@ function DreamBookPanel() {
             </div>
             <button
               onClick={() => copyToClipboard(item.angka)}
-              className="font-mono text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 font-bold shrink-0 ml-2"
+              className="font-mono text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 font-bold shrink-0"
             >
               {item.angka}
             </button>
