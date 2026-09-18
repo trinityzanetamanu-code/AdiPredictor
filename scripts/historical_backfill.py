@@ -113,6 +113,49 @@ def parse_archive_rows(html: str, market: str, source_url: str, year: int):
             source_url=source_url,
         )
 
+    # Fallback for responsive pages that render archive rows as divs instead of <tr>.
+    if not out:
+        lines = [
+            re.sub(r"\\s+", " ", line).strip()
+            for line in soup.get_text("\\n", strip=True).splitlines()
+            if line.strip()
+        ]
+        for i, line in enumerate(lines):
+            m = re.search(
+                r"(?:(?:Min|Sen|Sel|Rab|Kam|Jum|Sab)\\s+)?"
+                r"(?<!\\d)(\\d{1,2})/(\\d{1,2})(?!\\d)",
+                line,
+                flags=re.I,
+            )
+            if not m:
+                continue
+
+            day, month = int(m.group(1)), int(m.group(2))
+            try:
+                d = date(year, month, day)
+            except ValueError:
+                continue
+
+            digits = []
+            for nxt in lines[i + 1:i + 16]:
+                if re.fullmatch(r"\\d", nxt):
+                    digits.append(nxt)
+                    if len(digits) == 4:
+                        break
+                elif digits and re.search(r"\\d{1,2}/\\d{1,2}", nxt):
+                    break
+
+            if len(digits) == 4:
+                number = "".join(digits)
+                out[d] = ParsedResult(
+                    market=market,
+                    result_date=d,
+                    number=number,
+                    source_id=f"tarikanpaito_{market.lower()}",
+                    source_name=f"DataPaitoWarna {market}",
+                    source_url=source_url,
+                )
+
     results = [out[d] for d in sorted(out)]
     return results
 
