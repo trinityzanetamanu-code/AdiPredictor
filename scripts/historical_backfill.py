@@ -49,9 +49,46 @@ LIVE_SOURCES = {
     },
 }
 
-ARCHIVE_URLS = {
-    "HK": "https://tarikanpaito.net/data/hk/{year}",
-    "SDY": "https://tarikanpaito.net/data/sdy/{year}",
+HISTORICAL_SOURCES = {
+    "HK": [
+        {
+            "id": "datahkpools_archive",
+            "name": "DataHKPools Archive",
+            "url": "https://datahkpools.online/",
+            "heading_regex": r"(?:Data Keluaran HK|Data HK|Data Hongkong|DATA HONGKONG)\\s+{year}",
+            "priority": 10,
+        },
+        {
+            "id": "datahktoday_archive",
+            "name": "DataHKToday Archive",
+            "url": "https://www.datahktoday.com/",
+            "heading_regex": r"(?:DATA HONGKONG|Data Hongkong|Data HK)\\s+{year}",
+            "priority": 20,
+        },
+        {
+            "id": "datahk2023_archive",
+            "name": "DataHK2023 Archive",
+            "url": "https://datahk2023.org/",
+            "heading_regex": r"(?:Data Pengeluaran HK|Data HK|Data Hongkong)\\s+{year}",
+            "priority": 30,
+        },
+    ],
+    "SDY": [
+        {
+            "id": "datatogel_sdy_archive",
+            "name": "DataTogel Sydney Archive",
+            "url": "https://w2.datatogel.fit/data-sdy/",
+            "heading_regex": r"(?:Data Sydney|Data SDY|Data Pengeluaran Sydney)\\s+{year}",
+            "priority": 10,
+        },
+        {
+            "id": "datasydtoday_archive",
+            "name": "DataSydToday Archive",
+            "url": "https://www.datasydtoday.com/",
+            "heading_regex": r"(?:Data Sydney|Data SDY|DATA SYDNEY)\\s+{year}",
+            "priority": 20,
+        },
+    ],
 }
 
 SGP_OFFICIAL_URL = "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl={token}"
@@ -216,53 +253,139 @@ def backfill_hk_sdy(market):
     existing = load_existing_map(market)
     combined = {}
     verification_years = {}
-    live_source = LIVE_SOURCES[market]
 
-    live_html = fetch_html(live_source["url"])
+    configured = sorted(
+        HISTORICAL_SOURCES[market],
+        key=lambda s: s.get("priority", 999),
+    )
+
+    # Fetch each multi-year page once. A blocked mirror is tolerated as long
+    # as at least two independent sources can still agree for each year.
+    html_by_source = {}
+    source_errors = {}
+    for source in configured:
+        try:
+            html_by_source[source["id"]] = fetch_html(source["url"])
+        except Exception as exc:
+            source_errors[source["id"]] = str(exc)
+            print(f"[{market}] {source['id']} fetch failed: {exc}")
+
+    live_source = LIVE_SOURCES[market]
+    try:
+        html_by_source[live_source["id"]] = fetch_html(live_source["url"])
+    except Exception as exc:
+        source_errors[live_source["id"]] = str(exc)
+        print(f"[{market}] {live_source['id']} fetch failed: {exc}")
 
     for year in YEARS:
-        live_results = []
-        try:
-            live_results = parse_weekday_grid(live_html, market, live_source, year)
-        except Exception as exc:
-            print(f"[{market}] LiveNomor {year} unavailable: {exc}")
+        parsed = []
 
-        archive_url = ARCHIVE_URLS[market].format(year=year)
-        archive_html = fetch_html(archive_url)
-        archive_results = parse_archive_rows(archive_html, market, archive_url, year)
+        for source in configured:
+            html = html_by_source.get(source["id"])
+            if not html:
+                continue
+            parser_source = {
+                "id": source["id"],
+                "name": source["name"],
+                "url": source["url"],
+                "heading_regex": source["heading_regex"],
+            }
+            try:
+                rows = parse_weekday_grid(html, market, parser_source, year)
+                parsed.append((source, rows))
+                print(f"[{market}] {year} {source['id']} rows={len(rows)}")
+            except Exception as exc:
+                print(f"[{market}] {year} {source['id']} parse failed: {exc}")
 
-        if not archive_results:
-            raise CollectorError(f"{market} {year}: archive source returned 0 rows")
+        live_html = html_by_source.get(live_source["id"])
+        if live_html:
+            try:
+                live_rows = parse_weekday_grid(live_html, market, live_source, year)
+                parsed.append((
+                    {
+                        "id": live_source["id"],
+                        "name": live_source["name"],
+                        "url": live_source["url"],
+                        "priority": 5 if year == 2026 else 50,
+                    },
+                    live_rows,
+                ))
+                print(f"[{market}] {year} {live_source['id']} rows={len(live_rows)}")
+            except Exception as exc:
+                print(f"[{market}] {year} {live_source['id']} parse failed: {exc}")
 
-        verification = verify_pair(live_results, archive_results, market, year) if live_results else {
-            "common": 0, "matches": 0, "mismatches": [], "match_ratio": 0.0
-        }
+        if len(parsed) < 2:
+            raise CollectorError(
+                f"{market} {year}: butuh >=2 sumber historis independen, "
+                f"berhasil={len(parsed)}, errors={source_errors}"
+            )
 
-        # If LiveNomor exposes the same year, use only records that agree where overlap exists.
-        # Otherwise keep the archive records, while preserving explicit verification metadata.
-        primary_by_date = {x.result_date: x for x in archive_results}
-        live_by_date = {x.result_date: x for x in live_results}
+        # Rank sources, then require near-perfect agreement on every overlap.
+        parsed.sort(key=lambda pair: pair[0].get("priority", 999))
+        primary_source, primary_rows = parsed[0]
+        pair_reports = []
+        for secondary_source, secondary_rows in parsed[1:]:
+            report = verify_pair(primary_rows, secondary_rows, market, year)
+            report["primary_source"] = primary_source["id"]
+            report["secondary_source"] = secondary_source["id"]
+            pair_reports.append(report)
 
-        for d, item in primary_by_date.items():
-            source_ids = [item.source_id]
-            status = "historical_archive"
-            if d in live_by_date and live_by_date[d].number == item.number:
-                source_ids = [live_by_date[d].source_id, item.source_id]
-                status = "crosschecked_2_sources"
-                item = live_by_date[d]
+        # Use the highest-priority source, but enrich each record with every
+        # independent source that agrees on that same date and number.
+        maps = [
+            (
+                source,
+                {item.result_date: item for item in rows},
+            )
+            for source, rows in parsed
+        ]
+        primary_map = maps[0][1]
+
+        for d, item in primary_map.items():
+            agreeing_ids = []
+            for source, item_map in maps:
+                other = item_map.get(d)
+                if other and other.number == item.number:
+                    agreeing_ids.append(source["id"])
+
+            if len(agreeing_ids) < 2:
+                # Never seed a historical draw from a single unconfirmed mirror.
+                continue
 
             old = existing.get(d.isoformat())
             period = old.get("periode") if old and old.get("nomor") == item.number else None
-            combined[d] = make_record(item, status, source_ids, period=period)
+            combined[d] = make_record(
+                item,
+                f"crosschecked_{len(agreeing_ids)}_sources",
+                agreeing_ids,
+                period=period,
+            )
+
+        verified_for_year = [
+            d for d in combined if d.year == year
+        ]
+        if year < 2026 and len(verified_for_year) < 350:
+            raise CollectorError(
+                f"{market} {year}: verified coverage terlalu rendah "
+                f"{len(verified_for_year)} draws"
+            )
+        if year == 2026 and len(verified_for_year) < 200:
+            raise CollectorError(
+                f"{market} {year}: verified coverage terlalu rendah "
+                f"{len(verified_for_year)} draws"
+            )
 
         verification_years[str(year)] = {
-            "archive_rows": len(archive_results),
-            "live_rows": len(live_results),
-            **verification,
+            "verified_rows": len(verified_for_year),
+            "sources": [
+                {"id": source["id"], "rows": len(rows)}
+                for source, rows in parsed
+            ],
+            "pair_reports": pair_reports,
         }
         print(
-            f"[{market}] {year}: archive={len(archive_results)} "
-            f"live={len(live_results)} matches={verification['matches']}"
+            f"[{market}] {year}: VERIFIED={len(verified_for_year)} "
+            f"sources={[x[0]['id'] for x in parsed]}"
         )
 
     rows = [combined[d] for d in sorted(combined, reverse=True)]
