@@ -77,6 +77,14 @@ HISTORICAL_SOURCES = {
             "priority": 30,
         },
         {
+            "id": "waroengtogel_hk_2024",
+            "name": "WaroengTogel HK 2024",
+            "url": "https://waroengtogel2.com/data-togel-hk-2024/",
+            "parser": "date_result4",
+            "years": [2024],
+            "priority": 35,
+        },
+        {
             "id": "paitohklengkap_archive",
             "name": "PaitoHKLengkap Archive",
             "url": "https://paitohklengkap.net/data/{year}/",
@@ -93,6 +101,13 @@ HISTORICAL_SOURCES = {
             "parser": "weekday4",
             "heading_regex": r"(?:Data Sydney|Data SDY|Data Pengeluaran Sydney)\s+{year}",
             "priority": 10,
+        },
+        {
+            "id": "datasydtoday_archive",
+            "name": "DataSydToday Archive",
+            "url": "https://www.datasydtoday.com/",
+            "parser": "split_weekday4",
+            "priority": 15,
         },
         {
             "id": "sdy6_archive",
@@ -319,18 +334,31 @@ def parse_weekday_grid_6_last4(html: str, market: str, source: dict, year: int):
 def parse_hk_anchor_sequence(html: str, market: str, source: dict, year: int):
     soup = BeautifulSoup(html, "html.parser")
     tables = soup.find_all("table")
-    if not tables:
-        raise CollectorError("Angkaweb tidak memiliki table")
 
-    def four_digit_tokens(table):
+    def four_digit_tokens(node):
         tokens = []
-        for cell in table.find_all(["td", "th"]):
+        for cell in node.find_all(["td", "th"]):
             text = cell.get_text(" ", strip=True)
             tokens.extend(re.findall(r"(?<!\\d)(\\d{4})(?!\\d)", text))
         return tokens
 
-    table_tokens = [(four_digit_tokens(table), table) for table in tables]
-    tokens, _ = max(table_tokens, key=lambda pair: len(pair[0]))
+    token_candidates = []
+    for table in tables:
+        tokens = four_digit_tokens(table)
+        if tokens:
+            token_candidates.append(tokens)
+
+    # Angkaweb currently renders its historical sequence as text on some
+    # clients/runners instead of a semantic table. Fall back to the full page.
+    page_text = soup.get_text(" ", strip=True)
+    text_tokens = re.findall(r"(?<!\\d)(\\d{4})(?!\\d)", page_text)
+    if text_tokens:
+        token_candidates.append(text_tokens)
+
+    if not token_candidates:
+        raise CollectorError("Angkaweb tidak memiliki sequence angka")
+
+    tokens = max(token_candidates, key=len)
     if len(tokens) < 1000:
         raise CollectorError(f"Angkaweb sequence terlalu pendek: {len(tokens)}")
 
@@ -370,6 +398,114 @@ def parse_hk_anchor_sequence(html: str, market: str, source: dict, year: int):
     return results
 
 
+def parse_split_weekday4(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    raw_lines = [
+        re.sub(r"\\s+", " ", line).strip()
+        for line in soup.get_text("\\n", strip=True).splitlines()
+        if line.strip()
+    ]
+
+    start_idx = None
+    start_patterns = [
+        rf"Data SDY Pools\\s+{year}",
+        rf"Data Sydney\\s+{year}",
+        rf"Data SDY\\s+{year}",
+    ]
+    for idx, line in enumerate(raw_lines):
+        if any(re.search(pattern, line, flags=re.I) for pattern in start_patterns):
+            start_idx = idx
+            break
+
+    if start_idx is None:
+        raise CollectorError(f"Split weekday: heading {year} tidak ditemukan")
+
+    end_idx = len(raw_lines)
+    next_year = year + 1
+    for idx in range(start_idx + 1, len(raw_lines)):
+        line = raw_lines[idx]
+        if re.search(
+            rf"(?:Data Sydney|Data SDY Pools|Data SDY)\\s+{next_year}",
+            line,
+            flags=re.I,
+        ):
+            end_idx = idx
+            break
+
+    segment = raw_lines[start_idx:end_idx]
+    weekday_names = [
+        ("senin", 0), ("selasa", 1), ("rabu", 2), ("kamis", 3),
+        ("jumat", 4), ("jum'at", 4), ("sabtu", 5), ("minggu", 6),
+    ]
+
+    headings = []
+    for idx, line in enumerate(segment):
+        normalized = re.sub(r"[^a-zA-Z']", "", line.lower())
+        for name, day_idx in weekday_names:
+            if normalized == name:
+                headings.append((idx, day_idx))
+                break
+
+    # One heading per weekday is expected. Ignore duplicated spelling aliases.
+    unique = {}
+    for idx, day_idx in headings:
+        unique.setdefault(day_idx, idx)
+    headings = sorted((idx, day_idx) for day_idx, idx in unique.items())
+
+    if len(headings) < 7:
+        raise CollectorError(
+            f"Split weekday: hanya {len(headings)} weekday heading ditemukan"
+        )
+
+    results = []
+    for pos, (idx, day_idx) in enumerate(headings):
+        section_end = headings[pos + 1][0] if pos + 1 < len(headings) else len(segment)
+        values = []
+        for line in segment[idx + 1:section_end]:
+            m = re.fullmatch(r"(?:xxxx|xxx|\\d{4})", line, flags=re.I)
+            if not m:
+                continue
+            value = line.lower()
+            if value in {"xxxx", "xxx"}:
+                values.append(None)
+            else:
+                values.append(line)
+
+        dates = []
+        d = date(year, 1, 1)
+        while d.year == year:
+            if d.weekday() == day_idx:
+                dates.append(d)
+            d += __import__("datetime").timedelta(days=1)
+
+        # Some pages include one explicit xxxx placeholder before the first
+        # calendar occurrence. Align from the tail if there is one extra slot.
+        if len(values) > len(dates):
+            values = values[-len(dates):]
+        if len(values) < len(dates):
+            dates = dates[:len(values)]
+
+        for d, number in zip(dates, values):
+            if not number:
+                continue
+            results.append(ParsedResult(
+                market=market,
+                result_date=d,
+                number=number,
+                source_id=source["id"],
+                source_name=source["name"],
+                source_url=source["url"],
+            ))
+
+    dedup = {item.result_date: item for item in results}
+    out = [dedup[d] for d in sorted(dedup)]
+    if len(out) < 300:
+        raise CollectorError(
+            f"Split weekday parser {year} hanya menemukan {len(out)} result"
+        )
+    return out
+
+
 def parse_source_year(html: str, market: str, source: dict, year: int):
     parser = source.get("parser", "weekday4")
 
@@ -379,6 +515,8 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
         return parse_weekday_grid_6_last4(html, market, source, year)
     if parser == "hk_anchor_sequence":
         return parse_hk_anchor_sequence(html, market, source, year)
+    if parser == "split_weekday4":
+        return parse_split_weekday4(html, market, source, year)
     if parser == "date_result4":
         return parse_date_result_table(html, market, source, year)
 
@@ -554,7 +692,7 @@ def backfill_hk_sdy(market):
                 pair_reports.append(report)
 
                 min_overlap = 100 if year < 2026 else 60
-                if len(common_dates) >= min_overlap and ratio >= 0.995:
+                if len(common_dates) >= min_overlap and ratio >= 0.99:
                     compatible[source_a["id"]].add(source_b["id"])
                     compatible[source_b["id"]].add(source_a["id"])
 
