@@ -1,0 +1,63 @@
+name: Historical Archive Backfill
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/historical_backfill.py'
+      - '.github/workflows/historical-backfill.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: adipredictor-historical-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Build and Verify Historical Archive
+        working-directory: scripts
+        run: python historical_backfill.py
+
+      - name: Show Archive Summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for market in ('hk','sgp','sdy'):
+              rows=json.loads(Path(f'public/data/{market}.json').read_text())
+              print(market.upper(), len(rows), rows[-1]['result_date'], '->', rows[0]['result_date'])
+          print(Path('public/data/historical-verification.json').read_text())
+          PY
+
+      - name: Commit Verified Historical Data
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/data/hk.json public/data/sgp.json public/data/sdy.json public/data/historical-verification.json
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan arsip."
+            exit 0
+          fi
+          git commit -m "data: backfill verified 2023-2026 archives [skip ci]"
+          git push
