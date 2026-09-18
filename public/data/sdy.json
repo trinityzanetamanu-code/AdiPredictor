@@ -1,5 +1,22 @@
 [
   {
+    "id": 20260918,
+    "tanggal": "18 Sep 2026",
+    "periode": "SDY-20260918",
+    "nomor": "3877",
+    "result_date": "2026-09-18",
+    "market": "SDY",
+    "source_id": "livenomor_sdy",
+    "source_name": "LiveNomor Sydney",
+    "source_url": "https://livenomor.com/data-pengeluaran-sydney-2021/",
+    "source_ids": [
+      "livenomor_sdy"
+    ],
+    "collected_at": "2026-09-18T17:57:15+07:00",
+    "verification": "primary_source",
+    "confirmations": 1
+  },
+  {
     "id": 20260917,
     "tanggal": "17 Sep 2026",
     "periode": "SDY-20260917",
