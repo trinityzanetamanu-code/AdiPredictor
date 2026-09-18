@@ -1,29 +1,35 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-18T17:57:15+07:00",
+  "collected_at": "2026-09-19T01:14:34+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "primary_authoritative",
       "successful_sources": [
         "livenomor_hk"
       ],
       "parsed_counts": {
-        "livenomor_hk": 260
+        "livenomor_hk": 261
       },
-      "verified_count": 260,
-      "new_count": 0,
+      "verified_count": 261,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-18",
+          "number": "3725",
+          "verification": "primary_source"
+        }
+      ],
       "latest": {
-        "id": 20260917,
-        "tanggal": "17 Sep 2026",
-        "periode": "HK-20260917",
-        "nomor": "9059",
-        "result_date": "2026-09-17",
+        "id": 20260918,
+        "tanggal": "18 Sep 2026",
+        "periode": "HK-20260918",
+        "nomor": "3725",
+        "result_date": "2026-09-18",
         "market": "HK",
         "source_id": "livenomor_hk",
         "source_name": "LiveNomor Hongkong",
@@ -31,13 +37,13 @@
         "source_ids": [
           "livenomor_hk"
         ],
-        "collected_at": "2026-09-18T06:03:07+07:00",
+        "collected_at": "2026-09-19T01:14:34+07:00",
         "verification": "primary_source",
         "confirmations": 1
       },
       "latest_verified": {
-        "date": "2026-09-17",
-        "number": "9059",
+        "date": "2026-09-18",
+        "number": "3725",
         "verification": "primary_source",
         "source_ids": [
           "livenomor_hk"
@@ -87,7 +93,7 @@
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "primary_authoritative",
       "successful_sources": [
         "livenomor_sdy"
@@ -96,15 +102,9 @@
         "livenomor_sdy": 261
       },
       "verified_count": 261,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-18",
-          "number": "3877",
-          "verification": "primary_source"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260918,
         "tanggal": "18 Sep 2026",
