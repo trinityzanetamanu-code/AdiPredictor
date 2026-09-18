@@ -1,291 +1,543 @@
 [
   {
+    "id": 20260917,
+    "tanggal": "17 Sep 2026",
+    "periode": "SGP-2478",
+    "nomor": "2131",
+    "result_date": "2026-09-17",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20260916,
     "tanggal": "16 Sep 2026",
-    "periode": "SGP-5536",
+    "periode": "SGP-2477",
     "nomor": "9224",
     "result_date": "2026-09-16",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTM2",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260914,
+    "tanggal": "14 Sep 2026",
+    "periode": "SGP-2476",
+    "nomor": "5470",
+    "result_date": "2026-09-14",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260913,
     "tanggal": "13 Sep 2026",
-    "periode": "SGP-5535",
+    "periode": "SGP-2475",
     "nomor": "9400",
     "result_date": "2026-09-13",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTM1",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260912,
     "tanggal": "12 Sep 2026",
-    "periode": "SGP-5534",
+    "periode": "SGP-2474",
     "nomor": "2710",
     "result_date": "2026-09-12",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTM0",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260910,
+    "tanggal": "10 Sep 2026",
+    "periode": "SGP-2473",
+    "nomor": "2997",
+    "result_date": "2026-09-10",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260909,
     "tanggal": "09 Sep 2026",
-    "periode": "SGP-5533",
+    "periode": "SGP-2472",
     "nomor": "1853",
     "result_date": "2026-09-09",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTMz",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260907,
+    "tanggal": "07 Sep 2026",
+    "periode": "SGP-2471",
+    "nomor": "0024",
+    "result_date": "2026-09-07",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260906,
     "tanggal": "06 Sep 2026",
-    "periode": "SGP-5532",
+    "periode": "SGP-2470",
     "nomor": "8579",
     "result_date": "2026-09-06",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTMy",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260905,
     "tanggal": "05 Sep 2026",
-    "periode": "SGP-5531",
+    "periode": "SGP-2469",
     "nomor": "9248",
     "result_date": "2026-09-05",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTMx",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260903,
+    "tanggal": "03 Sep 2026",
+    "periode": "SGP-2468",
+    "nomor": "2536",
+    "result_date": "2026-09-03",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260902,
     "tanggal": "02 Sep 2026",
-    "periode": "SGP-5530",
+    "periode": "SGP-2467",
     "nomor": "4125",
     "result_date": "2026-09-02",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTMw",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260831,
+    "tanggal": "31 Ags 2026",
+    "periode": "SGP-2466",
+    "nomor": "9042",
+    "result_date": "2026-08-31",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260830,
     "tanggal": "30 Ags 2026",
-    "periode": "SGP-5529",
+    "periode": "SGP-2465",
     "nomor": "9238",
     "result_date": "2026-08-30",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTI5",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260829,
     "tanggal": "29 Ags 2026",
-    "periode": "SGP-5528",
+    "periode": "SGP-2464",
     "nomor": "0363",
     "result_date": "2026-08-29",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTI4",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260827,
+    "tanggal": "27 Ags 2026",
+    "periode": "SGP-2463",
+    "nomor": "3216",
+    "result_date": "2026-08-27",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260826,
     "tanggal": "26 Ags 2026",
-    "periode": "SGP-5527",
+    "periode": "SGP-2462",
     "nomor": "1564",
     "result_date": "2026-08-26",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTI3",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260824,
+    "tanggal": "24 Ags 2026",
+    "periode": "SGP-2461",
+    "nomor": "8713",
+    "result_date": "2026-08-24",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260823,
     "tanggal": "23 Ags 2026",
-    "periode": "SGP-5526",
+    "periode": "SGP-2460",
     "nomor": "9675",
     "result_date": "2026-08-23",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTI2",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260822,
     "tanggal": "22 Ags 2026",
-    "periode": "SGP-5525",
+    "periode": "SGP-2459",
     "nomor": "3001",
     "result_date": "2026-08-22",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTI1",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260820,
+    "tanggal": "20 Ags 2026",
+    "periode": "SGP-2458",
+    "nomor": "7269",
+    "result_date": "2026-08-20",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260819,
     "tanggal": "19 Ags 2026",
-    "periode": "SGP-5524",
+    "periode": "SGP-2457",
     "nomor": "4478",
     "result_date": "2026-08-19",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTI0",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260817,
+    "tanggal": "17 Ags 2026",
+    "periode": "SGP-2456",
+    "nomor": "8754",
+    "result_date": "2026-08-17",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260816,
     "tanggal": "16 Ags 2026",
-    "periode": "SGP-5523",
+    "periode": "SGP-2455",
     "nomor": "6149",
     "result_date": "2026-08-16",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTIz",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260815,
     "tanggal": "15 Ags 2026",
-    "periode": "SGP-5522",
+    "periode": "SGP-2454",
     "nomor": "6714",
     "result_date": "2026-08-15",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTIy",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260813,
+    "tanggal": "13 Ags 2026",
+    "periode": "SGP-2453",
+    "nomor": "3200",
+    "result_date": "2026-08-13",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260812,
     "tanggal": "12 Ags 2026",
-    "periode": "SGP-5521",
+    "periode": "SGP-2452",
     "nomor": "2375",
     "result_date": "2026-08-12",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTIx",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260810,
+    "tanggal": "10 Ags 2026",
+    "periode": "SGP-2451",
+    "nomor": "3525",
+    "result_date": "2026-08-10",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260809,
     "tanggal": "09 Ags 2026",
-    "periode": "SGP-5520",
+    "periode": "SGP-2450",
     "nomor": "7137",
     "result_date": "2026-08-09",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTIw",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260808,
     "tanggal": "08 Ags 2026",
-    "periode": "SGP-5519",
+    "periode": "SGP-2449",
     "nomor": "5102",
     "result_date": "2026-08-08",
     "market": "SGP",
-    "source_id": "singaporepools_official",
-    "source_name": "Singapore Pools Official 4D",
-    "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTE5",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
-      "singaporepools_official"
+      "paitosgplengkap",
+      "nexipools_sgp"
     ],
-    "verification": "official_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-19T05:11:28+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260805,

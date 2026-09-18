@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-19T01:14:34+07:00",
+  "collected_at": "2026-09-19T05:11:28+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "primary_authoritative",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 261
       },
       "verified_count": 261,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-18",
-          "number": "3725",
-          "verification": "primary_source"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260918,
         "tanggal": "18 Sep 2026",
@@ -53,43 +47,204 @@
     },
     "SGP": {
       "market": "SGP",
-      "status": "no_change",
-      "verification_mode": "primary_authoritative",
+      "status": "updated",
+      "verification_mode": "crosscheck",
       "successful_sources": [
-        "singaporepools_official"
+        "paitosgplengkap",
+        "nexipools_sgp"
       ],
       "parsed_counts": {
-        "singaporepools_official": 6
+        "paitosgplengkap": 185,
+        "nexipools_sgp": 30
       },
-      "verified_count": 6,
-      "new_count": 0,
+      "verified_count": 30,
+      "new_count": 30,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-08-08",
+          "number": "5102",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-09",
+          "number": "7137",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-10",
+          "number": "3525",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-12",
+          "number": "2375",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-13",
+          "number": "3200",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-15",
+          "number": "6714",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-16",
+          "number": "6149",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-17",
+          "number": "8754",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-19",
+          "number": "4478",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-20",
+          "number": "7269",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-22",
+          "number": "3001",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-23",
+          "number": "9675",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-24",
+          "number": "8713",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-26",
+          "number": "1564",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-27",
+          "number": "3216",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-29",
+          "number": "0363",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-30",
+          "number": "9238",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-08-31",
+          "number": "9042",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-02",
+          "number": "4125",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-03",
+          "number": "2536",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-05",
+          "number": "9248",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-06",
+          "number": "8579",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-07",
+          "number": "0024",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-09",
+          "number": "1853",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-10",
+          "number": "2997",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-12",
+          "number": "2710",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-13",
+          "number": "9400",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-14",
+          "number": "5470",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-16",
+          "number": "9224",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-17",
+          "number": "2131",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20260916,
-        "tanggal": "16 Sep 2026",
-        "periode": "SGP-5536",
-        "nomor": "9224",
-        "result_date": "2026-09-16",
+        "id": 20260917,
+        "tanggal": "17 Sep 2026",
+        "periode": "SGP-2478",
+        "nomor": "2131",
+        "result_date": "2026-09-17",
         "market": "SGP",
-        "source_id": "singaporepools_official",
-        "source_name": "Singapore Pools Official 4D",
-        "source_url": "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl=RHJhd051bWJlcj01NTM2",
+        "source_id": "paitosgplengkap",
+        "source_name": "Paito SGP Lengkap",
+        "source_url": "https://paitosgplengkap.org/data/2026/",
         "source_ids": [
-          "singaporepools_official"
+          "paitosgplengkap",
+          "nexipools_sgp"
         ],
-        "verification": "official_primary",
-        "confirmations": 1
+        "collected_at": "2026-09-19T05:11:28+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-09-16",
-        "number": "9224",
-        "verification": "official_primary",
+        "date": "2026-09-17",
+        "number": "2131",
+        "verification": "confirmed_2_sources",
         "source_ids": [
-          "singaporepools_official"
+          "paitosgplengkap",
+          "nexipools_sgp"
         ]
       },
-      "source_errors": []
+      "source_errors": [
+        {
+          "source": "royaltoto_identical_98toto",
+          "error": "Date/result parser hanya menemukan 0 result"
+        }
+      ]
     },
     "SDY": {
       "market": "SDY",
