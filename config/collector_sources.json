@@ -36,18 +36,58 @@
     },
     "SGP": {
       "display_name": "Pasaran SGP Pool",
-      "schedule": "source_calendar",
-      "verification_mode": "primary_authoritative",
-      "authoritative_source_id": "singaporepools_official",
+      "schedule": "mon_wed_thu_sat_sun",
+      "verification_mode": "crosscheck",
+      "min_confirmations": 2,
+      "replace_existing_metadata": true,
+      "period_rule": {
+        "prefix": "SGP",
+        "anchor_date": "2026-09-12",
+        "anchor_number": 2474,
+        "valid_from": "2026-01-01",
+        "weekdays": [
+          0,
+          2,
+          3,
+          5,
+          6
+        ],
+        "note": "Anchor independently observed on an identical RoyalToto-style market page: 12 Sep 2026 = SGP-2474; RoyalToto screenshot confirms 17 Sep 2026 = SGP-2478."
+      },
       "sources": [
         {
-          "id": "singaporepools_official",
-          "name": "Singapore Pools Official 4D",
+          "id": "royaltoto_identical_98toto",
+          "name": "98TOTO Singapore Market",
+          "url": "https://98toto.info/pasaran.html",
+          "parser": "date_result_table",
+          "enabled": true,
+          "priority": 10
+        },
+        {
+          "id": "paitosgplengkap",
+          "name": "Paito SGP Lengkap",
+          "url": "https://paitosgplengkap.org/data/{year}/",
+          "parser": "date_result_table",
+          "enabled": true,
+          "priority": 20
+        },
+        {
+          "id": "nexipools_sgp",
+          "name": "NexiPools Singapore Paito",
+          "url": "https://www.nexipools.com/id/singapore/paito/",
+          "parser": "date_result_table",
+          "enabled": true,
+          "priority": 30
+        },
+        {
+          "id": "singaporepools_official_reference",
+          "name": "Singapore Pools Official 4D Reference",
           "url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html",
           "parser": "sgp_official_4d",
           "authority": "official",
-          "enabled": true,
-          "priority": 10
+          "enabled": false,
+          "priority": 90,
+          "note": "Reference only. Not the target composite SGP market because RoyalToto-style SGP also has Monday and Thursday results."
         }
       ]
     },
