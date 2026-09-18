@@ -384,24 +384,37 @@ def main():
         "markets": {},
     }
 
-    hk_rows, hk_ver = backfill_hk_sdy("HK")
-    sdy_rows, sdy_ver = backfill_hk_sdy("SDY")
+    # SGP uses Singapore Pools official individual draw pages and is required.
     sgp_rows, sgp_counts = backfill_sgp()
-
-    write_json(DATA_DIR / "hk.json", hk_rows)
-    write_json(DATA_DIR / "sdy.json", sdy_rows)
     write_json(DATA_DIR / "sgp.json", sgp_rows)
 
-    report["markets"]["HK"] = {
-        "rows": len(hk_rows),
-        "period": [hk_rows[-1]["result_date"], hk_rows[0]["result_date"]] if hk_rows else [],
-        "verification_by_year": hk_ver,
-    }
-    report["markets"]["SDY"] = {
-        "rows": len(sdy_rows),
-        "period": [sdy_rows[-1]["result_date"], sdy_rows[0]["result_date"]] if sdy_rows else [],
-        "verification_by_year": sdy_ver,
-    }
+    # HK/SDY historical mirrors are best-effort here. If a mirror blocks the
+    # GitHub runner, keep the already verified current-year collector data and
+    # record the archive gap instead of blocking the official SGP backfill.
+    for market in ("HK", "SDY"):
+        try:
+            rows, ver = backfill_hk_sdy(market)
+            write_json(DATA_DIR / f"{market.lower()}.json", rows)
+            report["markets"][market] = {
+                "rows": len(rows),
+                "period": [rows[-1]["result_date"], rows[0]["result_date"]] if rows else [],
+                "verification_by_year": ver,
+                "historical_status": "complete_2023_2026",
+            }
+        except Exception as exc:
+            current_path = DATA_DIR / f"{market.lower()}.json"
+            current_rows = json.loads(current_path.read_text(encoding="utf-8"))
+            report["markets"][market] = {
+                "rows": len(current_rows),
+                "period": [
+                    current_rows[-1].get("result_date"),
+                    current_rows[0].get("result_date"),
+                ] if current_rows else [],
+                "historical_status": "pending_external_archive",
+                "error": str(exc),
+            }
+            print(f"[{market}] historical archive pending: {exc}")
+
     report["markets"]["SGP"] = {
         "rows": len(sgp_rows),
         "period": [sgp_rows[-1]["result_date"], sgp_rows[0]["result_date"]] if sgp_rows else [],
