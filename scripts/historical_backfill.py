@@ -17,6 +17,7 @@ from collector import (
     CollectorError,
     fetch_html,
     parse_weekday_grid,
+    parse_date_result_table,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,54 +53,63 @@ LIVE_SOURCES = {
 HISTORICAL_SOURCES = {
     "HK": [
         {
-            "id": "datahk2023_archive",
-            "name": "DataHK2023 Archive",
-            "url": "https://datahk2023.org/",
-            "heading_regex": r"(?:Data Pengeluaran Hongkong|Data Pengeluaran HK|Data HK|Keluaran Hongkong)\s+{year}",
+            "id": "angkaweb_hk_archive",
+            "name": "Angkaweb Data Hongkong",
+            "url": "https://w22.angkaweb.net/data-hongkong/",
+            "parser": "hk_anchor_sequence",
             "priority": 10,
         },
         {
-            "id": "pengetahuan_hk_archive",
-            "name": "Pengetahuan Data HK",
-            "url": "https://www.pengetahuan.id/data-hk/",
-            "heading_regex": r"(?:Keluaran Hongkong|Data HK|Data Pengeluaran HK)\s+{year}",
+            "id": "angkakeluarhariini_hk",
+            "name": "AngkaKeluarHariIni HK",
+            "url": "https://angkakeluarhariini.com/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:Data HK|Data Hongkong|Data Pengeluaran HK)\s+{year}",
             "priority": 20,
         },
         {
-            "id": "datahk77_archive",
-            "name": "DataHK77 Archive",
-            "url": "https://datahk77.online/",
-            "heading_regex": r"(?:Data HK|Keluaran Hongkong|Arsip Keluaran Hongkong)\s+{year}",
+            "id": "datahk2023_archive",
+            "name": "DataHK2023 Archive",
+            "url": "https://datahk2023.org/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:Data Pengeluaran Hongkong|Data Pengeluaran HK|Data HK|Data Hongkong)\s+{year}",
+            "years": [2023],
             "priority": 30,
         },
         {
-            "id": "datahkpools_archive",
-            "name": "DataHKPools Archive",
-            "url": "https://datahkpools.online/",
-            "heading_regex": r"(?:Data Keluaran HK|Data HK|Data Hongkong|DATA HONGKONG)\s+{year}",
+            "id": "paitohklengkap_archive",
+            "name": "PaitoHKLengkap Archive",
+            "url": "https://paitohklengkap.net/data/{year}/",
+            "parser": "date_result4",
+            "years": [2025, 2026],
             "priority": 40,
         },
     ],
     "SDY": [
         {
-            "id": "datasydtoday_archive",
-            "name": "DataSydToday Archive",
-            "url": "https://www.datasydtoday.com/",
-            "heading_regex": r"(?:Data Sydney|Data SDY|DATA SYDNEY)\s+{year}",
+            "id": "datatogel_sdy_archive",
+            "name": "Datatogel Sydney Archive",
+            "url": "https://w2.datatogel.fit/data-sdy/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:Data Sydney|Data SDY|Data Pengeluaran Sydney)\s+{year}",
             "priority": 10,
         },
         {
-            "id": "dataweb_sdy_archive",
-            "name": "DataWeb Sydney Archive",
-            "url": "https://dataweb.info/",
-            "heading_regex": r"(?:Data Keluaran SDY|Data SDY|Data Sydney)\s+{year}",
+            "id": "sdy6_archive",
+            "name": "Sydney Pools 6D Archive",
+            "url": "https://datapengeluaransdy.club/data-sdy/",
+            "parser": "weekday6_last4",
+            "heading_regex": r"(?:Data SDY|Data Sydney)\s+{year}",
+            "years": [2023, 2024, 2025],
             "priority": 20,
         },
         {
-            "id": "paficandirejo_sdy_archive",
-            "name": "PafiCandirejo Sydney Archive",
-            "url": "https://paficandirejo.org/",
-            "heading_regex": r"(?:Data Pengeluaran SDY|Data SDY|Data Sydney)\s+{year}",
+            "id": "datasdywp_archive",
+            "name": "DataSDYWP Archive",
+            "url": "https://www.datasdywp.com/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:Data Sydney|Data SDY)\s+{year}",
+            "years": [2024, 2025, 2026],
             "priority": 30,
         },
     ],
@@ -210,6 +220,170 @@ def parse_archive_rows(html: str, market: str, source_url: str, year: int):
     results = [out[d] for d in sorted(out)]
     return results
 
+def parse_weekday_grid_6_last4(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    scored = []
+
+    heading_regex = source.get("heading_regex", r"Data SDY\\s+{year}")
+    pattern = heading_regex.replace("{year}", str(year))
+
+    candidates = []
+    yielded = set()
+    for heading in soup.find_all(["h1", "h2", "h3", "h4", "strong"]):
+        if re.search(pattern, heading.get_text(" ", strip=True), flags=re.I):
+            table = heading.find_next("table")
+            if table is not None and id(table) not in yielded:
+                yielded.add(id(table))
+                candidates.append(table)
+
+    if not candidates:
+        candidates = soup.find_all("table")
+
+    for table in candidates:
+        rows = table.find_all("tr")
+        header_idx = None
+        column_days = []
+        for idx, row in enumerate(rows[:6]):
+            cells = row.find_all(["th", "td"])
+            mapped = []
+            for cell in cells:
+                raw = re.sub(r"[^a-zA-Z']", "", cell.get_text(" ", strip=True).lower())
+                day_map = {
+                    "senin": 0, "selasa": 1, "rabu": 2, "kamis": 3,
+                    "jumat": 4, "jum'at": 4, "sabtu": 5, "minggu": 6,
+                    "monday": 0, "tuesday": 1, "wednesday": 2,
+                    "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6,
+                }
+                mapped.append(day_map.get(raw))
+            if sum(x is not None for x in mapped) >= 2:
+                header_idx = idx
+                column_days = mapped
+                break
+
+        six_count = len(re.findall(r"(?<!\\d)\\d{6}(?!\\d)", table.get_text(" ", strip=True)))
+        if header_idx is not None:
+            scored.append((six_count, table, header_idx, column_days))
+
+    if not scored:
+        raise CollectorError("Tidak ada weekday table 6D yang ditemukan")
+
+    scored.sort(key=lambda x: x[0], reverse=True)
+    _, table, header_idx, column_days = scored[0]
+
+    jan1 = date(year, 1, 1)
+    first_monday = jan1 - __import__("datetime").timedelta(days=jan1.weekday())
+    rows = table.find_all("tr")
+    results = []
+    week_index = 0
+
+    for row in rows[header_idx + 1:]:
+        cells = row.find_all(["td", "th"])
+        if not cells:
+            continue
+        values = []
+        for cell in cells:
+            m = re.search(r"(?<!\\d)(\\d{6})(?!\\d)", cell.get_text(" ", strip=True))
+            values.append(m.group(1)[-4:] if m else "")
+
+        if not any(values):
+            continue
+
+        for col, number in enumerate(values):
+            if not number or col >= len(column_days):
+                continue
+            day_idx = column_days[col]
+            if day_idx is None:
+                continue
+            d = first_monday + __import__("datetime").timedelta(
+                days=week_index * 7 + day_idx
+            )
+            if d.year != year:
+                continue
+            results.append(ParsedResult(
+                market=market,
+                result_date=d,
+                number=number,
+                source_id=source["id"],
+                source_name=source["name"],
+                source_url=source["url"],
+            ))
+        week_index += 1
+
+    dedup = {item.result_date: item for item in results}
+    out = [dedup[d] for d in sorted(dedup)]
+    if len(out) < 20:
+        raise CollectorError(f"6D last4 parser hanya menemukan {len(out)} result")
+    return out
+
+
+def parse_hk_anchor_sequence(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    tables = soup.find_all("table")
+    if not tables:
+        raise CollectorError("Angkaweb tidak memiliki table")
+
+    def four_digit_tokens(table):
+        tokens = []
+        for cell in table.find_all(["td", "th"]):
+            text = cell.get_text(" ", strip=True)
+            tokens.extend(re.findall(r"(?<!\\d)(\\d{4})(?!\\d)", text))
+        return tokens
+
+    table_tokens = [(four_digit_tokens(table), table) for table in tables]
+    tokens, _ = max(table_tokens, key=lambda pair: len(pair[0]))
+    if len(tokens) < 1000:
+        raise CollectorError(f"Angkaweb sequence terlalu pendek: {len(tokens)}")
+
+    anchor = ["5241", "7247", "8468", "2954", "4006", "6689", "4791", "0978"]
+    start = None
+    for i in range(0, len(tokens) - len(anchor) + 1):
+        if tokens[i:i + len(anchor)] == anchor:
+            start = i
+            break
+    if start is None:
+        raise CollectorError("Anchor HK 2023 tidak ditemukan pada Angkaweb")
+
+    start_date = date(2023, 1, 1)
+    today_cap = date(2026, 12, 31)
+    sequence = tokens[start:]
+    results = []
+
+    for offset, number in enumerate(sequence):
+        d = start_date + __import__("datetime").timedelta(days=offset)
+        if d > today_cap:
+            break
+        if d.year != year:
+            continue
+        results.append(ParsedResult(
+            market=market,
+            result_date=d,
+            number=number,
+            source_id=source["id"],
+            source_name=source["name"],
+            source_url=source["url"],
+        ))
+
+    if len(results) < (200 if year == 2026 else 350):
+        raise CollectorError(
+            f"Angkaweb anchor parser {year} hanya menemukan {len(results)} result"
+        )
+    return results
+
+
+def parse_source_year(html: str, market: str, source: dict, year: int):
+    parser = source.get("parser", "weekday4")
+
+    if parser == "weekday4":
+        return parse_weekday_grid(html, market, source, year)
+    if parser == "weekday6_last4":
+        return parse_weekday_grid_6_last4(html, market, source, year)
+    if parser == "hk_anchor_sequence":
+        return parse_hk_anchor_sequence(html, market, source, year)
+    if parser == "date_result4":
+        return parse_date_result_table(html, market, source, year)
+
+    raise CollectorError(f"Parser historis tidak dikenal: {parser}")
+
 def verify_pair(primary, secondary, market, year):
     a = {x.result_date: x.number for x in primary}
     b = {x.result_date: x.number for x in secondary}
@@ -270,23 +444,26 @@ def backfill_hk_sdy(market):
 
     configured = sorted(
         HISTORICAL_SOURCES[market],
-        key=lambda s: s.get("priority", 999),
+        key=lambda source: source.get("priority", 999),
     )
 
-    html_by_source = {}
+    shared_html = {}
     source_errors = {}
+
+    # Fetch fixed URLs once. Year-templated URLs are fetched only for the year
+    # that needs them.
     for source in configured:
+        if "{year}" in source["url"]:
+            continue
         try:
-            html_by_source[source["id"]] = fetch_html(source["url"], timeout=12)
+            shared_html[source["id"]] = fetch_html(source["url"], timeout=15)
         except Exception as exc:
             source_errors[source["id"]] = str(exc)
             print(f"[{market}] {source['id']} fetch failed: {exc}")
 
-    # LiveNomor is useful as a current-year independent check, but its page
-    # structure can make historical year selection ambiguous. Restrict it to 2026.
     live_source = LIVE_SOURCES[market]
     try:
-        html_by_source[live_source["id"]] = fetch_html(live_source["url"], timeout=12)
+        shared_html[live_source["id"]] = fetch_html(live_source["url"], timeout=15)
     except Exception as exc:
         source_errors[live_source["id"]] = str(exc)
         print(f"[{market}] {live_source['id']} fetch failed: {exc}")
@@ -295,39 +472,54 @@ def backfill_hk_sdy(market):
         parsed = []
 
         for source in configured:
-            html = html_by_source.get(source["id"])
-            if not html:
+            if source.get("years") and year not in source["years"]:
                 continue
-            parser_source = {
-                "id": source["id"],
-                "name": source["name"],
-                "url": source["url"],
-                "heading_regex": source["heading_regex"],
-            }
+
+            source_for_year = dict(source)
+            source_for_year["url"] = source["url"].replace("{year}", str(year))
+
+            html = shared_html.get(source["id"])
+            if html is None and "{year}" in source["url"]:
+                try:
+                    html = fetch_html(source_for_year["url"], timeout=15)
+                except Exception as exc:
+                    source_errors[f"{source['id']}:{year}"] = str(exc)
+                    print(f"[{market}] {year} {source['id']} fetch failed: {exc}")
+                    continue
+            if html is None:
+                continue
+
             try:
-                rows = parse_weekday_grid(html, market, parser_source, year)
-                parsed.append((source, rows))
+                rows = parse_source_year(html, market, source_for_year, year)
+                parsed.append((source_for_year, rows))
                 print(f"[{market}] {year} {source['id']} rows={len(rows)}")
             except Exception as exc:
                 print(f"[{market}] {year} {source['id']} parse failed: {exc}")
 
+        # LiveNomor is used only as an additional current-year check.
         if year == 2026:
-            live_html = html_by_source.get(live_source["id"])
+            live_html = shared_html.get(live_source["id"])
             if live_html:
                 try:
-                    live_rows = parse_weekday_grid(live_html, market, live_source, year)
+                    live_rows = parse_weekday_grid(
+                        live_html, market, live_source, year
+                    )
                     parsed.append((
                         {
-                            "id": live_source["id"],
-                            "name": live_source["name"],
-                            "url": live_source["url"],
+                            **live_source,
                             "priority": 5,
                         },
                         live_rows,
                     ))
-                    print(f"[{market}] {year} {live_source['id']} rows={len(live_rows)}")
+                    print(
+                        f"[{market}] {year} {live_source['id']} "
+                        f"rows={len(live_rows)}"
+                    )
                 except Exception as exc:
-                    print(f"[{market}] {year} {live_source['id']} parse failed: {exc}")
+                    print(
+                        f"[{market}] {year} {live_source['id']} "
+                        f"parse failed: {exc}"
+                    )
 
         if len(parsed) < 2:
             raise CollectorError(
@@ -335,33 +527,37 @@ def backfill_hk_sdy(market):
                 f"berhasil={len(parsed)}, errors={source_errors}"
             )
 
-        # Build pairwise compatibility. A source is accepted only when another
-        # independent source overlaps substantially and agrees >=99.5%.
+        # Pairwise compatibility: only cluster sources that substantially
+        # overlap and agree on at least 99.5% of the overlapping dates.
         pair_reports = []
         compatible = {source["id"]: set() for source, _ in parsed}
+
         for i in range(len(parsed)):
             source_a, rows_a = parsed[i]
-            map_a = {x.result_date: x.number for x in rows_a}
+            map_a = {item.result_date: item.number for item in rows_a}
+
             for j in range(i + 1, len(parsed)):
                 source_b, rows_b = parsed[j]
-                map_b = {x.result_date: x.number for x in rows_b}
+                map_b = {item.result_date: item.number for item in rows_b}
                 common_dates = sorted(set(map_a) & set(map_b))
                 matches = sum(map_a[d] == map_b[d] for d in common_dates)
                 ratio = matches / len(common_dates) if common_dates else 0.0
+
                 report = {
                     "source_a": source_a["id"],
                     "source_b": source_b["id"],
                     "common": len(common_dates),
                     "matches": matches,
+                    "mismatches": len(common_dates) - matches,
                     "match_ratio": ratio,
                 }
                 pair_reports.append(report)
+
                 min_overlap = 100 if year < 2026 else 60
                 if len(common_dates) >= min_overlap and ratio >= 0.995:
                     compatible[source_a["id"]].add(source_b["id"])
                     compatible[source_b["id"]].add(source_a["id"])
 
-        # Choose the source with the most compatible peers, then by priority.
         ranked = sorted(
             parsed,
             key=lambda pair: (
@@ -369,6 +565,7 @@ def backfill_hk_sdy(market):
                 pair[0].get("priority", 999),
             ),
         )
+
         anchor_source, anchor_rows = ranked[0]
         peers = compatible[anchor_source["id"]]
         cluster = [
@@ -401,7 +598,11 @@ def backfill_hk_sdy(market):
                 continue
 
             old = existing.get(d.isoformat())
-            period = old.get("periode") if old and old.get("nomor") == item.number else None
+            period = (
+                old.get("periode")
+                if old and old.get("nomor") == item.number
+                else None
+            )
             combined[d] = make_record(
                 item,
                 f"crosschecked_{len(agreeing_ids)}_sources",
@@ -414,7 +615,8 @@ def backfill_hk_sdy(market):
         if year_verified < minimum:
             raise CollectorError(
                 f"{market} {year}: verified coverage terlalu rendah "
-                f"{year_verified} draws; cluster={[x[0]['id'] for x in cluster]}"
+                f"{year_verified} draws; "
+                f"cluster={[entry[0]['id'] for entry in cluster]}"
             )
 
         verification_years[str(year)] = {
@@ -426,9 +628,10 @@ def backfill_hk_sdy(market):
             ],
             "pair_reports": pair_reports,
         }
+
         print(
             f"[{market}] {year}: VERIFIED={year_verified} "
-            f"cluster={[x[0]['id'] for x in cluster]}"
+            f"cluster={[entry[0]['id'] for entry in cluster]}"
         )
 
     rows = [combined[d] for d in sorted(combined, reverse=True)]
