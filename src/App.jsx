@@ -23,6 +23,7 @@ import {
   loadCollectorStatus,
   loadMarketData,
   loadPrediction,
+  loadTafsir,
 } from './dataClient';
 
 const AppContext = createContext();
@@ -124,6 +125,7 @@ export function AppProvider({ children }) {
     SDY: [],
   });
   const [collectorStatus, setCollectorStatus] = useState(null);
+  const [tafsirData, setTafsirData] = useState(MOCK_DREAMS);
   const [predictions, setPredictions] = useState({
     HK: null,
     SGP: null,
@@ -154,7 +156,7 @@ export function AppProvider({ children }) {
     if (!silent) setIsRefreshing(true);
 
     try {
-      const [hk, sgp, sdy, status, hkPred, sgpPred, sdyPred] =
+      const [hk, sgp, sdy, status, hkPred, sgpPred, sdyPred, remoteTafsir] =
         await Promise.all([
           loadMarketData('HK'),
           loadMarketData('SGP'),
@@ -163,11 +165,15 @@ export function AppProvider({ children }) {
           loadPrediction('HK'),
           loadPrediction('SGP'),
           loadPrediction('SDY'),
+          loadTafsir(),
         ]);
 
       setMarketData({ HK: hk, SGP: sgp, SDY: sdy });
       setCollectorStatus(status);
       setPredictions({ HK: hkPred, SGP: sgpPred, SDY: sdyPred });
+      if (Array.isArray(remoteTafsir) && remoteTafsir.length) {
+        setTafsirData(remoteTafsir);
+      }
       setLastRefresh(new Date().toISOString());
       setDataError('');
     } catch (err) {
@@ -208,6 +214,7 @@ export function AppProvider({ children }) {
         marketData,
         collectorStatus,
         predictions,
+        tafsirData,
         isRefreshing,
         lastRefresh,
         dataError,
@@ -642,9 +649,9 @@ function AnalyticsPanel() {
 }
 
 function DreamBookPanel() {
-  const { copyToClipboard } = useApp();
+  const { copyToClipboard, tafsirData } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
-  const filtered = MOCK_DREAMS.filter((item) =>
+  const filtered = (tafsirData || MOCK_DREAMS).filter((item) =>
     (item.kataKunci + ' ' + item.deskripsi)
       .toLowerCase()
       .includes(searchQuery.toLowerCase()),
@@ -671,7 +678,7 @@ function DreamBookPanel() {
       </div>
 
       <div className="text-[11px] text-slate-500">
-        {filtered.length} dari {MOCK_DREAMS.length} tafsir
+        {filtered.length} dari {(tafsirData || MOCK_DREAMS).length} tafsir
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[68vh] overflow-y-auto pr-1">
