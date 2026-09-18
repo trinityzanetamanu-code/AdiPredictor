@@ -454,6 +454,32 @@ def fetch_sgp_draw(draw_number):
     return None
 
 def backfill_sgp():
+    current_path = DATA_DIR / "sgp.json"
+    if current_path.exists():
+        try:
+            current_rows = json.loads(current_path.read_text(encoding="utf-8"))
+            official_rows = [
+                row for row in current_rows
+                if row.get("source_id") == "singaporepools_official"
+                and str(row.get("result_date", ""))[:4] in {"2023", "2024", "2025", "2026"}
+            ]
+            dates = sorted(row.get("result_date") for row in official_rows if row.get("result_date"))
+            if (
+                len(official_rows) >= 550
+                and dates
+                and dates[0] <= "2023-01-01"
+                and dates[-1] >= "2026-09-16"
+            ):
+                year_counts = {}
+                for row in official_rows:
+                    year = str(row["result_date"])[:4]
+                    year_counts[year] = year_counts.get(year, 0) + 1
+                official_rows.sort(key=lambda row: row["result_date"], reverse=True)
+                print(f"[SGP] reuse verified official archive rows={len(official_rows)} counts={year_counts}")
+                return official_rows, year_counts
+        except Exception as exc:
+            print(f"[SGP] existing official archive reuse failed: {exc}")
+
     results = []
     with ThreadPoolExecutor(max_workers=8) as pool:
         futures = {
