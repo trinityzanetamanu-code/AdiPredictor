@@ -277,7 +277,7 @@ def backfill_hk_sdy(market):
     source_errors = {}
     for source in configured:
         try:
-            html_by_source[source["id"]] = fetch_html(source["url"])
+            html_by_source[source["id"]] = fetch_html(source["url"], timeout=12)
         except Exception as exc:
             source_errors[source["id"]] = str(exc)
             print(f"[{market}] {source['id']} fetch failed: {exc}")
@@ -286,7 +286,7 @@ def backfill_hk_sdy(market):
     # structure can make historical year selection ambiguous. Restrict it to 2026.
     live_source = LIVE_SOURCES[market]
     try:
-        html_by_source[live_source["id"]] = fetch_html(live_source["url"])
+        html_by_source[live_source["id"]] = fetch_html(live_source["url"], timeout=12)
     except Exception as exc:
         source_errors[live_source["id"]] = str(exc)
         print(f"[{market}] {live_source['id']} fetch failed: {exc}")
