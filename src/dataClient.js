@@ -81,3 +81,16 @@ export async function loadPrediction(marketCode) {
     true,
   );
 }
+
+
+export async function loadTafsir() {
+  const data = await remoteFirst(
+    'data/tafsir.json',
+    './data/tafsir.json',
+    true,
+  );
+
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.items)) return data.items;
+  return [];
+}
