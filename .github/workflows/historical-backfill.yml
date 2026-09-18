@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: adipredictor-historical-backfill
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   backfill:
