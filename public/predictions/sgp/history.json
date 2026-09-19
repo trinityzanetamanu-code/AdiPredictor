@@ -1,0 +1,860 @@
+{
+  "schema_version": 1,
+  "index_engine": "AdiPredictor-P1-P8-v2",
+  "market": "SGP",
+  "count": 1,
+  "records": [
+    {
+      "market": "SGP",
+      "target_date": "2026-09-20",
+      "target_period": "SGP-2480",
+      "generated_at": "2026-09-20T02:19:03+07:00",
+      "engine_version": "AdiPredictor-P1-P8-v2",
+      "schema_version": 2,
+      "dataset_fingerprint": "e7f06c807d5968e66c7f85e3c32c9721ac05e4c5fff23dcc139c90c9582db240",
+      "basis_latest_date": "2026-09-19",
+      "basis_latest_result": "0921",
+      "bbfs6": "791253",
+      "bbfs5": "79125",
+      "four_d": {
+        "main": {
+          "number": "9012",
+          "supported_by": [
+            "P5"
+          ],
+          "raw_support_count": 1,
+          "supporting_model_wf_score": {
+            "P5": 1.0
+          },
+          "reliability_weighted_score": 1.0,
+          "weighted_rank": 1,
+          "star": 0,
+          "stars": 0,
+          "star_label": "",
+          "p8_agrees": false
+        },
+        "alternative": {
+          "number": "9212",
+          "supported_by": [
+            "P5"
+          ],
+          "raw_support_count": 1,
+          "supporting_model_wf_score": {
+            "P5": 1.0
+          },
+          "reliability_weighted_score": 1.0,
+          "weighted_rank": 2,
+          "star": 0,
+          "stars": 0,
+          "star_label": "",
+          "p8_agrees": false
+        },
+        "reserve": {
+          "number": "9937",
+          "supported_by": [
+            "P3"
+          ],
+          "raw_support_count": 1,
+          "supporting_model_wf_score": {
+            "P3": 0.938299
+          },
+          "reliability_weighted_score": 0.938299,
+          "weighted_rank": 4,
+          "star": 0,
+          "stars": 0,
+          "star_label": "",
+          "p8_agrees": false
+        },
+        "single_pair": {
+          "number": "9838",
+          "supported_by": [
+            "P4"
+          ],
+          "raw_support_count": 1,
+          "supporting_model_wf_score": {
+            "P4": 0.714256
+          },
+          "reliability_weighted_score": 0.714256,
+          "weighted_rank": 15,
+          "star": 0,
+          "stars": 0,
+          "star_label": "",
+          "p8_agrees": false
+        },
+        "all_slots_distinct": true,
+        "diversity": {
+          "main_reserve_position_overlap": 0.25,
+          "digit_set_overlap": 0.166667,
+          "structural_difference": true,
+          "model_difference": true,
+          "main_structure": "ABCD",
+          "reserve_structure": "AABC"
+        },
+        "alternative_source_model": "P5"
+      },
+      "three_d": {
+        "front": [
+          {
+            "number": "973",
+            "supported_by": [
+              "P1",
+              "P3"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P3": 0.938299
+            },
+            "reliability_weighted_score": 1.821245,
+            "weighted_rank": 1,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "933",
+            "supported_by": [
+              "P1",
+              "P4"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P4": 0.714256
+            },
+            "reliability_weighted_score": 1.597202,
+            "weighted_rank": 2,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "901",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 3,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          },
+          {
+            "number": "909",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 4,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          },
+          {
+            "number": "921",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 5,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          }
+        ],
+        "back": [
+          {
+            "number": "012",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 1,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          },
+          {
+            "number": "212",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 2,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          },
+          {
+            "number": "216",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 3,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          },
+          {
+            "number": "292",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 4,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          },
+          {
+            "number": "712",
+            "supported_by": [
+              "P5"
+            ],
+            "raw_support_count": 1,
+            "supporting_model_wf_score": {
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 1.0,
+            "weighted_rank": 5,
+            "star": 0,
+            "stars": 0,
+            "star_label": "",
+            "p8_agrees": false
+          }
+        ]
+      },
+      "two_d": {
+        "front": [
+          {
+            "number": "97",
+            "supported_by": [
+              "P1",
+              "P2",
+              "P3",
+              "P5"
+            ],
+            "raw_support_count": 4,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P2": 0.901158,
+              "P3": 0.938299,
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 3.722403,
+            "weighted_rank": 1,
+            "star": 3,
+            "stars": 3,
+            "star_label": "⭐⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "92",
+            "supported_by": [
+              "P2",
+              "P3",
+              "P5"
+            ],
+            "raw_support_count": 3,
+            "supporting_model_wf_score": {
+              "P2": 0.901158,
+              "P3": 0.938299,
+              "P5": 1.0
+            },
+            "reliability_weighted_score": 2.839457,
+            "weighted_rank": 2,
+            "star": 3,
+            "stars": 3,
+            "star_label": "⭐⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "99",
+            "supported_by": [
+              "P3",
+              "P5",
+              "P7"
+            ],
+            "raw_support_count": 3,
+            "supporting_model_wf_score": {
+              "P3": 0.938299,
+              "P5": 1.0,
+              "P7": 0.63354
+            },
+            "reliability_weighted_score": 2.571839,
+            "weighted_rank": 3,
+            "star": 3,
+            "stars": 3,
+            "star_label": "⭐⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "91",
+            "supported_by": [
+              "P5",
+              "P7"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P5": 1.0,
+              "P7": 0.63354
+            },
+            "reliability_weighted_score": 1.63354,
+            "weighted_rank": 4,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "83",
+            "supported_by": [
+              "P1",
+              "P4"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P4": 0.714256
+            },
+            "reliability_weighted_score": 1.597202,
+            "weighted_rank": 5,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          }
+        ],
+        "middle": [
+          {
+            "number": "73",
+            "supported_by": [
+              "P1",
+              "P3",
+              "P4",
+              "P6"
+            ],
+            "raw_support_count": 4,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P3": 0.938299,
+              "P4": 0.714256,
+              "P6": 0.690124
+            },
+            "reliability_weighted_score": 3.225625,
+            "weighted_rank": 1,
+            "star": 3,
+            "stars": 3,
+            "star_label": "⭐⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "71",
+            "supported_by": [
+              "P5",
+              "P6"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P5": 1.0,
+              "P6": 0.690124
+            },
+            "reliability_weighted_score": 1.690124,
+            "weighted_rank": 2,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "93",
+            "supported_by": [
+              "P3",
+              "P6"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P3": 0.938299,
+              "P6": 0.690124
+            },
+            "reliability_weighted_score": 1.628423,
+            "weighted_rank": 3,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "33",
+            "supported_by": [
+              "P1",
+              "P4"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P4": 0.714256
+            },
+            "reliability_weighted_score": 1.597202,
+            "weighted_rank": 4,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "42",
+            "supported_by": [
+              "P2",
+              "P7"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P2": 0.901158,
+              "P7": 0.63354
+            },
+            "reliability_weighted_score": 1.534698,
+            "weighted_rank": 5,
+            "star": 1,
+            "stars": 1,
+            "star_label": "⭐",
+            "p8_agrees": false
+          }
+        ],
+        "back": [
+          {
+            "number": "38",
+            "supported_by": [
+              "P1",
+              "P3",
+              "P4",
+              "P6"
+            ],
+            "raw_support_count": 4,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P3": 0.938299,
+              "P4": 0.714256,
+              "P6": 0.690124
+            },
+            "reliability_weighted_score": 3.225625,
+            "weighted_rank": 1,
+            "star": 3,
+            "stars": 3,
+            "star_label": "⭐⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "39",
+            "supported_by": [
+              "P1",
+              "P3",
+              "P4"
+            ],
+            "raw_support_count": 3,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P3": 0.938299,
+              "P4": 0.714256
+            },
+            "reliability_weighted_score": 2.535501,
+            "weighted_rank": 2,
+            "star": 3,
+            "stars": 3,
+            "star_label": "⭐⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "59",
+            "supported_by": [
+              "P1",
+              "P3"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P3": 0.938299
+            },
+            "reliability_weighted_score": 1.821245,
+            "weighted_rank": 3,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "16",
+            "supported_by": [
+              "P5",
+              "P6"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P5": 1.0,
+              "P6": 0.690124
+            },
+            "reliability_weighted_score": 1.690124,
+            "weighted_rank": 4,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          },
+          {
+            "number": "33",
+            "supported_by": [
+              "P1",
+              "P4"
+            ],
+            "raw_support_count": 2,
+            "supporting_model_wf_score": {
+              "P1": 0.882946,
+              "P4": 0.714256
+            },
+            "reliability_weighted_score": 1.597202,
+            "weighted_rank": 5,
+            "star": 2,
+            "stars": 2,
+            "star_label": "⭐⭐",
+            "p8_agrees": false
+          }
+        ],
+        "kembar": {
+          "main": "99",
+          "reserve": "33",
+          "backtest": {
+            "00": {
+              "front": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "middle": {
+                "hits": 3,
+                "draws": 970,
+                "rate": 0.003093
+              },
+              "back": {
+                "hits": 15,
+                "draws": 970,
+                "rate": 0.015464
+              },
+              "any_position": {
+                "hits": 27,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.027835
+              },
+              "per_slot": {
+                "occurrences": 28,
+                "total_adjacent_slots": 2910,
+                "rate": 0.009622
+              }
+            },
+            "11": {
+              "front": {
+                "hits": 7,
+                "draws": 970,
+                "rate": 0.007216
+              },
+              "middle": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "back": {
+                "hits": 9,
+                "draws": 970,
+                "rate": 0.009278
+              },
+              "any_position": {
+                "hits": 24,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.024742
+              },
+              "per_slot": {
+                "occurrences": 26,
+                "total_adjacent_slots": 2910,
+                "rate": 0.008935
+              }
+            },
+            "22": {
+              "front": {
+                "hits": 9,
+                "draws": 970,
+                "rate": 0.009278
+              },
+              "middle": {
+                "hits": 15,
+                "draws": 970,
+                "rate": 0.015464
+              },
+              "back": {
+                "hits": 6,
+                "draws": 970,
+                "rate": 0.006186
+              },
+              "any_position": {
+                "hits": 27,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.027835
+              },
+              "per_slot": {
+                "occurrences": 30,
+                "total_adjacent_slots": 2910,
+                "rate": 0.010309
+              }
+            },
+            "33": {
+              "front": {
+                "hits": 12,
+                "draws": 970,
+                "rate": 0.012371
+              },
+              "middle": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "back": {
+                "hits": 13,
+                "draws": 970,
+                "rate": 0.013402
+              },
+              "any_position": {
+                "hits": 33,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.034021
+              },
+              "per_slot": {
+                "occurrences": 35,
+                "total_adjacent_slots": 2910,
+                "rate": 0.012027
+              }
+            },
+            "44": {
+              "front": {
+                "hits": 12,
+                "draws": 970,
+                "rate": 0.012371
+              },
+              "middle": {
+                "hits": 7,
+                "draws": 970,
+                "rate": 0.007216
+              },
+              "back": {
+                "hits": 6,
+                "draws": 970,
+                "rate": 0.006186
+              },
+              "any_position": {
+                "hits": 22,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.02268
+              },
+              "per_slot": {
+                "occurrences": 25,
+                "total_adjacent_slots": 2910,
+                "rate": 0.008591
+              }
+            },
+            "55": {
+              "front": {
+                "hits": 6,
+                "draws": 970,
+                "rate": 0.006186
+              },
+              "middle": {
+                "hits": 7,
+                "draws": 970,
+                "rate": 0.007216
+              },
+              "back": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "any_position": {
+                "hits": 22,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.02268
+              },
+              "per_slot": {
+                "occurrences": 23,
+                "total_adjacent_slots": 2910,
+                "rate": 0.007904
+              }
+            },
+            "66": {
+              "front": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "middle": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "back": {
+                "hits": 6,
+                "draws": 970,
+                "rate": 0.006186
+              },
+              "any_position": {
+                "hits": 22,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.02268
+              },
+              "per_slot": {
+                "occurrences": 26,
+                "total_adjacent_slots": 2910,
+                "rate": 0.008935
+              }
+            },
+            "77": {
+              "front": {
+                "hits": 12,
+                "draws": 970,
+                "rate": 0.012371
+              },
+              "middle": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "back": {
+                "hits": 9,
+                "draws": 970,
+                "rate": 0.009278
+              },
+              "any_position": {
+                "hits": 28,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.028866
+              },
+              "per_slot": {
+                "occurrences": 31,
+                "total_adjacent_slots": 2910,
+                "rate": 0.010653
+              }
+            },
+            "88": {
+              "front": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "middle": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "back": {
+                "hits": 11,
+                "draws": 970,
+                "rate": 0.01134
+              },
+              "any_position": {
+                "hits": 29,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.029897
+              },
+              "per_slot": {
+                "occurrences": 31,
+                "total_adjacent_slots": 2910,
+                "rate": 0.010653
+              }
+            },
+            "99": {
+              "front": {
+                "hits": 14,
+                "draws": 970,
+                "rate": 0.014433
+              },
+              "middle": {
+                "hits": 10,
+                "draws": 970,
+                "rate": 0.010309
+              },
+              "back": {
+                "hits": 13,
+                "draws": 970,
+                "rate": 0.013402
+              },
+              "any_position": {
+                "hits": 34,
+                "draws": 970,
+                "per_draw_any_position_rate": 0.035052
+              },
+              "per_slot": {
+                "occurrences": 37,
+                "total_adjacent_slots": 2910,
+                "rate": 0.012715
+              }
+            }
+          }
+        }
+      },
+      "p8_ai_instinct": {
+        "bbfs6": "349568",
+        "bbfs5": "34956",
+        "four_d_main": "2175",
+        "four_d_reserve": "7705",
+        "three_d_front": "217",
+        "three_d_back": "175",
+        "two_d_front": "21",
+        "two_d_middle": "17",
+        "two_d_back": "75",
+        "repeat_digit": "9",
+        "frozen": true,
+        "method": "Deterministic intuition heuristic from raw recent sequence; not statistical evidence.",
+        "statistical_consensus_member": false,
+        "fingerprint": "0ab50c863a4ac7d8fca5a70a62678357fa630b0e3dee5b1c0b445fca2193aa05"
+      },
+      "actual_result": null,
+      "previous_prediction_audit": null,
+      "outcome_audit": null,
+      "hit_miss_summary": null,
+      "archive_path": "public/predictions/sgp/archive/2026-09-20.json"
+    }
+  ]
+}

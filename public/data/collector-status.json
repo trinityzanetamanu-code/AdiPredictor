@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-19T23:42:48+07:00",
+  "collected_at": "2026-09-20T02:15:08+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "primary_authoritative",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 262
       },
       "verified_count": 262,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-19",
-          "number": "0860",
-          "verification": "primary_source"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260919,
         "tanggal": "19 Sep 2026",
@@ -103,7 +97,7 @@
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -118,15 +112,9 @@
         "livenomor_sdy": 262
       },
       "verified_count": 262,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-19",
-          "number": "8748",
-          "verification": "confirmed_4_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260919,
         "tanggal": "19 Sep 2026",
