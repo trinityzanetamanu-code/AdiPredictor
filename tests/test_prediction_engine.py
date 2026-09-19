@@ -111,9 +111,29 @@ def test_star_thresholds(raw, weighted, expected):
 
 
 def test_p5_visual_only_weight_zero_when_edge_false(history):
-    _, details = pe.model_p5(history, details=True)
+    matrix, details = pe.model_p5(history, details=True)
     if not details["visual_predictive_edge_confirmed"]:
         assert details["visual_vote_weight"] == 0
+        assert details["P5_MODE"] == "fallback"
+        assert details["visual_contribution_enabled"] is False
+        assert matrix == pe.normalize_matrix(pe.position_frequency(history[-180:]))
+
+
+def test_p5_unconfirmed_visual_cannot_change_ranking(history, monkeypatch):
+    baseline = pe.normalize_matrix(pe.position_frequency(history[-180:]))
+    blocked = {
+        "visual_only_backtest": {"hits": 0, "trials": 100, "hit_rate": 0, "baseline": .1, "wilson_95_ci": [0, .04]},
+        "fallback_backtest": {"hits": 0, "trials": 100, "hit_rate": 0},
+        "hybrid_backtest": {"hits": 0, "trials": 100, "hit_rate": 0},
+        "visual_pattern_confirmed": True,
+        "visual_predictive_edge_confirmed": False,
+        "visual_vote_weight": 0.0,
+    }
+    monkeypatch.setattr(pe, "visual_backtests", lambda rows: blocked)
+    matrix, details = pe.model_p5(history, details=True)
+    assert matrix == baseline
+    assert [pe.top_digits(row, 10) for row in matrix] == [pe.top_digits(row, 10) for row in baseline]
+    assert details["P5_MODE"] == "fallback"
 
 
 def test_p7_penalty_when_edge_false(built):

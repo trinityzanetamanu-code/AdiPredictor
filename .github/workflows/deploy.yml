@@ -40,6 +40,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Test LiveDraw Configuration
+        run: npm run test:live
+
       - name: Build Web Assets
         run: npm run build
 

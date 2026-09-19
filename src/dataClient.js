@@ -104,6 +104,24 @@ export function predictionAssetUrl(imagePath, fingerprint = '') {
   return REMOTE_ROOT + '/' + cleanPath + '?v=' + version;
 }
 
+export async function loadOfficial4DResult() {
+  const data = await remoteFirst(
+    'data/singapore-official.json',
+    './data/singapore-official.json',
+    true,
+  );
+  return data?.official_4d || null;
+}
+
+export async function loadOfficialTotoResult() {
+  const data = await remoteFirst(
+    'data/singapore-official.json',
+    './data/singapore-official.json',
+    true,
+  );
+  return data?.official_toto || null;
+}
+
 
 export async function loadTafsir() {
   const data = await remoteFirst(

@@ -38,7 +38,11 @@ Visual patterns are rendered as SVG from actual archive rows under `public/predi
 
 ## Application views and refresh
 
-The mobile navigation order is Analisis, Data, LiveDraw, Statistik, and Tafsir. LiveDraw is a verified-result monitor, not a synthetic stream: it reads `public/data/*.json` and `collector-status.json`, shows the real source and verification status, and links to the source when available. Prediction History reads `history.json` and archived Quick Views; it never recreates old predictions in the browser.
+The mobile navigation order is Analisis, Data, LiveDraw, Statistik, and Tafsir. LiveDraw embeds the public official Singapore Pools 4D/TOTO YouTube playlists, keeps official 4D/TOTO results separate from the cross-checked SGP composite market, and opens exact source pages through Capacitor Browser when embedding cannot be verified. HK is labelled `HongkongPools Market Source`, not an official Hong Kong lottery; SDY remains a cross-checked result monitor because no matching public broadcast has been verified. See `docs/live-source-investigation.md` for evidence and limitations.
+
+The player never proxies video, strips CSP/frame policy, bypasses access controls, or invents a live feed. Singapore LIVE badges follow the published 18:30 Singapore draw schedules (4D Wednesday/Saturday/Sunday and TOTO Monday/Thursday), with upcoming/result-posted states outside the live window.
+
+Prediction History reads `history.json` and archived Quick Views; it never recreates old predictions in the browser.
 
 The UI distinguishes three timestamps:
 
@@ -86,6 +90,7 @@ python scripts/prediction_engine.py --market ALL
 python scripts/prediction_engine.py --force --market ALL
 
 npm install
+npm run test:live
 npm run build
 
 # Local Android compilation check; release signing remains a CI-secret operation.

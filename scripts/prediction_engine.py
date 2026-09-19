@@ -395,22 +395,55 @@ def visual_backtests(history):
     }
 
 
+def visual_only_edge(history):
+    hits = trials = 0
+    for i in range(MINIMUM_TRAINING_RECORDS, len(history)):
+        actual, previous = digits_of(history[i]), digits_of(history[i - 1])
+        for target in range(4):
+            for source in (target - 1, target + 1):
+                if 0 <= source < 4:
+                    trials += 1
+                    hits += actual[target] == previous[source]
+    interval = wilson_interval(hits, trials)
+    return trials >= 30 and interval[0] > .10
+
+
 def model_p5(history, details=False):
-    fallback, latest = position_frequency(history[-180:]), digits_of(history[-1]); matrix = []
-    for target in range(4):
-        hits, trials = [.5] * 10, [1.] * 10
-        neighbors = [p for p in (target - 1, target + 1) if 0 <= p < 4]
-        for i in range(1, len(history)):
-            before, after = digits_of(history[i-1]), digits_of(history[i])
-            for source in neighbors:
-                d = before[source]; trials[d] += 1; hits[d] += after[target] == d
-        bumps = [0.] * 10
-        for source in neighbors: bumps[latest[source]] += .06
-        matrix.append([.64 * fallback[target][d] + .30 * hits[d] / trials[d] + bumps[d] for d in range(10)])
-    matrix = normalize_matrix(matrix)
+    fallback = normalize_matrix(position_frequency(history[-180:]))
+    tests = visual_backtests(history) if details else None
+    edge_confirmed = tests["visual_predictive_edge_confirmed"] if tests else visual_only_edge(history)
+
+    # Locked P5 gate: an unconfirmed visual signal cannot change any P5 rank.
+    # In that case P5 is the positional fallback model, without a transition
+    # term and without the former latest-neighbour bump.
+    if not edge_confirmed:
+        matrix = fallback
+        p5_mode = "fallback"
+    else:
+        latest = digits_of(history[-1]); matrix = []
+        for target in range(4):
+            hits, trials = [.5] * 10, [1.] * 10
+            neighbors = [p for p in (target - 1, target + 1) if 0 <= p < 4]
+            for i in range(1, len(history)):
+                before, after = digits_of(history[i-1]), digits_of(history[i])
+                for source in neighbors:
+                    d = before[source]; trials[d] += 1; hits[d] += after[target] == d
+            bumps = [0.] * 10
+            for source in neighbors: bumps[latest[source]] += .06
+            matrix.append([.64 * fallback[target][d] + .30 * hits[d] / trials[d] + bumps[d] for d in range(10)])
+        matrix = normalize_matrix(matrix)
+        p5_mode = "hybrid"
+
     if not details: return matrix, {}
-    tests = visual_backtests(history)
-    return matrix, {"visual_only": tests["visual_only_backtest"], "fallback": tests["fallback_backtest"], "hybrid": tests["hybrid_backtest"], **tests}
+    return matrix, {
+        "P5_MODE": p5_mode,
+        "p5_mode": p5_mode,
+        "visual_contribution_enabled": edge_confirmed,
+        "visual_only": tests["visual_only_backtest"],
+        "fallback": tests["fallback_backtest"],
+        "hybrid": tests["hybrid_backtest"],
+        **tests,
+    }
 
 
 def structure_signature(number):
