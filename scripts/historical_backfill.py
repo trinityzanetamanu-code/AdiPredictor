@@ -76,6 +76,14 @@ LIVE_SOURCES = {
 HISTORICAL_SOURCES = {
     "HK": [
         {
+            "id": "waroengtogel_hk_2023",
+            "name": "WaroengTogel HK 2023",
+            "url": "https://waroengtogel2.com/data-togel-hk-2023/",
+            "parser": "id_long_date_result4",
+            "years": [2023],
+            "priority": 2,
+        },
+        {
             "id": "condor_hk_archive",
             "name": "Condor HK Archive",
             "url": "https://condor-airpictures.de/",
@@ -120,6 +128,14 @@ HISTORICAL_SOURCES = {
         },
     ],
     "SDY": [
+        {
+            "id": "waroengtogel_sdy_2023",
+            "name": "WaroengTogel SDY 2023",
+            "url": "https://waroengtogel2.com/data-togel-sdy-2023/",
+            "parser": "id_long_date_result4",
+            "years": [2023],
+            "priority": 2,
+        },
         {
             "id": "saltwind_sdy_2023",
             "name": "Saltwind Sydney 2023 Archive",
@@ -1205,6 +1221,78 @@ def parse_text_forward_weekday7(html: str, market: str, source: dict, year: int)
     return out
 
 
+def parse_indonesian_long_date_result4(
+    html: str,
+    market: str,
+    source: dict,
+    year: int,
+):
+    soup = BeautifulSoup(html, "html.parser")
+    month_map = {
+        "januari": 1, "februari": 2, "maret": 3, "april": 4,
+        "mei": 5, "juni": 6, "juli": 7, "agustus": 8,
+        "september": 9, "oktober": 10, "november": 11, "desember": 12,
+    }
+    out = {}
+
+    nodes = soup.find_all("tr")
+    if not nodes:
+        nodes = soup.find_all(["p", "li", "div"])
+
+    for node in nodes:
+        text = re.sub(
+            r"\s+",
+            " ",
+            node.get_text(" ", strip=True),
+        ).strip()
+        if not text:
+            continue
+
+        m = re.search(
+            r"(?<!\d)(\d{1,2})\s+"
+            r"(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|"
+            r"September|Oktober|November|Desember)\s+"
+            r"(20\d{2})(?!\d)",
+            text,
+            flags=re.I,
+        )
+        if not m or int(m.group(3)) != year:
+            continue
+
+        try:
+            d = date(
+                year,
+                month_map[m.group(2).lower()],
+                int(m.group(1)),
+            )
+        except ValueError:
+            continue
+
+        tail = text[m.end():]
+        numbers = re.findall(r"(?<!\d)(\d{4})(?!\d)", tail)
+        if not numbers:
+            continue
+
+        # The result is the final standalone four-digit token in each row.
+        number = numbers[-1]
+        out[d] = ParsedResult(
+            market=market,
+            result_date=d,
+            number=number,
+            source_id=source["id"],
+            source_name=source["name"],
+            source_url=source["url"],
+        )
+
+    rows = [out[d] for d in sorted(out)]
+    if len(rows) < 300:
+        raise CollectorError(
+            f"Indonesian long-date parser {year} hanya menemukan "
+            f"{len(rows)} result"
+        )
+    return rows
+
+
 def parse_source_year(html: str, market: str, source: dict, year: int):
     parser = source.get("parser", "weekday4")
 
@@ -1228,6 +1316,10 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
         return parse_text_weekday5(html, market, source, year)
     if parser == "date_result4":
         return parse_date_result_table(html, market, source, year)
+    if parser == "id_long_date_result4":
+        return parse_indonesian_long_date_result4(
+            html, market, source, year
+        )
     if parser == "archive_digits4":
         return parse_archive_rows(html, market, source["url"], year)
 
@@ -1553,6 +1645,34 @@ def backfill_hk_sdy(market):
             f"[{market}] {year}: VERIFIED={year_verified} "
             f"consensus_sources={sorted(used_sources)}"
         )
+
+    preserved_current = 0
+    for date_text, old in existing.items():
+        try:
+            d = date.fromisoformat(date_text)
+        except Exception:
+            continue
+
+        if d.year != max(YEARS) or d in combined:
+            continue
+
+        number = str(old.get("nomor", "")).zfill(4)
+        if not re.fullmatch(r"\d{4}", number):
+            continue
+
+        preserved = dict(old)
+        preserved["periode"] = resolve_daily_period(market, d)
+        preserved["market"] = market
+        preserved["result_date"] = d.isoformat()
+        preserved["nomor"] = number
+        preserved.setdefault("verification", "primary_source")
+        preserved.setdefault("confirmations", 1)
+        combined[d] = preserved
+        preserved_current += 1
+
+    verification_years[str(max(YEARS))][
+        "preserved_current_single_source_rows"
+    ] = preserved_current
 
     rows = [combined[d] for d in sorted(combined, reverse=True)]
     return rows, verification_years
