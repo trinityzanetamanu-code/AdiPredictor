@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T19:09:21+07:00",
+  "generated_at": "2026-09-19T19:11:56+07:00",
   "target_years": [
     2023,
     2024,
@@ -8,20 +8,25 @@
   ],
   "markets": {
     "HK": {
-      "rows": 1356,
+      "rows": 1357,
       "period": [
-        "2023-01-02",
+        "2023-01-01",
         "2026-09-18"
       ],
       "verification_by_year": {
         "2023": {
-          "verified_rows": 364,
+          "verified_rows": 365,
           "consensus_sources": [
             "condor_hk_archive",
             "serbialadies_hk_archive",
-            "user_archive_hk_angkeluar"
+            "user_archive_hk_angkeluar",
+            "waroengtogel_hk_2023"
           ],
           "all_parsed_sources": [
+            {
+              "id": "waroengtogel_hk_2023",
+              "rows": 334
+            },
             {
               "id": "condor_hk_archive",
               "rows": 364
@@ -44,6 +49,46 @@
             }
           ],
           "pair_reports": [
+            {
+              "source_a": "waroengtogel_hk_2023",
+              "source_b": "condor_hk_archive",
+              "common": 333,
+              "matches": 319,
+              "mismatches": 14,
+              "match_ratio": 0.9579579579579579
+            },
+            {
+              "source_a": "waroengtogel_hk_2023",
+              "source_b": "serbialadies_hk_archive",
+              "common": 333,
+              "matches": 319,
+              "mismatches": 14,
+              "match_ratio": 0.9579579579579579
+            },
+            {
+              "source_a": "waroengtogel_hk_2023",
+              "source_b": "datahkpro_archive",
+              "common": 329,
+              "matches": 0,
+              "mismatches": 329,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "waroengtogel_hk_2023",
+              "source_b": "datahk2023_archive",
+              "common": 327,
+              "matches": 0,
+              "mismatches": 327,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "waroengtogel_hk_2023",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 334,
+              "matches": 320,
+              "mismatches": 14,
+              "match_ratio": 0.9580838323353293
+            },
             {
               "source_a": "condor_hk_archive",
               "source_b": "serbialadies_hk_archive",
@@ -125,9 +170,7 @@
               "match_ratio": 0.0
             }
           ],
-          "unresolved_dates": [
-            "2023-01-01"
-          ],
+          "unresolved_dates": [],
           "verification_rule": "exact agreement from >=2 independent sources per date"
         },
         "2024": {
@@ -284,25 +327,31 @@
             }
           ],
           "unresolved_dates": [],
-          "verification_rule": "exact agreement from >=2 independent sources per date"
+          "verification_rule": "exact agreement from >=2 independent sources per date",
+          "preserved_current_single_source_rows": 0
         }
       },
       "historical_status": "complete_2023_2026"
     },
     "SDY": {
-      "rows": 1355,
+      "rows": 1357,
       "period": [
-        "2023-01-02",
+        "2023-01-01",
         "2026-09-18"
       ],
       "verification_by_year": {
         "2023": {
-          "verified_rows": 363,
+          "verified_rows": 365,
           "consensus_sources": [
             "datatogel_sdy_archive",
-            "saltwind_sdy_2023"
+            "saltwind_sdy_2023",
+            "waroengtogel_sdy_2023"
           ],
           "all_parsed_sources": [
+            {
+              "id": "waroengtogel_sdy_2023",
+              "rows": 309
+            },
             {
               "id": "saltwind_sdy_2023",
               "rows": 364
@@ -314,6 +363,22 @@
           ],
           "pair_reports": [
             {
+              "source_a": "waroengtogel_sdy_2023",
+              "source_b": "saltwind_sdy_2023",
+              "common": 308,
+              "matches": 300,
+              "mismatches": 8,
+              "match_ratio": 0.974025974025974
+            },
+            {
+              "source_a": "waroengtogel_sdy_2023",
+              "source_b": "datatogel_sdy_archive",
+              "common": 309,
+              "matches": 300,
+              "mismatches": 9,
+              "match_ratio": 0.970873786407767
+            },
+            {
               "source_a": "saltwind_sdy_2023",
               "source_b": "datatogel_sdy_archive",
               "common": 364,
@@ -322,10 +387,7 @@
               "match_ratio": 0.9972527472527473
             }
           ],
-          "unresolved_dates": [
-            "2023-01-01",
-            "2023-11-22"
-          ],
+          "unresolved_dates": [],
           "verification_rule": "exact agreement from >=2 independent sources per date"
         },
         "2024": {
@@ -436,7 +498,8 @@
           "unresolved_dates": [
             "2026-09-19"
           ],
-          "verification_rule": "exact agreement from >=2 independent sources per date"
+          "verification_rule": "exact agreement from >=2 independent sources per date",
+          "preserved_current_single_source_rows": 0
         }
       },
       "historical_status": "complete_2023_2026"
