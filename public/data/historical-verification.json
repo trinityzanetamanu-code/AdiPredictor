@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T18:12:30+07:00",
+  "generated_at": "2026-09-19T18:24:24+07:00",
   "target_years": [
     2023,
     2024,
@@ -14,7 +14,7 @@
         "2026-09-18"
       ],
       "historical_status": "pending_external_archive",
-      "error": "HK 2023: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datahkpro_archive', 'source_b': 'angkahk_archive', 'common': 359, 'matches': 7, 'mismatches': 352, 'match_ratio': 0.019498607242339833}, {'source_a': 'datahkpro_archive', 'source_b': 'datahk2023_archive', 'common': 358, 'matches': 348, 'mismatches': 10, 'match_ratio': 0.9720670391061452}, {'source_a': 'angkahk_archive', 'source_b': 'datahk2023_archive', 'common': 357, 'matches': 6, 'mismatches': 351, 'match_ratio': 0.01680672268907563}]"
+      "error": "HK 2024: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datahkpro_archive', 'source_b': 'angkahk_archive', 'common': 361, 'matches': 7, 'mismatches': 354, 'match_ratio': 0.019390581717451522}]"
     },
     "SDY": {
       "rows": 262,
@@ -23,7 +23,7 @@
         "2026-09-19"
       ],
       "historical_status": "pending_external_archive",
-      "error": "SDY 2023: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datatogel_sdy_archive', 'source_b': 'datasydtoday_archive', 'common': 363, 'matches': 229, 'mismatches': 134, 'match_ratio': 0.6308539944903582}]"
+      "error": "SDY 2024: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datatogel_sdy_archive', 'source_b': 'datasydtoday_archive', 'common': 366, 'matches': 267, 'mismatches': 99, 'match_ratio': 0.7295081967213115}]"
     },
     "SGP": {
       "rows": 970,
@@ -44,7 +44,7 @@
           "sources": [
             {
               "id": "paitosgplengkap",
-              "rows": 23,
+              "rows": 22,
               "compatible_peers": []
             },
             {
@@ -66,16 +66,16 @@
             {
               "source_a": "paitosgplengkap",
               "source_b": "datasgp2_archive",
-              "common": 23,
-              "matches": 23,
+              "common": 22,
+              "matches": 22,
               "mismatches": 0,
               "match_ratio": 1.0
             },
             {
               "source_a": "paitosgplengkap",
               "source_b": "datasingap_archive",
-              "common": 23,
-              "matches": 23,
+              "common": 22,
+              "matches": 22,
               "mismatches": 0,
               "match_ratio": 1.0
             },
@@ -221,7 +221,7 @@
           "sources": [
             {
               "id": "paitosgplengkap",
-              "rows": 185,
+              "rows": 186,
               "compatible_peers": [
                 "datasgp2_archive",
                 "datasingap_archive",
@@ -268,16 +268,16 @@
             {
               "source_a": "paitosgplengkap",
               "source_b": "datasingap_archive",
-              "common": 185,
-              "matches": 185,
+              "common": 186,
+              "matches": 186,
               "mismatches": 0,
               "match_ratio": 1.0
             },
             {
               "source_a": "paitosgplengkap",
               "source_b": "nexipools_sgp_recent",
-              "common": 29,
-              "matches": 29,
+              "common": 30,
+              "matches": 30,
               "mismatches": 0,
               "match_ratio": 1.0
             },

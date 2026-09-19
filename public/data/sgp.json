@@ -11,11 +11,11 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20260917,
@@ -29,11 +29,11 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20260916,
@@ -47,11 +47,11 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20260914,
@@ -65,11 +65,11 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20260913,
@@ -83,11 +83,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260912,
@@ -101,11 +102,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260910,
@@ -119,11 +121,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260909,
@@ -137,11 +140,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260907,
@@ -155,11 +159,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260906,
@@ -173,11 +178,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260905,
@@ -191,11 +197,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260903,
@@ -209,11 +216,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260902,
@@ -227,11 +235,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260831,
@@ -245,11 +254,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260830,
@@ -263,11 +273,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260829,
@@ -281,11 +292,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260827,
@@ -299,11 +311,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260826,
@@ -317,11 +330,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260824,
@@ -335,11 +349,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260823,
@@ -353,11 +368,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260822,
@@ -371,11 +387,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260820,
@@ -389,11 +406,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260819,
@@ -407,11 +425,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260817,
@@ -425,11 +444,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260816,
@@ -443,11 +463,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260815,
@@ -461,11 +482,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260813,
@@ -479,11 +501,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260812,
@@ -497,11 +520,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260810,
@@ -515,11 +539,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260809,
@@ -533,11 +558,12 @@
     "source_url": "https://paitosgplengkap.org/data/2026/",
     "source_ids": [
       "paitosgplengkap",
-      "nexipools_sgp"
+      "datasgp2_archive",
+      "datasingap_archive",
+      "nexipools_sgp_recent"
     ],
-    "collected_at": "2026-09-19T18:21:51+07:00",
-    "verification": "confirmed_2_sources",
-    "confirmations": 2
+    "verification": "crosschecked_4_sources",
+    "confirmations": 4
   },
   {
     "id": 20260808,
@@ -13163,16 +13189,15 @@
     "nomor": "6952",
     "result_date": "2023-11-30",
     "market": "SGP",
-    "source_id": "paitosgplengkap",
-    "source_name": "Paito SGP Lengkap",
-    "source_url": "https://paitosgplengkap.org/data/2023/",
+    "source_id": "datasgp2_archive",
+    "source_name": "DataSGP2 Archive",
+    "source_url": "https://datasgp2.org/",
     "source_ids": [
-      "paitosgplengkap",
       "datasgp2_archive",
       "datasingap_archive"
     ],
-    "verification": "crosschecked_3_sources",
-    "confirmations": 3
+    "verification": "crosschecked_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20231129,
