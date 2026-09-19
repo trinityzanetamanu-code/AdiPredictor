@@ -153,7 +153,7 @@ def score_weekday_table(table) -> Tuple[int, List[int]]:
         return 0, []
     best_days: List[int] = []
     best_score = 0
-    for row in rows[:4]:
+    for row in rows[:20]:
         cells = row.find_all(["th", "td"])
         days = [normalize_day(c.get_text(" ", strip=True)) for c in cells]
         valid_days = [d for d in days if d is not None]
@@ -183,7 +183,7 @@ def parse_weekday_grid(html: str, market: str, source: dict, year: int) -> List[
     rows = table.find_all("tr")
     header_idx = None
     column_days: List[Optional[int]] = []
-    for idx, row in enumerate(rows[:6]):
+    for idx, row in enumerate(rows[:20]):
         cells = row.find_all(["th", "td"])
         mapped = [normalize_day(c.get_text(" ", strip=True)) for c in cells]
         if sum(d is not None for d in mapped) >= 2:
