@@ -154,6 +154,15 @@ SGP_HISTORICAL_SOURCES = [
         "priority": 30,
     },
     {
+        "id": "buzzbike_sgp_2023",
+        "name": "MKTOTO SGP 2023 Archive",
+        "url": "https://www.buzzbike.cc/data-sgp-2023/",
+        "parser": "weekday4",
+        "heading_regex": r"(?:Tabel Keluaran SGP|Data SGP)\s+{year}",
+        "years": [2023],
+        "priority": 35,
+    },
+    {
         "id": "gudangka_sgp_archive",
         "name": "Gudangka Singapore Archive",
         "url": "https://gudangka.net/datasgp.html",
