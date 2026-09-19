@@ -32,7 +32,24 @@
           "enabled": false,
           "priority": 30
         }
-      ]
+      ],
+      "replace_existing_metadata": true,
+      "period_rule": {
+        "prefix": "HK",
+        "anchor_date": "2026-09-17",
+        "anchor_number": 3547,
+        "valid_from": "2023-01-01",
+        "weekdays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "note": "Verified against RoyalToto-style market sequence: 17 Sep 2026 = HK-3547, 18 Sep 2026 = HK-3548."
+      }
     },
     "SGP": {
       "display_name": "Pasaran SGP Pool",
@@ -122,7 +139,24 @@
           "enabled": false,
           "priority": 30
         }
-      ]
+      ],
+      "replace_existing_metadata": true,
+      "period_rule": {
+        "prefix": "SD",
+        "anchor_date": "2026-09-17",
+        "anchor_number": 3547,
+        "valid_from": "2023-01-01",
+        "weekdays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "note": "RoyalToto screenshot anchor: 17 Sep 2026 = SD-3547. Sydney target market increments daily."
+      }
     }
   }
 }
