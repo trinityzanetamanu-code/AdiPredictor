@@ -26,7 +26,27 @@ from collector import (
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "public" / "data"
 REPORT_PATH = DATA_DIR / "historical-verification.json"
+REFERENCE_DIR = ROOT / "data" / "reference"
 YEARS = [2023, 2024, 2025, 2026]
+
+LOCAL_REFERENCE_FILES = {
+    "HK": {
+        "id": "user_archive_hk_angkeluar",
+        "name": "User HK archive snapshot (AngkaKeluarHariIni)",
+        "path": REFERENCE_DIR / "hk_user_archive_2023_2026.json",
+        "url": "https://angkakeluarhariini.com/",
+        "years": [2023, 2024, 2025, 2026],
+        "priority": 3,
+    },
+    "SDY": {
+        "id": "user_archive_sdy_datasdywp",
+        "name": "User SDY archive snapshot (DataSDYWP)",
+        "path": REFERENCE_DIR / "sdy_user_archive_2024_2026.json",
+        "url": "https://www.datasdywp.com/",
+        "years": [2024, 2025, 2026],
+        "priority": 3,
+    },
+}
 
 UA = (
     "Mozilla/5.0 (Linux; Android 13; Mobile) "
@@ -1292,6 +1312,51 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
 
     raise CollectorError(f"Parser historis tidak dikenal: {parser}")
 
+def load_local_reference(market: str, year: int):
+    cfg = LOCAL_REFERENCE_FILES.get(market)
+    if not cfg or year not in cfg.get("years", []):
+        return None
+
+    path = cfg["path"]
+    if not path.exists():
+        raise CollectorError(
+            f"{market} local reference tidak ditemukan: {path}"
+        )
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for row in payload.get("records", []):
+        result_date = date.fromisoformat(row["result_date"])
+        if result_date.year != year:
+            continue
+        number = str(row["nomor"]).zfill(4)
+        if not re.fullmatch(r"\d{4}", number):
+            continue
+        rows.append(ParsedResult(
+            market=market,
+            result_date=result_date,
+            number=number,
+            source_id=cfg["id"],
+            source_name=cfg["name"],
+            source_url=cfg["url"],
+        ))
+
+    rows.sort(key=lambda item: item.result_date)
+    if not rows:
+        return None
+
+    return (
+        {
+            "id": cfg["id"],
+            "name": cfg["name"],
+            "url": cfg["url"],
+            "priority": cfg.get("priority", 3),
+            "local_reference": True,
+        },
+        rows,
+    )
+
+
 def verify_pair(primary, secondary, market, year):
     a = {x.result_date: x.number for x in primary}
     b = {x.result_date: x.number for x in secondary}
@@ -1404,6 +1469,15 @@ def backfill_hk_sdy(market):
             except Exception as exc:
                 print(f"[{market}] {year} {source['id']} parse failed: {exc}")
 
+        local_reference = load_local_reference(market, year)
+        if local_reference is not None:
+            local_source, local_rows = local_reference
+            parsed.append((local_source, local_rows))
+            print(
+                f"[{market}] {year} {local_source['id']} "
+                f"rows={len(local_rows)}"
+            )
+
         # LiveNomor is used only as an additional current-year check.
         if year == 2026:
             live_html = shared_html.get(live_source["id"])
@@ -1435,106 +1509,128 @@ def backfill_hk_sdy(market):
                 f"berhasil={len(parsed)}, errors={source_errors}"
             )
 
-        # Pairwise compatibility: only cluster sources that substantially
-        # overlap and agree on at least 99.5% of the overlapping dates.
+        # Audit all source pairs, but do not require an entire source to be
+        # perfect. Historical mirrors can contain isolated transcription errors.
+        # A draw is stored only when at least two independent sources agree
+        # exactly on that date and 4D result.
         pair_reports = []
-        compatible = {source["id"]: set() for source, _ in parsed}
+        source_priority = {
+            source["id"]: source.get("priority", 999)
+            for source, _ in parsed
+        }
+        maps = {
+            source["id"]: {
+                item.result_date: item
+                for item in rows
+            }
+            for source, rows in parsed
+        }
 
-        for i in range(len(parsed)):
-            source_a, rows_a = parsed[i]
-            map_a = {item.result_date: item.number for item in rows_a}
-
-            for j in range(i + 1, len(parsed)):
-                source_b, rows_b = parsed[j]
-                map_b = {item.result_date: item.number for item in rows_b}
-                common_dates = sorted(set(map_a) & set(map_b))
-                matches = sum(map_a[d] == map_b[d] for d in common_dates)
-                ratio = matches / len(common_dates) if common_dates else 0.0
-
-                report = {
-                    "source_a": source_a["id"],
-                    "source_b": source_b["id"],
+        source_ids = list(maps)
+        for i in range(len(source_ids)):
+            a_id = source_ids[i]
+            a = maps[a_id]
+            for j in range(i + 1, len(source_ids)):
+                b_id = source_ids[j]
+                b = maps[b_id]
+                common_dates = sorted(set(a) & set(b))
+                matches = sum(
+                    a[d].number == b[d].number
+                    for d in common_dates
+                )
+                pair_reports.append({
+                    "source_a": a_id,
+                    "source_b": b_id,
                     "common": len(common_dates),
                     "matches": matches,
                     "mismatches": len(common_dates) - matches,
-                    "match_ratio": ratio,
-                }
-                pair_reports.append(report)
+                    "match_ratio": (
+                        matches / len(common_dates)
+                        if common_dates else 0.0
+                    ),
+                })
 
-                min_overlap = 100 if year < 2026 else 60
-                if len(common_dates) >= min_overlap and ratio >= 0.99:
-                    compatible[source_a["id"]].add(source_b["id"])
-                    compatible[source_b["id"]].add(source_a["id"])
-
-        ranked = sorted(
-            parsed,
-            key=lambda pair: (
-                -len(compatible[pair[0]["id"]]),
-                pair[0].get("priority", 999),
-            ),
+        all_dates = sorted(
+            set().union(*(set(item_map) for item_map in maps.values()))
         )
-
-        anchor_source, anchor_rows = ranked[0]
-        peers = compatible[anchor_source["id"]]
-        cluster = [
-            (source, rows)
-            for source, rows in parsed
-            if source["id"] == anchor_source["id"] or source["id"] in peers
-        ]
-
-        if len(cluster) < 2:
-            raise CollectorError(
-                f"{market} {year}: tidak ada cluster >=2 sumber yang cocok; "
-                f"pair_reports={pair_reports}"
-            )
-
-        maps = [
-            (source, {item.result_date: item for item in rows})
-            for source, rows in cluster
-        ]
-        anchor_map = maps[0][1]
-
         year_verified = 0
-        for d, item in anchor_map.items():
-            agreeing_ids = []
-            for source, item_map in maps:
-                other = item_map.get(d)
-                if other and other.number == item.number:
-                    agreeing_ids.append(source["id"])
+        used_sources = set()
+        unresolved_dates = []
 
-            if len(agreeing_ids) < 2:
+        for d in all_dates:
+            by_number = {}
+            for source_id, item_map in maps.items():
+                item = item_map.get(d)
+                if item is None:
+                    continue
+                by_number.setdefault(item.number, []).append(
+                    (source_id, item)
+                )
+
+            if not by_number:
                 continue
 
+            ranked = sorted(
+                by_number.items(),
+                key=lambda pair: (
+                    -len(pair[1]),
+                    min(
+                        source_priority.get(source_id, 999)
+                        for source_id, _ in pair[1]
+                    ),
+                    pair[0],
+                ),
+            )
+            number, agreeing = ranked[0]
+            agreeing_ids = sorted(
+                {source_id for source_id, _ in agreeing},
+                key=lambda source_id: source_priority.get(source_id, 999),
+            )
+
+            if len(agreeing_ids) < 2:
+                unresolved_dates.append(d.isoformat())
+                continue
+
+            chosen_id = agreeing_ids[0]
+            chosen = next(
+                item
+                for source_id, item in agreeing
+                if source_id == chosen_id
+            )
             period = resolve_daily_period(market, d)
             combined[d] = make_record(
-                item,
+                chosen,
                 f"crosschecked_{len(agreeing_ids)}_sources",
                 agreeing_ids,
                 period=period,
             )
             year_verified += 1
+            used_sources.update(agreeing_ids)
 
         minimum = 350 if year < 2026 else 200
         if year_verified < minimum:
             raise CollectorError(
                 f"{market} {year}: verified coverage terlalu rendah "
                 f"{year_verified} draws; "
-                f"cluster={[entry[0]['id'] for entry in cluster]}"
+                f"parsed_sources={[entry[0]['id'] for entry in parsed]}; "
+                f"unresolved_sample={unresolved_dates[:10]}"
             )
 
         verification_years[str(year)] = {
             "verified_rows": year_verified,
-            "cluster_sources": [source["id"] for source, _ in cluster],
+            "consensus_sources": sorted(used_sources),
             "all_parsed_sources": [
                 {"id": source["id"], "rows": len(rows)}
                 for source, rows in parsed
             ],
             "pair_reports": pair_reports,
+            "unresolved_dates": unresolved_dates[:50],
+            "verification_rule": "exact agreement from >=2 independent sources per date",
         }
 
         print(
             f"[{market}] {year}: VERIFIED={year_verified} "
-            f"cluster={[entry[0]['id'] for entry in cluster]}"
+            f"consensus_sources={sorted(used_sources)}"
         )
 
     rows = [combined[d] for d in sorted(combined, reverse=True)]
