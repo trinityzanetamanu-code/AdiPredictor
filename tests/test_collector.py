@@ -141,3 +141,47 @@ def test_sgp_period_rule_from_royaltoto_anchor():
     }
     resolve_period_from_rule(item, cfg)
     assert item.period == "SGP-2478"
+
+
+def test_hk_period_rule_from_royaltoto_anchor():
+    item = ParsedResult(
+        market="HK",
+        result_date=date(2026, 9, 18),
+        number="3725",
+        source_id="fixture",
+        source_name="Fixture",
+        source_url="https://example.test/",
+    )
+    cfg = {
+        "period_rule": {
+            "prefix": "HK",
+            "anchor_date": "2026-09-17",
+            "anchor_number": 3547,
+            "valid_from": "2023-01-01",
+            "weekdays": [0, 1, 2, 3, 4, 5, 6],
+        }
+    }
+    resolve_period_from_rule(item, cfg)
+    assert item.period == "HK-3548"
+
+
+def test_sdy_period_rule_from_royaltoto_anchor():
+    item = ParsedResult(
+        market="SDY",
+        result_date=date(2026, 9, 19),
+        number="8748",
+        source_id="fixture",
+        source_name="Fixture",
+        source_url="https://example.test/",
+    )
+    cfg = {
+        "period_rule": {
+            "prefix": "SD",
+            "anchor_date": "2026-09-17",
+            "anchor_number": 3547,
+            "valid_from": "2023-01-01",
+            "weekdays": [0, 1, 2, 3, 4, 5, 6],
+        }
+    }
+    resolve_period_from_rule(item, cfg)
+    assert item.period == "SD-3549"
