@@ -1,0 +1,42 @@
+{
+  "generated_at": "2026-09-19T21:49:26+07:00",
+  "engine": "AdiPredictor-P1-P8-v1",
+  "markets": {
+    "HK": {
+      "latest": {
+        "date": "2026-09-18",
+        "period": "HK-3548",
+        "number": "3725"
+      },
+      "target_date": "2026-09-19",
+      "target_period": "HK-3549",
+      "four_d_main": "0062",
+      "bbfs6": "094687",
+      "dataset_count": 1357
+    },
+    "SGP": {
+      "latest": {
+        "date": "2026-09-19",
+        "period": "SGP-2479",
+        "number": "0921"
+      },
+      "target_date": "2026-09-20",
+      "target_period": "SGP-2480",
+      "four_d_main": "9938",
+      "bbfs6": "973218",
+      "dataset_count": 970
+    },
+    "SDY": {
+      "latest": {
+        "date": "2026-09-19",
+        "period": "SD-3549",
+        "number": "8748"
+      },
+      "target_date": "2026-09-20",
+      "target_period": "SD-3550",
+      "four_d_main": "8409",
+      "bbfs6": "986407",
+      "dataset_count": 1358
+    }
+  }
+}

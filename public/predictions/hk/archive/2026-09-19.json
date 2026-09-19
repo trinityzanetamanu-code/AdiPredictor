@@ -1,0 +1,480 @@
+{
+  "schema_version": 1,
+  "engine": "AdiPredictor-P1-P8-v1",
+  "market": "HK",
+  "generated_at": "2026-09-19T21:49:09+07:00",
+  "latest_result": {
+    "date": "2026-09-18",
+    "period": "HK-3548",
+    "number": "3725"
+  },
+  "target_date": "2026-09-19",
+  "target_period": "HK-3549",
+  "dataset": {
+    "count": 1357,
+    "first_date": "2023-01-01",
+    "last_date": "2026-09-18"
+  },
+  "prior_prediction_audit": null,
+  "models": {
+    "P1": {
+      "bbfs6": "094687",
+      "bbfs5": "09468",
+      "four_d": "9094",
+      "three_d_front": "909",
+      "three_d_back": "094",
+      "two_d_front": "90",
+      "two_d_middle": "09",
+      "two_d_back": "94",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 21,
+        "position_top2_hits": 181,
+        "positions": 720,
+        "bbfs6_full_rate": 0.116667,
+        "position_top2_rate": 0.251389,
+        "metric": 0.157083,
+        "reliability_index": 1.030189,
+        "base_weight": 1.0,
+        "final_weight": 1.030189
+      },
+      "weight": 1.030189
+    },
+    "P2": {
+      "bbfs6": "140896",
+      "bbfs5": "14089",
+      "four_d": "0148",
+      "three_d_front": "014",
+      "three_d_back": "148",
+      "two_d_front": "01",
+      "two_d_middle": "14",
+      "two_d_back": "48",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 19,
+        "position_top2_hits": 138,
+        "positions": 720,
+        "bbfs6_full_rate": 0.105556,
+        "position_top2_rate": 0.191667,
+        "metric": 0.131389,
+        "reliability_index": 0.861679,
+        "base_weight": 0.8,
+        "final_weight": 0.689343
+      },
+      "weight": 0.689343
+    },
+    "P3": {
+      "bbfs6": "690487",
+      "bbfs5": "69048",
+      "four_d": "5669",
+      "three_d_front": "566",
+      "three_d_back": "669",
+      "two_d_front": "56",
+      "two_d_middle": "66",
+      "two_d_back": "69",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 27,
+        "position_top2_hits": 148,
+        "positions": 720,
+        "bbfs6_full_rate": 0.15,
+        "position_top2_rate": 0.205556,
+        "metric": 0.166667,
+        "reliability_index": 1.093038,
+        "base_weight": 1.1,
+        "final_weight": 1.202342
+      },
+      "weight": 1.202342
+    },
+    "P4": {
+      "bbfs6": "409832",
+      "bbfs5": "40983",
+      "four_d": "9094",
+      "three_d_front": "909",
+      "three_d_back": "094",
+      "two_d_front": "90",
+      "two_d_middle": "09",
+      "two_d_back": "94",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 26,
+        "position_top2_hits": 160,
+        "positions": 720,
+        "bbfs6_full_rate": 0.144444,
+        "position_top2_rate": 0.222222,
+        "metric": 0.167778,
+        "reliability_index": 1.100325,
+        "base_weight": 0.85,
+        "final_weight": 0.935277
+      },
+      "weight": 0.935277
+    },
+    "P5": {
+      "bbfs6": "720395",
+      "bbfs5": "72039",
+      "four_d": "7372",
+      "three_d_front": "737",
+      "three_d_back": "372",
+      "two_d_front": "73",
+      "two_d_middle": "37",
+      "two_d_back": "72",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 22,
+        "position_top2_hits": 167,
+        "positions": 720,
+        "bbfs6_full_rate": 0.122222,
+        "position_top2_rate": 0.231944,
+        "metric": 0.155139,
+        "reliability_index": 1.017437,
+        "base_weight": 0.45,
+        "final_weight": 0.457846
+      },
+      "weight": 0.457846
+    },
+    "P6": {
+      "bbfs6": "904738",
+      "bbfs5": "90473",
+      "four_d": "0963",
+      "three_d_front": "096",
+      "three_d_back": "963",
+      "two_d_front": "09",
+      "two_d_middle": "96",
+      "two_d_back": "63",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 16,
+        "position_top2_hits": 149,
+        "positions": 720,
+        "bbfs6_full_rate": 0.088889,
+        "position_top2_rate": 0.206944,
+        "metric": 0.124306,
+        "reliability_index": 0.815224,
+        "base_weight": 0.95,
+        "final_weight": 0.774463
+      },
+      "weight": 0.774463
+    },
+    "P7": {
+      "bbfs6": "053729",
+      "bbfs5": "05372",
+      "four_d": "5065",
+      "three_d_front": "506",
+      "three_d_back": "065",
+      "two_d_front": "50",
+      "two_d_middle": "06",
+      "two_d_back": "65",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 27,
+        "position_top2_hits": 144,
+        "positions": 720,
+        "bbfs6_full_rate": 0.15,
+        "position_top2_rate": 0.2,
+        "metric": 0.165,
+        "reliability_index": 1.082108,
+        "base_weight": 0.6,
+        "final_weight": 0.649265
+      },
+      "weight": 0.649265
+    }
+  },
+  "raw_consensus": {
+    "digit_ranking": [
+      "0",
+      "9",
+      "4",
+      "7",
+      "8",
+      "6",
+      "5",
+      "2",
+      "3",
+      "1"
+    ]
+  },
+  "weighted_consensus": {
+    "digit_ranking": [
+      "0",
+      "9",
+      "4",
+      "6",
+      "8",
+      "7",
+      "2",
+      "5",
+      "3",
+      "1"
+    ],
+    "weights": {
+      "P1": 1.030189,
+      "P2": 0.689343,
+      "P3": 1.202342,
+      "P4": 0.935277,
+      "P5": 0.457846,
+      "P6": 0.774463,
+      "P7": 0.649265
+    }
+  },
+  "p8_ai_instinct": {
+    "bbfs6": "094687",
+    "bbfs5": "09468",
+    "four_d_main": "4080",
+    "four_d_reserve": "9761",
+    "three_d_front": "408",
+    "three_d_back": "080",
+    "two_d_front": "40",
+    "two_d_middle": "08",
+    "two_d_back": "80",
+    "repeat_digit": "9",
+    "note": "Deterministic AI-instinct heuristic; excluded from P1-P7 weighted consensus."
+  },
+  "quick_view": {
+    "bbfs": {
+      "main6": "094687",
+      "reserve6": "094682",
+      "main5": "09468",
+      "reserve5": "09467",
+      "repeat_pattern": "440968"
+    },
+    "four_d": {
+      "main": "0062",
+      "alternative": "0061",
+      "reserve": "0060",
+      "single_pair": "0062"
+    },
+    "three_d": {
+      "front": [
+        {
+          "number": "006",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P1"
+          ]
+        },
+        {
+          "number": "008",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "406",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "096",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P1",
+            "P6"
+          ]
+        },
+        {
+          "number": "004",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P2",
+            "P4"
+          ]
+        }
+      ],
+      "back": [
+        {
+          "number": "062",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P7"
+          ]
+        },
+        {
+          "number": "061",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "060",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P1"
+          ]
+        },
+        {
+          "number": "064",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P1"
+          ]
+        },
+        {
+          "number": "082",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        }
+      ]
+    },
+    "two_d": {
+      "front": [
+        {
+          "number": "00",
+          "stars": 2,
+          "star_label": "⭐⭐",
+          "support": [
+            "P1",
+            "P2",
+            "P4"
+          ]
+        },
+        {
+          "number": "40",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P2"
+          ]
+        },
+        {
+          "number": "09",
+          "stars": 2,
+          "star_label": "⭐⭐",
+          "support": [
+            "P1",
+            "P4",
+            "P6"
+          ]
+        },
+        {
+          "number": "90",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P1",
+            "P4"
+          ]
+        },
+        {
+          "number": "07",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P6"
+          ]
+        }
+      ],
+      "middle": [
+        {
+          "number": "06",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P1",
+            "P7"
+          ]
+        },
+        {
+          "number": "08",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "96",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P1",
+            "P6"
+          ]
+        },
+        {
+          "number": "04",
+          "stars": 2,
+          "star_label": "⭐⭐",
+          "support": [
+            "P2",
+            "P4",
+            "P7"
+          ]
+        },
+        {
+          "number": "76",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P6",
+            "P7"
+          ]
+        }
+      ],
+      "back": [
+        {
+          "number": "62",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P7"
+          ]
+        },
+        {
+          "number": "61",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P3",
+            "P6"
+          ]
+        },
+        {
+          "number": "60",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P1"
+          ]
+        },
+        {
+          "number": "64",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P1"
+          ]
+        },
+        {
+          "number": "82",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        }
+      ],
+      "kembar": {
+        "main": "00",
+        "reserve": "99"
+      }
+    },
+    "repeat_signal": {
+      "data_digit": "4",
+      "p8_digit": "9"
+    },
+    "candidate_counts": {
+      "four_d": 4,
+      "three_d": 10,
+      "two_d_regular": 15,
+      "two_d_kembar": 2
+    }
+  },
+  "confidence": {
+    "overall": "moderate",
+    "note": "Heuristic confidence from retrospective model reliability; not a guarantee or win probability."
+  }
+}

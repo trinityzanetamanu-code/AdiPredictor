@@ -1,0 +1,453 @@
+{
+  "schema_version": 1,
+  "engine": "AdiPredictor-P1-P8-v1",
+  "market": "SDY",
+  "generated_at": "2026-09-19T21:49:26+07:00",
+  "latest_result": {
+    "date": "2026-09-19",
+    "period": "SD-3549",
+    "number": "8748"
+  },
+  "target_date": "2026-09-20",
+  "target_period": "SD-3550",
+  "dataset": {
+    "count": 1358,
+    "first_date": "2023-01-01",
+    "last_date": "2026-09-19"
+  },
+  "prior_prediction_audit": null,
+  "models": {
+    "P1": {
+      "bbfs6": "840697",
+      "bbfs5": "84069",
+      "four_d": "4794",
+      "three_d_front": "479",
+      "three_d_back": "794",
+      "two_d_front": "47",
+      "two_d_middle": "79",
+      "two_d_back": "94",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 23,
+        "position_top2_hits": 143,
+        "positions": 720,
+        "bbfs6_full_rate": 0.127778,
+        "position_top2_rate": 0.198611,
+        "metric": 0.149028,
+        "reliability_index": 1.017199,
+        "base_weight": 1.0,
+        "final_weight": 1.017199
+      },
+      "weight": 1.017199
+    },
+    "P2": {
+      "bbfs6": "096582",
+      "bbfs5": "09658",
+      "four_d": "0006",
+      "three_d_front": "000",
+      "three_d_back": "006",
+      "two_d_front": "00",
+      "two_d_middle": "00",
+      "two_d_back": "06",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 22,
+        "position_top2_hits": 138,
+        "positions": 720,
+        "bbfs6_full_rate": 0.122222,
+        "position_top2_rate": 0.191667,
+        "metric": 0.143056,
+        "reliability_index": 0.976436,
+        "base_weight": 0.8,
+        "final_weight": 0.781148
+      },
+      "weight": 0.781148
+    },
+    "P3": {
+      "bbfs6": "394160",
+      "bbfs5": "39416",
+      "four_d": "4331",
+      "three_d_front": "433",
+      "three_d_back": "331",
+      "two_d_front": "43",
+      "two_d_middle": "33",
+      "two_d_back": "31",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 23,
+        "position_top2_hits": 148,
+        "positions": 720,
+        "bbfs6_full_rate": 0.127778,
+        "position_top2_rate": 0.205556,
+        "metric": 0.151111,
+        "reliability_index": 1.031419,
+        "base_weight": 1.1,
+        "final_weight": 1.134561
+      },
+      "weight": 1.134561
+    },
+    "P4": {
+      "bbfs6": "849160",
+      "bbfs5": "84916",
+      "four_d": "8884",
+      "three_d_front": "888",
+      "three_d_back": "884",
+      "two_d_front": "88",
+      "two_d_middle": "88",
+      "two_d_back": "84",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 21,
+        "position_top2_hits": 143,
+        "positions": 720,
+        "bbfs6_full_rate": 0.116667,
+        "position_top2_rate": 0.198611,
+        "metric": 0.14125,
+        "reliability_index": 0.964112,
+        "base_weight": 0.85,
+        "final_weight": 0.819495
+      },
+      "weight": 0.819495
+    },
+    "P5": {
+      "bbfs6": "874960",
+      "bbfs5": "87496",
+      "four_d": "7484",
+      "three_d_front": "748",
+      "three_d_back": "484",
+      "two_d_front": "74",
+      "two_d_middle": "48",
+      "two_d_back": "84",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 22,
+        "position_top2_hits": 155,
+        "positions": 720,
+        "bbfs6_full_rate": 0.122222,
+        "position_top2_rate": 0.215278,
+        "metric": 0.150139,
+        "reliability_index": 1.024783,
+        "base_weight": 0.45,
+        "final_weight": 0.461152
+      },
+      "weight": 0.461152
+    },
+    "P6": {
+      "bbfs6": "689407",
+      "bbfs5": "68940",
+      "four_d": "8805",
+      "three_d_front": "880",
+      "three_d_back": "805",
+      "two_d_front": "88",
+      "two_d_middle": "80",
+      "two_d_back": "05",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 22,
+        "position_top2_hits": 139,
+        "positions": 720,
+        "bbfs6_full_rate": 0.122222,
+        "position_top2_rate": 0.193056,
+        "metric": 0.143472,
+        "reliability_index": 0.97928,
+        "base_weight": 0.95,
+        "final_weight": 0.930316
+      },
+      "weight": 0.930316
+    },
+    "P7": {
+      "bbfs6": "987463",
+      "bbfs5": "98746",
+      "four_d": "6449",
+      "three_d_front": "644",
+      "three_d_back": "449",
+      "two_d_front": "64",
+      "two_d_middle": "44",
+      "two_d_back": "49",
+      "backtest": {
+        "trials": 180,
+        "bbfs6_full": 24,
+        "position_top2_hits": 130,
+        "positions": 720,
+        "bbfs6_full_rate": 0.133333,
+        "position_top2_rate": 0.180556,
+        "metric": 0.1475,
+        "reliability_index": 1.006771,
+        "base_weight": 0.6,
+        "final_weight": 0.604063
+      },
+      "weight": 0.604063
+    }
+  },
+  "raw_consensus": {
+    "digit_ranking": [
+      "9",
+      "8",
+      "6",
+      "4",
+      "0",
+      "7",
+      "3",
+      "5",
+      "2",
+      "1"
+    ]
+  },
+  "weighted_consensus": {
+    "digit_ranking": [
+      "9",
+      "8",
+      "6",
+      "4",
+      "0",
+      "7",
+      "3",
+      "5",
+      "2",
+      "1"
+    ],
+    "weights": {
+      "P1": 1.017199,
+      "P2": 0.781148,
+      "P3": 1.134561,
+      "P4": 0.819495,
+      "P5": 0.461152,
+      "P6": 0.930316,
+      "P7": 0.604063
+    }
+  },
+  "p8_ai_instinct": {
+    "bbfs6": "352198",
+    "bbfs5": "35219",
+    "four_d_main": "4465",
+    "four_d_reserve": "6489",
+    "three_d_front": "446",
+    "three_d_back": "465",
+    "two_d_front": "44",
+    "two_d_middle": "46",
+    "two_d_back": "65",
+    "repeat_digit": "1",
+    "note": "Deterministic AI-instinct heuristic; excluded from P1-P7 weighted consensus."
+  },
+  "quick_view": {
+    "bbfs": {
+      "main6": "986407",
+      "reserve6": "986403",
+      "main5": "98640",
+      "reserve5": "98647",
+      "repeat_pattern": "889640"
+    },
+    "four_d": {
+      "main": "8409",
+      "alternative": "6409",
+      "reserve": "8809",
+      "single_pair": "8809"
+    },
+    "three_d": {
+      "front": [
+        {
+          "number": "840",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "640",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "880",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P6"
+          ]
+        },
+        {
+          "number": "890",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "846",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        }
+      ],
+      "back": [
+        {
+          "number": "409",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "809",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "909",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "407",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "469",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        }
+      ]
+    },
+    "two_d": {
+      "front": [
+        {
+          "number": "84",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P7"
+          ]
+        },
+        {
+          "number": "64",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P7"
+          ]
+        },
+        {
+          "number": "88",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P4",
+            "P6"
+          ]
+        },
+        {
+          "number": "89",
+          "stars": 1,
+          "star_label": "⭐",
+          "support": [
+            "P4",
+            "P7"
+          ]
+        },
+        {
+          "number": "68",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P6"
+          ]
+        }
+      ],
+      "middle": [
+        {
+          "number": "40",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P2"
+          ]
+        },
+        {
+          "number": "80",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P6"
+          ]
+        },
+        {
+          "number": "90",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "46",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "48",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P5"
+          ]
+        }
+      ],
+      "back": [
+        {
+          "number": "09",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "07",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P6"
+          ]
+        },
+        {
+          "number": "69",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "89",
+          "stars": 0,
+          "star_label": "",
+          "support": []
+        },
+        {
+          "number": "05",
+          "stars": 0,
+          "star_label": "",
+          "support": [
+            "P6"
+          ]
+        }
+      ],
+      "kembar": {
+        "main": "99",
+        "reserve": "88"
+      }
+    },
+    "repeat_signal": {
+      "data_digit": "8",
+      "p8_digit": "1"
+    },
+    "candidate_counts": {
+      "four_d": 4,
+      "three_d": 10,
+      "two_d_regular": 15,
+      "two_d_kembar": 2
+    }
+  },
+  "confidence": {
+    "overall": "moderate",
+    "note": "Heuristic confidence from retrospective model reliability; not a guarantee or win probability."
+  }
+}
