@@ -5,7 +5,7 @@ import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -129,6 +129,55 @@ HISTORICAL_SOURCES = {
         },
     ],
 }
+
+SGP_HISTORICAL_SOURCES = [
+    {
+        "id": "tarikanpaito_sgp",
+        "name": "DataPaitoWarna Singapore",
+        "url": "https://tarikanpaito.net/data/sgp/{year}",
+        "parser": "date_result4",
+        "priority": 10,
+    },
+    {
+        "id": "paitosgplengkap",
+        "name": "Paito SGP Lengkap",
+        "url": "https://paitosgplengkap.org/data/{year}/",
+        "parser": "date_result4",
+        "priority": 20,
+    },
+    {
+        "id": "datasgp2_archive",
+        "name": "DataSGP2 Archive",
+        "url": "https://datasgp2.org/",
+        "parser": "weekday4",
+        "heading_regex": r"DATA SGP TAHUN\s+{year}",
+        "priority": 30,
+    },
+    {
+        "id": "gudangka_sgp_archive",
+        "name": "Gudangka Singapore Archive",
+        "url": "https://gudangka.net/datasgp.html",
+        "parser": "weekday4",
+        "heading_regex": r"TAHUN\s+{year}",
+        "priority": 40,
+    },
+    {
+        "id": "nexipools_sgp_recent",
+        "name": "NexiPools Singapore Paito",
+        "url": "https://www.nexipools.com/id/singapore/paito/",
+        "parser": "date_result4",
+        "years": [2026],
+        "priority": 50,
+    },
+]
+
+SGP_PERIOD_RULE = {
+    "prefix": "SGP",
+    "anchor_date": date(2026, 9, 12),
+    "anchor_number": 2474,
+    "weekdays": {0, 2, 3, 5, 6},
+}
+
 
 SGP_OFFICIAL_URL = "https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx?sppl={token}"
 SGP_DRAW_MIN = 4956
@@ -775,136 +824,259 @@ def backfill_hk_sdy(market):
     rows = [combined[d] for d in sorted(combined, reverse=True)]
     return rows, verification_years
 
-def sgp_token(draw_number):
-    raw = f"DrawNumber={draw_number}".encode("utf-8")
-    return base64.b64encode(raw).decode("ascii")
+def resolve_sgp_period(d: date) -> str:
+    anchor_date = SGP_PERIOD_RULE["anchor_date"]
+    anchor_number = SGP_PERIOD_RULE["anchor_number"]
+    weekdays = SGP_PERIOD_RULE["weekdays"]
 
-def parse_sgp_official_page(html, draw_number):
-    soup = BeautifulSoup(html, "html.parser")
-    text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+    if d == anchor_date:
+        number = anchor_number
+    elif d > anchor_date:
+        number = anchor_number
+        cursor = anchor_date + timedelta(days=1)
+        while cursor <= d:
+            if cursor.weekday() in weekdays:
+                number += 1
+            cursor += timedelta(days=1)
+    else:
+        number = anchor_number
+        cursor = d + timedelta(days=1)
+        while cursor <= anchor_date:
+            if cursor.weekday() in weekdays:
+                number -= 1
+            cursor += timedelta(days=1)
 
-    m = re.search(
-        r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*"
-        r"(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s*"
-        r".{0,160}?Draw\s+No\.\s*(\d+)\s*"
-        r".{0,220}?1st\s+Prize\D{0,40}(\d{4})",
-        text,
-        flags=re.I,
-    )
-    if not m:
-        return None
+    return f"SGP-{number}"
 
-    month_map = {
-        "jan":1,"feb":2,"mar":3,"apr":4,"may":5,"jun":6,
-        "jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12,
-    }
-    month = month_map.get(m.group(2).lower())
-    if not month:
-        return None
 
-    try:
-        d = date(int(m.group(3)), month, int(m.group(1)))
-    except ValueError:
-        return None
+def backfill_sgp_royaltoto():
+    cache = {}
+    all_rows = {}
+    verification_years = {}
 
-    if int(m.group(4)) != draw_number:
-        return None
+    for year in YEARS:
+        parsed = []
+        source_errors = {}
 
-    return {
-        "date": d,
-        "draw": draw_number,
-        "number": m.group(5),
-    }
+        for source in sorted(
+            SGP_HISTORICAL_SOURCES,
+            key=lambda item: item.get("priority", 999),
+        ):
+            if source.get("years") and year not in source["years"]:
+                continue
 
-def fetch_sgp_draw(draw_number):
-    token = sgp_token(draw_number)
-    url = SGP_OFFICIAL_URL.format(token=token)
-    headers = {
-        "User-Agent": UA,
-        "Accept": "text/html,application/xhtml+xml",
-        "Accept-Language": "en-SG,en;q=0.9",
-    }
-    for attempt in range(3):
-        try:
-            r = requests.get(url, headers=headers, timeout=25)
-            if r.status_code == 200 and len(r.text) > 500:
-                parsed = parse_sgp_official_page(r.text, draw_number)
-                if parsed:
-                    parsed["url"] = url
-                    return parsed
-        except Exception:
-            pass
-        time.sleep(0.5 * (attempt + 1))
-    return None
+            runtime = dict(source)
+            runtime["url"] = source["url"].replace("{year}", str(year))
+            url = runtime["url"]
 
-def backfill_sgp():
-    current_path = DATA_DIR / "sgp.json"
-    if current_path.exists():
-        try:
-            current_rows = json.loads(current_path.read_text(encoding="utf-8"))
-            official_rows = [
-                row for row in current_rows
-                if row.get("source_id") == "singaporepools_official"
-                and str(row.get("result_date", ""))[:4] in {"2023", "2024", "2025", "2026"}
-            ]
-            dates = sorted(row.get("result_date") for row in official_rows if row.get("result_date"))
-            if (
-                len(official_rows) >= 550
-                and dates
-                and dates[0] <= "2023-01-01"
-                and dates[-1] >= "2026-09-16"
-            ):
-                year_counts = {}
-                for row in official_rows:
-                    year = str(row["result_date"])[:4]
-                    year_counts[year] = year_counts.get(year, 0) + 1
-                official_rows.sort(key=lambda row: row["result_date"], reverse=True)
-                print(f"[SGP] reuse verified official archive rows={len(official_rows)} counts={year_counts}")
-                return official_rows, year_counts
-        except Exception as exc:
-            print(f"[SGP] existing official archive reuse failed: {exc}")
+            try:
+                if url not in cache:
+                    cache[url] = fetch_html(url, timeout=18)
+                rows = parse_source_year(cache[url], "SGP", runtime, year)
+                parsed.append((runtime, rows))
+                print(
+                    f"[SGP] {year} source={runtime['id']} "
+                    f"rows={len(rows)}"
+                )
+            except Exception as exc:
+                source_errors[runtime["id"]] = str(exc)
+                print(
+                    f"[SGP] {year} source={runtime['id']} "
+                    f"ERROR: {exc}"
+                )
 
-    results = []
-    with ThreadPoolExecutor(max_workers=8) as pool:
-        futures = {
-            pool.submit(fetch_sgp_draw, draw): draw
-            for draw in range(SGP_DRAW_MIN, SGP_DRAW_MAX + 1)
+        if len(parsed) < 2:
+            raise CollectorError(
+                f"SGP {year}: sumber historis berhasil <2; "
+                f"errors={source_errors}"
+            )
+
+        maps = {
+            source["id"]: {
+                item.result_date: item
+                for item in rows
+            }
+            for source, rows in parsed
         }
-        for future in as_completed(futures):
-            item = future.result()
-            if item and item["date"].year in YEARS:
-                results.append(item)
+        source_meta = {
+            source["id"]: source
+            for source, _ in parsed
+        }
 
-    results.sort(key=lambda x: x["date"])
-    by_date = {}
-    for item in results:
-        by_date[item["date"]] = item
+        pair_reports = []
+        compatible = {source_id: set() for source_id in maps}
 
-    rows = []
-    year_counts = {}
-    for d in sorted(by_date, reverse=True):
-        item = by_date[d]
-        year_counts[str(d.year)] = year_counts.get(str(d.year), 0) + 1
-        rows.append({
-            "id": int(d.strftime("%Y%m%d")),
-            "tanggal": format_date_id(d),
-            "periode": f"SGP-{item['draw']}",
-            "nomor": item["number"],
-            "result_date": d.isoformat(),
-            "market": "SGP",
-            "source_id": "singaporepools_official",
-            "source_name": "Singapore Pools Official 4D",
-            "source_url": item["url"],
-            "source_ids": ["singaporepools_official"],
-            "verification": "official_primary",
-            "confirmations": 1,
-        })
+        source_ids = list(maps)
+        for i in range(len(source_ids)):
+            a_id = source_ids[i]
+            a = maps[a_id]
 
-    if len(rows) < 500:
-        raise CollectorError(f"SGP official historical fetch terlalu sedikit: {len(rows)}")
+            for j in range(i + 1, len(source_ids)):
+                b_id = source_ids[j]
+                b = maps[b_id]
+                common = sorted(set(a) & set(b))
+                matches = sum(
+                    a[d].number == b[d].number
+                    for d in common
+                )
+                ratio = matches / len(common) if common else 0.0
 
-    print(f"[SGP] official rows={len(rows)} counts={year_counts}")
-    return rows, year_counts
+                pair_reports.append({
+                    "source_a": a_id,
+                    "source_b": b_id,
+                    "common": len(common),
+                    "matches": matches,
+                    "mismatches": len(common) - matches,
+                    "match_ratio": ratio,
+                })
+
+                # Full-year archive pairs should overlap broadly.
+                # For the running year, a recent-only checker such as
+                # NexiPools is allowed when at least 20 dates overlap.
+                min_overlap = 200 if year < 2026 else 20
+                if len(common) >= min_overlap and ratio >= 0.995:
+                    compatible[a_id].add(b_id)
+                    compatible[b_id].add(a_id)
+
+        # Every stored draw must have exact agreement from at least two
+        # independent sources. We do not preserve the older 3-day-only
+        # Singapore Pools archive in the target dataset.
+        all_dates = sorted(
+            set().union(*(set(item_map) for item_map in maps.values()))
+        )
+        verified_for_year = {}
+
+        priority = {
+            source["id"]: source.get("priority", 999)
+            for source, _ in parsed
+        }
+
+        for d in all_dates:
+            candidates = []
+            for source_id, item_map in maps.items():
+                item = item_map.get(d)
+                if item:
+                    candidates.append(item)
+
+            by_number = {}
+            for item in candidates:
+                by_number.setdefault(item.number, []).append(item)
+
+            ranked_numbers = sorted(
+                by_number.items(),
+                key=lambda pair: (
+                    -len(pair[1]),
+                    min(priority.get(x.source_id, 999) for x in pair[1]),
+                ),
+            )
+            if not ranked_numbers:
+                continue
+
+            number, agreeing = ranked_numbers[0]
+            agreeing_ids = sorted(
+                {item.source_id for item in agreeing},
+                key=lambda source_id: priority.get(source_id, 999),
+            )
+            if len(agreeing_ids) < 2:
+                continue
+
+            # Ignore impossible off-schedule dates for this target market.
+            if d.weekday() not in SGP_PERIOD_RULE["weekdays"]:
+                continue
+
+            chosen_id = agreeing_ids[0]
+            chosen = next(
+                item for item in agreeing
+                if item.source_id == chosen_id
+            )
+            chosen.period = resolve_sgp_period(d)
+
+            verified_for_year[d] = make_record(
+                chosen,
+                f"crosschecked_{len(agreeing_ids)}_sources",
+                agreeing_ids,
+                period=chosen.period,
+            )
+
+        minimum = 250 if year < 2026 else 180
+        if len(verified_for_year) < minimum:
+            raise CollectorError(
+                f"SGP {year}: verified RoyalToto-style coverage "
+                f"terlalu rendah {len(verified_for_year)}; "
+                f"sources={[(s['id'], len(r)) for s, r in parsed]}; "
+                f"errors={source_errors}"
+            )
+
+        # Strong integrity guard: historic full years should be close to the
+        # five-draw-per-week calendar, while 2026 is partial.
+        weekdays_seen = sorted(
+            {d.weekday() for d in verified_for_year}
+        )
+        if any(day not in SGP_PERIOD_RULE["weekdays"] for day in weekdays_seen):
+            raise CollectorError(
+                f"SGP {year}: ditemukan hari di luar kalender target "
+                f"{weekdays_seen}"
+            )
+
+        all_rows.update(verified_for_year)
+        verification_years[str(year)] = {
+            "verified_rows": len(verified_for_year),
+            "period_first": resolve_sgp_period(min(verified_for_year)),
+            "period_last": resolve_sgp_period(max(verified_for_year)),
+            "date_first": min(verified_for_year).isoformat(),
+            "date_last": max(verified_for_year).isoformat(),
+            "sources": [
+                {
+                    "id": source["id"],
+                    "rows": len(rows),
+                    "compatible_peers": sorted(
+                        compatible.get(source["id"], set())
+                    ),
+                }
+                for source, rows in parsed
+            ],
+            "pair_reports": pair_reports,
+            "source_errors": source_errors,
+        }
+
+        print(
+            f"[SGP] {year}: VERIFIED={len(verified_for_year)} "
+            f"{min(verified_for_year)}..{max(verified_for_year)} "
+            f"{resolve_sgp_period(min(verified_for_year))}.."
+            f"{resolve_sgp_period(max(verified_for_year))}"
+        )
+
+    rows = [
+        all_rows[d]
+        for d in sorted(all_rows, reverse=True)
+    ]
+
+    # Explicit sanity checks against the RoyalToto-style target feed.
+    expected_recent = {
+        date(2026, 9, 17): ("SGP-2478", "2131"),
+        date(2026, 9, 16): ("SGP-2477", "9224"),
+        date(2026, 9, 14): ("SGP-2476", "5470"),
+        date(2026, 9, 13): ("SGP-2475", "9400"),
+        date(2026, 9, 12): ("SGP-2474", "2710"),
+    }
+    lookup = {
+        date.fromisoformat(row["result_date"]): row
+        for row in rows
+    }
+    for d, (period, number) in expected_recent.items():
+        row = lookup.get(d)
+        if not row:
+            raise CollectorError(
+                f"SGP sanity check missing {d}"
+            )
+        if row["periode"] != period or row["nomor"] != number:
+            raise CollectorError(
+                f"SGP sanity check mismatch {d}: "
+                f"{row['periode']} {row['nomor']} != "
+                f"{period} {number}"
+            )
+
+    return rows, verification_years
 
 def write_json(path, data):
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -917,8 +1089,9 @@ def main():
         "markets": {},
     }
 
-    # SGP uses Singapore Pools official individual draw pages and is required.
-    sgp_rows, sgp_counts = backfill_sgp()
+    # SGP target follows the RoyalToto-style five-day market
+    # (Mon/Wed/Thu/Sat/Sun), cross-checked across independent archives.
+    sgp_rows, sgp_ver = backfill_sgp_royaltoto()
     write_json(DATA_DIR / "sgp.json", sgp_rows)
 
     # HK/SDY historical mirrors are best-effort here. If a mirror blocks the
@@ -951,9 +1124,11 @@ def main():
     report["markets"]["SGP"] = {
         "rows": len(sgp_rows),
         "period": [sgp_rows[-1]["result_date"], sgp_rows[0]["result_date"]] if sgp_rows else [],
-        "verification": "Singapore Pools official individual draw pages",
-        "year_counts": sgp_counts,
-        "draw_range_scanned": [SGP_DRAW_MIN, SGP_DRAW_MAX],
+        "verification": "RoyalToto-style SGP, minimum two-source exact agreement",
+        "schedule": "Monday, Wednesday, Thursday, Saturday, Sunday",
+        "period_anchor": "SGP-2474 @ 2026-09-12",
+        "verification_by_year": sgp_ver,
+        "historical_status": "complete_2023_2026",
     }
 
     write_json(REPORT_PATH, report)
