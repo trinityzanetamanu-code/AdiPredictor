@@ -356,19 +356,79 @@ function AutoStatusCard({ status, count, lastRefresh, dataError }) {
   );
 }
 
-function PredictionCard({ prediction, marketCode }) {
+function CandidateChips({ items = [] }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {items.map((item) => {
+        const value = typeof item === 'string' ? item : item?.number;
+        const stars = typeof item === 'string' ? '' : item?.star_label || '';
+        if (!value) return null;
+        return (
+          <span
+            key={value + stars}
+            className="inline-flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-950/60 px-2.5 py-1.5 font-mono text-xs text-slate-100"
+          >
+            <span className="text-emerald-400 font-bold">{value}</span>
+            {stars && <span className="text-[10px]">{stars}</span>}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function PredictionCard({ prediction, marketCode, latest }) {
   const { copyToClipboard } = useApp();
 
-  const quick = prediction?.quick_view || prediction?.quickView || null;
+  const predictionLatest = prediction?.latest_result;
+  const latestNumber = String(latest?.nomor || '').padStart(4, '0');
+  const predictionFresh =
+    !!prediction &&
+    (!predictionLatest ||
+      (predictionLatest.date === latest?.result_date &&
+        String(predictionLatest.number || '').padStart(4, '0') === latestNumber));
+
+  const quick =
+    predictionFresh
+      ? prediction?.quick_view || prediction?.quickView || null
+      : null;
+
+  const four = quick?.four_d || quick?.fourD || {};
+  const three = quick?.three_d || quick?.threeD || {};
+  const two = quick?.two_d || quick?.twoD || {};
+  const bbfs = quick?.bbfs || {};
+  const p8 = predictionFresh ? prediction?.p8_ai_instinct || {} : {};
+  const weighted = predictionFresh ? prediction?.weighted_consensus || {} : {};
+  const confidence = predictionFresh ? prediction?.confidence || {} : {};
+  const audit = predictionFresh ? prediction?.prior_prediction_audit : null;
+
   const fourD =
-    quick?.four_d?.main ||
-    quick?.fourD?.main ||
+    four?.main ||
     prediction?.four_d_main ||
     prediction?.prediction_4d ||
     null;
 
+  const copyQuickView = () => {
+    if (!quick) return;
+    const text = [
+      marketLabel(marketCode),
+      'Target ' + (prediction?.target_period || '-') + ' · ' + (prediction?.target_date || '-'),
+      'BBFS6 ' + (bbfs.main6 || '-') + ' | R ' + (bbfs.reserve6 || '-'),
+      'BBFS5 ' + (bbfs.main5 || '-') + ' | R ' + (bbfs.reserve5 || '-'),
+      '4D ' + [four.main, four.alternative, four.reserve, four.single_pair].filter(Boolean).join(' / '),
+      '3D Depan ' + (three.front || []).map((x) => x.number || x).join(' '),
+      '3D Belakang ' + (three.back || []).map((x) => x.number || x).join(' '),
+      '2D Depan ' + (two.front || []).map((x) => x.number || x).join(' '),
+      '2D Tengah ' + (two.middle || []).map((x) => x.number || x).join(' '),
+      '2D Belakang ' + (two.back || []).map((x) => x.number || x).join(' '),
+      'Kembar ' + (two.kembar?.main || '-') + ' / ' + (two.kembar?.reserve || '-'),
+      'P8 ' + (p8.four_d_main || '-') + ' / ' + (p8.four_d_reserve || '-'),
+    ].join('\n');
+    copyToClipboard(text);
+  };
+
   return (
-    <div className="lg:col-span-2 bg-slate-900/90 rounded-2xl border border-slate-800 p-6 shadow-xl space-y-6">
+    <div className="lg:col-span-2 bg-slate-900/90 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl space-y-6">
       <div className="border-b border-slate-800 pb-4">
         <span className="text-xs text-emerald-400 font-mono uppercase">
           {marketLabel(marketCode)}
@@ -378,33 +438,166 @@ function PredictionCard({ prediction, marketCode }) {
         </h3>
       </div>
 
-      {prediction ? (
+      {predictionFresh && quick ? (
         <div className="space-y-5">
-          <div className="text-xs text-slate-400">
-            Target: {prediction.target_date || prediction.target || '-'} · dibuat{' '}
-            {formatSyncTime(prediction.generated_at)}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+            <div className="text-slate-400">
+              Target:{' '}
+              <span className="text-slate-100 font-semibold">
+                {prediction.target_period || '-'} · {prediction.target_date || '-'}
+              </span>
+            </div>
+            <div className="text-slate-500">
+              Dibuat {formatSyncTime(prediction.generated_at)}
+            </div>
           </div>
 
-          <div className="flex flex-col items-center gap-4 py-4">
-            <div className="text-[10px] uppercase tracking-widest text-slate-500">
+          <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-5 text-center">
+            <div className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
               4D Main
             </div>
-            <div className="font-mono text-4xl font-black text-emerald-400 bg-slate-950/60 border border-slate-800 px-6 py-4 rounded-2xl">
+            <div className="mt-2 font-mono text-4xl sm:text-5xl font-black text-emerald-400">
               {fourD || '----'}
             </div>
-            {fourD && (
+            <div className="mt-3 flex flex-wrap justify-center gap-2">
+              {fourD && (
+                <button
+                  onClick={() => copyToClipboard(fourD)}
+                  className="px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2"
+                >
+                  <Copy className="w-4 h-4 text-emerald-400" />
+                  Salin 4D
+                </button>
+              )}
               <button
-                onClick={() => copyToClipboard(fourD)}
-                className="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2"
+                onClick={copyQuickView}
+                className="px-3.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-300 text-xs font-semibold flex items-center gap-2"
               >
-                <Copy className="w-4 h-4 text-emerald-400" />
-                Salin {fourD}
+                <Copy className="w-4 h-4" />
+                Salin Quick View
               </button>
-            )}
+            </div>
           </div>
 
-          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3 text-xs text-slate-300">
-            Prediction file terdeteksi. Quick View lengkap P1–P8 akan diaktifkan pada tahap prediction engine.
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+              <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-2">BBFS 6D</div>
+              <div className="font-mono text-xl font-bold text-emerald-400">{bbfs.main6 || '-'}</div>
+              <div className="mt-1 text-xs text-slate-500">Cadangan: <span className="font-mono text-slate-300">{bbfs.reserve6 || '-'}</span></div>
+            </div>
+            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+              <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-2">BBFS 5D</div>
+              <div className="font-mono text-xl font-bold text-emerald-400">{bbfs.main5 || '-'}</div>
+              <div className="mt-1 text-xs text-slate-500">Cadangan: <span className="font-mono text-slate-300">{bbfs.reserve5 || '-'}</span></div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h4 className="text-sm font-bold text-slate-100">4D Kandidat</h4>
+              <span className="text-[10px] text-slate-500">P1–P7 weighted consensus</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {[
+                ['Main', four.main],
+                ['Alternatif', four.alternative],
+                ['Cadangan', four.reserve],
+                ['1 Pasang', four.single_pair],
+              ].map(([label, value]) => (
+                <div key={label} className="rounded-lg border border-slate-800 p-3 text-center">
+                  <div className="text-[9px] uppercase text-slate-500">{label}</div>
+                  <div className="mt-1 font-mono font-bold text-emerald-400">{value || '-'}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 space-y-3">
+              <h4 className="text-sm font-bold text-slate-100">3D Depan</h4>
+              <CandidateChips items={three.front || []} />
+            </div>
+            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 space-y-3">
+              <h4 className="text-sm font-bold text-slate-100">3D Belakang</h4>
+              <CandidateChips items={three.back || []} />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              ['2D Depan', two.front || []],
+              ['2D Tengah', two.middle || []],
+              ['2D Belakang', two.back || []],
+            ].map(([label, items]) => (
+              <div key={label} className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 space-y-3">
+                <h4 className="text-sm font-bold text-slate-100">{label}</h4>
+                <CandidateChips items={items} />
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+              <div className="text-[10px] uppercase tracking-wider text-amber-300/80">2D Kembar</div>
+              <div className="mt-2 font-mono text-lg font-bold text-amber-300">
+                {two.kembar?.main || '-'} · {two.kembar?.reserve || '-'}
+              </div>
+            </div>
+            <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4">
+              <div className="text-[10px] uppercase tracking-wider text-violet-300/80">P8 AI Instinct</div>
+              <div className="mt-2 font-mono text-lg font-bold text-violet-300">
+                {p8.four_d_main || '-'} · {p8.four_d_reserve || '-'}
+              </div>
+              <div className="mt-1 text-[10px] text-slate-500">
+                BBFS6 {p8.bbfs6 || '-'} · repeat {p8.repeat_digit || '-'}
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs">
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-slate-400">Weighted digit core</span>
+              <span className="font-mono text-emerald-300">
+                {(weighted.digit_ranking || []).join(' > ') || '-'}
+              </span>
+            </div>
+            <div className="mt-2 flex items-center justify-between gap-4">
+              <span className="text-slate-400">Repeat signal</span>
+              <span className="font-mono text-slate-200">
+                Data {quick.repeat_signal?.data_digit || '-'} · P8 {quick.repeat_signal?.p8_digit || '-'}
+              </span>
+            </div>
+            <div className="mt-2 flex items-center justify-between gap-4">
+              <span className="text-slate-400">Confidence</span>
+              <span className="font-semibold text-slate-200 capitalize">
+                {confidence.overall || 'low'}
+              </span>
+            </div>
+          </div>
+
+          {audit && (
+            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs">
+              <div className="font-semibold text-slate-200 mb-2">Audit prediksi sebelumnya</div>
+              <div className="text-slate-400">
+                Aktual {audit.actual || '-'} · 4D exact {audit.four_d_exact ? 'HIT' : 'MISS'} · 2D belakang {audit.two_d_back_hit ? 'HIT' : 'MISS'}
+              </div>
+            </div>
+          )}
+
+          <div className="rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-[10px] text-slate-500 leading-relaxed">
+            Prediksi dibuat otomatis dari histori dan model P1–P8. Nilai confidence adalah ukuran heuristik/backtest internal, bukan jaminan hasil.
+          </div>
+        </div>
+      ) : prediction && !predictionFresh ? (
+        <div className="py-10 flex flex-col items-center text-center gap-4">
+          <div className="w-14 h-14 rounded-2xl border border-amber-500/20 bg-amber-500/10 flex items-center justify-center">
+            <Clock3 className="w-7 h-7 text-amber-300" />
+          </div>
+          <div>
+            <h4 className="font-bold text-slate-100">Prediksi sedang disinkronkan</h4>
+            <p className="text-xs text-slate-400 mt-2 max-w-md">
+              Hasil terbaru sudah berubah. Aplikasi menunggu file prediksi P1–P8 yang sesuai dengan result terbaru agar prediksi lama tidak ditampilkan.
+            </p>
           </div>
         </div>
       ) : (
@@ -417,8 +610,7 @@ function PredictionCard({ prediction, marketCode }) {
               Menunggu Prediction Engine P1–P8
             </h4>
             <p className="text-xs text-slate-400 mt-2 max-w-md">
-              Generator random lama sudah dinonaktifkan. Aplikasi hanya akan
-              menampilkan prediksi yang dibuat otomatis dari dataset terbaru.
+              Generator random lama sudah dinonaktifkan. Prediksi akan muncul otomatis setelah engine selesai memproses dataset terbaru.
             </p>
           </div>
         </div>
@@ -490,6 +682,7 @@ function GeneratorPanel() {
         <PredictionCard
           prediction={predictions[marketCode]}
           marketCode={marketCode}
+          latest={latest}
         />
       </div>
     </div>
