@@ -37,7 +37,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: adipredictor-result-collector-${{ github.ref }}
+  group: adipredictor-data-writer-main
   cancel-in-progress: false
 
 jobs:
