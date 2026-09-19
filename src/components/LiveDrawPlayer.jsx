@@ -30,7 +30,7 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
 
   useEffect(() => {
     if (source.mode === PLAYER_MODES.IFRAME || source.mode === PLAYER_MODES.VIDEO) {
-      setPlayerState(scheduleState.status === 'LIVE_WINDOW' ? PLAYER_STATES.LIVE : PLAYER_STATES.WAITING);
+      setPlayerState(PLAYER_STATES.LOADING);
     } else if (source.mode === PLAYER_MODES.OFFICIAL_PAGE) {
       setPlayerState(PLAYER_STATES.BLOCKED_EMBED);
     } else {
@@ -57,6 +57,12 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
       </div>
 
       <div className="relative aspect-video bg-slate-950">
+        {playerState === PLAYER_STATES.LOADING && (
+          <div className="absolute inset-0 z-10 flex animate-pulse flex-col items-center justify-center gap-3 bg-slate-950">
+            <div className="h-10 w-10 rounded-full border-4 border-slate-800 border-t-emerald-400" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">Memuat player</span>
+          </div>
+        )}
         {source.mode === PLAYER_MODES.IFRAME && (
           <iframe
             key={reloadKey}
@@ -72,7 +78,17 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
           />
         )}
         {source.mode === PLAYER_MODES.VIDEO && (
-          <video key={reloadKey} src={source.mediaUrl} className="h-full w-full" controls playsInline muted preload="metadata" />
+          <video
+            key={reloadKey}
+            src={source.mediaUrl}
+            className="h-full w-full"
+            controls
+            playsInline
+            muted
+            preload="metadata"
+            onCanPlay={() => setPlayerState(isLive ? PLAYER_STATES.LIVE : PLAYER_STATES.WAITING)}
+            onError={() => setPlayerState(PLAYER_STATES.ERROR)}
+          />
         )}
         {(source.mode === PLAYER_MODES.OFFICIAL_PAGE || source.mode === PLAYER_MODES.RESULT_ONLY) && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
@@ -106,4 +122,3 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
     </section>
   );
 }
-
