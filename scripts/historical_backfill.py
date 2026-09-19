@@ -66,16 +66,18 @@ HISTORICAL_SOURCES = {
             "id": "condor_hk_archive",
             "name": "Condor HK Archive",
             "url": "https://condor-airpictures.de/",
-            "parser": "forward_weekday7",
+            "parser": "text_forward_weekday7",
             "heading_regex": r"TAHUN\s+{year}",
+            "years": [2023],
             "priority": 8,
         },
         {
             "id": "serbialadies_hk_archive",
             "name": "SerbiaLadiesOpen HK Archive",
             "url": "https://serbialadiesopen.org/",
-            "parser": "forward_weekday7",
+            "parser": "text_forward_weekday7",
             "heading_regex": r"TAHUN\s+{year}",
+            "years": [2023],
             "priority": 9,
         },
         {
@@ -145,6 +147,15 @@ HISTORICAL_SOURCES = {
         },
     ],
     "SDY": [
+        {
+            "id": "saltwind_sdy_2023",
+            "name": "Saltwind Sydney 2023 Archive",
+            "url": "https://saltwind.co.uk/",
+            "parser": "text_forward_weekday7",
+            "heading_regex": r"TAHUN\s+{year}",
+            "years": [2023],
+            "priority": 4,
+        },
         {
             "id": "dataweb_sdy_archive",
             "name": "DataWeb Sydney Archive",
@@ -1138,6 +1149,121 @@ def parse_forward_weekday7(html: str, market: str, source: dict, year: int):
     return out
 
 
+def parse_text_forward_weekday7(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    lines = [
+        re.sub(r"\s+", " ", line).strip()
+        for line in soup.get_text("\n", strip=True).splitlines()
+        if line.strip()
+    ]
+
+    heading_pattern = source.get(
+        "heading_regex",
+        r"TAHUN\s+{year}",
+    ).replace("{year}", str(year))
+
+    start_idx = None
+    for idx, line in enumerate(lines):
+        if re.search(heading_pattern, line, flags=re.I):
+            start_idx = idx
+            break
+
+    if start_idx is None:
+        raise CollectorError(
+            f"Text forward weekday7: heading {year} tidak ditemukan"
+        )
+
+    # Find the weekday header, allowing one label per line or one combined row.
+    day_hits = set()
+    data_start = None
+    aliases = {
+        "sen": 0, "senin": 0,
+        "sel": 1, "selasa": 1,
+        "rab": 2, "rabu": 2,
+        "kam": 3, "kamis": 3,
+        "jum": 4, "jumat": 4, "jum'at": 4,
+        "sab": 5, "sabtu": 5,
+        "min": 6, "minggu": 6,
+    }
+
+    for idx in range(start_idx + 1, min(len(lines), start_idx + 50)):
+        tokens = re.findall(r"[A-Za-z']+", lines[idx].lower())
+        for token in tokens:
+            if token in aliases:
+                day_hits.add(aliases[token])
+        if len(day_hits) >= 5:
+            data_start = idx + 1
+            break
+
+    if data_start is None:
+        raise CollectorError(
+            f"Text forward weekday7: header {year} tidak ditemukan"
+        )
+
+    # These mirrors start at the first full Monday week. This intentionally
+    # omits an opening Sunday such as 01-Jan-2023; another source may cover it.
+    jan1 = date(year, 1, 1)
+    first_full_monday = (
+        jan1
+        if jan1.weekday() == 0
+        else jan1 + timedelta(days=7 - jan1.weekday())
+    )
+    max_slots = (date(year, 12, 31) - first_full_monday).days + 1
+
+    values = []
+    for line in lines[data_start:]:
+        if re.search(
+            r"\bTAHUN\s+20\d{2}\b",
+            line,
+            flags=re.I,
+        ) and str(year) not in line:
+            break
+
+        for token in re.findall(
+            r"(?<!\d)(\d{4}|XXXX|XXX)(?!\d)",
+            line,
+            flags=re.I,
+        ):
+            values.append(
+                None if token.upper().startswith("XXX") else token
+            )
+            if len(values) >= max_slots:
+                break
+        if len(values) >= max_slots:
+            break
+
+    if len(values) < min(300, max_slots - 20):
+        raise CollectorError(
+            f"Text forward weekday7 {year}: token terlalu sedikit "
+            f"{len(values)}"
+        )
+
+    results = []
+    for offset, number in enumerate(values[:max_slots]):
+        if not number:
+            continue
+        d = first_full_monday + timedelta(days=offset)
+        if d.year != year:
+            continue
+        results.append(ParsedResult(
+            market=market,
+            result_date=d,
+            number=number,
+            source_id=source["id"],
+            source_name=source["name"],
+            source_url=source["url"],
+        ))
+
+    dedup = {item.result_date: item for item in results}
+    out = [dedup[d] for d in sorted(dedup)]
+    minimum = 200 if year == 2026 else 340
+    if len(out) < minimum:
+        raise CollectorError(
+            f"Text forward weekday7 {year}: hanya {len(out)} result"
+        )
+    return out
+
+
 def parse_source_year(html: str, market: str, source: dict, year: int):
     parser = source.get("parser", "weekday4")
 
@@ -1147,6 +1273,8 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
         return parse_reverse_weekday7(html, market, source, year)
     if parser == "forward_weekday7":
         return parse_forward_weekday7(html, market, source, year)
+    if parser == "text_forward_weekday7":
+        return parse_text_forward_weekday7(html, market, source, year)
     if parser == "weekday6_last4":
         return parse_weekday_grid_6_last4(html, market, source, year)
     if parser == "hk_anchor_sequence":
