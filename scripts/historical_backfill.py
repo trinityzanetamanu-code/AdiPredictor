@@ -60,6 +60,22 @@ HISTORICAL_SOURCES = {
             "priority": 10,
         },
         {
+            "id": "datahkpro_archive",
+            "name": "DataHKPro Archive",
+            "url": "https://datahkpro.site/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:Data Keluaran HK|Data HK|Rekap Keluaran HK|Pengeluaran HK).*{year}",
+            "priority": 12,
+        },
+        {
+            "id": "datahkpools_archive",
+            "name": "DataHKPools Archive",
+            "url": "https://datahkpools.online/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:Data Keluaran HK|Data HK|Data Hongkong|Pengeluaran Hongkong).*{year}",
+            "priority": 14,
+        },
+        {
             "id": "angkakeluarhariini_hk",
             "name": "AngkaKeluarHariIni HK",
             "url": "https://angkakeluarhariini.com/",
@@ -101,6 +117,22 @@ HISTORICAL_SOURCES = {
             "parser": "weekday4",
             "heading_regex": r"(?:Data Sydney|Data SDY|Data Pengeluaran Sydney)\s+{year}",
             "priority": 10,
+        },
+        {
+            "id": "datasdypools_space_archive",
+            "name": "DataSDYPools Archive",
+            "url": "https://datasdypools.space/data/ajax/data-sdy.php",
+            "parser": "weekday4",
+            "heading_regex": r"(?:PENGELUARAN SDY|Data SDY|Data Sydney).*{year}",
+            "priority": 11,
+        },
+        {
+            "id": "paficurugkembar_sdy_archive",
+            "name": "PafiCurugKembar Sydney Archive",
+            "url": "https://paficurugkembar.org/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:Pengeluaran SDY|Data SDY|Data Sydney).*{year}",
+            "priority": 12,
         },
         {
             "id": "datasydtoday_archive",
@@ -172,6 +204,20 @@ SGP_HISTORICAL_SOURCES = [
         "priority": 50,
     },
 ]
+
+DAILY_PERIOD_RULES = {
+    "HK": {
+        "prefix": "HK",
+        "anchor_date": date(2026, 9, 17),
+        "anchor_number": 3547,
+    },
+    "SDY": {
+        "prefix": "SD",
+        "anchor_date": date(2026, 9, 17),
+        "anchor_number": 3547,
+    },
+}
+
 
 SGP_PERIOD_RULE = {
     "prefix": "SGP",
@@ -1049,12 +1095,7 @@ def backfill_hk_sdy(market):
             if len(agreeing_ids) < 2:
                 continue
 
-            old = existing.get(d.isoformat())
-            period = (
-                old.get("periode")
-                if old and old.get("nomor") == item.number
-                else None
-            )
+            period = resolve_daily_period(market, d)
             combined[d] = make_record(
                 item,
                 f"crosschecked_{len(agreeing_ids)}_sources",
@@ -1088,6 +1129,12 @@ def backfill_hk_sdy(market):
 
     rows = [combined[d] for d in sorted(combined, reverse=True)]
     return rows, verification_years
+
+def resolve_daily_period(market: str, d: date) -> str:
+    rule = DAILY_PERIOD_RULES[market]
+    delta = (d - rule["anchor_date"]).days
+    return f"{rule['prefix']}-{rule['anchor_number'] + delta}"
+
 
 def resolve_sgp_period(d: date) -> str:
     anchor_date = SGP_PERIOD_RULE["anchor_date"]
