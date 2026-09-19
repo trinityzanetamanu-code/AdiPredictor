@@ -18,12 +18,18 @@ import {
   ShieldCheck,
   Clock3,
   CheckCircle2,
+  Radio,
+  History,
+  ExternalLink,
+  X,
 } from 'lucide-react';
 import {
   loadCollectorStatus,
   loadMarketData,
   loadPrediction,
+  loadPredictionHistory,
   loadTafsir,
+  predictionAssetUrl,
 } from './dataClient';
 
 const AppContext = createContext();
@@ -131,6 +137,11 @@ export function AppProvider({ children }) {
     SGP: null,
     SDY: null,
   });
+  const [predictionHistory, setPredictionHistory] = useState({
+    HK: { records: [] },
+    SGP: { records: [] },
+    SDY: { records: [] },
+  });
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
   const [dataError, setDataError] = useState('');
@@ -156,7 +167,19 @@ export function AppProvider({ children }) {
     if (!silent) setIsRefreshing(true);
 
     try {
-      const [hk, sgp, sdy, status, hkPred, sgpPred, sdyPred, remoteTafsir] =
+      const [
+        hk,
+        sgp,
+        sdy,
+        status,
+        hkPred,
+        sgpPred,
+        sdyPred,
+        hkHistory,
+        sgpHistory,
+        sdyHistory,
+        remoteTafsir,
+      ] =
         await Promise.all([
           loadMarketData('HK'),
           loadMarketData('SGP'),
@@ -165,12 +188,20 @@ export function AppProvider({ children }) {
           loadPrediction('HK'),
           loadPrediction('SGP'),
           loadPrediction('SDY'),
+          loadPredictionHistory('HK'),
+          loadPredictionHistory('SGP'),
+          loadPredictionHistory('SDY'),
           loadTafsir(),
         ]);
 
       setMarketData({ HK: hk, SGP: sgp, SDY: sdy });
       setCollectorStatus(status);
       setPredictions({ HK: hkPred, SGP: sgpPred, SDY: sdyPred });
+      setPredictionHistory({
+        HK: hkHistory,
+        SGP: sgpHistory,
+        SDY: sdyHistory,
+      });
       if (Array.isArray(remoteTafsir) && remoteTafsir.length) {
         setTafsirData(remoteTafsir);
       }
@@ -214,6 +245,7 @@ export function AppProvider({ children }) {
         marketData,
         collectorStatus,
         predictions,
+        predictionHistory,
         tafsirData,
         isRefreshing,
         lastRefresh,
@@ -246,6 +278,7 @@ function Navbar() {
   const tabs = [
     { id: 'generator', label: 'Analisis AI', icon: Sparkles },
     { id: 'results', label: 'Data Keluaran', icon: Database },
+    { id: 'livedraw', label: 'LiveDraw', icon: Radio },
     { id: 'analytics', label: 'Statistik', icon: BarChart3 },
     { id: 'dreams', label: 'Tafsir', icon: BookOpen },
   ];
@@ -304,7 +337,7 @@ function MarketSelect({ value, onChange }) {
   );
 }
 
-function AutoStatusCard({ status, count, lastRefresh, dataError }) {
+function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt }) {
   const latestStatus = status?.latest_verified || status?.latest;
 
   return (
@@ -333,7 +366,21 @@ function AutoStatusCard({ status, count, lastRefresh, dataError }) {
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <span className="text-slate-400">Sinkron terakhir</span>
+          <span className="text-slate-400">Data dikoleksi</span>
+          <span className="text-slate-200 text-right">
+            {formatSyncTime(collectedAt || latestStatus?.collected_at)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Prediksi dibuat</span>
+          <span className="text-slate-200 text-right">
+            {formatSyncTime(predictionAt)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Aplikasi mengecek</span>
           <span className="text-slate-200 text-right">
             {formatSyncTime(lastRefresh)}
           </span>
@@ -362,14 +409,24 @@ function CandidateChips({ items = [] }) {
       {items.map((item) => {
         const value = typeof item === 'string' ? item : item?.number;
         const stars = typeof item === 'string' ? '' : item?.star_label || '';
+        const support = typeof item === 'string' ? [] : item?.supported_by || item?.support || [];
+        const weightedScore = typeof item === 'string' ? null : item?.reliability_weighted_score;
         if (!value) return null;
         return (
           <span
             key={value + stars}
-            className="inline-flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-950/60 px-2.5 py-1.5 font-mono text-xs text-slate-100"
+            className="inline-flex flex-col rounded-lg border border-slate-700 bg-slate-950/60 px-2.5 py-1.5 text-xs text-slate-100"
           >
-            <span className="text-emerald-400 font-bold">{value}</span>
-            {stars && <span className="text-[10px]">{stars}</span>}
+            <span className="inline-flex items-center gap-1 font-mono">
+              <span className="text-emerald-400 font-bold">{value}</span>
+              {stars && <span className="text-[10px]">{stars}</span>}
+            </span>
+            {support.length > 0 && (
+              <span className="mt-1 text-[8px] font-sans text-slate-500">
+                {support.join(' · ')} · raw {item.raw_support_count ?? support.length}
+                {weightedScore != null ? ` · w ${Number(weightedScore).toFixed(2)}` : ''}
+              </span>
+            )}
           </span>
         );
       })}
@@ -377,8 +434,10 @@ function CandidateChips({ items = [] }) {
   );
 }
 
-function PredictionCard({ prediction, marketCode, latest }) {
+function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
   const { copyToClipboard } = useApp();
+  const candidateNumber = (value) =>
+    typeof value === 'object' && value !== null ? value.number : value;
 
   const predictionLatest = prediction?.latest_result;
   const latestNumber = String(latest?.nomor || '').padStart(4, '0');
@@ -398,12 +457,18 @@ function PredictionCard({ prediction, marketCode, latest }) {
   const two = quick?.two_d || quick?.twoD || {};
   const bbfs = quick?.bbfs || {};
   const p8 = predictionFresh ? prediction?.p8_ai_instinct || {} : {};
+  const raw = predictionFresh ? prediction?.raw_consensus || {} : {};
   const weighted = predictionFresh ? prediction?.weighted_consensus || {} : {};
   const confidence = predictionFresh ? prediction?.confidence || {} : {};
   const audit = predictionFresh ? prediction?.prior_prediction_audit : null;
+  const models = predictionFresh ? prediction?.models || {} : {};
+  const visuals = predictionFresh ? prediction?.visual_patterns || [] : [];
+  const counts = predictionFresh
+    ? prediction?.candidate_counts || quick?.candidate_counts || {}
+    : {};
 
   const fourD =
-    four?.main ||
+    candidateNumber(four?.main) ||
     prediction?.four_d_main ||
     prediction?.prediction_4d ||
     null;
@@ -415,7 +480,7 @@ function PredictionCard({ prediction, marketCode, latest }) {
       'Target ' + (prediction?.target_period || '-') + ' · ' + (prediction?.target_date || '-'),
       'BBFS6 ' + (bbfs.main6 || '-') + ' | R ' + (bbfs.reserve6 || '-'),
       'BBFS5 ' + (bbfs.main5 || '-') + ' | R ' + (bbfs.reserve5 || '-'),
-      '4D ' + [four.main, four.alternative, four.reserve, four.single_pair].filter(Boolean).join(' / '),
+      '4D ' + [four.main, four.alternative, four.reserve, four.single_pair].map(candidateNumber).filter(Boolean).join(' / '),
       '3D Depan ' + (three.front || []).map((x) => x.number || x).join(' '),
       '3D Belakang ' + (three.back || []).map((x) => x.number || x).join(' '),
       '2D Depan ' + (two.front || []).map((x) => x.number || x).join(' '),
@@ -426,6 +491,10 @@ function PredictionCard({ prediction, marketCode, latest }) {
     ].join('\n');
     copyToClipboard(text);
   };
+  const auditPermutationLabel = (entry, legacyExact = false) =>
+    (entry?.exact ?? legacyExact) ? 'EXACT' : entry?.permutation ? 'PERMUTATION' : 'MISS';
+  const auditReverseLabel = (entry, legacyExact = false) =>
+    (entry?.exact ?? legacyExact) ? 'EXACT' : entry?.reverse ? 'REVERSE' : 'MISS';
 
   return (
     <div className="lg:col-span-2 bg-slate-900/90 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl space-y-6">
@@ -476,6 +545,13 @@ function PredictionCard({ prediction, marketCode, latest }) {
                 <Copy className="w-4 h-4" />
                 Salin Quick View
               </button>
+              <button
+                onClick={onOpenHistory}
+                className="px-3.5 py-2 rounded-xl bg-violet-500/10 border border-violet-500/25 text-violet-300 text-xs font-semibold flex items-center gap-2"
+              >
+                <History className="w-4 h-4" />
+                Histori Prediksi
+              </button>
             </div>
           </div>
 
@@ -506,7 +582,12 @@ function PredictionCard({ prediction, marketCode, latest }) {
               ].map(([label, value]) => (
                 <div key={label} className="rounded-lg border border-slate-800 p-3 text-center">
                   <div className="text-[9px] uppercase text-slate-500">{label}</div>
-                  <div className="mt-1 font-mono font-bold text-emerald-400">{value || '-'}</div>
+                  <div className="mt-1 font-mono font-bold text-emerald-400">{candidateNumber(value) || '-'}</div>
+                  {value?.supported_by?.length > 0 && (
+                    <div className="mt-1 text-[8px] text-slate-500">
+                      {value.supported_by.join(' · ')} · w {Number(value.reliability_weighted_score || 0).toFixed(2)} {value.star_label || ''}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -555,6 +636,22 @@ function PredictionCard({ prediction, marketCode, latest }) {
           </div>
 
           <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs">
+            <div className="mb-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <div className="mb-2 text-[10px] uppercase tracking-wider text-slate-500">Raw Consensus 4D</div>
+                <CandidateChips items={(raw.candidate_rankings?.['4d_top3'] || []).slice(0, 3)} />
+              </div>
+              <div>
+                <div className="mb-2 text-[10px] uppercase tracking-wider text-slate-500">Weighted Consensus 4D</div>
+                <CandidateChips items={(weighted.candidate_rankings?.['4d_top3'] || []).slice(0, 3)} />
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-slate-400">Raw consensus digit</span>
+              <span className="font-mono text-slate-200 text-right">
+                {(raw.digit_ranking || []).join(' > ') || '-'}
+              </span>
+            </div>
             <div className="flex items-center justify-between gap-4">
               <span className="text-slate-400">Weighted digit core</span>
               <span className="font-mono text-emerald-300">
@@ -570,22 +667,117 @@ function PredictionCard({ prediction, marketCode, latest }) {
             <div className="mt-2 flex items-center justify-between gap-4">
               <span className="text-slate-400">Confidence</span>
               <span className="font-semibold text-slate-200 capitalize">
-                {confidence.overall || 'low'}
+                {confidence.relative_confidence || confidence.overall || 'low'}
               </span>
             </div>
           </div>
 
           {audit && (
-            <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs">
-              <div className="font-semibold text-slate-200 mb-2">Audit prediksi sebelumnya</div>
-              <div className="text-slate-400">
-                Aktual {audit.actual || '-'} · 4D exact {audit.four_d_exact ? 'HIT' : 'MISS'} · 2D belakang {audit.two_d_back_hit ? 'HIT' : 'MISS'}
+            <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs">
+              <summary className="font-semibold text-slate-200 cursor-pointer">Audit prediksi sebelumnya</summary>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
+                <div>Aktual: <span className="font-mono text-slate-100">{audit.actual || '-'}</span></div>
+                <div>4D main: {auditPermutationLabel(audit.previous_4d_main, audit.four_d_exact)}</div>
+                <div>4D alternatif: {auditPermutationLabel(audit.previous_4d_alternative)}</div>
+                <div>4D cadangan: {auditPermutationLabel(audit.previous_4d_reserve)}</div>
+                <div>4D single pair: {auditPermutationLabel(audit.previous_4d_single_pair)}</div>
+                <div>3D depan: {auditPermutationLabel(audit['3d_front'], audit.three_d_front_hit)}</div>
+                <div>3D belakang: {auditPermutationLabel(audit['3d_back'], audit.three_d_back_hit)}</div>
+                <div>2D depan: {auditReverseLabel(audit['2d_front'])}</div>
+                <div>2D tengah: {auditReverseLabel(audit['2d_middle'])}</div>
+                <div>2D belakang: {auditReverseLabel(audit['2d_back'], audit.two_d_back_hit)}</div>
+                {audit.bbfs6 && <div>BBFS6: {audit.bbfs6.occurrence_coverage?.captured}/4 digit occurrence</div>}
+                {audit.bbfs5 && <div>BBFS5: {audit.bbfs5.occurrence_coverage?.captured}/4 digit occurrence</div>}
               </div>
-            </div>
+            </details>
           )}
 
+          {visuals.length > 0 && (
+            <section className="space-y-3">
+              <div>
+                <h4 className="text-sm font-bold text-slate-100">Pola Visual</h4>
+                <p className="mt-1 text-[10px] text-slate-500">Grid memakai draw aktual dari arsip, bukan gambar referensi.</p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {visuals.map((pattern) => (
+                  <div key={pattern.image_path} className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/40">
+                    <img
+                      src={predictionAssetUrl(pattern.image_path, prediction.dataset_fingerprint)}
+                      alt={`${pattern.pattern_name} ${marketCode}`}
+                      className="w-full h-auto"
+                      loading="lazy"
+                    />
+                    <div className="p-3 text-[10px] text-slate-400 space-y-1">
+                      <div className="font-semibold text-slate-200">{pattern.pattern_name?.replaceAll('_', ' ')}</div>
+                      <div>{pattern.source_period} · {pattern.number_of_occurrences} occurrence</div>
+                      <div>Hit rate {Number(pattern.historical_hit_rate || 0).toFixed(3)} · baseline {Number(pattern.baseline || 0).toFixed(2)}</div>
+                      <div className={pattern.edge_confirmed ? 'text-emerald-300' : 'text-amber-300'}>
+                        {pattern.edge_confirmed ? 'Predictive edge terkonfirmasi' : 'Visual pattern ditemukan — predictive edge belum terbukti'}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <summary className="text-sm font-semibold text-slate-200 cursor-pointer">Perbandingan Reliability Model</summary>
+            <div className="mt-3 space-y-2">
+              {Object.entries(models)
+                .sort((a, b) => Number(b[1]?.reliability_weight || b[1]?.weight || 0) - Number(a[1]?.reliability_weight || a[1]?.weight || 0))
+                .map(([name, model]) => (
+                  <div key={name} className="flex items-center justify-between gap-3 text-xs">
+                    <span className="font-semibold text-slate-200">{name}</span>
+                    <span className="font-mono text-emerald-300">{Number(model.reliability_weight ?? model.weight ?? 0).toFixed(3)}</span>
+                  </div>
+                ))}
+            </div>
+          </details>
+
+          <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <summary className="text-sm font-semibold text-slate-200 cursor-pointer">Detail P1–P7 dan Top-K</summary>
+            <div className="mt-3 space-y-3">
+              {Object.entries(models).map(([name, model]) => (
+                <details key={name} className="rounded-lg border border-slate-800 p-3">
+                  <summary className="text-xs font-semibold text-emerald-300 cursor-pointer">{name} · weight {Number(model.reliability_weight ?? model.weight ?? 0).toFixed(3)}</summary>
+                  <div className="mt-2 text-[10px] text-slate-400 space-y-1 font-mono break-words">
+                    <div>BBFS6 {model.bbfs6 || '-'} · BBFS5 {model.bbfs5 || '-'}</div>
+                    <div>4D {(model['4d_top3'] || [model.four_d]).filter(Boolean).join(' · ')}</div>
+                    <div>3D F {(model['3d_front_top5'] || [model.three_d_front]).filter(Boolean).join(' · ')}</div>
+                    <div>3D B {(model['3d_back_top5'] || [model.three_d_back]).filter(Boolean).join(' · ')}</div>
+                    <div>2D F {(model['2d_front_top5'] || [model.two_d_front]).filter(Boolean).join(' · ')}</div>
+                    <div>2D M {(model['2d_middle_top5'] || [model.two_d_middle]).filter(Boolean).join(' · ')}</div>
+                    <div>2D B {(model['2d_back_top5'] || [model.two_d_back]).filter(Boolean).join(' · ')}</div>
+                    {model.walk_forward?.out_of_sample_points && <div className="pt-1 text-slate-500">OOS {model.walk_forward.out_of_sample_points} draw</div>}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </details>
+
+          <section className="rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-4 space-y-3">
+            <div>
+              <h4 className="text-sm font-black text-emerald-300">🔥 QUICK VIEW — ANGKA KANDIDAT</h4>
+              <p className="mt-1 text-[10px] text-slate-500">Sama 1:1 dengan quick_view pada JSON.</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div><span className="text-slate-500">BBFS:</span> <span className="font-mono">{bbfs.main6} / {bbfs.main5}</span></div>
+              <div><span className="text-slate-500">4D:</span> <span className="font-mono">{[four.main, four.alternative, four.reserve, four.single_pair].map(candidateNumber).filter(Boolean).join(' · ')}</span></div>
+              <div><span className="text-slate-500">3D Depan:</span> <span className="font-mono">{(three.front || []).map(candidateNumber).join(' · ')}</span></div>
+              <div><span className="text-slate-500">3D Belakang:</span> <span className="font-mono">{(three.back || []).map(candidateNumber).join(' · ')}</span></div>
+              <div><span className="text-slate-500">2D Depan:</span> <span className="font-mono">{(two.front || []).map(candidateNumber).join(' · ')}</span></div>
+              <div><span className="text-slate-500">2D Tengah:</span> <span className="font-mono">{(two.middle || []).map(candidateNumber).join(' · ')}</span></div>
+              <div><span className="text-slate-500">2D Belakang:</span> <span className="font-mono">{(two.back || []).map(candidateNumber).join(' · ')}</span></div>
+              <div><span className="text-slate-500">Kembar:</span> <span className="font-mono">{two.kembar?.main} · {two.kembar?.reserve}</span></div>
+              <div><span className="text-slate-500">P8:</span> <span className="font-mono text-violet-300">{p8.four_d_main} · {p8.four_d_reserve}</span></div>
+              <div><span className="text-slate-500">Model comparison:</span> {Object.keys(models).length} model</div>
+              <div><span className="text-slate-500">Candidate counts:</span> 4D {counts.total_4d_candidates ?? 6} · 3D {counts.total_3d_candidates ?? 12} · 2D {counts.total_2d_candidates ?? 20} · total {counts.total_direct_number_candidates ?? 38}</div>
+            </div>
+          </section>
+
           <div className="rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-[10px] text-slate-500 leading-relaxed">
-            Prediksi dibuat otomatis dari histori dan model P1–P8. Nilai confidence adalah ukuran heuristik/backtest internal, bukan jaminan hasil.
+            {prediction.disclaimer || confidence.disclaimer || 'Prediksi dibuat otomatis dari histori dan model P1–P8. Nilai confidence adalah ukuran relatif, bukan jaminan hasil.'}
           </div>
         </div>
       ) : prediction && !predictionFresh ? (
@@ -619,6 +811,129 @@ function PredictionCard({ prediction, marketCode, latest }) {
   );
 }
 
+function historyNumber(value) {
+  return typeof value === 'object' && value !== null ? value.number : value;
+}
+
+function PredictionHistoryPanel({ marketCode, setMarketCode, history, onClose }) {
+  const records = history?.records || [];
+
+  return (
+    <section className="bg-slate-900/95 rounded-2xl border border-violet-500/25 p-5 sm:p-6 shadow-xl space-y-5">
+      <div className="flex items-start justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <div className="flex items-center gap-2 text-violet-300">
+            <History className="w-5 h-5" />
+            <h3 className="text-lg font-bold">Histori Prediksi</h3>
+          </div>
+          <p className="mt-1 text-xs text-slate-400">
+            Membaca arsip prediksi asli; kandidat lama tidak dihitung ulang di aplikasi.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Tutup histori prediksi"
+          className="rounded-lg border border-slate-700 p-2 text-slate-400 hover:text-slate-100"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      <div className="sm:max-w-xs">
+        <MarketSelect value={marketCode} onChange={setMarketCode} />
+      </div>
+
+      <div className="space-y-3 max-h-[72vh] overflow-y-auto pr-1">
+        {records.map((record) => {
+          const four = record.four_d || {};
+          const three = record.three_d || {};
+          const two = record.two_d || {};
+          const actual = record.actual_result;
+          const audit = record.outcome_audit;
+          const summary = record.hit_miss_summary;
+          const anyDirectHit = summary && (
+            Object.values(summary['4d'] || {}).some(Boolean) ||
+            summary['3d']?.front_exact || summary['3d']?.back_exact ||
+            Object.values(summary['2d'] || {}).some((item) => item?.exact)
+          );
+          return (
+            <details
+              key={`${record.target_date}-${record.dataset_fingerprint || record.generated_at}`}
+              className="rounded-xl border border-slate-800 bg-slate-950/50 p-4"
+            >
+              <summary className="cursor-pointer list-none">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="font-semibold text-slate-100">
+                      {record.target_date || '-'} · {record.target_period || '-'}
+                    </div>
+                    <div className="mt-1 text-[10px] text-slate-500">
+                      basis {record.basis_latest_date || '-'} · {record.basis_latest_result || '----'}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-mono text-lg font-bold text-emerald-400">
+                      {actual?.number || 'MENUNGGU'}
+                    </div>
+                    <div className={
+                      'text-[9px] font-semibold ' +
+                      (!actual ? 'text-amber-300' : anyDirectHit ? 'text-emerald-300' : 'text-slate-500')
+                    }>
+                      {!actual ? 'RESULT BELUM ADA' : anyDirectHit ? 'DIRECT HIT' : 'TIDAK ADA EXACT HIT'}
+                    </div>
+                  </div>
+                </div>
+              </summary>
+
+              <div className="mt-4 space-y-4 text-xs border-t border-slate-800 pt-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
+                  <div>Dibuat: <span className="text-slate-200">{formatSyncTime(record.generated_at)}</span></div>
+                  <div>Engine: <span className="text-slate-200">{record.engine_version || '-'}</span></div>
+                  <div>BBFS6: <span className="font-mono text-emerald-300">{record.bbfs6 || '-'}</span></div>
+                  <div>BBFS5: <span className="font-mono text-emerald-300">{record.bbfs5 || '-'}</span></div>
+                </div>
+
+                <div className="rounded-lg border border-slate-800 p-3 space-y-2">
+                  <div className="text-[10px] uppercase text-slate-500">Quick View Arsip</div>
+                  <div>4D <span className="font-mono text-slate-100">{[four.main, four.alternative, four.reserve, four.single_pair].map(historyNumber).filter(Boolean).join(' · ') || '-'}</span></div>
+                  <div>3D depan <span className="font-mono text-slate-100">{(three.front || []).map(historyNumber).join(' · ') || '-'}</span></div>
+                  <div>3D belakang <span className="font-mono text-slate-100">{(three.back || []).map(historyNumber).join(' · ') || '-'}</span></div>
+                  <div>2D depan <span className="font-mono text-slate-100">{(two.front || []).map(historyNumber).join(' · ') || '-'}</span></div>
+                  <div>2D tengah <span className="font-mono text-slate-100">{(two.middle || []).map(historyNumber).join(' · ') || '-'}</span></div>
+                  <div>2D belakang <span className="font-mono text-slate-100">{(two.back || []).map(historyNumber).join(' · ') || '-'}</span></div>
+                  <div>Kembar <span className="font-mono text-slate-100">{two.kembar?.main || '-'} · {two.kembar?.reserve || '-'}</span></div>
+                </div>
+
+                {actual && audit && (
+                  <div className="rounded-lg border border-slate-800 p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
+                    <div>4D main: <span className="text-slate-200">{audit.previous_4d_main?.exact ? 'EXACT' : audit.previous_4d_main?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
+                    <div>4D alternatif: <span className="text-slate-200">{audit.previous_4d_alternative?.exact ? 'EXACT' : audit.previous_4d_alternative?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
+                    <div>4D cadangan: <span className="text-slate-200">{audit.previous_4d_reserve?.exact ? 'EXACT' : audit.previous_4d_reserve?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
+                    <div>4D single pair: <span className="text-slate-200">{audit.previous_4d_single_pair?.exact ? 'EXACT' : audit.previous_4d_single_pair?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
+                    <div>3D depan: <span className="text-slate-200">{audit['3d_front']?.exact ? 'EXACT' : audit['3d_front']?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
+                    <div>3D belakang: <span className="text-slate-200">{audit['3d_back']?.exact ? 'EXACT' : audit['3d_back']?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
+                    {['front', 'middle', 'back'].map((slot) => (
+                      <div key={slot}>2D {slot}: <span className="text-slate-200">{audit[`2d_${slot}`]?.exact ? 'EXACT' : audit[`2d_${slot}`]?.reverse ? 'REVERSE' : 'MISS'}</span></div>
+                    ))}
+                    <div>BBFS6: <span className="text-slate-200">{audit.bbfs6?.full_draw_coverage ? 'FULL' : `${audit.bbfs6?.occurrence_coverage?.captured ?? 0}/4`}</span></div>
+                  </div>
+                )}
+              </div>
+            </details>
+          );
+        })}
+
+        {!records.length && (
+          <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-8 text-center text-sm text-slate-500">
+            Indeks histori untuk market ini belum tersedia.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function GeneratorPanel() {
   const {
     marketCode,
@@ -626,9 +941,11 @@ function GeneratorPanel() {
     marketData,
     collectorStatus,
     predictions,
+    predictionHistory,
     lastRefresh,
     dataError,
   } = useApp();
+  const [showHistory, setShowHistory] = useState(false);
 
   const activeData = marketData[marketCode] || [];
   const latest = activeData[0] || {
@@ -676,6 +993,8 @@ function GeneratorPanel() {
             count={activeData.length}
             lastRefresh={lastRefresh}
             dataError={dataError}
+            collectedAt={collectorStatus?.collected_at}
+            predictionAt={predictions[marketCode]?.generated_at}
           />
         </div>
 
@@ -683,8 +1002,17 @@ function GeneratorPanel() {
           prediction={predictions[marketCode]}
           marketCode={marketCode}
           latest={latest}
+          onOpenHistory={() => setShowHistory(true)}
         />
       </div>
+      {showHistory && (
+        <PredictionHistoryPanel
+          marketCode={marketCode}
+          setMarketCode={setMarketCode}
+          history={predictionHistory[marketCode]}
+          onClose={() => setShowHistory(false)}
+        />
+      )}
     </div>
   );
 }
@@ -774,6 +1102,101 @@ function ResultsPanel() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function liveDrawState({ isRefreshing, dataError, status, latest, prediction }) {
+  if (isRefreshing) return { key: 'checking', label: 'CHECKING', className: 'text-sky-300 bg-sky-500/10 border-sky-500/25' };
+  if (dataError || (!latest && status?.source_errors?.length)) {
+    return { key: 'source_unavailable', label: 'SOURCE UNAVAILABLE', className: 'text-rose-300 bg-rose-500/10 border-rose-500/25' };
+  }
+  const predictionBasis = prediction?.latest_result;
+  const predictionCaughtUp = predictionBasis && latest &&
+    predictionBasis.date === latest.result_date &&
+    String(predictionBasis.number || '').padStart(4, '0') === String(latest.nomor || '').padStart(4, '0');
+  if (Number(status?.new_count || 0) > 0 && !predictionCaughtUp) {
+    return { key: 'new_result_detected', label: 'NEW RESULT DETECTED', className: 'text-amber-300 bg-amber-500/10 border-amber-500/25' };
+  }
+  if (latest?.verification) {
+    return { key: 'verified', label: 'VERIFIED', className: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/25' };
+  }
+  return { key: 'waiting', label: 'WAITING', className: 'text-slate-300 bg-slate-500/10 border-slate-500/25' };
+}
+
+function LiveDrawPanel() {
+  const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError } = useApp();
+
+  return (
+    <div className="space-y-5">
+      <section className="bg-slate-900/90 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl">
+        <div className="flex items-start gap-3 border-b border-slate-800 pb-4">
+          <div className="rounded-xl border border-rose-500/25 bg-rose-500/10 p-3 text-rose-300">
+            <Radio className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-100">LiveDraw · Verified Result Monitor</h3>
+            <p className="mt-1 text-xs text-slate-400">
+              Monitor ini membaca hasil collector nyata. Tidak ada video atau angka live buatan.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {['HK', 'SGP', 'SDY'].map((market) => {
+            const row = marketData[market]?.[0] || null;
+            const status = collectorStatus?.markets?.[market] || null;
+            const state = liveDrawState({ isRefreshing, dataError, status, latest: row, prediction: predictions[market] });
+            return (
+              <article key={market} className="rounded-2xl border border-slate-800 bg-slate-950/50 p-5 space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500">Market</div>
+                    <div className="text-xl font-black text-slate-100">{market}</div>
+                  </div>
+                  <span className={`rounded-full border px-2.5 py-1 text-[9px] font-bold ${state.className}`}>
+                    {state.label}
+                  </span>
+                </div>
+
+                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 py-4 text-center">
+                  <div className="text-[10px] uppercase text-slate-500">Latest Result</div>
+                  <div className="mt-1 font-mono text-3xl font-black text-emerald-400">{row?.nomor || '----'}</div>
+                </div>
+
+                <dl className="space-y-2.5 text-xs">
+                  {[
+                    ['Period', row?.periode || '-'],
+                    ['Result date', row?.result_date || row?.tanggal || '-'],
+                    ['Verification', verificationLabel(row?.verification)],
+                    ['Source', row?.source_name || '-'],
+                    ['Collector updated', formatSyncTime(row?.collected_at || collectorStatus?.collected_at)],
+                    ['App last checked', formatSyncTime(lastRefresh)],
+                    ['Auto refresh', 'Aktif · 60 detik'],
+                  ].map(([label, value]) => (
+                    <div key={label} className="flex items-start justify-between gap-3">
+                      <dt className="text-slate-500">{label}</dt>
+                      <dd className="text-right text-slate-200 font-medium">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+                {row?.source_url && (
+                  <a
+                    href={row.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2.5 text-xs font-semibold text-slate-200"
+                  >
+                    Buka Sumber Live
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      </section>
     </div>
   );
 }
@@ -928,12 +1351,13 @@ function MobileNavigation() {
   const tabs = [
     { id: 'generator', label: 'Analisis', icon: Sparkles },
     { id: 'results', label: 'Data', icon: Database },
+    { id: 'livedraw', label: 'LiveDraw', icon: Radio },
     { id: 'analytics', label: 'Statistik', icon: BarChart3 },
     { id: 'dreams', label: 'Tafsir', icon: BookOpen },
   ];
 
   return (
-    <nav className="md:hidden sticky bottom-0 z-40 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 px-2 py-2 flex justify-around">
+    <nav className="md:hidden sticky bottom-0 z-40 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 px-1 py-2 flex">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const active = activeTab === tab.id;
@@ -942,7 +1366,7 @@ function MobileNavigation() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={
-              'flex flex-col items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] ' +
+              'flex-1 min-w-0 flex flex-col items-center gap-1 px-1 py-1.5 rounded-lg text-[9px] ' +
               (active ? 'text-emerald-400 font-bold' : 'text-slate-400')
             }
           >
@@ -972,6 +1396,7 @@ function MainContent() {
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
         {activeTab === 'generator' && <GeneratorPanel />}
         {activeTab === 'results' && <ResultsPanel />}
+        {activeTab === 'livedraw' && <LiveDrawPanel />}
         {activeTab === 'analytics' && <AnalyticsPanel />}
         {activeTab === 'dreams' && <DreamBookPanel />}
       </main>
