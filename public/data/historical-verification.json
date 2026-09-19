@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-18T11:21:58+07:00",
+  "generated_at": "2026-09-19T15:17:46+07:00",
   "target_years": [
     2023,
     2024,
@@ -8,40 +8,308 @@
   ],
   "markets": {
     "HK": {
-      "rows": 260,
+      "rows": 261,
       "period": [
         "2026-01-01",
-        "2026-09-17"
+        "2026-09-18"
       ],
       "historical_status": "pending_external_archive",
       "error": "HK 2023: butuh >=2 sumber historis independen, berhasil=1, errors={}"
     },
     "SDY": {
-      "rows": 260,
+      "rows": 261,
       "period": [
         "2026-01-01",
-        "2026-09-17"
+        "2026-09-18"
       ],
       "historical_status": "pending_external_archive",
       "error": "SDY 2023: butuh >=2 sumber historis independen, berhasil=1, errors={'sdy6_archive': 'Fetch gagal untuk https://datapengeluaransdy.club/data-sdy/: HTTPSConnectionPool(host=\\'datapengeluaransdy.club\\', port=443): Max retries exceeded with url: /data-sdy/ (Caused by NameResolutionError(\"HTTPSConnection(host=\\'datapengeluaransdy.club\\', port=443): Failed to resolve \\'datapengeluaransdy.club\\' ([Errno -5] No address associated with hostname)\"))'}"
     },
     "SGP": {
-      "rows": 581,
+      "rows": 969,
       "period": [
         "2023-01-01",
-        "2026-09-16"
+        "2026-09-17"
       ],
-      "verification": "Singapore Pools official individual draw pages",
-      "year_counts": {
-        "2026": 111,
-        "2025": 157,
-        "2024": 156,
-        "2023": 157
+      "verification": "RoyalToto-style SGP, minimum two-source exact agreement",
+      "schedule": "Monday, Wednesday, Thursday, Saturday, Sunday",
+      "period_anchor": "SGP-2474 @ 2026-09-12",
+      "verification_by_year": {
+        "2023": {
+          "verified_rows": 261,
+          "period_first": "SGP-1510",
+          "period_last": "SGP-1770",
+          "date_first": "2023-01-01",
+          "date_last": "2023-12-31",
+          "sources": [
+            {
+              "id": "paitosgplengkap",
+              "rows": 23,
+              "compatible_peers": []
+            },
+            {
+              "id": "datasgp2_archive",
+              "rows": 261,
+              "compatible_peers": [
+                "datasingap_archive"
+              ]
+            },
+            {
+              "id": "datasingap_archive",
+              "rows": 261,
+              "compatible_peers": [
+                "datasgp2_archive"
+              ]
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasgp2_archive",
+              "common": 23,
+              "matches": 23,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasingap_archive",
+              "common": 23,
+              "matches": 23,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datasgp2_archive",
+              "source_b": "datasingap_archive",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "source_errors": {
+            "buzzbike_sgp_2023": "Text weekday5: header 5 hari 2023 tidak ditemukan"
+          }
+        },
+        "2024": {
+          "verified_rows": 261,
+          "period_first": "SGP-1771",
+          "period_last": "SGP-2031",
+          "date_first": "2024-01-01",
+          "date_last": "2024-12-30",
+          "sources": [
+            {
+              "id": "paitosgplengkap",
+              "rows": 261,
+              "compatible_peers": [
+                "datasgp2_archive",
+                "datasingap_archive"
+              ]
+            },
+            {
+              "id": "datasgp2_archive",
+              "rows": 261,
+              "compatible_peers": [
+                "datasingap_archive",
+                "paitosgplengkap"
+              ]
+            },
+            {
+              "id": "datasingap_archive",
+              "rows": 261,
+              "compatible_peers": [
+                "datasgp2_archive",
+                "paitosgplengkap"
+              ]
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasgp2_archive",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasingap_archive",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datasgp2_archive",
+              "source_b": "datasingap_archive",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "source_errors": {}
+        },
+        "2025": {
+          "verified_rows": 261,
+          "period_first": "SGP-2032",
+          "period_last": "SGP-2292",
+          "date_first": "2025-01-01",
+          "date_last": "2025-12-31",
+          "sources": [
+            {
+              "id": "paitosgplengkap",
+              "rows": 261,
+              "compatible_peers": [
+                "datasgp2_archive",
+                "datasingap_archive"
+              ]
+            },
+            {
+              "id": "datasgp2_archive",
+              "rows": 261,
+              "compatible_peers": [
+                "datasingap_archive",
+                "paitosgplengkap"
+              ]
+            },
+            {
+              "id": "datasingap_archive",
+              "rows": 261,
+              "compatible_peers": [
+                "datasgp2_archive",
+                "paitosgplengkap"
+              ]
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasgp2_archive",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasingap_archive",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datasgp2_archive",
+              "source_b": "datasingap_archive",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "source_errors": {}
+        },
+        "2026": {
+          "verified_rows": 186,
+          "period_first": "SGP-2293",
+          "period_last": "SGP-2478",
+          "date_first": "2026-01-01",
+          "date_last": "2026-09-17",
+          "sources": [
+            {
+              "id": "paitosgplengkap",
+              "rows": 185,
+              "compatible_peers": [
+                "datasgp2_archive",
+                "datasingap_archive",
+                "nexipools_sgp_recent"
+              ]
+            },
+            {
+              "id": "datasgp2_archive",
+              "rows": 183,
+              "compatible_peers": [
+                "datasingap_archive",
+                "nexipools_sgp_recent",
+                "paitosgplengkap"
+              ]
+            },
+            {
+              "id": "datasingap_archive",
+              "rows": 183,
+              "compatible_peers": [
+                "datasgp2_archive",
+                "nexipools_sgp_recent",
+                "paitosgplengkap"
+              ]
+            },
+            {
+              "id": "nexipools_sgp_recent",
+              "rows": 30,
+              "compatible_peers": [
+                "datasgp2_archive",
+                "datasingap_archive",
+                "paitosgplengkap"
+              ]
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasgp2_archive",
+              "common": 182,
+              "matches": 182,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "datasingap_archive",
+              "common": 182,
+              "matches": 182,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "paitosgplengkap",
+              "source_b": "nexipools_sgp_recent",
+              "common": 30,
+              "matches": 30,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datasgp2_archive",
+              "source_b": "datasingap_archive",
+              "common": 183,
+              "matches": 183,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datasgp2_archive",
+              "source_b": "nexipools_sgp_recent",
+              "common": 27,
+              "matches": 27,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datasingap_archive",
+              "source_b": "nexipools_sgp_recent",
+              "common": 27,
+              "matches": 27,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "source_errors": {}
+        }
       },
-      "draw_range_scanned": [
-        4956,
-        5536
-      ]
+      "historical_status": "complete_2023_2026"
     }
   }
 }
