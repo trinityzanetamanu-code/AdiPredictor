@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T15:17:46+07:00",
+  "generated_at": "2026-09-19T18:03:07+07:00",
   "target_years": [
     2023,
     2024,
@@ -14,22 +14,22 @@
         "2026-09-18"
       ],
       "historical_status": "pending_external_archive",
-      "error": "HK 2023: butuh >=2 sumber historis independen, berhasil=1, errors={}"
+      "error": "HK 2023: butuh >=2 sumber historis independen, berhasil=1, errors={'datahkpools_archive': \"Fetch gagal untuk https://datahkpools.online/: HTTPSConnectionPool(host='datahkpools.online', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='datahkpools.online', port=443) at 0x7f5ccef6fc50>, 'Connection to datahkpools.online timed out. (connect timeout=15)'))\"}"
     },
     "SDY": {
-      "rows": 261,
+      "rows": 262,
       "period": [
         "2026-01-01",
-        "2026-09-18"
+        "2026-09-19"
       ],
       "historical_status": "pending_external_archive",
-      "error": "SDY 2023: butuh >=2 sumber historis independen, berhasil=1, errors={'sdy6_archive': 'Fetch gagal untuk https://datapengeluaransdy.club/data-sdy/: HTTPSConnectionPool(host=\\'datapengeluaransdy.club\\', port=443): Max retries exceeded with url: /data-sdy/ (Caused by NameResolutionError(\"HTTPSConnection(host=\\'datapengeluaransdy.club\\', port=443): Failed to resolve \\'datapengeluaransdy.club\\' ([Errno -5] No address associated with hostname)\"))'}"
+      "error": "SDY 2023: butuh >=2 sumber historis independen, berhasil=1, errors={'datasdypools_space_archive': \"Fetch gagal untuk https://datasdypools.space/data/ajax/data-sdy.php: HTTPSConnectionPool(host='datasdypools.space', port=443): Read timed out. (read timeout=15)\", 'paficurugkembar_sdy_archive': 'Fetch gagal untuk https://paficurugkembar.org/: HTTPSConnectionPool(host=\\'paficurugkembar.org\\', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for \\'paficurugkembar.org\\'. (_ssl.c:1016)\")))', 'sdy6_archive': 'Fetch gagal untuk https://datapengeluaransdy.club/data-sdy/: HTTPSConnectionPool(host=\\'datapengeluaransdy.club\\', port=443): Max retries exceeded with url: /data-sdy/ (Caused by NameResolutionError(\"HTTPSConnection(host=\\'datapengeluaransdy.club\\', port=443): Failed to resolve \\'datapengeluaransdy.club\\' ([Errno -5] No address associated with hostname)\"))'}"
     },
     "SGP": {
-      "rows": 969,
+      "rows": 970,
       "period": [
         "2023-01-01",
-        "2026-09-17"
+        "2026-09-19"
       ],
       "verification": "RoyalToto-style SGP, minimum two-source exact agreement",
       "schedule": "Monday, Wednesday, Thursday, Saturday, Sunday",
@@ -213,11 +213,11 @@
           "source_errors": {}
         },
         "2026": {
-          "verified_rows": 186,
+          "verified_rows": 187,
           "period_first": "SGP-2293",
-          "period_last": "SGP-2478",
+          "period_last": "SGP-2479",
           "date_first": "2026-01-01",
-          "date_last": "2026-09-17",
+          "date_last": "2026-09-19",
           "sources": [
             {
               "id": "paitosgplengkap",
@@ -239,7 +239,7 @@
             },
             {
               "id": "datasingap_archive",
-              "rows": 183,
+              "rows": 188,
               "compatible_peers": [
                 "datasgp2_archive",
                 "nexipools_sgp_recent",
@@ -268,16 +268,16 @@
             {
               "source_a": "paitosgplengkap",
               "source_b": "datasingap_archive",
-              "common": 182,
-              "matches": 182,
+              "common": 185,
+              "matches": 185,
               "mismatches": 0,
               "match_ratio": 1.0
             },
             {
               "source_a": "paitosgplengkap",
               "source_b": "nexipools_sgp_recent",
-              "common": 30,
-              "matches": 30,
+              "common": 29,
+              "matches": 29,
               "mismatches": 0,
               "match_ratio": 1.0
             },
@@ -292,16 +292,16 @@
             {
               "source_a": "datasgp2_archive",
               "source_b": "nexipools_sgp_recent",
-              "common": 27,
-              "matches": 27,
+              "common": 26,
+              "matches": 26,
               "mismatches": 0,
               "match_ratio": 1.0
             },
             {
               "source_a": "datasingap_archive",
               "source_b": "nexipools_sgp_recent",
-              "common": 27,
-              "matches": 27,
+              "common": 30,
+              "matches": 30,
               "mismatches": 0,
               "match_ratio": 1.0
             }
