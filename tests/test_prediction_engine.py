@@ -2,6 +2,9 @@ import copy
 import hashlib
 import inspect
 import json
+import os
+import shutil
+import subprocess
 from datetime import date, timedelta
 
 import pytest
@@ -182,6 +185,7 @@ def test_candidate_counts(built):
     assert counts["total_3d_candidates"] == 12
     assert counts["total_2d_candidates"] == 20
     assert counts["total_direct_number_candidates"] == 38
+    assert counts["total_bbfs_scenarios"] == 7
 
 
 def test_prediction_engine_idempotency(tmp_path, monkeypatch, built):
@@ -233,6 +237,56 @@ def test_visual_svg_uses_actual_rows(tmp_path, monkeypatch, history):
     assert all(item["number_of_occurrences"] > 0 for item in visuals)
     assert all(item["visual_pattern_confirmed"] is True for item in visuals)
     assert all("visual_predictive_edge_confirmed" in item for item in visuals)
+    assert all("wilson_95_ci" in item for item in visuals)
+    assert all(item["backtest_samples"] <= item["number_of_occurrences"] for item in visuals)
+    assert all(item["baseline"] in (0.1, 0.01, 0.001) for item in visuals)
+    signatures = {
+        (item["historical_hit_rate"], tuple(item["wilson_95_ci"]), item["baseline"])
+        for item in visuals
+    }
+    assert len(signatures) > 1
+
+
+def test_android_release_configurator_patches_generated_gradle(tmp_path):
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("Node is unavailable in this test environment")
+    gradle = tmp_path / "build.gradle"
+    gradle.write_text(
+        "apply plugin: 'com.android.application'\n\n"
+        "android {\n"
+        "    namespace \"com.adipredictor.app\"\n"
+        "    defaultConfig {\n"
+        "        applicationId \"com.adipredictor.app\"\n"
+        "        versionCode 1\n"
+        "        versionName \"1.0\"\n"
+        "    }\n"
+        "    buildTypes {\n"
+        "        release {\n"
+        "            minifyEnabled false\n"
+        "        }\n"
+        "    }\n"
+        "}\n",
+        encoding="utf-8",
+    )
+    env = {
+        **os.environ,
+        "ANDROID_GRADLE_PATH": str(gradle),
+        "ANDROID_VERSION_CODE": "100321",
+        "ANDROID_VERSION_NAME": "2.0.0+build.100321",
+    }
+    subprocess.run(
+        [node, str(pe.ROOT / "scripts" / "configure_android_release.mjs")],
+        check=True,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    patched = gradle.read_text(encoding="utf-8")
+    assert 'applicationId "com.adipredictor.app"' in patched
+    assert "versionCode 100321" in patched
+    assert 'versionName "2.0.0+build.100321"' in patched
+    assert "signingConfig signingConfigs.release" in patched
 
 
 def test_prediction_history_index_uses_archives_and_actuals(tmp_path, monkeypatch, built, history):

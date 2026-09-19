@@ -724,8 +724,15 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
     }
 
 
-def write_status(config: dict, results: List[dict], collected_at: str, year: int) -> None:
+def write_status(config: dict, results: List[dict], collected_at: str, year: int) -> bool:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+    # A polling check is not a successful new collection. Preserve the last
+    # meaningful collector timestamp so scheduled runs do not create commits
+    # solely because the clock changed.
+    if STATUS_PATH.exists() and not any(
+        result.get("status") == "updated" for result in results
+    ):
+        return False
     payload = {
         "schema_version": 2,
         "collected_at": collected_at,
@@ -734,6 +741,7 @@ def write_status(config: dict, results: List[dict], collected_at: str, year: int
         "markets": {r["market"]: r for r in results},
     }
     STATUS_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return True
 
 
 def main() -> int:

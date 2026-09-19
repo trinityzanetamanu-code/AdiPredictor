@@ -82,6 +82,28 @@ export async function loadPrediction(marketCode) {
   );
 }
 
+export async function loadPredictionHistory(marketCode) {
+  const code = marketCode.toLowerCase();
+
+  const data = await remoteFirst(
+    'predictions/' + code + '/history.json',
+    './predictions/' + code + '/history.json',
+    true,
+  );
+
+  return data && Array.isArray(data.records)
+    ? data
+    : { schema_version: 1, market: marketCode, count: 0, records: [] };
+}
+
+export function predictionAssetUrl(imagePath, fingerprint = '') {
+  if (!imagePath) return '';
+  if (/^https?:\/\//i.test(imagePath)) return imagePath;
+  const cleanPath = String(imagePath).replace(/^\/+/, '');
+  const version = fingerprint ? encodeURIComponent(fingerprint.slice(0, 16)) : Date.now();
+  return REMOTE_ROOT + '/' + cleanPath + '?v=' + version;
+}
+
 
 export async function loadTafsir() {
   const data = await remoteFirst(
