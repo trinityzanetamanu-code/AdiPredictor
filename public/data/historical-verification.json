@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T18:24:24+07:00",
+  "generated_at": "2026-09-19T19:09:21+07:00",
   "target_years": [
     2023,
     2024,
@@ -8,22 +8,438 @@
   ],
   "markets": {
     "HK": {
-      "rows": 261,
+      "rows": 1356,
       "period": [
-        "2026-01-01",
+        "2023-01-02",
         "2026-09-18"
       ],
-      "historical_status": "pending_external_archive",
-      "error": "HK 2024: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datahkpro_archive', 'source_b': 'angkahk_archive', 'common': 361, 'matches': 7, 'mismatches': 354, 'match_ratio': 0.019390581717451522}]"
+      "verification_by_year": {
+        "2023": {
+          "verified_rows": 364,
+          "consensus_sources": [
+            "condor_hk_archive",
+            "serbialadies_hk_archive",
+            "user_archive_hk_angkeluar"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "condor_hk_archive",
+              "rows": 364
+            },
+            {
+              "id": "serbialadies_hk_archive",
+              "rows": 364
+            },
+            {
+              "id": "datahkpro_archive",
+              "rows": 360
+            },
+            {
+              "id": "datahk2023_archive",
+              "rows": 358
+            },
+            {
+              "id": "user_archive_hk_angkeluar",
+              "rows": 365
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "condor_hk_archive",
+              "source_b": "serbialadies_hk_archive",
+              "common": 364,
+              "matches": 364,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "condor_hk_archive",
+              "source_b": "datahkpro_archive",
+              "common": 359,
+              "matches": 0,
+              "mismatches": 359,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "condor_hk_archive",
+              "source_b": "datahk2023_archive",
+              "common": 357,
+              "matches": 0,
+              "mismatches": 357,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "condor_hk_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 364,
+              "matches": 364,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "serbialadies_hk_archive",
+              "source_b": "datahkpro_archive",
+              "common": 359,
+              "matches": 0,
+              "mismatches": 359,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "serbialadies_hk_archive",
+              "source_b": "datahk2023_archive",
+              "common": 357,
+              "matches": 0,
+              "mismatches": 357,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "serbialadies_hk_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 364,
+              "matches": 364,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "datahk2023_archive",
+              "common": 358,
+              "matches": 348,
+              "mismatches": 10,
+              "match_ratio": 0.9720670391061452
+            },
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 360,
+              "matches": 0,
+              "mismatches": 360,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "datahk2023_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 358,
+              "matches": 0,
+              "mismatches": 358,
+              "match_ratio": 0.0
+            }
+          ],
+          "unresolved_dates": [
+            "2023-01-01"
+          ],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        },
+        "2024": {
+          "verified_rows": 366,
+          "consensus_sources": [
+            "datahkpro_archive",
+            "user_archive_hk_angkeluar"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "datahkpro_archive",
+              "rows": 366
+            },
+            {
+              "id": "user_archive_hk_angkeluar",
+              "rows": 366
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 366,
+              "matches": 366,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "unresolved_dates": [],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        },
+        "2025": {
+          "verified_rows": 365,
+          "consensus_sources": [
+            "paitohklengkap_archive",
+            "user_archive_hk_angkeluar"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "datahkpro_archive",
+              "rows": 364
+            },
+            {
+              "id": "paitohklengkap_archive",
+              "rows": 365
+            },
+            {
+              "id": "user_archive_hk_angkeluar",
+              "rows": 365
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "paitohklengkap_archive",
+              "common": 364,
+              "matches": 0,
+              "mismatches": 364,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 364,
+              "matches": 0,
+              "mismatches": 364,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "paitohklengkap_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 365,
+              "matches": 365,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "unresolved_dates": [],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        },
+        "2026": {
+          "verified_rows": 261,
+          "consensus_sources": [
+            "livenomor_hk",
+            "paitohklengkap_archive",
+            "user_archive_hk_angkeluar"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "datahkpro_archive",
+              "rows": 258
+            },
+            {
+              "id": "paitohklengkap_archive",
+              "rows": 261
+            },
+            {
+              "id": "user_archive_hk_angkeluar",
+              "rows": 251
+            },
+            {
+              "id": "livenomor_hk",
+              "rows": 261
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "paitohklengkap_archive",
+              "common": 258,
+              "matches": 0,
+              "mismatches": 258,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 251,
+              "matches": 0,
+              "mismatches": 251,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "datahkpro_archive",
+              "source_b": "livenomor_hk",
+              "common": 258,
+              "matches": 0,
+              "mismatches": 258,
+              "match_ratio": 0.0
+            },
+            {
+              "source_a": "paitohklengkap_archive",
+              "source_b": "user_archive_hk_angkeluar",
+              "common": 251,
+              "matches": 251,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "paitohklengkap_archive",
+              "source_b": "livenomor_hk",
+              "common": 261,
+              "matches": 261,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "user_archive_hk_angkeluar",
+              "source_b": "livenomor_hk",
+              "common": 251,
+              "matches": 251,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "unresolved_dates": [],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        }
+      },
+      "historical_status": "complete_2023_2026"
     },
     "SDY": {
-      "rows": 262,
+      "rows": 1355,
       "period": [
-        "2026-01-01",
-        "2026-09-19"
+        "2023-01-02",
+        "2026-09-18"
       ],
-      "historical_status": "pending_external_archive",
-      "error": "SDY 2024: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datatogel_sdy_archive', 'source_b': 'datasydtoday_archive', 'common': 366, 'matches': 267, 'mismatches': 99, 'match_ratio': 0.7295081967213115}]"
+      "verification_by_year": {
+        "2023": {
+          "verified_rows": 363,
+          "consensus_sources": [
+            "datatogel_sdy_archive",
+            "saltwind_sdy_2023"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "saltwind_sdy_2023",
+              "rows": 364
+            },
+            {
+              "id": "datatogel_sdy_archive",
+              "rows": 365
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "saltwind_sdy_2023",
+              "source_b": "datatogel_sdy_archive",
+              "common": 364,
+              "matches": 363,
+              "mismatches": 1,
+              "match_ratio": 0.9972527472527473
+            }
+          ],
+          "unresolved_dates": [
+            "2023-01-01",
+            "2023-11-22"
+          ],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        },
+        "2024": {
+          "verified_rows": 366,
+          "consensus_sources": [
+            "datatogel_sdy_archive",
+            "user_archive_sdy_datasdywp"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "datatogel_sdy_archive",
+              "rows": 366
+            },
+            {
+              "id": "user_archive_sdy_datasdywp",
+              "rows": 366
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "datatogel_sdy_archive",
+              "source_b": "user_archive_sdy_datasdywp",
+              "common": 366,
+              "matches": 366,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "unresolved_dates": [],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        },
+        "2025": {
+          "verified_rows": 365,
+          "consensus_sources": [
+            "datatogel_sdy_archive",
+            "user_archive_sdy_datasdywp"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "datatogel_sdy_archive",
+              "rows": 365
+            },
+            {
+              "id": "user_archive_sdy_datasdywp",
+              "rows": 365
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "datatogel_sdy_archive",
+              "source_b": "user_archive_sdy_datasdywp",
+              "common": 365,
+              "matches": 365,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            }
+          ],
+          "unresolved_dates": [],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        },
+        "2026": {
+          "verified_rows": 261,
+          "consensus_sources": [
+            "datatogel_sdy_archive",
+            "livenomor_sdy",
+            "user_archive_sdy_datasdywp"
+          ],
+          "all_parsed_sources": [
+            {
+              "id": "datatogel_sdy_archive",
+              "rows": 261
+            },
+            {
+              "id": "user_archive_sdy_datasdywp",
+              "rows": 256
+            },
+            {
+              "id": "livenomor_sdy",
+              "rows": 262
+            }
+          ],
+          "pair_reports": [
+            {
+              "source_a": "datatogel_sdy_archive",
+              "source_b": "user_archive_sdy_datasdywp",
+              "common": 256,
+              "matches": 256,
+              "mismatches": 0,
+              "match_ratio": 1.0
+            },
+            {
+              "source_a": "datatogel_sdy_archive",
+              "source_b": "livenomor_sdy",
+              "common": 261,
+              "matches": 257,
+              "mismatches": 4,
+              "match_ratio": 0.9846743295019157
+            },
+            {
+              "source_a": "user_archive_sdy_datasdywp",
+              "source_b": "livenomor_sdy",
+              "common": 256,
+              "matches": 252,
+              "mismatches": 4,
+              "match_ratio": 0.984375
+            }
+          ],
+          "unresolved_dates": [
+            "2026-09-19"
+          ],
+          "verification_rule": "exact agreement from >=2 independent sources per date"
+        }
+      },
+      "historical_status": "complete_2023_2026"
     },
     "SGP": {
       "rows": 970,
