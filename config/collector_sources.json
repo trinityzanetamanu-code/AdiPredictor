@@ -158,5 +158,10 @@
         "note": "RoyalToto screenshot anchor: 17 Sep 2026 = SD-3547. Sydney target market increments daily."
       }
     }
+  },
+  "data_policy": {
+    "historical_verification": "At least two independent sources must agree exactly per date before a historical draw is accepted.",
+    "current_latest": "A newly published current draw may remain as a primary-source row until an independent archive catches up; historical backfill preserves it.",
+    "period_fields": "HK and SD use RoyalToto-style daily period anchors; SGP uses the RoyalToto-style five-day period sequence."
   }
 }
