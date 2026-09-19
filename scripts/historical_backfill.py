@@ -135,7 +135,7 @@ SGP_HISTORICAL_SOURCES = [
         "id": "tarikanpaito_sgp",
         "name": "DataPaitoWarna Singapore",
         "url": "https://tarikanpaito.net/data/sgp/{year}",
-        "parser": "date_result4",
+        "parser": "archive_digits4",
         "priority": 10,
     },
     {
@@ -568,6 +568,8 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
         return parse_split_weekday4(html, market, source, year)
     if parser == "date_result4":
         return parse_date_result_table(html, market, source, year)
+    if parser == "archive_digits4":
+        return parse_archive_rows(html, market, source["url"], year)
 
     raise CollectorError(f"Parser historis tidak dikenal: {parser}")
 
