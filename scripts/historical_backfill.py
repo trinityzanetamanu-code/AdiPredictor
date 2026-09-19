@@ -63,6 +63,22 @@ HISTORICAL_SOURCES = {
             "priority": 10,
         },
         {
+            "id": "condor_hk_archive",
+            "name": "Condor HK Archive",
+            "url": "https://condor-airpictures.de/",
+            "parser": "forward_weekday7",
+            "heading_regex": r"TAHUN\s+{year}",
+            "priority": 8,
+        },
+        {
+            "id": "serbialadies_hk_archive",
+            "name": "SerbiaLadiesOpen HK Archive",
+            "url": "https://serbialadiesopen.org/",
+            "parser": "forward_weekday7",
+            "heading_regex": r"TAHUN\s+{year}",
+            "priority": 9,
+        },
+        {
             "id": "datahkpro_archive",
             "name": "DataHKPro Archive",
             "url": "https://datahkpro.site/",
@@ -129,6 +145,22 @@ HISTORICAL_SOURCES = {
         },
     ],
     "SDY": [
+        {
+            "id": "dataweb_sdy_archive",
+            "name": "DataWeb Sydney Archive",
+            "url": "https://dataweb.info/",
+            "parser": "weekday4",
+            "heading_regex": r"Data Keluaran SDY\s+{year}",
+            "priority": 5,
+        },
+        {
+            "id": "1angkanet_sdy_archive",
+            "name": "1AngkaNet Sydney Archive",
+            "url": "https://1angkanet.site/data-sdy-data-pengeluaran-sydney-pools-terbaru/",
+            "parser": "weekday4",
+            "heading_regex": r"(?:PENGELUARAN SDY|DATA KELUARAN SDY)\s+{year}",
+            "priority": 6,
+        },
         {
             "id": "datatogel_sdy_archive",
             "name": "Datatogel Sydney Archive",
@@ -977,6 +1009,135 @@ def parse_reverse_weekday7(html: str, market: str, source: dict, year: int):
     return out
 
 
+def parse_forward_weekday7(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    tables = list(
+        candidate_tables(
+            soup,
+            source["heading_regex"],
+            year,
+        )
+    )
+    if not tables:
+        raise CollectorError(
+            f"Forward weekday7: table {year} tidak ditemukan"
+        )
+
+    scored = []
+    for table in tables:
+        four_count = sum(
+            1
+            for cell in table.find_all(["td", "th"])
+            if normalize_cell(cell.get_text(" ", strip=True))
+        )
+        day_count = 0
+        for row in table.find_all("tr")[:20]:
+            mapped = [
+                normalize_day(cell.get_text(" ", strip=True))
+                for cell in row.find_all(["td", "th"])
+            ]
+            day_count = max(
+                day_count,
+                sum(day is not None for day in mapped),
+            )
+        scored.append((day_count * 1000 + four_count, table))
+
+    scored.sort(key=lambda item: item[0], reverse=True)
+    _, table = scored[0]
+    rows = table.find_all("tr")
+
+    header_idx = None
+    for idx, row in enumerate(rows[:20]):
+        mapped = [
+            normalize_day(cell.get_text(" ", strip=True))
+            for cell in row.find_all(["td", "th"])
+        ]
+        if sum(day is not None for day in mapped) >= 5:
+            header_idx = idx
+            break
+
+    if header_idx is None:
+        raise CollectorError(
+            f"Forward weekday7: header {year} tidak ditemukan"
+        )
+
+    jan1 = date(year, 1, 1)
+    first_monday = jan1 - timedelta(days=jan1.weekday())
+    first_full_monday = (
+        jan1
+        if jan1.weekday() == 0
+        else jan1 + timedelta(days=7 - jan1.weekday())
+    )
+
+    data_rows = []
+    for row in rows[header_idx + 1:]:
+        cells = row.find_all(["td", "th"])
+        if not cells:
+            continue
+        values = [
+            normalize_cell(cell.get_text(" ", strip=True))
+            for cell in cells
+        ]
+        if not any(values):
+            continue
+        if len(values) > 7:
+            values = values[-7:]
+        elif len(values) < 7:
+            values = values + [""] * (7 - len(values))
+        data_rows.append(values[:7])
+
+    if not data_rows:
+        raise CollectorError(
+            f"Forward weekday7 {year}: tidak ada data rows"
+        )
+
+    # If the first row has values only in the weekdays that belong to the
+    # opening partial calendar week, anchor it at first_monday. Otherwise,
+    # the archive starts from the first full Monday (common for HK mirrors).
+    opening_valid_cols = {
+        idx
+        for idx in range(7)
+        if (first_monday + timedelta(days=idx)).year == year
+    }
+    first_nonempty = {
+        idx for idx, value in enumerate(data_rows[0]) if value
+    }
+    has_partial_opening_row = bool(first_nonempty) and first_nonempty.issubset(
+        opening_valid_cols
+    ) and len(opening_valid_cols) < 7
+
+    start_monday = (
+        first_monday if has_partial_opening_row else first_full_monday
+    )
+
+    results = []
+    for week_index, values in enumerate(data_rows):
+        monday = start_monday + timedelta(days=week_index * 7)
+        for col, number in enumerate(values):
+            if not number:
+                continue
+            d = monday + timedelta(days=col)
+            if d.year != year:
+                continue
+            results.append(ParsedResult(
+                market=market,
+                result_date=d,
+                number=number,
+                source_id=source["id"],
+                source_name=source["name"],
+                source_url=source["url"],
+            ))
+
+    dedup = {item.result_date: item for item in results}
+    out = [dedup[d] for d in sorted(dedup)]
+    minimum = 200 if year == 2026 else 350
+    if len(out) < minimum:
+        raise CollectorError(
+            f"Forward weekday7 {year}: hanya {len(out)} result"
+        )
+    return out
+
+
 def parse_source_year(html: str, market: str, source: dict, year: int):
     parser = source.get("parser", "weekday4")
 
@@ -984,6 +1145,8 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
         return parse_weekday_grid(html, market, source, year)
     if parser == "reverse_weekday7":
         return parse_reverse_weekday7(html, market, source, year)
+    if parser == "forward_weekday7":
+        return parse_forward_weekday7(html, market, source, year)
     if parser == "weekday6_last4":
         return parse_weekday_grid_6_last4(html, market, source, year)
     if parser == "hk_anchor_sequence":
