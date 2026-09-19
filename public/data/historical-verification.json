@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T18:03:07+07:00",
+  "generated_at": "2026-09-19T18:07:43+07:00",
   "target_years": [
     2023,
     2024,
@@ -14,7 +14,7 @@
         "2026-09-18"
       ],
       "historical_status": "pending_external_archive",
-      "error": "HK 2023: butuh >=2 sumber historis independen, berhasil=1, errors={'datahkpools_archive': \"Fetch gagal untuk https://datahkpools.online/: HTTPSConnectionPool(host='datahkpools.online', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='datahkpools.online', port=443) at 0x7f5ccef6fc50>, 'Connection to datahkpools.online timed out. (connect timeout=15)'))\"}"
+      "error": "HK 2023: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datahkpro_archive', 'source_b': 'datahk2023_archive', 'common': 256, 'matches': 0, 'mismatches': 256, 'match_ratio': 0.0}]"
     },
     "SDY": {
       "rows": 262,
@@ -23,7 +23,7 @@
         "2026-09-19"
       ],
       "historical_status": "pending_external_archive",
-      "error": "SDY 2023: butuh >=2 sumber historis independen, berhasil=1, errors={'datasdypools_space_archive': \"Fetch gagal untuk https://datasdypools.space/data/ajax/data-sdy.php: HTTPSConnectionPool(host='datasdypools.space', port=443): Read timed out. (read timeout=15)\", 'paficurugkembar_sdy_archive': 'Fetch gagal untuk https://paficurugkembar.org/: HTTPSConnectionPool(host=\\'paficurugkembar.org\\', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for \\'paficurugkembar.org\\'. (_ssl.c:1016)\")))', 'sdy6_archive': 'Fetch gagal untuk https://datapengeluaransdy.club/data-sdy/: HTTPSConnectionPool(host=\\'datapengeluaransdy.club\\', port=443): Max retries exceeded with url: /data-sdy/ (Caused by NameResolutionError(\"HTTPSConnection(host=\\'datapengeluaransdy.club\\', port=443): Failed to resolve \\'datapengeluaransdy.club\\' ([Errno -5] No address associated with hostname)\"))'}"
+      "error": "SDY 2023: butuh >=2 sumber historis independen, berhasil=1, errors={}"
     },
     "SGP": {
       "rows": 970,
