@@ -13,8 +13,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: adipredictor-historical-backfill
-  cancel-in-progress: true
+  group: adipredictor-data-writer-main
+  cancel-in-progress: false
 
 jobs:
   backfill:
