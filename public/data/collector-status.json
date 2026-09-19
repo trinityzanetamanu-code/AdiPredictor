@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-19T05:11:28+07:00",
+  "collected_at": "2026-09-19T15:55:39+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -226,7 +226,7 @@
           "paitosgplengkap",
           "nexipools_sgp"
         ],
-        "collected_at": "2026-09-19T05:11:28+07:00",
+        "collected_at": "2026-09-19T15:55:39+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
@@ -248,24 +248,30 @@
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "primary_authoritative",
       "successful_sources": [
         "livenomor_sdy"
       ],
       "parsed_counts": {
-        "livenomor_sdy": 261
+        "livenomor_sdy": 262
       },
-      "verified_count": 261,
-      "new_count": 0,
+      "verified_count": 262,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-19",
+          "number": "8748",
+          "verification": "primary_source"
+        }
+      ],
       "latest": {
-        "id": 20260918,
-        "tanggal": "18 Sep 2026",
-        "periode": "SDY-20260918",
-        "nomor": "3877",
-        "result_date": "2026-09-18",
+        "id": 20260919,
+        "tanggal": "19 Sep 2026",
+        "periode": "SDY-20260919",
+        "nomor": "8748",
+        "result_date": "2026-09-19",
         "market": "SDY",
         "source_id": "livenomor_sdy",
         "source_name": "LiveNomor Sydney",
@@ -273,13 +279,13 @@
         "source_ids": [
           "livenomor_sdy"
         ],
-        "collected_at": "2026-09-18T17:57:15+07:00",
+        "collected_at": "2026-09-19T15:55:39+07:00",
         "verification": "primary_source",
         "confirmations": 1
       },
       "latest_verified": {
-        "date": "2026-09-18",
-        "number": "3877",
+        "date": "2026-09-19",
+        "number": "8748",
         "verification": "primary_source",
         "source_ids": [
           "livenomor_sdy"
