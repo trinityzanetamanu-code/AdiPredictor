@@ -20,9 +20,20 @@ DATA_DIR = ROOT / "public" / "data"
 STATUS_PATH = DATA_DIR / "collector-status.json"
 
 DAY_INDEX = {
-    "senin": 0, "selasa": 1, "rabu": 2, "kamis": 3, "jumat": 4, "jum'at": 4,
-    "sabtu": 5, "minggu": 6, "monday": 0, "tuesday": 1, "wednesday": 2,
-    "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6,
+    "senin": 0, "sen": 0,
+    "selasa": 1, "sel": 1,
+    "rabu": 2, "rab": 2,
+    "kamis": 3, "kam": 3,
+    "jumat": 4, "jum'at": 4, "jum": 4,
+    "sabtu": 5, "sab": 5,
+    "minggu": 6, "min": 6,
+    "monday": 0, "mon": 0,
+    "tuesday": 1, "tue": 1,
+    "wednesday": 2, "wed": 2,
+    "thursday": 3, "thu": 3,
+    "friday": 4, "fri": 4,
+    "saturday": 5, "sat": 5,
+    "sunday": 6, "sun": 6,
 }
 
 MONTHS_ID = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"]
