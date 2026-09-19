@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'scripts/historical_backfill.py'
+      - 'data/reference/**'
       - '.github/workflows/historical-backfill.yml'
   workflow_dispatch:
 
