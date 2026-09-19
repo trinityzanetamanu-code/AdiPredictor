@@ -149,7 +149,7 @@ SGP_HISTORICAL_SOURCES = [
         "id": "datasgp2_archive",
         "name": "DataSGP2 Archive",
         "url": "https://datasgp2.org/",
-        "parser": "weekday4",
+        "parser": "fixed_weekday5",
         "heading_regex": r"DATA SGP TAHUN\s+{year}",
         "priority": 30,
     },
@@ -157,7 +157,7 @@ SGP_HISTORICAL_SOURCES = [
         "id": "buzzbike_sgp_2023",
         "name": "MKTOTO SGP 2023 Archive",
         "url": "https://www.buzzbike.cc/data-sgp-2023/",
-        "parser": "weekday4",
+        "parser": "fixed_weekday5",
         "heading_regex": r"(?:Tabel Keluaran SGP|Data SGP)\s+{year}",
         "years": [2023],
         "priority": 35,
@@ -166,7 +166,7 @@ SGP_HISTORICAL_SOURCES = [
         "id": "gudangka_sgp_archive",
         "name": "Gudangka Singapore Archive",
         "url": "https://gudangka.net/datasgp.html",
-        "parser": "weekday4",
+        "parser": "fixed_weekday5",
         "heading_regex": r"TAHUN\s+{year}",
         "priority": 40,
     },
@@ -564,6 +564,144 @@ def parse_split_weekday4(html: str, market: str, source: dict, year: int):
     return out
 
 
+def parse_fixed_weekday5(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    target_weekdays = [0, 2, 3, 5, 6]  # Mon, Wed, Thu, Sat, Sun
+
+    candidate_tables = []
+    heading_regex = source.get("heading_regex")
+    if heading_regex:
+        pattern = heading_regex.replace("{year}", str(year))
+        for heading in soup.find_all(
+            ["h1", "h2", "h3", "h4", "h5", "strong", "b"]
+        ):
+            if re.search(
+                pattern,
+                heading.get_text(" ", strip=True),
+                flags=re.I,
+            ):
+                table = heading.find_next("table")
+                if table is not None:
+                    candidate_tables.append(table)
+
+    # Some archive pages do not expose semantic year headings. In that case
+    # score every table and select the one with the largest 4D payload.
+    if not candidate_tables:
+        candidate_tables = soup.find_all("table")
+
+    scored = []
+    for table in candidate_tables:
+        four_count = 0
+        usable_rows = 0
+        for row in table.find_all("tr"):
+            cells = row.find_all(["td", "th"])
+            values = []
+            for cell in cells:
+                text = re.sub(
+                    r"\s+",
+                    " ",
+                    cell.get_text(" ", strip=True),
+                ).strip()
+                if re.fullmatch(r"\d{4}", text):
+                    values.append(text)
+                    four_count += 1
+                elif re.fullmatch(r"(?:XXXX|XXX|-)", text, flags=re.I):
+                    values.append(None)
+            if len(values) >= 1:
+                usable_rows += 1
+        scored.append((four_count, usable_rows, table))
+
+    if not scored:
+        raise CollectorError(
+            f"Fixed weekday5: tidak ada table untuk {year}"
+        )
+
+    scored.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    four_count, _, table = scored[0]
+    if four_count < 100:
+        raise CollectorError(
+            f"Fixed weekday5: payload terlalu sedikit {four_count}"
+        )
+
+    jan1 = date(year, 1, 1)
+    first_monday = jan1 - timedelta(days=jan1.weekday())
+    week_index = 0
+    results = []
+
+    for row in table.find_all("tr"):
+        cells = row.find_all(["td", "th"])
+        raw_values = []
+        for cell in cells:
+            text = re.sub(
+                r"\s+",
+                " ",
+                cell.get_text(" ", strip=True),
+            ).strip()
+            if re.fullmatch(r"\d{4}", text):
+                raw_values.append(text)
+            elif re.fullmatch(r"(?:XXXX|XXX|-)", text, flags=re.I):
+                raw_values.append(None)
+
+        if not raw_values:
+            continue
+
+        # Ignore numbering/metadata columns when present. Five market columns
+        # are always Mon/Wed/Thu/Sat/Sun in these archives.
+        if len(raw_values) > 5:
+            raw_values = raw_values[-5:]
+
+        # If HTML omitted blank leading cells, infer them from the first
+        # calendar week's weekday position.
+        if len(raw_values) < 5:
+            if week_index == 0:
+                valid_positions = [
+                    idx
+                    for idx, weekday in enumerate(target_weekdays)
+                    if (
+                        first_monday
+                        + timedelta(days=weekday)
+                    ).year == year
+                ]
+                if len(raw_values) == len(valid_positions):
+                    values = [None] * 5
+                    for idx, value in zip(valid_positions, raw_values):
+                        values[idx] = value
+                    raw_values = values
+                else:
+                    raw_values = raw_values + [None] * (5 - len(raw_values))
+            else:
+                raw_values = raw_values + [None] * (5 - len(raw_values))
+
+        for col, number in enumerate(raw_values[:5]):
+            if not number:
+                continue
+            d = first_monday + timedelta(
+                days=week_index * 7 + target_weekdays[col]
+            )
+            if d.year != year:
+                continue
+            results.append(ParsedResult(
+                market=market,
+                result_date=d,
+                number=number,
+                source_id=source["id"],
+                source_name=source["name"],
+                source_url=source["url"],
+            ))
+
+        week_index += 1
+
+    dedup = {item.result_date: item for item in results}
+    out = [dedup[d] for d in sorted(dedup)]
+
+    minimum = 180 if year == 2026 else 240
+    if len(out) < minimum:
+        raise CollectorError(
+            f"Fixed weekday5 {year}: hanya {len(out)} result"
+        )
+    return out
+
+
 def parse_source_year(html: str, market: str, source: dict, year: int):
     parser = source.get("parser", "weekday4")
 
@@ -575,6 +713,8 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
         return parse_hk_anchor_sequence(html, market, source, year)
     if parser == "split_weekday4":
         return parse_split_weekday4(html, market, source, year)
+    if parser == "fixed_weekday5":
+        return parse_fixed_weekday5(html, market, source, year)
     if parser == "date_result4":
         return parse_date_result_table(html, market, source, year)
     if parser == "archive_digits4":
