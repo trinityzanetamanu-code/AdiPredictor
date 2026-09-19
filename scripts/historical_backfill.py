@@ -132,13 +132,6 @@ HISTORICAL_SOURCES = {
 
 SGP_HISTORICAL_SOURCES = [
     {
-        "id": "tarikanpaito_sgp",
-        "name": "DataPaitoWarna Singapore",
-        "url": "https://tarikanpaito.net/data/sgp/{year}",
-        "parser": "archive_digits4",
-        "priority": 10,
-    },
-    {
         "id": "paitosgplengkap",
         "name": "Paito SGP Lengkap",
         "url": "https://paitosgplengkap.org/data/{year}/",
@@ -161,14 +154,6 @@ SGP_HISTORICAL_SOURCES = [
         "heading_regex": r"(?:Tabel Keluaran SGP|Data SGP)\s+{year}",
         "years": [2023],
         "priority": 35,
-    },
-    {
-        "id": "gudangka_sgp_archive",
-        "name": "Gudangka Singapore Archive",
-        "url": "https://gudangka.net/datasgp.html",
-        "parser": "fixed_weekday5",
-        "heading_regex": r"TAHUN\s+{year}",
-        "priority": 40,
     },
     {
         "id": "nexipools_sgp_recent",
