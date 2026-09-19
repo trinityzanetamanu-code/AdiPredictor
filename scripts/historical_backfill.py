@@ -142,7 +142,7 @@ SGP_HISTORICAL_SOURCES = [
         "id": "datasgp2_archive",
         "name": "DataSGP2 Archive",
         "url": "https://datasgp2.org/",
-        "parser": "fixed_weekday5",
+        "parser": "text_weekday5",
         "heading_regex": r"DATA SGP TAHUN\s+{year}",
         "priority": 30,
     },
@@ -150,10 +150,18 @@ SGP_HISTORICAL_SOURCES = [
         "id": "buzzbike_sgp_2023",
         "name": "MKTOTO SGP 2023 Archive",
         "url": "https://www.buzzbike.cc/data-sgp-2023/",
-        "parser": "fixed_weekday5",
+        "parser": "text_weekday5",
         "heading_regex": r"(?:Tabel Keluaran SGP|Data SGP)\s+{year}",
         "years": [2023],
         "priority": 35,
+    },
+    {
+        "id": "datasingap_archive",
+        "name": "DataSingap Archive",
+        "url": "https://datasingap.com/",
+        "parser": "text_weekday5",
+        "heading_regex": r"DATA SGP TAHUN\s+{year}",
+        "priority": 36,
     },
     {
         "id": "nexipools_sgp_recent",
@@ -549,6 +557,125 @@ def parse_split_weekday4(html: str, market: str, source: dict, year: int):
     return out
 
 
+def parse_text_weekday5(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    lines = [
+        re.sub(r"\s+", " ", line).strip()
+        for line in soup.get_text("\n", strip=True).splitlines()
+        if line.strip()
+    ]
+
+    heading_pattern = source.get(
+        "heading_regex",
+        r"DATA SGP TAHUN\s+{year}",
+    ).replace("{year}", str(year))
+
+    start_idx = None
+    for idx, line in enumerate(lines):
+        if re.search(heading_pattern, line, flags=re.I):
+            start_idx = idx
+            break
+    if start_idx is None:
+        raise CollectorError(
+            f"Text weekday5: heading {year} tidak ditemukan"
+        )
+
+    # Find the five-column header. Some sites put all labels in one node;
+    # others put each label in a separate table cell.
+    required_days = {"sen", "rab", "kam", "sab", "min"}
+    seen_days = set()
+    data_start = None
+    for idx in range(start_idx + 1, min(len(lines), start_idx + 80)):
+        tokens = re.findall(
+            r"\b(?:sen(?:in)?|rab(?:u)?|kam(?:is)?|sab(?:tu)?|min(?:ggu)?)\b",
+            lines[idx].lower(),
+        )
+        for token in tokens:
+            if token.startswith("sen"):
+                seen_days.add("sen")
+            elif token.startswith("rab"):
+                seen_days.add("rab")
+            elif token.startswith("kam"):
+                seen_days.add("kam")
+            elif token.startswith("sab"):
+                seen_days.add("sab")
+            elif token.startswith("min"):
+                seen_days.add("min")
+        if required_days.issubset(seen_days):
+            data_start = idx + 1
+            break
+
+    if data_start is None:
+        raise CollectorError(
+            f"Text weekday5: header 5 hari {year} tidak ditemukan"
+        )
+
+    values = []
+    heading_any_year = re.compile(
+        r"(?:DATA\s+SGP\s+TAHUN|TAHUN|Data\s+SGP|"
+        r"Tabel\s+Keluaran\s+SGP)[^0-9]*(20\d{2})",
+        flags=re.I,
+    )
+
+    for line in lines[data_start:]:
+        year_match = heading_any_year.search(line)
+        if year_match and int(year_match.group(1)) != year:
+            break
+
+        for token in re.findall(
+            r"(?<!\d)(\d{4}|XXXX|XXX)(?!\d)",
+            line,
+            flags=re.I,
+        ):
+            values.append(None if token.upper().startswith("XXX") else token)
+
+    if len(values) < 5:
+        raise CollectorError(
+            f"Text weekday5 {year}: token data terlalu sedikit {len(values)}"
+        )
+
+    # Keep complete five-column rows only. Placeholder cells are intentionally
+    # preserved so partial first/last calendar weeks do not shift dates.
+    row_count = len(values) // 5
+    values = values[: row_count * 5]
+
+    target_weekdays = [0, 2, 3, 5, 6]
+    jan1 = date(year, 1, 1)
+    first_monday = jan1 - timedelta(days=jan1.weekday())
+    results = []
+
+    for week_index in range(row_count):
+        row_values = values[week_index * 5:(week_index + 1) * 5]
+        for col, number in enumerate(row_values):
+            if not number:
+                continue
+            d = first_monday + timedelta(
+                days=week_index * 7 + target_weekdays[col]
+            )
+            if d.year != year:
+                continue
+            results.append(ParsedResult(
+                market=market,
+                result_date=d,
+                number=number,
+                source_id=source["id"],
+                source_name=source["name"],
+                source_url=source["url"],
+            ))
+
+    dedup = {item.result_date: item for item in results}
+    out = [dedup[d] for d in sorted(dedup)]
+
+    minimum = 180 if year == 2026 else 250
+    if len(out) < minimum:
+        raise CollectorError(
+            f"Text weekday5 {year}: hanya {len(out)} result "
+            f"dari {len(values)} token"
+        )
+
+    return out
+
+
 def parse_fixed_weekday5(html: str, market: str, source: dict, year: int):
     soup = BeautifulSoup(html, "html.parser")
     target_weekdays = [0, 2, 3, 5, 6]  # Mon, Wed, Thu, Sat, Sun
@@ -700,6 +827,8 @@ def parse_source_year(html: str, market: str, source: dict, year: int):
         return parse_split_weekday4(html, market, source, year)
     if parser == "fixed_weekday5":
         return parse_fixed_weekday5(html, market, source, year)
+    if parser == "text_weekday5":
+        return parse_text_weekday5(html, market, source, year)
     if parser == "date_result4":
         return parse_date_result_table(html, market, source, year)
     if parser == "archive_digits4":
