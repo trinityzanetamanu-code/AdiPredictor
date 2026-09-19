@@ -105,8 +105,39 @@ def normalize_cell(text: str) -> str:
 
 
 def normalize_day(text: str) -> Optional[int]:
-    raw = re.sub(r"[^a-zA-Z']", "", (text or "").lower())
-    return DAY_INDEX.get(raw)
+    raw_text = re.sub(r"\s+", " ", (text or "").lower()).strip()
+    raw = re.sub(r"[^a-zA-Z']", "", raw_text)
+    direct = DAY_INDEX.get(raw)
+    if direct is not None:
+        return direct
+
+    tokens = re.findall(r"[a-zA-Z']+", raw_text)
+    for token in tokens:
+        day = DAY_INDEX.get(token)
+        if day is not None:
+            return day
+
+    aliases = [
+        ("senin", 0), ("sen", 0),
+        ("selasa", 1), ("sel", 1),
+        ("rabu", 2), ("rab", 2),
+        ("kamis", 3), ("kam", 3),
+        ("jumat", 4), ("jum'at", 4), ("jum", 4),
+        ("sabtu", 5), ("sab", 5),
+        ("minggu", 6), ("min", 6),
+        ("monday", 0), ("mon", 0),
+        ("tuesday", 1), ("tue", 1),
+        ("wednesday", 2), ("wed", 2),
+        ("thursday", 3), ("thu", 3),
+        ("friday", 4), ("fri", 4),
+        ("saturday", 5), ("sat", 5),
+        ("sunday", 6), ("sun", 6),
+    ]
+    for label, day in aliases:
+        if re.search(rf"\b{re.escape(label)}\b", raw_text):
+            return day
+
+    return None
 
 
 def parse_date_flexible(text: str) -> Optional[date]:
