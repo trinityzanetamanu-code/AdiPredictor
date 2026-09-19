@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-19T18:07:43+07:00",
+  "generated_at": "2026-09-19T18:10:43+07:00",
   "target_years": [
     2023,
     2024,
@@ -14,7 +14,7 @@
         "2026-09-18"
       ],
       "historical_status": "pending_external_archive",
-      "error": "HK 2023: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datahkpro_archive', 'source_b': 'datahk2023_archive', 'common': 256, 'matches': 0, 'mismatches': 256, 'match_ratio': 0.0}]"
+      "error": "HK 2023: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datahkpro_archive', 'source_b': 'datahk2023_archive', 'common': 358, 'matches': 348, 'mismatches': 10, 'match_ratio': 0.9720670391061452}]"
     },
     "SDY": {
       "rows": 262,
@@ -23,7 +23,7 @@
         "2026-09-19"
       ],
       "historical_status": "pending_external_archive",
-      "error": "SDY 2023: butuh >=2 sumber historis independen, berhasil=1, errors={}"
+      "error": "SDY 2023: tidak ada cluster >=2 sumber yang cocok; pair_reports=[{'source_a': 'datatogel_sdy_archive', 'source_b': 'datasydtoday_archive', 'common': 359, 'matches': 0, 'mismatches': 359, 'match_ratio': 0.0}]"
     },
     "SGP": {
       "rows": 970,
