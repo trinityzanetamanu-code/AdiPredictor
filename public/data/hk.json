@@ -2,7 +2,7 @@
   {
     "id": 20260918,
     "tanggal": "18 Sep 2026",
-    "periode": "HK-20260918",
+    "periode": "HK-3548",
     "nomor": "3725",
     "result_date": "2026-09-18",
     "market": "HK",
@@ -12,14 +12,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-19T01:14:34+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260917,
     "tanggal": "17 Sep 2026",
-    "periode": "HK-20260917",
+    "periode": "HK-3547",
     "nomor": "9059",
     "result_date": "2026-09-17",
     "market": "HK",
@@ -29,14 +29,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260916,
     "tanggal": "16 Sep 2026",
-    "periode": "HK-20260916",
+    "periode": "HK-3546",
     "nomor": "5065",
     "result_date": "2026-09-16",
     "market": "HK",
@@ -46,14 +46,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260915,
     "tanggal": "15 Sep 2026",
-    "periode": "HK-20260915",
+    "periode": "HK-3545",
     "nomor": "0379",
     "result_date": "2026-09-15",
     "market": "HK",
@@ -63,14 +63,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260914,
     "tanggal": "14 Sep 2026",
-    "periode": "HK-20260914",
+    "periode": "HK-3544",
     "nomor": "4332",
     "result_date": "2026-09-14",
     "market": "HK",
@@ -80,14 +80,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260913,
     "tanggal": "13 Sep 2026",
-    "periode": "HK-20260913",
+    "periode": "HK-3543",
     "nomor": "9298",
     "result_date": "2026-09-13",
     "market": "HK",
@@ -97,14 +97,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260912,
     "tanggal": "12 Sep 2026",
-    "periode": "HK-20260912",
+    "periode": "HK-3542",
     "nomor": "0040",
     "result_date": "2026-09-12",
     "market": "HK",
@@ -114,14 +114,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260911,
     "tanggal": "11 Sep 2026",
-    "periode": "HK-20260911",
+    "periode": "HK-3541",
     "nomor": "1401",
     "result_date": "2026-09-11",
     "market": "HK",
@@ -131,14 +131,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260910,
     "tanggal": "10 Sep 2026",
-    "periode": "HK-20260910",
+    "periode": "HK-3540",
     "nomor": "0076",
     "result_date": "2026-09-10",
     "market": "HK",
@@ -148,14 +148,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260909,
     "tanggal": "09 Sep 2026",
-    "periode": "HK-20260909",
+    "periode": "HK-3539",
     "nomor": "6140",
     "result_date": "2026-09-09",
     "market": "HK",
@@ -165,14 +165,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260908,
     "tanggal": "08 Sep 2026",
-    "periode": "HK-20260908",
+    "periode": "HK-3538",
     "nomor": "9348",
     "result_date": "2026-09-08",
     "market": "HK",
@@ -182,14 +182,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260907,
     "tanggal": "07 Sep 2026",
-    "periode": "HK-20260907",
+    "periode": "HK-3537",
     "nomor": "3462",
     "result_date": "2026-09-07",
     "market": "HK",
@@ -199,14 +199,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260906,
     "tanggal": "06 Sep 2026",
-    "periode": "HK-20260906",
+    "periode": "HK-3536",
     "nomor": "4146",
     "result_date": "2026-09-06",
     "market": "HK",
@@ -216,14 +216,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260905,
     "tanggal": "05 Sep 2026",
-    "periode": "HK-20260905",
+    "periode": "HK-3535",
     "nomor": "5162",
     "result_date": "2026-09-05",
     "market": "HK",
@@ -233,14 +233,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260904,
     "tanggal": "04 Sep 2026",
-    "periode": "HK-20260904",
+    "periode": "HK-3534",
     "nomor": "0752",
     "result_date": "2026-09-04",
     "market": "HK",
@@ -250,14 +250,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260903,
     "tanggal": "03 Sep 2026",
-    "periode": "HK-20260903",
+    "periode": "HK-3533",
     "nomor": "0096",
     "result_date": "2026-09-03",
     "market": "HK",
@@ -267,14 +267,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260902,
     "tanggal": "02 Sep 2026",
-    "periode": "HK-20260902",
+    "periode": "HK-3532",
     "nomor": "0841",
     "result_date": "2026-09-02",
     "market": "HK",
@@ -284,14 +284,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260901,
     "tanggal": "01 Sep 2026",
-    "periode": "HK-20260901",
+    "periode": "HK-3531",
     "nomor": "4207",
     "result_date": "2026-09-01",
     "market": "HK",
@@ -301,14 +301,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260831,
     "tanggal": "31 Ags 2026",
-    "periode": "HK-20260831",
+    "periode": "HK-3530",
     "nomor": "2055",
     "result_date": "2026-08-31",
     "market": "HK",
@@ -318,14 +318,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260830,
     "tanggal": "30 Ags 2026",
-    "periode": "HK-20260830",
+    "periode": "HK-3529",
     "nomor": "8129",
     "result_date": "2026-08-30",
     "market": "HK",
@@ -335,14 +335,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260829,
     "tanggal": "29 Ags 2026",
-    "periode": "HK-20260829",
+    "periode": "HK-3528",
     "nomor": "7085",
     "result_date": "2026-08-29",
     "market": "HK",
@@ -352,14 +352,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260828,
     "tanggal": "28 Ags 2026",
-    "periode": "HK-20260828",
+    "periode": "HK-3527",
     "nomor": "4795",
     "result_date": "2026-08-28",
     "market": "HK",
@@ -369,14 +369,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260827,
     "tanggal": "27 Ags 2026",
-    "periode": "HK-20260827",
+    "periode": "HK-3526",
     "nomor": "4953",
     "result_date": "2026-08-27",
     "market": "HK",
@@ -386,14 +386,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260826,
     "tanggal": "26 Ags 2026",
-    "periode": "HK-20260826",
+    "periode": "HK-3525",
     "nomor": "6492",
     "result_date": "2026-08-26",
     "market": "HK",
@@ -403,14 +403,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260825,
     "tanggal": "25 Ags 2026",
-    "periode": "HK-20260825",
+    "periode": "HK-3524",
     "nomor": "6038",
     "result_date": "2026-08-25",
     "market": "HK",
@@ -420,14 +420,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260824,
     "tanggal": "24 Ags 2026",
-    "periode": "HK-20260824",
+    "periode": "HK-3523",
     "nomor": "9598",
     "result_date": "2026-08-24",
     "market": "HK",
@@ -437,14 +437,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260823,
     "tanggal": "23 Ags 2026",
-    "periode": "HK-20260823",
+    "periode": "HK-3522",
     "nomor": "6190",
     "result_date": "2026-08-23",
     "market": "HK",
@@ -454,14 +454,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260822,
     "tanggal": "22 Ags 2026",
-    "periode": "HK-20260822",
+    "periode": "HK-3521",
     "nomor": "9925",
     "result_date": "2026-08-22",
     "market": "HK",
@@ -471,14 +471,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260821,
     "tanggal": "21 Ags 2026",
-    "periode": "HK-20260821",
+    "periode": "HK-3520",
     "nomor": "8710",
     "result_date": "2026-08-21",
     "market": "HK",
@@ -488,14 +488,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260820,
     "tanggal": "20 Ags 2026",
-    "periode": "HK-20260820",
+    "periode": "HK-3519",
     "nomor": "3732",
     "result_date": "2026-08-20",
     "market": "HK",
@@ -505,14 +505,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260819,
     "tanggal": "19 Ags 2026",
-    "periode": "HK-20260819",
+    "periode": "HK-3518",
     "nomor": "0507",
     "result_date": "2026-08-19",
     "market": "HK",
@@ -522,14 +522,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260818,
     "tanggal": "18 Ags 2026",
-    "periode": "HK-20260818",
+    "periode": "HK-3517",
     "nomor": "0863",
     "result_date": "2026-08-18",
     "market": "HK",
@@ -539,14 +539,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260817,
     "tanggal": "17 Ags 2026",
-    "periode": "HK-20260817",
+    "periode": "HK-3516",
     "nomor": "9160",
     "result_date": "2026-08-17",
     "market": "HK",
@@ -556,14 +556,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260816,
     "tanggal": "16 Ags 2026",
-    "periode": "HK-20260816",
+    "periode": "HK-3515",
     "nomor": "0747",
     "result_date": "2026-08-16",
     "market": "HK",
@@ -573,14 +573,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260815,
     "tanggal": "15 Ags 2026",
-    "periode": "HK-20260815",
+    "periode": "HK-3514",
     "nomor": "9487",
     "result_date": "2026-08-15",
     "market": "HK",
@@ -590,14 +590,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260814,
     "tanggal": "14 Ags 2026",
-    "periode": "HK-20260814",
+    "periode": "HK-3513",
     "nomor": "6928",
     "result_date": "2026-08-14",
     "market": "HK",
@@ -607,14 +607,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260813,
     "tanggal": "13 Ags 2026",
-    "periode": "HK-20260813",
+    "periode": "HK-3512",
     "nomor": "7834",
     "result_date": "2026-08-13",
     "market": "HK",
@@ -624,14 +624,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260812,
     "tanggal": "12 Ags 2026",
-    "periode": "HK-20260812",
+    "periode": "HK-3511",
     "nomor": "8240",
     "result_date": "2026-08-12",
     "market": "HK",
@@ -641,14 +641,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260811,
     "tanggal": "11 Ags 2026",
-    "periode": "HK-20260811",
+    "periode": "HK-3510",
     "nomor": "0929",
     "result_date": "2026-08-11",
     "market": "HK",
@@ -658,14 +658,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260810,
     "tanggal": "10 Ags 2026",
-    "periode": "HK-20260810",
+    "periode": "HK-3509",
     "nomor": "7604",
     "result_date": "2026-08-10",
     "market": "HK",
@@ -675,14 +675,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260809,
     "tanggal": "09 Ags 2026",
-    "periode": "HK-20260809",
+    "periode": "HK-3508",
     "nomor": "8620",
     "result_date": "2026-08-09",
     "market": "HK",
@@ -692,14 +692,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260808,
     "tanggal": "08 Ags 2026",
-    "periode": "HK-20260808",
+    "periode": "HK-3507",
     "nomor": "2797",
     "result_date": "2026-08-08",
     "market": "HK",
@@ -709,14 +709,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260807,
     "tanggal": "07 Ags 2026",
-    "periode": "HK-20260807",
+    "periode": "HK-3506",
     "nomor": "9943",
     "result_date": "2026-08-07",
     "market": "HK",
@@ -726,14 +726,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260806,
     "tanggal": "06 Ags 2026",
-    "periode": "HK-20260806",
+    "periode": "HK-3505",
     "nomor": "3634",
     "result_date": "2026-08-06",
     "market": "HK",
@@ -743,14 +743,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260805,
     "tanggal": "05 Ags 2026",
-    "periode": "HK-20260805",
+    "periode": "HK-3504",
     "nomor": "4245",
     "result_date": "2026-08-05",
     "market": "HK",
@@ -760,14 +760,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260804,
     "tanggal": "04 Ags 2026",
-    "periode": "HK-20260804",
+    "periode": "HK-3503",
     "nomor": "8053",
     "result_date": "2026-08-04",
     "market": "HK",
@@ -777,14 +777,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260803,
     "tanggal": "03 Ags 2026",
-    "periode": "HK-20260803",
+    "periode": "HK-3502",
     "nomor": "0087",
     "result_date": "2026-08-03",
     "market": "HK",
@@ -794,14 +794,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260802,
     "tanggal": "02 Ags 2026",
-    "periode": "HK-20260802",
+    "periode": "HK-3501",
     "nomor": "6723",
     "result_date": "2026-08-02",
     "market": "HK",
@@ -811,14 +811,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260801,
     "tanggal": "01 Ags 2026",
-    "periode": "HK-20260801",
+    "periode": "HK-3500",
     "nomor": "7292",
     "result_date": "2026-08-01",
     "market": "HK",
@@ -828,14 +828,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260731,
     "tanggal": "31 Jul 2026",
-    "periode": "HK-20260731",
+    "periode": "HK-3499",
     "nomor": "1140",
     "result_date": "2026-07-31",
     "market": "HK",
@@ -845,14 +845,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260730,
     "tanggal": "30 Jul 2026",
-    "periode": "HK-20260730",
+    "periode": "HK-3498",
     "nomor": "0409",
     "result_date": "2026-07-30",
     "market": "HK",
@@ -862,14 +862,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260729,
     "tanggal": "29 Jul 2026",
-    "periode": "HK-20260729",
+    "periode": "HK-3497",
     "nomor": "5305",
     "result_date": "2026-07-29",
     "market": "HK",
@@ -879,14 +879,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260728,
     "tanggal": "28 Jul 2026",
-    "periode": "HK-20260728",
+    "periode": "HK-3496",
     "nomor": "6583",
     "result_date": "2026-07-28",
     "market": "HK",
@@ -896,14 +896,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260727,
     "tanggal": "27 Jul 2026",
-    "periode": "HK-20260727",
+    "periode": "HK-3495",
     "nomor": "5937",
     "result_date": "2026-07-27",
     "market": "HK",
@@ -913,14 +913,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260726,
     "tanggal": "26 Jul 2026",
-    "periode": "HK-20260726",
+    "periode": "HK-3494",
     "nomor": "6057",
     "result_date": "2026-07-26",
     "market": "HK",
@@ -930,14 +930,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260725,
     "tanggal": "25 Jul 2026",
-    "periode": "HK-20260725",
+    "periode": "HK-3493",
     "nomor": "0734",
     "result_date": "2026-07-25",
     "market": "HK",
@@ -947,14 +947,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260724,
     "tanggal": "24 Jul 2026",
-    "periode": "HK-20260724",
+    "periode": "HK-3492",
     "nomor": "8701",
     "result_date": "2026-07-24",
     "market": "HK",
@@ -964,14 +964,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260723,
     "tanggal": "23 Jul 2026",
-    "periode": "HK-20260723",
+    "periode": "HK-3491",
     "nomor": "5902",
     "result_date": "2026-07-23",
     "market": "HK",
@@ -981,14 +981,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260722,
     "tanggal": "22 Jul 2026",
-    "periode": "HK-20260722",
+    "periode": "HK-3490",
     "nomor": "1694",
     "result_date": "2026-07-22",
     "market": "HK",
@@ -998,14 +998,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260721,
     "tanggal": "21 Jul 2026",
-    "periode": "HK-20260721",
+    "periode": "HK-3489",
     "nomor": "2177",
     "result_date": "2026-07-21",
     "market": "HK",
@@ -1015,14 +1015,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260720,
     "tanggal": "20 Jul 2026",
-    "periode": "HK-20260720",
+    "periode": "HK-3488",
     "nomor": "4610",
     "result_date": "2026-07-20",
     "market": "HK",
@@ -1032,14 +1032,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260719,
     "tanggal": "19 Jul 2026",
-    "periode": "HK-20260719",
+    "periode": "HK-3487",
     "nomor": "0447",
     "result_date": "2026-07-19",
     "market": "HK",
@@ -1049,14 +1049,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260718,
     "tanggal": "18 Jul 2026",
-    "periode": "HK-20260718",
+    "periode": "HK-3486",
     "nomor": "0882",
     "result_date": "2026-07-18",
     "market": "HK",
@@ -1066,14 +1066,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260717,
     "tanggal": "17 Jul 2026",
-    "periode": "HK-20260717",
+    "periode": "HK-3485",
     "nomor": "8809",
     "result_date": "2026-07-17",
     "market": "HK",
@@ -1083,14 +1083,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260716,
     "tanggal": "16 Jul 2026",
-    "periode": "HK-20260716",
+    "periode": "HK-3484",
     "nomor": "9064",
     "result_date": "2026-07-16",
     "market": "HK",
@@ -1100,14 +1100,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260715,
     "tanggal": "15 Jul 2026",
-    "periode": "HK-20260715",
+    "periode": "HK-3483",
     "nomor": "0655",
     "result_date": "2026-07-15",
     "market": "HK",
@@ -1117,14 +1117,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260714,
     "tanggal": "14 Jul 2026",
-    "periode": "HK-20260714",
+    "periode": "HK-3482",
     "nomor": "9206",
     "result_date": "2026-07-14",
     "market": "HK",
@@ -1134,14 +1134,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260713,
     "tanggal": "13 Jul 2026",
-    "periode": "HK-20260713",
+    "periode": "HK-3481",
     "nomor": "9392",
     "result_date": "2026-07-13",
     "market": "HK",
@@ -1151,14 +1151,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260712,
     "tanggal": "12 Jul 2026",
-    "periode": "HK-20260712",
+    "periode": "HK-3480",
     "nomor": "6416",
     "result_date": "2026-07-12",
     "market": "HK",
@@ -1168,14 +1168,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260711,
     "tanggal": "11 Jul 2026",
-    "periode": "HK-20260711",
+    "periode": "HK-3479",
     "nomor": "5490",
     "result_date": "2026-07-11",
     "market": "HK",
@@ -1185,14 +1185,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260710,
     "tanggal": "10 Jul 2026",
-    "periode": "HK-20260710",
+    "periode": "HK-3478",
     "nomor": "0161",
     "result_date": "2026-07-10",
     "market": "HK",
@@ -1202,14 +1202,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260709,
     "tanggal": "09 Jul 2026",
-    "periode": "HK-20260709",
+    "periode": "HK-3477",
     "nomor": "4152",
     "result_date": "2026-07-09",
     "market": "HK",
@@ -1219,14 +1219,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260708,
     "tanggal": "08 Jul 2026",
-    "periode": "HK-20260708",
+    "periode": "HK-3476",
     "nomor": "5054",
     "result_date": "2026-07-08",
     "market": "HK",
@@ -1236,14 +1236,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260707,
     "tanggal": "07 Jul 2026",
-    "periode": "HK-20260707",
+    "periode": "HK-3475",
     "nomor": "8961",
     "result_date": "2026-07-07",
     "market": "HK",
@@ -1253,14 +1253,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260706,
     "tanggal": "06 Jul 2026",
-    "periode": "HK-20260706",
+    "periode": "HK-3474",
     "nomor": "8178",
     "result_date": "2026-07-06",
     "market": "HK",
@@ -1270,14 +1270,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260705,
     "tanggal": "05 Jul 2026",
-    "periode": "HK-20260705",
+    "periode": "HK-3473",
     "nomor": "4193",
     "result_date": "2026-07-05",
     "market": "HK",
@@ -1287,14 +1287,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260704,
     "tanggal": "04 Jul 2026",
-    "periode": "HK-20260704",
+    "periode": "HK-3472",
     "nomor": "3924",
     "result_date": "2026-07-04",
     "market": "HK",
@@ -1304,14 +1304,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260703,
     "tanggal": "03 Jul 2026",
-    "periode": "HK-20260703",
+    "periode": "HK-3471",
     "nomor": "3951",
     "result_date": "2026-07-03",
     "market": "HK",
@@ -1321,14 +1321,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260702,
     "tanggal": "02 Jul 2026",
-    "periode": "HK-20260702",
+    "periode": "HK-3470",
     "nomor": "2079",
     "result_date": "2026-07-02",
     "market": "HK",
@@ -1338,14 +1338,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260701,
     "tanggal": "01 Jul 2026",
-    "periode": "HK-20260701",
+    "periode": "HK-3469",
     "nomor": "6358",
     "result_date": "2026-07-01",
     "market": "HK",
@@ -1355,14 +1355,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260630,
     "tanggal": "30 Jun 2026",
-    "periode": "HK-20260630",
+    "periode": "HK-3468",
     "nomor": "0188",
     "result_date": "2026-06-30",
     "market": "HK",
@@ -1372,14 +1372,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260629,
     "tanggal": "29 Jun 2026",
-    "periode": "HK-20260629",
+    "periode": "HK-3467",
     "nomor": "4679",
     "result_date": "2026-06-29",
     "market": "HK",
@@ -1389,14 +1389,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260628,
     "tanggal": "28 Jun 2026",
-    "periode": "HK-20260628",
+    "periode": "HK-3466",
     "nomor": "8172",
     "result_date": "2026-06-28",
     "market": "HK",
@@ -1406,14 +1406,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260627,
     "tanggal": "27 Jun 2026",
-    "periode": "HK-20260627",
+    "periode": "HK-3465",
     "nomor": "2066",
     "result_date": "2026-06-27",
     "market": "HK",
@@ -1423,14 +1423,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260626,
     "tanggal": "26 Jun 2026",
-    "periode": "HK-20260626",
+    "periode": "HK-3464",
     "nomor": "7895",
     "result_date": "2026-06-26",
     "market": "HK",
@@ -1440,14 +1440,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260625,
     "tanggal": "25 Jun 2026",
-    "periode": "HK-20260625",
+    "periode": "HK-3463",
     "nomor": "0109",
     "result_date": "2026-06-25",
     "market": "HK",
@@ -1457,14 +1457,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260624,
     "tanggal": "24 Jun 2026",
-    "periode": "HK-20260624",
+    "periode": "HK-3462",
     "nomor": "9978",
     "result_date": "2026-06-24",
     "market": "HK",
@@ -1474,14 +1474,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260623,
     "tanggal": "23 Jun 2026",
-    "periode": "HK-20260623",
+    "periode": "HK-3461",
     "nomor": "5790",
     "result_date": "2026-06-23",
     "market": "HK",
@@ -1491,14 +1491,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260622,
     "tanggal": "22 Jun 2026",
-    "periode": "HK-20260622",
+    "periode": "HK-3460",
     "nomor": "9467",
     "result_date": "2026-06-22",
     "market": "HK",
@@ -1508,14 +1508,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260621,
     "tanggal": "21 Jun 2026",
-    "periode": "HK-20260621",
+    "periode": "HK-3459",
     "nomor": "6959",
     "result_date": "2026-06-21",
     "market": "HK",
@@ -1525,14 +1525,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260620,
     "tanggal": "20 Jun 2026",
-    "periode": "HK-20260620",
+    "periode": "HK-3458",
     "nomor": "6768",
     "result_date": "2026-06-20",
     "market": "HK",
@@ -1542,14 +1542,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260619,
     "tanggal": "19 Jun 2026",
-    "periode": "HK-20260619",
+    "periode": "HK-3457",
     "nomor": "4029",
     "result_date": "2026-06-19",
     "market": "HK",
@@ -1559,14 +1559,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260618,
     "tanggal": "18 Jun 2026",
-    "periode": "HK-20260618",
+    "periode": "HK-3456",
     "nomor": "7644",
     "result_date": "2026-06-18",
     "market": "HK",
@@ -1576,14 +1576,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260617,
     "tanggal": "17 Jun 2026",
-    "periode": "HK-20260617",
+    "periode": "HK-3455",
     "nomor": "2560",
     "result_date": "2026-06-17",
     "market": "HK",
@@ -1593,14 +1593,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260616,
     "tanggal": "16 Jun 2026",
-    "periode": "HK-20260616",
+    "periode": "HK-3454",
     "nomor": "1064",
     "result_date": "2026-06-16",
     "market": "HK",
@@ -1610,14 +1610,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260615,
     "tanggal": "15 Jun 2026",
-    "periode": "HK-20260615",
+    "periode": "HK-3453",
     "nomor": "9907",
     "result_date": "2026-06-15",
     "market": "HK",
@@ -1627,14 +1627,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260614,
     "tanggal": "14 Jun 2026",
-    "periode": "HK-20260614",
+    "periode": "HK-3452",
     "nomor": "0365",
     "result_date": "2026-06-14",
     "market": "HK",
@@ -1644,14 +1644,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260613,
     "tanggal": "13 Jun 2026",
-    "periode": "HK-20260613",
+    "periode": "HK-3451",
     "nomor": "3372",
     "result_date": "2026-06-13",
     "market": "HK",
@@ -1661,14 +1661,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260612,
     "tanggal": "12 Jun 2026",
-    "periode": "HK-20260612",
+    "periode": "HK-3450",
     "nomor": "9815",
     "result_date": "2026-06-12",
     "market": "HK",
@@ -1678,14 +1678,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260611,
     "tanggal": "11 Jun 2026",
-    "periode": "HK-20260611",
+    "periode": "HK-3449",
     "nomor": "6253",
     "result_date": "2026-06-11",
     "market": "HK",
@@ -1695,14 +1695,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260610,
     "tanggal": "10 Jun 2026",
-    "periode": "HK-20260610",
+    "periode": "HK-3448",
     "nomor": "5537",
     "result_date": "2026-06-10",
     "market": "HK",
@@ -1712,14 +1712,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260609,
     "tanggal": "09 Jun 2026",
-    "periode": "HK-20260609",
+    "periode": "HK-3447",
     "nomor": "1521",
     "result_date": "2026-06-09",
     "market": "HK",
@@ -1729,14 +1729,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260608,
     "tanggal": "08 Jun 2026",
-    "periode": "HK-20260608",
+    "periode": "HK-3446",
     "nomor": "0933",
     "result_date": "2026-06-08",
     "market": "HK",
@@ -1746,14 +1746,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260607,
     "tanggal": "07 Jun 2026",
-    "periode": "HK-20260607",
+    "periode": "HK-3445",
     "nomor": "1893",
     "result_date": "2026-06-07",
     "market": "HK",
@@ -1763,14 +1763,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260606,
     "tanggal": "06 Jun 2026",
-    "periode": "HK-20260606",
+    "periode": "HK-3444",
     "nomor": "7021",
     "result_date": "2026-06-06",
     "market": "HK",
@@ -1780,14 +1780,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260605,
     "tanggal": "05 Jun 2026",
-    "periode": "HK-20260605",
+    "periode": "HK-3443",
     "nomor": "0827",
     "result_date": "2026-06-05",
     "market": "HK",
@@ -1797,14 +1797,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260604,
     "tanggal": "04 Jun 2026",
-    "periode": "HK-20260604",
+    "periode": "HK-3442",
     "nomor": "9114",
     "result_date": "2026-06-04",
     "market": "HK",
@@ -1814,14 +1814,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260603,
     "tanggal": "03 Jun 2026",
-    "periode": "HK-20260603",
+    "periode": "HK-3441",
     "nomor": "1093",
     "result_date": "2026-06-03",
     "market": "HK",
@@ -1831,14 +1831,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260602,
     "tanggal": "02 Jun 2026",
-    "periode": "HK-20260602",
+    "periode": "HK-3440",
     "nomor": "5802",
     "result_date": "2026-06-02",
     "market": "HK",
@@ -1848,14 +1848,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260601,
     "tanggal": "01 Jun 2026",
-    "periode": "HK-20260601",
+    "periode": "HK-3439",
     "nomor": "0735",
     "result_date": "2026-06-01",
     "market": "HK",
@@ -1865,14 +1865,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260531,
     "tanggal": "31 Mei 2026",
-    "periode": "HK-20260531",
+    "periode": "HK-3438",
     "nomor": "6516",
     "result_date": "2026-05-31",
     "market": "HK",
@@ -1882,14 +1882,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260530,
     "tanggal": "30 Mei 2026",
-    "periode": "HK-20260530",
+    "periode": "HK-3437",
     "nomor": "0091",
     "result_date": "2026-05-30",
     "market": "HK",
@@ -1899,14 +1899,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260529,
     "tanggal": "29 Mei 2026",
-    "periode": "HK-20260529",
+    "periode": "HK-3436",
     "nomor": "6327",
     "result_date": "2026-05-29",
     "market": "HK",
@@ -1916,14 +1916,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260528,
     "tanggal": "28 Mei 2026",
-    "periode": "HK-20260528",
+    "periode": "HK-3435",
     "nomor": "3268",
     "result_date": "2026-05-28",
     "market": "HK",
@@ -1933,14 +1933,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260527,
     "tanggal": "27 Mei 2026",
-    "periode": "HK-20260527",
+    "periode": "HK-3434",
     "nomor": "1679",
     "result_date": "2026-05-27",
     "market": "HK",
@@ -1950,14 +1950,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260526,
     "tanggal": "26 Mei 2026",
-    "periode": "HK-20260526",
+    "periode": "HK-3433",
     "nomor": "9138",
     "result_date": "2026-05-26",
     "market": "HK",
@@ -1967,14 +1967,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260525,
     "tanggal": "25 Mei 2026",
-    "periode": "HK-20260525",
+    "periode": "HK-3432",
     "nomor": "5909",
     "result_date": "2026-05-25",
     "market": "HK",
@@ -1984,14 +1984,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260524,
     "tanggal": "24 Mei 2026",
-    "periode": "HK-20260524",
+    "periode": "HK-3431",
     "nomor": "3754",
     "result_date": "2026-05-24",
     "market": "HK",
@@ -2001,14 +2001,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260523,
     "tanggal": "23 Mei 2026",
-    "periode": "HK-20260523",
+    "periode": "HK-3430",
     "nomor": "6284",
     "result_date": "2026-05-23",
     "market": "HK",
@@ -2018,14 +2018,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260522,
     "tanggal": "22 Mei 2026",
-    "periode": "HK-20260522",
+    "periode": "HK-3429",
     "nomor": "5767",
     "result_date": "2026-05-22",
     "market": "HK",
@@ -2035,14 +2035,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260521,
     "tanggal": "21 Mei 2026",
-    "periode": "HK-20260521",
+    "periode": "HK-3428",
     "nomor": "4915",
     "result_date": "2026-05-21",
     "market": "HK",
@@ -2052,14 +2052,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260520,
     "tanggal": "20 Mei 2026",
-    "periode": "HK-20260520",
+    "periode": "HK-3427",
     "nomor": "6881",
     "result_date": "2026-05-20",
     "market": "HK",
@@ -2069,14 +2069,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260519,
     "tanggal": "19 Mei 2026",
-    "periode": "HK-20260519",
+    "periode": "HK-3426",
     "nomor": "4874",
     "result_date": "2026-05-19",
     "market": "HK",
@@ -2086,14 +2086,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260518,
     "tanggal": "18 Mei 2026",
-    "periode": "HK-20260518",
+    "periode": "HK-3425",
     "nomor": "9123",
     "result_date": "2026-05-18",
     "market": "HK",
@@ -2103,14 +2103,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260517,
     "tanggal": "17 Mei 2026",
-    "periode": "HK-20260517",
+    "periode": "HK-3424",
     "nomor": "7754",
     "result_date": "2026-05-17",
     "market": "HK",
@@ -2120,14 +2120,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260516,
     "tanggal": "16 Mei 2026",
-    "periode": "HK-20260516",
+    "periode": "HK-3423",
     "nomor": "0983",
     "result_date": "2026-05-16",
     "market": "HK",
@@ -2137,14 +2137,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260515,
     "tanggal": "15 Mei 2026",
-    "periode": "HK-20260515",
+    "periode": "HK-3422",
     "nomor": "7591",
     "result_date": "2026-05-15",
     "market": "HK",
@@ -2154,14 +2154,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260514,
     "tanggal": "14 Mei 2026",
-    "periode": "HK-20260514",
+    "periode": "HK-3421",
     "nomor": "8943",
     "result_date": "2026-05-14",
     "market": "HK",
@@ -2171,14 +2171,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260513,
     "tanggal": "13 Mei 2026",
-    "periode": "HK-20260513",
+    "periode": "HK-3420",
     "nomor": "9498",
     "result_date": "2026-05-13",
     "market": "HK",
@@ -2188,14 +2188,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260512,
     "tanggal": "12 Mei 2026",
-    "periode": "HK-20260512",
+    "periode": "HK-3419",
     "nomor": "8143",
     "result_date": "2026-05-12",
     "market": "HK",
@@ -2205,14 +2205,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260511,
     "tanggal": "11 Mei 2026",
-    "periode": "HK-20260511",
+    "periode": "HK-3418",
     "nomor": "7802",
     "result_date": "2026-05-11",
     "market": "HK",
@@ -2222,14 +2222,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260510,
     "tanggal": "10 Mei 2026",
-    "periode": "HK-20260510",
+    "periode": "HK-3417",
     "nomor": "4583",
     "result_date": "2026-05-10",
     "market": "HK",
@@ -2239,14 +2239,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260509,
     "tanggal": "09 Mei 2026",
-    "periode": "HK-20260509",
+    "periode": "HK-3416",
     "nomor": "7412",
     "result_date": "2026-05-09",
     "market": "HK",
@@ -2256,14 +2256,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260508,
     "tanggal": "08 Mei 2026",
-    "periode": "HK-20260508",
+    "periode": "HK-3415",
     "nomor": "4278",
     "result_date": "2026-05-08",
     "market": "HK",
@@ -2273,14 +2273,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260507,
     "tanggal": "07 Mei 2026",
-    "periode": "HK-20260507",
+    "periode": "HK-3414",
     "nomor": "3106",
     "result_date": "2026-05-07",
     "market": "HK",
@@ -2290,14 +2290,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260506,
     "tanggal": "06 Mei 2026",
-    "periode": "HK-20260506",
+    "periode": "HK-3413",
     "nomor": "9978",
     "result_date": "2026-05-06",
     "market": "HK",
@@ -2307,14 +2307,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260505,
     "tanggal": "05 Mei 2026",
-    "periode": "HK-20260505",
+    "periode": "HK-3412",
     "nomor": "4854",
     "result_date": "2026-05-05",
     "market": "HK",
@@ -2324,14 +2324,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260504,
     "tanggal": "04 Mei 2026",
-    "periode": "HK-20260504",
+    "periode": "HK-3411",
     "nomor": "6960",
     "result_date": "2026-05-04",
     "market": "HK",
@@ -2341,14 +2341,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260503,
     "tanggal": "03 Mei 2026",
-    "periode": "HK-20260503",
+    "periode": "HK-3410",
     "nomor": "3015",
     "result_date": "2026-05-03",
     "market": "HK",
@@ -2358,14 +2358,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260502,
     "tanggal": "02 Mei 2026",
-    "periode": "HK-20260502",
+    "periode": "HK-3409",
     "nomor": "1363",
     "result_date": "2026-05-02",
     "market": "HK",
@@ -2375,14 +2375,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260501,
     "tanggal": "01 Mei 2026",
-    "periode": "HK-20260501",
+    "periode": "HK-3408",
     "nomor": "6220",
     "result_date": "2026-05-01",
     "market": "HK",
@@ -2392,14 +2392,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260430,
     "tanggal": "30 Apr 2026",
-    "periode": "HK-20260430",
+    "periode": "HK-3407",
     "nomor": "2914",
     "result_date": "2026-04-30",
     "market": "HK",
@@ -2409,14 +2409,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260429,
     "tanggal": "29 Apr 2026",
-    "periode": "HK-20260429",
+    "periode": "HK-3406",
     "nomor": "2996",
     "result_date": "2026-04-29",
     "market": "HK",
@@ -2426,14 +2426,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260428,
     "tanggal": "28 Apr 2026",
-    "periode": "HK-20260428",
+    "periode": "HK-3405",
     "nomor": "7097",
     "result_date": "2026-04-28",
     "market": "HK",
@@ -2443,14 +2443,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260427,
     "tanggal": "27 Apr 2026",
-    "periode": "HK-20260427",
+    "periode": "HK-3404",
     "nomor": "6839",
     "result_date": "2026-04-27",
     "market": "HK",
@@ -2460,14 +2460,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260426,
     "tanggal": "26 Apr 2026",
-    "periode": "HK-20260426",
+    "periode": "HK-3403",
     "nomor": "3860",
     "result_date": "2026-04-26",
     "market": "HK",
@@ -2477,14 +2477,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260425,
     "tanggal": "25 Apr 2026",
-    "periode": "HK-20260425",
+    "periode": "HK-3402",
     "nomor": "3207",
     "result_date": "2026-04-25",
     "market": "HK",
@@ -2494,14 +2494,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260424,
     "tanggal": "24 Apr 2026",
-    "periode": "HK-20260424",
+    "periode": "HK-3401",
     "nomor": "4330",
     "result_date": "2026-04-24",
     "market": "HK",
@@ -2511,14 +2511,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260423,
     "tanggal": "23 Apr 2026",
-    "periode": "HK-20260423",
+    "periode": "HK-3400",
     "nomor": "9803",
     "result_date": "2026-04-23",
     "market": "HK",
@@ -2528,14 +2528,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260422,
     "tanggal": "22 Apr 2026",
-    "periode": "HK-20260422",
+    "periode": "HK-3399",
     "nomor": "8524",
     "result_date": "2026-04-22",
     "market": "HK",
@@ -2545,14 +2545,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260421,
     "tanggal": "21 Apr 2026",
-    "periode": "HK-20260421",
+    "periode": "HK-3398",
     "nomor": "6085",
     "result_date": "2026-04-21",
     "market": "HK",
@@ -2562,14 +2562,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260420,
     "tanggal": "20 Apr 2026",
-    "periode": "HK-20260420",
+    "periode": "HK-3397",
     "nomor": "2800",
     "result_date": "2026-04-20",
     "market": "HK",
@@ -2579,14 +2579,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260419,
     "tanggal": "19 Apr 2026",
-    "periode": "HK-20260419",
+    "periode": "HK-3396",
     "nomor": "8636",
     "result_date": "2026-04-19",
     "market": "HK",
@@ -2596,14 +2596,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260418,
     "tanggal": "18 Apr 2026",
-    "periode": "HK-20260418",
+    "periode": "HK-3395",
     "nomor": "1321",
     "result_date": "2026-04-18",
     "market": "HK",
@@ -2613,14 +2613,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260417,
     "tanggal": "17 Apr 2026",
-    "periode": "HK-20260417",
+    "periode": "HK-3394",
     "nomor": "1894",
     "result_date": "2026-04-17",
     "market": "HK",
@@ -2630,14 +2630,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260416,
     "tanggal": "16 Apr 2026",
-    "periode": "HK-20260416",
+    "periode": "HK-3393",
     "nomor": "3348",
     "result_date": "2026-04-16",
     "market": "HK",
@@ -2647,14 +2647,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260415,
     "tanggal": "15 Apr 2026",
-    "periode": "HK-20260415",
+    "periode": "HK-3392",
     "nomor": "5311",
     "result_date": "2026-04-15",
     "market": "HK",
@@ -2664,14 +2664,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260414,
     "tanggal": "14 Apr 2026",
-    "periode": "HK-20260414",
+    "periode": "HK-3391",
     "nomor": "9493",
     "result_date": "2026-04-14",
     "market": "HK",
@@ -2681,14 +2681,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260413,
     "tanggal": "13 Apr 2026",
-    "periode": "HK-20260413",
+    "periode": "HK-3390",
     "nomor": "8461",
     "result_date": "2026-04-13",
     "market": "HK",
@@ -2698,14 +2698,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260412,
     "tanggal": "12 Apr 2026",
-    "periode": "HK-20260412",
+    "periode": "HK-3389",
     "nomor": "7647",
     "result_date": "2026-04-12",
     "market": "HK",
@@ -2715,14 +2715,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260411,
     "tanggal": "11 Apr 2026",
-    "periode": "HK-20260411",
+    "periode": "HK-3388",
     "nomor": "8785",
     "result_date": "2026-04-11",
     "market": "HK",
@@ -2732,14 +2732,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260410,
     "tanggal": "10 Apr 2026",
-    "periode": "HK-20260410",
+    "periode": "HK-3387",
     "nomor": "0597",
     "result_date": "2026-04-10",
     "market": "HK",
@@ -2749,14 +2749,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260409,
     "tanggal": "09 Apr 2026",
-    "periode": "HK-20260409",
+    "periode": "HK-3386",
     "nomor": "4522",
     "result_date": "2026-04-09",
     "market": "HK",
@@ -2766,14 +2766,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260408,
     "tanggal": "08 Apr 2026",
-    "periode": "HK-20260408",
+    "periode": "HK-3385",
     "nomor": "5943",
     "result_date": "2026-04-08",
     "market": "HK",
@@ -2783,14 +2783,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260407,
     "tanggal": "07 Apr 2026",
-    "periode": "HK-20260407",
+    "periode": "HK-3384",
     "nomor": "9406",
     "result_date": "2026-04-07",
     "market": "HK",
@@ -2800,14 +2800,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260406,
     "tanggal": "06 Apr 2026",
-    "periode": "HK-20260406",
+    "periode": "HK-3383",
     "nomor": "1736",
     "result_date": "2026-04-06",
     "market": "HK",
@@ -2817,14 +2817,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260405,
     "tanggal": "05 Apr 2026",
-    "periode": "HK-20260405",
+    "periode": "HK-3382",
     "nomor": "2984",
     "result_date": "2026-04-05",
     "market": "HK",
@@ -2834,14 +2834,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260404,
     "tanggal": "04 Apr 2026",
-    "periode": "HK-20260404",
+    "periode": "HK-3381",
     "nomor": "0635",
     "result_date": "2026-04-04",
     "market": "HK",
@@ -2851,14 +2851,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260403,
     "tanggal": "03 Apr 2026",
-    "periode": "HK-20260403",
+    "periode": "HK-3380",
     "nomor": "9787",
     "result_date": "2026-04-03",
     "market": "HK",
@@ -2868,14 +2868,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260402,
     "tanggal": "02 Apr 2026",
-    "periode": "HK-20260402",
+    "periode": "HK-3379",
     "nomor": "9973",
     "result_date": "2026-04-02",
     "market": "HK",
@@ -2885,14 +2885,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260401,
     "tanggal": "01 Apr 2026",
-    "periode": "HK-20260401",
+    "periode": "HK-3378",
     "nomor": "2388",
     "result_date": "2026-04-01",
     "market": "HK",
@@ -2902,14 +2902,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260331,
     "tanggal": "31 Mar 2026",
-    "periode": "HK-20260331",
+    "periode": "HK-3377",
     "nomor": "6916",
     "result_date": "2026-03-31",
     "market": "HK",
@@ -2919,14 +2919,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260330,
     "tanggal": "30 Mar 2026",
-    "periode": "HK-20260330",
+    "periode": "HK-3376",
     "nomor": "8038",
     "result_date": "2026-03-30",
     "market": "HK",
@@ -2936,14 +2936,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260329,
     "tanggal": "29 Mar 2026",
-    "periode": "HK-20260329",
+    "periode": "HK-3375",
     "nomor": "0683",
     "result_date": "2026-03-29",
     "market": "HK",
@@ -2953,14 +2953,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260328,
     "tanggal": "28 Mar 2026",
-    "periode": "HK-20260328",
+    "periode": "HK-3374",
     "nomor": "6077",
     "result_date": "2026-03-28",
     "market": "HK",
@@ -2970,14 +2970,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260327,
     "tanggal": "27 Mar 2026",
-    "periode": "HK-20260327",
+    "periode": "HK-3373",
     "nomor": "0561",
     "result_date": "2026-03-27",
     "market": "HK",
@@ -2987,14 +2987,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260326,
     "tanggal": "26 Mar 2026",
-    "periode": "HK-20260326",
+    "periode": "HK-3372",
     "nomor": "4521",
     "result_date": "2026-03-26",
     "market": "HK",
@@ -3004,14 +3004,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260325,
     "tanggal": "25 Mar 2026",
-    "periode": "HK-20260325",
+    "periode": "HK-3371",
     "nomor": "4697",
     "result_date": "2026-03-25",
     "market": "HK",
@@ -3021,14 +3021,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260324,
     "tanggal": "24 Mar 2026",
-    "periode": "HK-20260324",
+    "periode": "HK-3370",
     "nomor": "1940",
     "result_date": "2026-03-24",
     "market": "HK",
@@ -3038,14 +3038,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260323,
     "tanggal": "23 Mar 2026",
-    "periode": "HK-20260323",
+    "periode": "HK-3369",
     "nomor": "0090",
     "result_date": "2026-03-23",
     "market": "HK",
@@ -3055,14 +3055,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260322,
     "tanggal": "22 Mar 2026",
-    "periode": "HK-20260322",
+    "periode": "HK-3368",
     "nomor": "3725",
     "result_date": "2026-03-22",
     "market": "HK",
@@ -3072,14 +3072,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260321,
     "tanggal": "21 Mar 2026",
-    "periode": "HK-20260321",
+    "periode": "HK-3367",
     "nomor": "7676",
     "result_date": "2026-03-21",
     "market": "HK",
@@ -3089,14 +3089,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260320,
     "tanggal": "20 Mar 2026",
-    "periode": "HK-20260320",
+    "periode": "HK-3366",
     "nomor": "1536",
     "result_date": "2026-03-20",
     "market": "HK",
@@ -3106,14 +3106,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260319,
     "tanggal": "19 Mar 2026",
-    "periode": "HK-20260319",
+    "periode": "HK-3365",
     "nomor": "6512",
     "result_date": "2026-03-19",
     "market": "HK",
@@ -3123,14 +3123,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260318,
     "tanggal": "18 Mar 2026",
-    "periode": "HK-20260318",
+    "periode": "HK-3364",
     "nomor": "4383",
     "result_date": "2026-03-18",
     "market": "HK",
@@ -3140,14 +3140,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260317,
     "tanggal": "17 Mar 2026",
-    "periode": "HK-20260317",
+    "periode": "HK-3363",
     "nomor": "8916",
     "result_date": "2026-03-17",
     "market": "HK",
@@ -3157,14 +3157,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260316,
     "tanggal": "16 Mar 2026",
-    "periode": "HK-20260316",
+    "periode": "HK-3362",
     "nomor": "4097",
     "result_date": "2026-03-16",
     "market": "HK",
@@ -3174,14 +3174,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260315,
     "tanggal": "15 Mar 2026",
-    "periode": "HK-20260315",
+    "periode": "HK-3361",
     "nomor": "1891",
     "result_date": "2026-03-15",
     "market": "HK",
@@ -3191,14 +3191,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260314,
     "tanggal": "14 Mar 2026",
-    "periode": "HK-20260314",
+    "periode": "HK-3360",
     "nomor": "4324",
     "result_date": "2026-03-14",
     "market": "HK",
@@ -3208,14 +3208,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260313,
     "tanggal": "13 Mar 2026",
-    "periode": "HK-20260313",
+    "periode": "HK-3359",
     "nomor": "9648",
     "result_date": "2026-03-13",
     "market": "HK",
@@ -3225,14 +3225,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260312,
     "tanggal": "12 Mar 2026",
-    "periode": "HK-20260312",
+    "periode": "HK-3358",
     "nomor": "8906",
     "result_date": "2026-03-12",
     "market": "HK",
@@ -3242,14 +3242,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260311,
     "tanggal": "11 Mar 2026",
-    "periode": "HK-20260311",
+    "periode": "HK-3357",
     "nomor": "5114",
     "result_date": "2026-03-11",
     "market": "HK",
@@ -3259,14 +3259,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260310,
     "tanggal": "10 Mar 2026",
-    "periode": "HK-20260310",
+    "periode": "HK-3356",
     "nomor": "0521",
     "result_date": "2026-03-10",
     "market": "HK",
@@ -3276,14 +3276,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260309,
     "tanggal": "09 Mar 2026",
-    "periode": "HK-20260309",
+    "periode": "HK-3355",
     "nomor": "5652",
     "result_date": "2026-03-09",
     "market": "HK",
@@ -3293,14 +3293,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260308,
     "tanggal": "08 Mar 2026",
-    "periode": "HK-20260308",
+    "periode": "HK-3354",
     "nomor": "9247",
     "result_date": "2026-03-08",
     "market": "HK",
@@ -3310,14 +3310,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260307,
     "tanggal": "07 Mar 2026",
-    "periode": "HK-20260307",
+    "periode": "HK-3353",
     "nomor": "9230",
     "result_date": "2026-03-07",
     "market": "HK",
@@ -3327,14 +3327,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260306,
     "tanggal": "06 Mar 2026",
-    "periode": "HK-20260306",
+    "periode": "HK-3352",
     "nomor": "2453",
     "result_date": "2026-03-06",
     "market": "HK",
@@ -3344,14 +3344,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260305,
     "tanggal": "05 Mar 2026",
-    "periode": "HK-20260305",
+    "periode": "HK-3351",
     "nomor": "1214",
     "result_date": "2026-03-05",
     "market": "HK",
@@ -3361,14 +3361,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260304,
     "tanggal": "04 Mar 2026",
-    "periode": "HK-20260304",
+    "periode": "HK-3350",
     "nomor": "8737",
     "result_date": "2026-03-04",
     "market": "HK",
@@ -3378,14 +3378,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260303,
     "tanggal": "03 Mar 2026",
-    "periode": "HK-20260303",
+    "periode": "HK-3349",
     "nomor": "9456",
     "result_date": "2026-03-03",
     "market": "HK",
@@ -3395,14 +3395,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260302,
     "tanggal": "02 Mar 2026",
-    "periode": "HK-20260302",
+    "periode": "HK-3348",
     "nomor": "7572",
     "result_date": "2026-03-02",
     "market": "HK",
@@ -3412,14 +3412,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260301,
     "tanggal": "01 Mar 2026",
-    "periode": "HK-20260301",
+    "periode": "HK-3347",
     "nomor": "9604",
     "result_date": "2026-03-01",
     "market": "HK",
@@ -3429,14 +3429,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260228,
     "tanggal": "28 Feb 2026",
-    "periode": "HK-20260228",
+    "periode": "HK-3346",
     "nomor": "6041",
     "result_date": "2026-02-28",
     "market": "HK",
@@ -3446,14 +3446,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260227,
     "tanggal": "27 Feb 2026",
-    "periode": "HK-20260227",
+    "periode": "HK-3345",
     "nomor": "8964",
     "result_date": "2026-02-27",
     "market": "HK",
@@ -3463,14 +3463,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260226,
     "tanggal": "26 Feb 2026",
-    "periode": "HK-20260226",
+    "periode": "HK-3344",
     "nomor": "4177",
     "result_date": "2026-02-26",
     "market": "HK",
@@ -3480,14 +3480,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260225,
     "tanggal": "25 Feb 2026",
-    "periode": "HK-20260225",
+    "periode": "HK-3343",
     "nomor": "9663",
     "result_date": "2026-02-25",
     "market": "HK",
@@ -3497,14 +3497,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260224,
     "tanggal": "24 Feb 2026",
-    "periode": "HK-20260224",
+    "periode": "HK-3342",
     "nomor": "3593",
     "result_date": "2026-02-24",
     "market": "HK",
@@ -3514,14 +3514,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260223,
     "tanggal": "23 Feb 2026",
-    "periode": "HK-20260223",
+    "periode": "HK-3341",
     "nomor": "8331",
     "result_date": "2026-02-23",
     "market": "HK",
@@ -3531,14 +3531,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260222,
     "tanggal": "22 Feb 2026",
-    "periode": "HK-20260222",
+    "periode": "HK-3340",
     "nomor": "2072",
     "result_date": "2026-02-22",
     "market": "HK",
@@ -3548,14 +3548,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260221,
     "tanggal": "21 Feb 2026",
-    "periode": "HK-20260221",
+    "periode": "HK-3339",
     "nomor": "7344",
     "result_date": "2026-02-21",
     "market": "HK",
@@ -3565,14 +3565,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260220,
     "tanggal": "20 Feb 2026",
-    "periode": "HK-20260220",
+    "periode": "HK-3338",
     "nomor": "0286",
     "result_date": "2026-02-20",
     "market": "HK",
@@ -3582,14 +3582,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260219,
     "tanggal": "19 Feb 2026",
-    "periode": "HK-20260219",
+    "periode": "HK-3337",
     "nomor": "3798",
     "result_date": "2026-02-19",
     "market": "HK",
@@ -3599,14 +3599,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260218,
     "tanggal": "18 Feb 2026",
-    "periode": "HK-20260218",
+    "periode": "HK-3336",
     "nomor": "7105",
     "result_date": "2026-02-18",
     "market": "HK",
@@ -3616,14 +3616,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260217,
     "tanggal": "17 Feb 2026",
-    "periode": "HK-20260217",
+    "periode": "HK-3335",
     "nomor": "9569",
     "result_date": "2026-02-17",
     "market": "HK",
@@ -3633,14 +3633,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260216,
     "tanggal": "16 Feb 2026",
-    "periode": "HK-20260216",
+    "periode": "HK-3334",
     "nomor": "1092",
     "result_date": "2026-02-16",
     "market": "HK",
@@ -3650,14 +3650,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260215,
     "tanggal": "15 Feb 2026",
-    "periode": "HK-20260215",
+    "periode": "HK-3333",
     "nomor": "8853",
     "result_date": "2026-02-15",
     "market": "HK",
@@ -3667,14 +3667,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260214,
     "tanggal": "14 Feb 2026",
-    "periode": "HK-20260214",
+    "periode": "HK-3332",
     "nomor": "7445",
     "result_date": "2026-02-14",
     "market": "HK",
@@ -3684,14 +3684,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260213,
     "tanggal": "13 Feb 2026",
-    "periode": "HK-20260213",
+    "periode": "HK-3331",
     "nomor": "8300",
     "result_date": "2026-02-13",
     "market": "HK",
@@ -3701,14 +3701,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260212,
     "tanggal": "12 Feb 2026",
-    "periode": "HK-20260212",
+    "periode": "HK-3330",
     "nomor": "2971",
     "result_date": "2026-02-12",
     "market": "HK",
@@ -3718,14 +3718,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260211,
     "tanggal": "11 Feb 2026",
-    "periode": "HK-20260211",
+    "periode": "HK-3329",
     "nomor": "8069",
     "result_date": "2026-02-11",
     "market": "HK",
@@ -3735,14 +3735,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260210,
     "tanggal": "10 Feb 2026",
-    "periode": "HK-20260210",
+    "periode": "HK-3328",
     "nomor": "3091",
     "result_date": "2026-02-10",
     "market": "HK",
@@ -3752,14 +3752,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260209,
     "tanggal": "09 Feb 2026",
-    "periode": "HK-20260209",
+    "periode": "HK-3327",
     "nomor": "6794",
     "result_date": "2026-02-09",
     "market": "HK",
@@ -3769,14 +3769,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260208,
     "tanggal": "08 Feb 2026",
-    "periode": "HK-20260208",
+    "periode": "HK-3326",
     "nomor": "0428",
     "result_date": "2026-02-08",
     "market": "HK",
@@ -3786,14 +3786,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260207,
     "tanggal": "07 Feb 2026",
-    "periode": "HK-20260207",
+    "periode": "HK-3325",
     "nomor": "4223",
     "result_date": "2026-02-07",
     "market": "HK",
@@ -3803,14 +3803,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260206,
     "tanggal": "06 Feb 2026",
-    "periode": "HK-20260206",
+    "periode": "HK-3324",
     "nomor": "7543",
     "result_date": "2026-02-06",
     "market": "HK",
@@ -3820,14 +3820,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260205,
     "tanggal": "05 Feb 2026",
-    "periode": "HK-20260205",
+    "periode": "HK-3323",
     "nomor": "4181",
     "result_date": "2026-02-05",
     "market": "HK",
@@ -3837,14 +3837,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260204,
     "tanggal": "04 Feb 2026",
-    "periode": "HK-20260204",
+    "periode": "HK-3322",
     "nomor": "6525",
     "result_date": "2026-02-04",
     "market": "HK",
@@ -3854,14 +3854,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260203,
     "tanggal": "03 Feb 2026",
-    "periode": "HK-20260203",
+    "periode": "HK-3321",
     "nomor": "9211",
     "result_date": "2026-02-03",
     "market": "HK",
@@ -3871,14 +3871,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260202,
     "tanggal": "02 Feb 2026",
-    "periode": "HK-20260202",
+    "periode": "HK-3320",
     "nomor": "4767",
     "result_date": "2026-02-02",
     "market": "HK",
@@ -3888,14 +3888,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260201,
     "tanggal": "01 Feb 2026",
-    "periode": "HK-20260201",
+    "periode": "HK-3319",
     "nomor": "7925",
     "result_date": "2026-02-01",
     "market": "HK",
@@ -3905,14 +3905,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260131,
     "tanggal": "31 Jan 2026",
-    "periode": "HK-20260131",
+    "periode": "HK-3318",
     "nomor": "9957",
     "result_date": "2026-01-31",
     "market": "HK",
@@ -3922,14 +3922,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260130,
     "tanggal": "30 Jan 2026",
-    "periode": "HK-20260130",
+    "periode": "HK-3317",
     "nomor": "5207",
     "result_date": "2026-01-30",
     "market": "HK",
@@ -3939,14 +3939,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260129,
     "tanggal": "29 Jan 2026",
-    "periode": "HK-20260129",
+    "periode": "HK-3316",
     "nomor": "3249",
     "result_date": "2026-01-29",
     "market": "HK",
@@ -3956,14 +3956,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260128,
     "tanggal": "28 Jan 2026",
-    "periode": "HK-20260128",
+    "periode": "HK-3315",
     "nomor": "4461",
     "result_date": "2026-01-28",
     "market": "HK",
@@ -3973,14 +3973,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260127,
     "tanggal": "27 Jan 2026",
-    "periode": "HK-20260127",
+    "periode": "HK-3314",
     "nomor": "1353",
     "result_date": "2026-01-27",
     "market": "HK",
@@ -3990,14 +3990,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260126,
     "tanggal": "26 Jan 2026",
-    "periode": "HK-20260126",
+    "periode": "HK-3313",
     "nomor": "6244",
     "result_date": "2026-01-26",
     "market": "HK",
@@ -4007,14 +4007,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260125,
     "tanggal": "25 Jan 2026",
-    "periode": "HK-20260125",
+    "periode": "HK-3312",
     "nomor": "3352",
     "result_date": "2026-01-25",
     "market": "HK",
@@ -4024,14 +4024,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260124,
     "tanggal": "24 Jan 2026",
-    "periode": "HK-20260124",
+    "periode": "HK-3311",
     "nomor": "2736",
     "result_date": "2026-01-24",
     "market": "HK",
@@ -4041,14 +4041,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260123,
     "tanggal": "23 Jan 2026",
-    "periode": "HK-20260123",
+    "periode": "HK-3310",
     "nomor": "1105",
     "result_date": "2026-01-23",
     "market": "HK",
@@ -4058,14 +4058,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260122,
     "tanggal": "22 Jan 2026",
-    "periode": "HK-20260122",
+    "periode": "HK-3309",
     "nomor": "5741",
     "result_date": "2026-01-22",
     "market": "HK",
@@ -4075,14 +4075,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260121,
     "tanggal": "21 Jan 2026",
-    "periode": "HK-20260121",
+    "periode": "HK-3308",
     "nomor": "2931",
     "result_date": "2026-01-21",
     "market": "HK",
@@ -4092,14 +4092,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260120,
     "tanggal": "20 Jan 2026",
-    "periode": "HK-20260120",
+    "periode": "HK-3307",
     "nomor": "9578",
     "result_date": "2026-01-20",
     "market": "HK",
@@ -4109,14 +4109,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260119,
     "tanggal": "19 Jan 2026",
-    "periode": "HK-20260119",
+    "periode": "HK-3306",
     "nomor": "1297",
     "result_date": "2026-01-19",
     "market": "HK",
@@ -4126,14 +4126,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260118,
     "tanggal": "18 Jan 2026",
-    "periode": "HK-20260118",
+    "periode": "HK-3305",
     "nomor": "2771",
     "result_date": "2026-01-18",
     "market": "HK",
@@ -4143,14 +4143,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260117,
     "tanggal": "17 Jan 2026",
-    "periode": "HK-20260117",
+    "periode": "HK-3304",
     "nomor": "9385",
     "result_date": "2026-01-17",
     "market": "HK",
@@ -4160,14 +4160,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260116,
     "tanggal": "16 Jan 2026",
-    "periode": "HK-20260116",
+    "periode": "HK-3303",
     "nomor": "5889",
     "result_date": "2026-01-16",
     "market": "HK",
@@ -4177,14 +4177,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260115,
     "tanggal": "15 Jan 2026",
-    "periode": "HK-20260115",
+    "periode": "HK-3302",
     "nomor": "4967",
     "result_date": "2026-01-15",
     "market": "HK",
@@ -4194,14 +4194,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260114,
     "tanggal": "14 Jan 2026",
-    "periode": "HK-20260114",
+    "periode": "HK-3301",
     "nomor": "9301",
     "result_date": "2026-01-14",
     "market": "HK",
@@ -4211,14 +4211,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260113,
     "tanggal": "13 Jan 2026",
-    "periode": "HK-20260113",
+    "periode": "HK-3300",
     "nomor": "4043",
     "result_date": "2026-01-13",
     "market": "HK",
@@ -4228,14 +4228,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260112,
     "tanggal": "12 Jan 2026",
-    "periode": "HK-20260112",
+    "periode": "HK-3299",
     "nomor": "3688",
     "result_date": "2026-01-12",
     "market": "HK",
@@ -4245,14 +4245,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260111,
     "tanggal": "11 Jan 2026",
-    "periode": "HK-20260111",
+    "periode": "HK-3298",
     "nomor": "0940",
     "result_date": "2026-01-11",
     "market": "HK",
@@ -4262,14 +4262,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260110,
     "tanggal": "10 Jan 2026",
-    "periode": "HK-20260110",
+    "periode": "HK-3297",
     "nomor": "8551",
     "result_date": "2026-01-10",
     "market": "HK",
@@ -4279,14 +4279,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260109,
     "tanggal": "09 Jan 2026",
-    "periode": "HK-20260109",
+    "periode": "HK-3296",
     "nomor": "7005",
     "result_date": "2026-01-09",
     "market": "HK",
@@ -4296,14 +4296,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260108,
     "tanggal": "08 Jan 2026",
-    "periode": "HK-20260108",
+    "periode": "HK-3295",
     "nomor": "9766",
     "result_date": "2026-01-08",
     "market": "HK",
@@ -4313,14 +4313,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260107,
     "tanggal": "07 Jan 2026",
-    "periode": "HK-20260107",
+    "periode": "HK-3294",
     "nomor": "5991",
     "result_date": "2026-01-07",
     "market": "HK",
@@ -4330,14 +4330,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260106,
     "tanggal": "06 Jan 2026",
-    "periode": "HK-20260106",
+    "periode": "HK-3293",
     "nomor": "5730",
     "result_date": "2026-01-06",
     "market": "HK",
@@ -4347,14 +4347,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260105,
     "tanggal": "05 Jan 2026",
-    "periode": "HK-20260105",
+    "periode": "HK-3292",
     "nomor": "4864",
     "result_date": "2026-01-05",
     "market": "HK",
@@ -4364,14 +4364,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260104,
     "tanggal": "04 Jan 2026",
-    "periode": "HK-20260104",
+    "periode": "HK-3291",
     "nomor": "9184",
     "result_date": "2026-01-04",
     "market": "HK",
@@ -4381,14 +4381,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260103,
     "tanggal": "03 Jan 2026",
-    "periode": "HK-20260103",
+    "periode": "HK-3290",
     "nomor": "8448",
     "result_date": "2026-01-03",
     "market": "HK",
@@ -4398,14 +4398,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260102,
     "tanggal": "02 Jan 2026",
-    "periode": "HK-20260102",
+    "periode": "HK-3289",
     "nomor": "8909",
     "result_date": "2026-01-02",
     "market": "HK",
@@ -4415,14 +4415,14 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   },
   {
     "id": 20260101,
     "tanggal": "01 Jan 2026",
-    "periode": "HK-20260101",
+    "periode": "HK-3288",
     "nomor": "3849",
     "result_date": "2026-01-01",
     "market": "HK",
@@ -4432,7 +4432,7 @@
     "source_ids": [
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-18T06:03:07+07:00",
+    "collected_at": "2026-09-19T18:21:51+07:00",
     "verification": "primary_source",
     "confirmations": 1
   }
