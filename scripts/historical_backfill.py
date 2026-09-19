@@ -18,6 +18,9 @@ from collector import (
     fetch_html,
     parse_weekday_grid,
     parse_date_result_table,
+    normalize_day,
+    normalize_cell,
+    candidate_tables,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,17 +66,9 @@ HISTORICAL_SOURCES = {
             "id": "datahkpro_archive",
             "name": "DataHKPro Archive",
             "url": "https://datahkpro.site/",
-            "parser": "weekday4",
+            "parser": "reverse_weekday7",
             "heading_regex": r"(?:Data Keluaran HK|Data HK|Rekap Keluaran HK|Pengeluaran HK).*{year}",
             "priority": 12,
-        },
-        {
-            "id": "datahkpools_archive",
-            "name": "DataHKPools Archive",
-            "url": "https://datahk2026.site/",
-            "parser": "weekday4",
-            "heading_regex": r"(?:Data Keluaran HK|Data HK|Data Hongkong|Pengeluaran Hongkong).*{year}",
-            "priority": 14,
         },
         {
             "id": "angkakeluarhariini_hk",
@@ -473,31 +468,35 @@ def parse_hk_anchor_sequence(html: str, market: str, source: dict, year: int):
 def parse_split_weekday4(html: str, market: str, source: dict, year: int):
     soup = BeautifulSoup(html, "html.parser")
     raw_lines = [
-        re.sub(r"\\s+", " ", line).strip()
-        for line in soup.get_text("\\n", strip=True).splitlines()
+        re.sub(r"\s+", " ", line).strip()
+        for line in soup.get_text("\n", strip=True).splitlines()
         if line.strip()
     ]
 
-    start_idx = None
     start_patterns = [
-        rf"Data SDY Pools\\s+{year}",
-        rf"Data Sydney\\s+{year}",
-        rf"Data SDY\\s+{year}",
+        rf"Data Sydney\s+{year}",
+        rf"Data SDY Pools\s+{year}",
+        rf"Data SDY\s+{year}",
     ]
+    start_idx = None
     for idx, line in enumerate(raw_lines):
-        if any(re.search(pattern, line, flags=re.I) for pattern in start_patterns):
+        if any(
+            re.search(pattern, line, flags=re.I)
+            for pattern in start_patterns
+        ):
             start_idx = idx
             break
 
     if start_idx is None:
-        raise CollectorError(f"Split weekday: heading {year} tidak ditemukan")
+        raise CollectorError(
+            f"Split weekday: heading {year} tidak ditemukan"
+        )
 
     end_idx = len(raw_lines)
-    next_year = year + 1
     for idx in range(start_idx + 1, len(raw_lines)):
         line = raw_lines[idx]
         if re.search(
-            rf"(?:Data Sydney|Data SDY Pools|Data SDY)\\s+{next_year}",
+            rf"(?:Data Sydney|Data SDY Pools|Data SDY)\s+{year + 1}",
             line,
             flags=re.I,
         ):
@@ -518,11 +517,15 @@ def parse_split_weekday4(html: str, market: str, source: dict, year: int):
                 headings.append((idx, day_idx))
                 break
 
-    # One heading per weekday is expected. Ignore duplicated spelling aliases.
+    # Sydney Pools appears before Sydney Lotto. Keep the first occurrence
+    # of each weekday, which selects the target Sydney Pools section.
     unique = {}
     for idx, day_idx in headings:
         unique.setdefault(day_idx, idx)
-    headings = sorted((idx, day_idx) for day_idx, idx in unique.items())
+    headings = sorted(
+        (idx, day_idx)
+        for day_idx, idx in unique.items()
+    )
 
     if len(headings) < 7:
         raise CollectorError(
@@ -531,27 +534,25 @@ def parse_split_weekday4(html: str, market: str, source: dict, year: int):
 
     results = []
     for pos, (idx, day_idx) in enumerate(headings):
-        section_end = headings[pos + 1][0] if pos + 1 < len(headings) else len(segment)
+        section_end = (
+            headings[pos + 1][0]
+            if pos + 1 < len(headings)
+            else len(segment)
+        )
         values = []
         for line in segment[idx + 1:section_end]:
-            m = re.fullmatch(r"(?:xxxx|xxx|\\d{4})", line, flags=re.I)
-            if not m:
-                continue
-            value = line.lower()
-            if value in {"xxxx", "xxx"}:
-                values.append(None)
-            else:
-                values.append(line)
+            if re.fullmatch(r"(?:xxxx|xxx|\d{4})", line, flags=re.I):
+                values.append(
+                    None if line.lower().startswith("xxx") else line
+                )
 
         dates = []
         d = date(year, 1, 1)
         while d.year == year:
             if d.weekday() == day_idx:
                 dates.append(d)
-            d += __import__("datetime").timedelta(days=1)
+            d += timedelta(days=1)
 
-        # Some pages include one explicit xxxx placeholder before the first
-        # calendar occurrence. Align from the tail if there is one extra slot.
         if len(values) > len(dates):
             values = values[-len(dates):]
         if len(values) < len(dates):
@@ -571,7 +572,8 @@ def parse_split_weekday4(html: str, market: str, source: dict, year: int):
 
     dedup = {item.result_date: item for item in results}
     out = [dedup[d] for d in sorted(dedup)]
-    if len(out) < 300:
+    minimum = 200 if year == 2026 else 350
+    if len(out) < minimum:
         raise CollectorError(
             f"Split weekday parser {year} hanya menemukan {len(out)} result"
         )
@@ -835,11 +837,133 @@ def parse_fixed_weekday5(html: str, market: str, source: dict, year: int):
     return out
 
 
+def parse_reverse_weekday7(html: str, market: str, source: dict, year: int):
+    soup = BeautifulSoup(html, "html.parser")
+    tables = list(
+        candidate_tables(
+            soup,
+            source["heading_regex"],
+            year,
+        )
+    )
+    if not tables:
+        raise CollectorError(
+            f"Reverse weekday7: table {year} tidak ditemukan"
+        )
+
+    scored = []
+    for table in tables:
+        cells = table.find_all(["td", "th"])
+        four_count = sum(
+            1
+            for cell in cells
+            if normalize_cell(cell.get_text(" ", strip=True))
+        )
+        day_count = 0
+        for row in table.find_all("tr")[:20]:
+            mapped = [
+                normalize_day(cell.get_text(" ", strip=True))
+                for cell in row.find_all(["td", "th"])
+            ]
+            day_count = max(
+                day_count,
+                sum(day is not None for day in mapped),
+            )
+        scored.append((day_count * 1000 + four_count, table))
+
+    scored.sort(key=lambda item: item[0], reverse=True)
+    _, table = scored[0]
+    rows = table.find_all("tr")
+
+    header_idx = None
+    for idx, row in enumerate(rows[:20]):
+        mapped = [
+            normalize_day(cell.get_text(" ", strip=True))
+            for cell in row.find_all(["td", "th"])
+        ]
+        if sum(day is not None for day in mapped) >= 5:
+            header_idx = idx
+            break
+
+    if header_idx is None:
+        raise CollectorError(
+            f"Reverse weekday7: header {year} tidak ditemukan"
+        )
+
+    # Completed years start from the final calendar week. The current year
+    # starts from the current week because its top row is still partial.
+    today = date.today()
+    if year < today.year:
+        reference = date(year, 12, 31)
+    else:
+        reference = min(today, date(year, 12, 31))
+
+    top_monday = reference - timedelta(days=reference.weekday())
+    results = []
+    week_index = 0
+
+    for row in rows[header_idx + 1:]:
+        cells = row.find_all(["td", "th"])
+        if not cells:
+            continue
+
+        # Preserve blank columns. These pages normally render seven weekday
+        # cells even when the first/last week is partial.
+        values = [
+            normalize_cell(cell.get_text(" ", strip=True))
+            for cell in cells
+        ]
+
+        if len(values) < 7:
+            # Rows with fewer than seven cells cannot be positioned safely.
+            # Skip obvious non-data rows without advancing the week.
+            if not any(values):
+                continue
+            values = values + [""] * (7 - len(values))
+        elif len(values) > 7:
+            values = values[-7:]
+
+        if not any(values):
+            # A current-week placeholder row still represents a calendar week.
+            text = row.get_text(" ", strip=True).lower()
+            if any(token in text for token in ("tunggu", "wait", "xxxx")):
+                week_index += 1
+            continue
+
+        monday = top_monday - timedelta(days=week_index * 7)
+        for col, number in enumerate(values[:7]):
+            if not number:
+                continue
+            d = monday + timedelta(days=col)
+            if d.year != year:
+                continue
+            results.append(ParsedResult(
+                market=market,
+                result_date=d,
+                number=number,
+                source_id=source["id"],
+                source_name=source["name"],
+                source_url=source["url"],
+            ))
+        week_index += 1
+
+    dedup = {item.result_date: item for item in results}
+    out = [dedup[d] for d in sorted(dedup)]
+    minimum = 200 if year == 2026 else 350
+    if len(out) < minimum:
+        raise CollectorError(
+            f"Reverse weekday7 {year}: hanya {len(out)} result"
+        )
+    return out
+
+
 def parse_source_year(html: str, market: str, source: dict, year: int):
     parser = source.get("parser", "weekday4")
 
     if parser == "weekday4":
         return parse_weekday_grid(html, market, source, year)
+    if parser == "reverse_weekday7":
+        return parse_reverse_weekday7(html, market, source, year)
     if parser == "weekday6_last4":
         return parse_weekday_grid_6_last4(html, market, source, year)
     if parser == "hk_anchor_sequence":
