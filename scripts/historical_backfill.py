@@ -71,6 +71,30 @@ HISTORICAL_SOURCES = {
             "priority": 12,
         },
         {
+            "id": "hktogel_us_archive",
+            "name": "HKTogel US Archive",
+            "url": "https://hktogel.us/",
+            "parser": "reverse_weekday7",
+            "heading_regex": r"(?:Data HK|Data Hongkong|Data Pengeluaran HK|Pengeluaran Hongkong).*{year}",
+            "priority": 16,
+        },
+        {
+            "id": "datatogellengkap_hk_archive",
+            "name": "DataTogelLengkap HK Archive",
+            "url": "https://datatogellengkap.pro/",
+            "parser": "reverse_weekday7",
+            "heading_regex": r"(?:Data HK|Data Hongkong|Data Pengeluaran HK|Pengeluaran Hongkong).*{year}",
+            "priority": 17,
+        },
+        {
+            "id": "angkahk_archive",
+            "name": "AngkaHK Archive",
+            "url": "https://angkahk.me/",
+            "parser": "reverse_weekday7",
+            "heading_regex": r"(?:Data HK|Data Hongkong|Data Pengeluaran HK|Pengeluaran Hongkong).*{year}",
+            "priority": 18,
+        },
+        {
             "id": "angkakeluarhariini_hk",
             "name": "AngkaKeluarHariIni HK",
             "url": "https://angkakeluarhariini.com/",
@@ -546,20 +570,16 @@ def parse_split_weekday4(html: str, market: str, source: dict, year: int):
                     None if line.lower().startswith("xxx") else line
                 )
 
-        dates = []
-        d = date(year, 1, 1)
-        while d.year == year:
-            if d.weekday() == day_idx:
-                dates.append(d)
-            d += timedelta(days=1)
+        jan1 = date(year, 1, 1)
+        first_monday = jan1 - timedelta(days=jan1.weekday())
 
-        if len(values) > len(dates):
-            values = values[-len(dates):]
-        if len(values) < len(dates):
-            dates = dates[:len(values)]
-
-        for d, number in zip(dates, values):
+        for week_index, number in enumerate(values):
             if not number:
+                continue
+            d = first_monday + timedelta(
+                days=week_index * 7 + day_idx
+            )
+            if d.year != year:
                 continue
             results.append(ParsedResult(
                 market=market,
