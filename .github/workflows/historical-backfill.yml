@@ -40,6 +40,9 @@ jobs:
         working-directory: scripts
         run: python historical_backfill.py
 
+      - name: Generate P1-P8 Predictions
+        run: python scripts/prediction_engine.py
+
       - name: Show Archive Summary
         run: |
           python - <<'PY'
@@ -56,6 +59,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add public/data/hk.json public/data/sgp.json public/data/sdy.json public/data/historical-verification.json
+          git add public/predictions
           if git diff --cached --quiet; then
             echo "Tidak ada perubahan arsip."
             exit 0
