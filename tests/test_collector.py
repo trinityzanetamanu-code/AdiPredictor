@@ -2,10 +2,12 @@ from datetime import date
 
 from scripts.collector import (
     parse_date_result_table,
+    parse_indonesian_long_date_result4,
     parse_hk_six_digit_last4,
     parse_sgp_official_4d,
     parse_weekday_grid,
     resolve_period_from_rule,
+    verify_results,
     ParsedResult,
 )
 
@@ -185,3 +187,92 @@ def test_sdy_period_rule_from_royaltoto_anchor():
     }
     resolve_period_from_rule(item, cfg)
     assert item.period == "SD-3549"
+
+
+def test_indonesian_long_date_result_parser():
+    html = """
+    <table>
+      <tr><td>15 September 2026</td><td>8463</td></tr>
+      <tr><td>16 September 2026</td><td>4293</td></tr>
+      <tr><td>17 September 2026</td><td>5159</td></tr>
+      <tr><td>18 September 2026</td><td>3877</td></tr>
+      <tr><td>19 September 2026</td><td>8748</td></tr>
+    </table>
+    """
+    results = parse_indonesian_long_date_result4(
+        html,
+        "SDY",
+        source("id_long_date_result4"),
+        2026,
+    )
+    assert results[-1].result_date == date(2026, 9, 19)
+    assert results[-1].number == "8748"
+
+
+def test_date_result_table_can_ignore_foreign_period():
+    html = """
+    <table>
+      <tr><th>Tanggal</th><th>Periode</th><th>Result</th></tr>
+      <tr><td>15-09-2026</td><td>SY-900</td><td>8463</td></tr>
+      <tr><td>16-09-2026</td><td>SY-901</td><td>4293</td></tr>
+      <tr><td>17-09-2026</td><td>SY-902</td><td>5159</td></tr>
+      <tr><td>18-09-2026</td><td>SY-903</td><td>3877</td></tr>
+      <tr><td>19-09-2026</td><td>SY-904</td><td>8748</td></tr>
+    </table>
+    """
+    src = source("date_result_table")
+    src["ignore_period"] = True
+    results = parse_date_result_table(html, "SDY", src, 2026)
+    item = results[-1]
+    assert item.period is None
+
+    cfg = {
+        "period_rule": {
+            "prefix": "SD",
+            "anchor_date": "2026-09-17",
+            "anchor_number": 3547,
+            "valid_from": "2023-01-01",
+            "weekdays": [0, 1, 2, 3, 4, 5, 6],
+        }
+    }
+    resolve_period_from_rule(item, cfg)
+    assert item.period == "SD-3549"
+
+
+def test_crosscheck_majority_rejects_single_bad_source():
+    d = date(2026, 8, 13)
+
+    def item(source_id, number):
+        return ParsedResult(
+            market="SDY",
+            result_date=d,
+            number=number,
+            source_id=source_id,
+            source_name=source_id,
+            source_url="https://example.test/",
+        )
+
+    market_cfg = {
+        "verification_mode": "crosscheck",
+        "min_confirmations": 2,
+        "sources": [
+            {"id": "a", "priority": 5, "enabled": True},
+            {"id": "b", "priority": 10, "enabled": True},
+            {"id": "c", "priority": 15, "enabled": True},
+            {"id": "d", "priority": 30, "enabled": True},
+        ],
+    }
+    verified = verify_results(
+        market_cfg,
+        {
+            "a": [item("a", "4276")],
+            "b": [item("b", "4276")],
+            "c": [item("c", "4276")],
+            "d": [item("d", "8117")],
+        },
+    )
+
+    assert len(verified) == 1
+    assert verified[0].item.number == "4276"
+    assert verified[0].confirmations == 3
+    assert verified[0].source_ids == ["a", "b", "c"]

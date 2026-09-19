@@ -332,13 +332,15 @@ def parse_date_result_table(html: str, market: str, source: dict, year: int) -> 
             continue
         number = ""
         period = None
+        ignore_period = bool(source.get("ignore_period", False))
         for c in cells:
             if re.fullmatch(r"\d{4}", c):
                 number = c
-            pm = re.search(r"\b(?:HK|SD|SDY|SY|SGP)[-\s]*\d+\b", c, re.I)
-            if pm:
-                period = re.sub(r"\s+", "", pm.group(0)).upper()
-                period = period.replace("SY-", "SD-").replace("SDY-", "SD-")
+            if not ignore_period:
+                pm = re.search(r"\b(?:HK|SD|SDY|SY|SGP)[-\s]*\d+\b", c, re.I)
+                if pm:
+                    period = re.sub(r"\s+", "", pm.group(0)).upper()
+                    period = period.replace("SY-", "SD-").replace("SDY-", "SD-")
         if not number:
             continue
         out[d] = ParsedResult(
@@ -352,11 +354,77 @@ def parse_date_result_table(html: str, market: str, source: dict, year: int) -> 
     return results
 
 
+def parse_indonesian_long_date_result4(
+    html: str,
+    market: str,
+    source: dict,
+    year: int,
+) -> List[ParsedResult]:
+    soup = BeautifulSoup(html, "html.parser")
+    month_map = {
+        "januari": 1, "februari": 2, "maret": 3, "april": 4,
+        "mei": 5, "juni": 6, "juli": 7, "agustus": 8,
+        "september": 9, "oktober": 10, "november": 11, "desember": 12,
+    }
+    out: Dict[date, ParsedResult] = {}
+
+    nodes = soup.find_all("tr")
+    if not nodes:
+        nodes = soup.find_all(["p", "li", "div"])
+
+    for node in nodes:
+        text = re.sub(r"\s+", " ", node.get_text(" ", strip=True)).strip()
+        if not text:
+            continue
+
+        m = re.search(
+            r"(?<!\d)(\d{1,2})\s+"
+            r"(Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|"
+            r"September|Oktober|November|Desember)\s+"
+            r"(20\d{2})(?!\d)",
+            text,
+            flags=re.I,
+        )
+        if not m or int(m.group(3)) != year:
+            continue
+
+        try:
+            d = date(
+                year,
+                month_map[m.group(2).lower()],
+                int(m.group(1)),
+            )
+        except ValueError:
+            continue
+
+        tail = text[m.end():]
+        numbers = re.findall(r"(?<!\d)(\d{4})(?!\d)", tail)
+        if not numbers:
+            continue
+
+        out[d] = ParsedResult(
+            market=market,
+            result_date=d,
+            number=numbers[-1],
+            source_id=source["id"],
+            source_name=source["name"],
+            source_url=source["url"],
+        )
+
+    results = [out[d] for d in sorted(out)]
+    if len(results) < 5:
+        raise CollectorError(
+            f"Indonesian long-date parser hanya menemukan {len(results)} result"
+        )
+    return results
+
+
 PARSERS = {
     "weekday_grid": parse_weekday_grid,
     "hk_six_digit_last4": parse_hk_six_digit_last4,
     "sgp_official_4d": parse_sgp_official_4d,
     "date_result_table": parse_date_result_table,
+    "id_long_date_result4": parse_indonesian_long_date_result4,
 }
 
 

@@ -111,35 +111,8 @@
     "SDY": {
       "display_name": "Pasaran SDY Pool",
       "schedule": "daily",
-      "verification_mode": "primary_authoritative",
-      "authoritative_source_id": "livenomor_sdy",
-      "sources": [
-        {
-          "id": "livenomor_sdy",
-          "name": "LiveNomor Sydney",
-          "url": "https://livenomor.com/data-pengeluaran-sydney-2021/",
-          "parser": "weekday_grid",
-          "heading_regex": "Data Pengeluaran Sydney\\s+{year}",
-          "enabled": true,
-          "priority": 10
-        },
-        {
-          "id": "grab4d_sdy_crosscheck",
-          "name": "GRAB4D Sydney Archive",
-          "url": "https://grab4dofficial.com/paito/sdy/amp/",
-          "parser": "date_result_table",
-          "enabled": false,
-          "priority": 20
-        },
-        {
-          "id": "wak100_sdy_crosscheck",
-          "name": "WAK100 Sydney History",
-          "url": "https://wak100datang.com/draw-history?m=4732",
-          "parser": "date_result_table",
-          "enabled": false,
-          "priority": 30
-        }
-      ],
+      "verification_mode": "crosscheck",
+      "min_confirmations": 2,
       "replace_existing_metadata": true,
       "period_rule": {
         "prefix": "SD",
@@ -156,12 +129,50 @@
           6
         ],
         "note": "RoyalToto screenshot anchor: 17 Sep 2026 = SD-3547. Sydney target market increments daily."
-      }
+      },
+      "sources": [
+        {
+          "id": "lomba4d_sdy",
+          "name": "Lomba4D Sydney Results",
+          "url": "https://www.lomba4dqueen.com/hasil/SY",
+          "parser": "date_result_table",
+          "ignore_period": true,
+          "enabled": true,
+          "priority": 5
+        },
+        {
+          "id": "waroengtogel_sdy",
+          "name": "WaroengTogel SDY",
+          "url": "https://waroengtogel2.com/data-togel-sdy-{year}/",
+          "parser": "id_long_date_result4",
+          "enabled": true,
+          "priority": 10
+        },
+        {
+          "id": "datatogel_sdy",
+          "name": "Datatogel Sydney Archive",
+          "url": "https://w2.datatogel.fit/data-sdy/",
+          "parser": "weekday_grid",
+          "heading_regex": "(?:Data Sydney|Data SDY|Data Pengeluaran Sydney)\\s+{year}",
+          "enabled": true,
+          "priority": 15
+        },
+        {
+          "id": "livenomor_sdy",
+          "name": "LiveNomor Sydney",
+          "url": "https://livenomor.com/data-pengeluaran-sydney-2021/",
+          "parser": "weekday_grid",
+          "heading_regex": "Data Pengeluaran Sydney\\s+{year}",
+          "enabled": true,
+          "priority": 30,
+          "note": "Secondary live source. Known isolated August 2026 discrepancies are resolved by multi-source consensus."
+        }
+      ]
     }
   },
   "data_policy": {
     "historical_verification": "At least two independent sources must agree exactly per date before a historical draw is accepted.",
-    "current_latest": "A newly published current draw may remain as a primary-source row until an independent archive catches up; historical backfill preserves it.",
+    "current_latest": "Current results use multi-source consensus where available. A draw is accepted by the live collector after at least two independent enabled sources agree exactly; historical backfill also requires exact per-date agreement.",
     "period_fields": "HK and SD use RoyalToto-style daily period anchors; SGP uses the RoyalToto-style five-day period sequence."
   }
 }
