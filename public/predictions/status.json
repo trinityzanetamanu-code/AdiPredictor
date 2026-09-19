@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-09-19T21:49:26+07:00",
+  "generated_at": "2026-09-19T23:43:22+07:00",
   "engine": "AdiPredictor-P1-P8-v1",
   "markets": {
     "HK": {
       "latest": {
-        "date": "2026-09-18",
-        "period": "HK-3548",
-        "number": "3725"
+        "date": "2026-09-19",
+        "period": "HK-3549",
+        "number": "0860"
       },
-      "target_date": "2026-09-19",
-      "target_period": "HK-3549",
-      "four_d_main": "0062",
-      "bbfs6": "094687",
-      "dataset_count": 1357
+      "target_date": "2026-09-20",
+      "target_period": "HK-3550",
+      "four_d_main": "0144",
+      "bbfs6": "094817",
+      "dataset_count": 1358
     },
     "SGP": {
       "latest": {
