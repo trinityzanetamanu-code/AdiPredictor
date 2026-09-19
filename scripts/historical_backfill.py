@@ -241,14 +241,14 @@ def parse_archive_rows(html: str, market: str, source_url: str, year: int):
     # Fallback for responsive pages that render archive rows as divs instead of <tr>.
     if not out:
         lines = [
-            re.sub(r"\\s+", " ", line).strip()
-            for line in soup.get_text("\\n", strip=True).splitlines()
+            re.sub(r"\s+", " ", line).strip()
+            for line in soup.get_text("\n", strip=True).splitlines()
             if line.strip()
         ]
         for i, line in enumerate(lines):
             m = re.search(
-                r"(?:(?:Min|Sen|Sel|Rab|Kam|Jum|Sab)\\s+)?"
-                r"(?<!\\d)(\\d{1,2})/(\\d{1,2})(?!\\d)",
+                r"(?:(?:Min|Sen|Sel|Rab|Kam|Jum|Sab)\s+)?"
+                r"(?<!\d)(\d{1,2})/(\d{1,2})(?!\d)",
                 line,
                 flags=re.I,
             )
@@ -263,11 +263,11 @@ def parse_archive_rows(html: str, market: str, source_url: str, year: int):
 
             digits = []
             for nxt in lines[i + 1:i + 16]:
-                if re.fullmatch(r"\\d", nxt):
+                if re.fullmatch(r"\d", nxt):
                     digits.append(nxt)
                     if len(digits) == 4:
                         break
-                elif digits and re.search(r"\\d{1,2}/\\d{1,2}", nxt):
+                elif digits and re.search(r"\d{1,2}/\d{1,2}", nxt):
                     break
 
             if len(digits) == 4:
