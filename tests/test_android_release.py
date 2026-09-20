@@ -163,3 +163,18 @@ def test_metadata_publisher_rejects_version_rollback_and_cert_rotation():
     assert "new_certificate" in publisher
     assert "current_certificate" in publisher
     assert "Refusing stable certificate rotation" in publisher
+
+
+def test_hk_verification_activity_is_installed_without_cookie_export():
+    configure = (ROOT / "scripts" / "configure_android_release.mjs").read_text()
+    activity = (ROOT / "scripts" / "android" / "HKVerificationActivity.java").read_text()
+    plugin = (ROOT / "scripts" / "android" / "HKVerificationPlugin.java").read_text()
+    assert "registerPlugin(HKVerificationPlugin.class)" in configure
+    assert ".HKVerificationActivity" in configure
+    assert 'ALLOWED_HOST = "www.hongkongpools.com"' in activity
+    assert "handler.cancel()" in activity
+    assert "setAcceptThirdPartyCookies(webView, false)" in activity
+    assert "removeAllCookies(null)" in activity
+    assert "document.cookie" not in activity
+    assert "cf_clearance" not in activity
+    assert '@CapacitorPlugin(name = "HKVerification")' in plugin

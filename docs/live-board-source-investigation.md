@@ -10,8 +10,14 @@ Audit date: 20 September 2026. This document describes result-table ingestion on
 - Expected board structure: labelled rows for 1st Prize, 2nd Prize, 3rd Prize, Starter Prize, and Consolation Prize. Every accepted number must contain exactly six digits. The AdiPredictor market value is derived only as `first[-4:]` and is compared with, but never silently written into, the verified prediction dataset.
 - Network result from the audit environment: both URLs returned an HTTP 403 Cloudflare managed challenge with `cf-mitigated: challenge`. The collector and app explicitly detect this response and do not attempt to solve or bypass it.
 - Native Android path: `CapacitorHttp.get()` performs a normal public GET and parses the response only if it is a valid result document. A challenge or malformed result is rejected.
-- Cached fallback: `public/data/live-draw.json`, maintained idempotently by the existing Auto Result Collector whenever the public page is fetchable.
-- Final fallback: open the exact live page with Capacitor Browser. The source page is never embedded inside the AdiPredictor result board.
+- Manual verification: the Android build includes a dedicated, non-exported WebView activity restricted to `https://www.hongkongpools.com/`. A user can complete the Cloudflare challenge manually. Only after the result page is visible can the user submit the result DOM for strict six-digit parsing. Cookies, `cf_clearance`, and challenge tokens are never exported from the WebView.
+- Device fallback: only the normalized result board (date, prizes, derived 4D, retrieval time) may be stored locally. No security cookie or token is stored by AdiPredictor.
+- Cached fallback: `public/data/live-draw.json`, maintained idempotently by the existing Auto Result Collector whenever a complete board can be validated. The separate table at `https://www.livedrawhkpools6d.com/` only publishes the six-digit first result; its last-four sequence is qualified for dataset cross-checking, but it is not fabricated into a complete native prize board.
+- Final fallback: open the exact source page with Capacitor Browser. External advertising/script content is never inserted into the native result board.
+
+### HK freshness and market identity
+
+The previous single-source path could remain at 19 September 2026 (`0860`) after the next draw. The collector now requires source qualification against the exact recent sequence `0040, 9298, 4332, 0379, 5065, 9059, 3725, 0860`. NexiPools is parsed from the exact **HK Pools** column; the adjacent **HK Lotto** column is explicitly rejected. On 20 September 2026, NexiPools, LiveNomor, and the 6D table independently resolved the target draw to `2036`. A single qualified fresh source is marked provisional; two or more exact matches are confirmed. Conflicts are not appended.
 
 ## SDY market
 

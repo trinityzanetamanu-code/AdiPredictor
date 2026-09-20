@@ -121,9 +121,13 @@ export function validateSixDigitBoard(board) {
   return board;
 }
 
+export function isSecurityChallengeHtml(html) {
+  return /cf-mitigated|challenge-platform|<title>\s*Just a moment|melakukan verifikasi keamanan/i.test(String(html || ''));
+}
+
 export function parseSixDigitBoard(html, market, sourceUrl = LIVE_BOARD_URLS[market]?.pageUrl) {
   if (!String(html || '').trim()) throw new Error('HTML live board kosong');
-  if (/cf-mitigated|challenge-platform|<title>\s*Just a moment/i.test(html)) {
+  if (isSecurityChallengeHtml(html)) {
     throw new Error('Source dilindungi challenge; tidak mencoba bypass');
   }
   const rows = extractPrizeRows(html);
@@ -153,6 +157,7 @@ export function attachDatasetValidation(board, datasetRow) {
   return {
     ...board,
     dataset_4d: /^\d{4}$/.test(dataset4d) ? dataset4d : null,
+    dataset_latest_date: datasetDate,
     matches_dataset: comparable ? board.derived_4d === dataset4d : null,
     verification: !sameDate
       ? 'dataset_date_mismatch'

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowLeft, History } from 'lucide-react';
+import PredictionOutcomeAudit from './PredictionOutcomeAudit';
 
 const MARKET_OPTIONS = [
   ['HK', 'Pasaran HK Pool'],
@@ -24,18 +25,6 @@ function formatTime(value) {
   } catch {
     return value;
   }
-}
-
-function permutationStatus(entry) {
-  if (entry?.exact) return 'EXACT';
-  if (entry?.permutation) return 'PERMUTATION';
-  return 'MISS';
-}
-
-function reverseStatus(entry) {
-  if (entry?.exact) return 'EXACT';
-  if (entry?.reverse) return 'REVERSE';
-  return 'MISS';
 }
 
 export default function PredictionHistoryPage({ marketCode, setMarketCode, history, onBack }) {
@@ -96,12 +85,8 @@ export default function PredictionHistoryPage({ marketCode, setMarketCode, histo
           const two = record.two_d || {};
           const actual = record.actual_result;
           const audit = record.outcome_audit;
-          const summary = record.hit_miss_summary;
-          const anyDirectHit = summary && (
-            Object.values(summary['4d'] || {}).some(Boolean) ||
-            summary['3d']?.front_exact || summary['3d']?.back_exact ||
-            Object.values(summary['2d'] || {}).some((item) => item?.exact)
-          );
+          const directHits = record.hit_miss_summary?.direct_number_hits || audit?.summary?.direct_number_hits || [];
+          const coverageHits = record.hit_miss_summary?.support_coverage_hits || audit?.summary?.support_coverage_hits || [];
 
           return (
             <details
@@ -122,10 +107,14 @@ export default function PredictionHistoryPage({ marketCode, setMarketCode, histo
                     <div className="font-mono text-lg font-bold text-emerald-400">
                       {actual?.number || 'MENUNGGU'}
                     </div>
-                    <div className={`text-[9px] font-semibold ${
-                      !actual ? 'text-amber-300' : anyDirectHit ? 'text-emerald-300' : 'text-slate-500'
-                    }`}>
-                      {!actual ? 'RESULT BELUM ADA' : anyDirectHit ? 'DIRECT HIT' : 'TIDAK ADA EXACT HIT'}
+                    <div className={`max-w-[180px] text-[9px] font-semibold ${!actual ? 'text-amber-300' : directHits.length ? 'text-emerald-300' : 'text-slate-500'}`}>
+                      {!actual
+                        ? 'HASIL BELUM ADA'
+                        : directHits.length
+                          ? `TEMBUS: ${directHits.map((item) => `${item.category} ${item.candidate || ''}`).join(' · ')}`
+                          : coverageHits.length
+                            ? `CAKUPAN: ${coverageHits.join(' · ')}`
+                            : 'TIDAK ADA KANDIDAT NOMOR TEMBUS'}
                     </div>
                   </div>
                 </div>
@@ -150,20 +139,8 @@ export default function PredictionHistoryPage({ marketCode, setMarketCode, histo
                   <div>Kembar <span className="font-mono text-slate-100">{two.kembar?.main || '-'} · {two.kembar?.reserve || '-'}</span></div>
                 </div>
 
-                {actual && audit && (
-                  <div className="grid grid-cols-1 gap-2 rounded-xl border border-slate-800 bg-slate-950/40 p-3 text-slate-400 sm:grid-cols-2">
-                    <div>4D main: <span className="text-slate-200">{permutationStatus(audit.previous_4d_main)}</span></div>
-                    <div>4D alternatif: <span className="text-slate-200">{permutationStatus(audit.previous_4d_alternative)}</span></div>
-                    <div>4D cadangan: <span className="text-slate-200">{permutationStatus(audit.previous_4d_reserve)}</span></div>
-                    <div>4D single pair: <span className="text-slate-200">{permutationStatus(audit.previous_4d_single_pair)}</span></div>
-                    <div>3D depan: <span className="text-slate-200">{permutationStatus(audit['3d_front'])}</span></div>
-                    <div>3D belakang: <span className="text-slate-200">{permutationStatus(audit['3d_back'])}</span></div>
-                    {['front', 'middle', 'back'].map((slot) => (
-                      <div key={slot}>2D {slot}: <span className="text-slate-200">{reverseStatus(audit[`2d_${slot}`])}</span></div>
-                    ))}
-                    <div>BBFS6: <span className="text-slate-200">{audit.bbfs6?.full_draw_coverage ? 'FULL' : `${audit.bbfs6?.occurrence_coverage?.captured ?? 0}/4`}</span></div>
-                  </div>
-                )}
+                {actual && audit && <PredictionOutcomeAudit audit={audit} />}
+                {actual && !audit && <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 text-xs text-amber-300">AUDIT RINCI TIDAK TERSEDIA PADA ARSIP LAMA</div>}
               </div>
             </details>
           );

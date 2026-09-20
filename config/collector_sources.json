@@ -4,9 +4,32 @@
     "HK": {
       "display_name": "Pasaran HK Pool",
       "schedule": "daily",
-      "verification_mode": "primary_authoritative",
-      "authoritative_source_id": "livenomor_hk",
+      "verification_mode": "crosscheck_or_qualified_primary",
+      "min_confirmations": 2,
+      "qualified_primary_min_history_matches": 7,
+      "expected_draw_time": "23:00",
+      "identity_fingerprint": {
+        "2026-09-19": "0860",
+        "2026-09-18": "3725",
+        "2026-09-17": "9059",
+        "2026-09-16": "5065",
+        "2026-09-15": "0379",
+        "2026-09-14": "4332",
+        "2026-09-13": "9298",
+        "2026-09-12": "0040"
+      },
       "sources": [
+        {
+          "id": "nexipools_hk",
+          "name": "NexiPools Hongkong Pools",
+          "url": "https://www.nexipools.com/id/hongkong/paito/",
+          "parser": "hk_dual_market_table",
+          "market_column": "HK Pools",
+          "reject_columns": ["HK Lotto", "Hongkong Lotto", "HK Siang"],
+          "enabled": true,
+          "priority": 5,
+          "note": "Qualified third-party market source. Parser selects the HK Pools column and explicitly rejects HK Lotto/HK Siang columns."
+        },
         {
           "id": "livenomor_hk",
           "name": "LiveNomor Hongkong",
@@ -29,11 +52,11 @@
           "name": "LiveDraw HK Pools 6D",
           "url": "https://www.livedrawhkpools6d.com/",
           "parser": "hk_six_digit_last4",
-          "enabled": false,
+          "enabled": true,
           "priority": 30
         }
       ],
-      "replace_existing_metadata": true,
+      "replace_existing_metadata": false,
       "period_rule": {
         "prefix": "HK",
         "anchor_date": "2026-09-17",

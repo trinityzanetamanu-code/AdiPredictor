@@ -149,5 +149,7 @@ __pycache__/
 
 # Capacitor Android is generated in CI; signing material must never be tracked.
 android/
+!scripts/android/
+!scripts/android/*.java
 *.jks
 *.keystore

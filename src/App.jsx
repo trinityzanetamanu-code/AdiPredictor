@@ -34,10 +34,13 @@ import {
 } from './dataClient';
 import LiveDrawPlayer, { openLivePage } from './components/LiveDrawPlayer';
 import LiveDrawResultBoard from './components/LiveDrawResultBoard';
+import LiveDrawFourDigitBoard, { TotoBoard } from './components/LiveDrawFourDigitBoard';
 import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
 import PredictionHistoryPage from './components/PredictionHistoryPage';
+import PredictionOutcomeAudit from './components/PredictionOutcomeAudit';
 import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, selectSingaporeMode } from './liveDrawConfig';
 import { attachDatasetValidation, fetchNativeLiveBoard } from './liveDrawService';
+import { loadLocalHKBoard, openHKManualVerification } from './hkVerificationService';
 
 const AppContext = createContext();
 
@@ -248,6 +251,19 @@ export function AppProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (internalPage !== 'prediction-history') return undefined;
+    let listener;
+    let cancelled = false;
+    import('@capacitor/app').then(({ App }) => App.addListener('backButton', () => {
+      if (!cancelled) closePredictionHistory();
+    })).then((handle) => { listener = handle; }).catch(() => {});
+    return () => {
+      cancelled = true;
+      listener?.remove?.();
+    };
+  }, [internalPage]);
+
+  useEffect(() => {
     const syncInternalPage = () => {
       setInternalPage(window.location.hash === '#prediction-history' ? 'prediction-history' : 'main');
     };
@@ -265,15 +281,8 @@ export function AppProvider({ children }) {
 
   const closePredictionHistory = () => {
     setActiveTab('generator');
-    if (
-      window.location.hash === '#prediction-history' &&
-      window.history.state?.adipredictorPage === 'prediction-history'
-    ) {
-      window.history.back();
-    } else {
-      window.history.replaceState({}, '', window.location.pathname + window.location.search);
-      setInternalPage('main');
-    }
+    setInternalPage('main');
+    window.history.replaceState({ adipredictorPage: 'main' }, '', window.location.pathname + window.location.search);
   };
 
   const navigateToTab = (tabId) => {
@@ -544,11 +553,6 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
     ].join('\n');
     copyToClipboard(text);
   };
-  const auditPermutationLabel = (entry, legacyExact = false) =>
-    (entry?.exact ?? legacyExact) ? 'EXACT' : entry?.permutation ? 'PERMUTATION' : 'MISS';
-  const auditReverseLabel = (entry, legacyExact = false) =>
-    (entry?.exact ?? legacyExact) ? 'EXACT' : entry?.reverse ? 'REVERSE' : 'MISS';
-
   return (
     <div className="lg:col-span-2 bg-slate-900/90 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl space-y-6">
       <div className="border-b border-slate-800 pb-4">
@@ -725,25 +729,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
             </div>
           </div>
 
-          {audit && (
-            <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs">
-              <summary className="font-semibold text-slate-200 cursor-pointer">Audit prediksi sebelumnya</summary>
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
-                <div>Aktual: <span className="font-mono text-slate-100">{audit.actual || '-'}</span></div>
-                <div>4D main: {auditPermutationLabel(audit.previous_4d_main, audit.four_d_exact)}</div>
-                <div>4D alternatif: {auditPermutationLabel(audit.previous_4d_alternative)}</div>
-                <div>4D cadangan: {auditPermutationLabel(audit.previous_4d_reserve)}</div>
-                <div>4D single pair: {auditPermutationLabel(audit.previous_4d_single_pair)}</div>
-                <div>3D depan: {auditPermutationLabel(audit['3d_front'], audit.three_d_front_hit)}</div>
-                <div>3D belakang: {auditPermutationLabel(audit['3d_back'], audit.three_d_back_hit)}</div>
-                <div>2D depan: {auditReverseLabel(audit['2d_front'])}</div>
-                <div>2D tengah: {auditReverseLabel(audit['2d_middle'])}</div>
-                <div>2D belakang: {auditReverseLabel(audit['2d_back'], audit.two_d_back_hit)}</div>
-                {audit.bbfs6 && <div>BBFS6: {audit.bbfs6.occurrence_coverage?.captured}/4 digit occurrence</div>}
-                {audit.bbfs5 && <div>BBFS5: {audit.bbfs5.occurrence_coverage?.captured}/4 digit occurrence</div>}
-              </div>
-            </details>
-          )}
+          {audit && <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs"><summary className="cursor-pointer font-semibold text-slate-200">Audit prediksi sebelumnya</summary><div className="mt-3"><PredictionOutcomeAudit audit={audit} /></div></details>}
 
           {visuals.length > 0 && (
             <section className="space-y-3">
@@ -1058,6 +1044,7 @@ function LiveDrawPanel() {
     checkedAt: null,
   });
   const [boardRefreshNonce, setBoardRefreshNonce] = useState(0);
+  const [hkVerificationState, setHkVerificationState] = useState(null);
 
   useEffect(() => {
     if (liveMarket !== 'SGP') return undefined;
@@ -1113,9 +1100,10 @@ function LiveDrawPanel() {
       }
 
       const cached = cachedSnapshot?.markets?.[liveMarket] || null;
+      const localVerified = liveMarket === 'HK' ? loadLocalHKBoard() : null;
       const datasetRow = marketData[liveMarket]?.[0] || null;
-      let selectedBoard = cached ? attachDatasetValidation(cached, datasetRow) : null;
-      let fetchMode = cached ? 'github_cached_snapshot' : 'no_snapshot';
+      let selectedBoard = localVerified ? attachDatasetValidation(localVerified, datasetRow) : cached ? attachDatasetValidation(cached, datasetRow) : null;
+      let fetchMode = localVerified ? 'device_local_verified_board' : cached ? 'github_cached_snapshot' : 'no_snapshot';
       let errorMessage = null;
       let status = cached ? 'cached' : 'unavailable';
 
@@ -1130,7 +1118,8 @@ function LiveDrawPanel() {
         }
       } catch (error) {
         errorMessage = error?.message || 'Direct native source gagal';
-        status = cached ? 'cached' : 'unavailable';
+        if (liveMarket === 'HK' && /HTTP 403|challenge|verifikasi keamanan/i.test(errorMessage)) setHkVerificationState('CHALLENGE_REQUIRED');
+        status = selectedBoard ? 'cached' : 'unavailable';
       }
 
       if (mounted) {
@@ -1172,6 +1161,15 @@ function LiveDrawPanel() {
     latest: selectedRow,
     prediction: predictions[liveMarket],
   });
+  const verifyHK = async () => {
+    setHkVerificationState('MANUAL_VERIFICATION_OPEN');
+    const result = await openHKManualVerification();
+    setHkVerificationState(result.state);
+    if (result.board) {
+      const datasetRow = marketData.HK?.[0] || null;
+      setBoardState({ board: attachDatasetValidation(result.board, datasetRow), status: 'ready', fetchMode: 'manual_in_app_verified', error: null, checkedAt: new Date().toISOString() });
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -1213,13 +1211,9 @@ function LiveDrawPanel() {
       {liveMarket === 'SGP' ? (
         <>
           <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
-          <LiveDrawResultBoard
-            title={sgpSource.title + ' Result'}
-            badge="Official · Singapore Pools"
-            result={sgpOfficialResult}
-            type={singaporeMode}
-            note="Hasil official ditampilkan terpisah dari composite market dataset AdiPredictor."
-          />
+          {singaporeMode === 'SGP_4D'
+            ? <LiveDrawFourDigitBoard result={sgpOfficialResult} />
+            : <TotoBoard result={sgpOfficialResult} />}
           <LiveDrawResultBoard
             title="SGP Composite Market Result"
             badge={SGP_COMPOSITE_SOURCE_LABEL}
@@ -1239,6 +1233,8 @@ function LiveDrawPanel() {
           lastRefresh={formatSyncTime(boardState.checkedAt)}
           onRefresh={() => setBoardRefreshNonce((value) => value + 1)}
           onOpenSource={() => openLivePage(selectedSource.pageUrl)}
+          onVerifySource={liveMarket === 'HK' ? verifyHK : null}
+          verificationState={liveMarket === 'HK' ? hkVerificationState : null}
         />
       )}
 

@@ -329,3 +329,48 @@ def test_prediction_history_index_uses_archives_and_actuals(tmp_path, monkeypatc
 def test_walk_forward_uses_all_available_points(built, history):
     expected = len(history) - pe.MINIMUM_TRAINING_RECORDS
     assert all(model["walk_forward"]["out_of_sample_points"] == expected for model in built["models"].values())
+
+
+def test_detailed_outcome_audits_models_p8_kembar_repeat_and_bbfs(built):
+    actual = "0860"
+    audit = pe.audit_prediction_payload(built, actual)
+    assert set(audit["models"]) == set(pe.MODELS)
+    assert all(model["available"] for model in audit["models"].values())
+    for name in ("P1", "P3", "P7"):
+        assert "2d_back_top5" in audit["models"][name]
+        assert "model_summary" in audit["models"][name]
+    assert audit["p8"]["available"] is True
+    assert audit["p8"]["statistical_consensus_member"] is False
+    assert set(audit["kembar"]) == {"main", "reserve"}
+    assert set(audit["repeat_signals"]) == {"data_model", "p8"}
+    assert "actual_occurrences" in audit["repeat_signals"]["data_model"]
+    assert audit["bbfs6"]["status"] in {"FULL", "PARTIAL"}
+
+
+def test_legacy_snapshot_missing_model_detail_is_graceful():
+    legacy = {"quick_view": {"four_d": {}, "three_d": {}, "two_d": {}, "bbfs": {}}}
+    audit = pe.audit_prediction_payload(legacy, "1234")
+    assert all(model["available"] is False for model in audit["models"].values())
+    assert audit["p8"]["available"] is False
+
+
+def test_visual_audit_never_reconstructs_missing_target_signal(built):
+    legacy = copy.deepcopy(built)
+    legacy.pop("audit_snapshot", None)
+    for pattern in legacy["visual_patterns"]:
+        pattern.pop("target_signal", None)
+    audit = pe.audit_prediction_payload(legacy, "1234")
+    assert audit["visual_patterns"]
+    assert all(item["status"] == "VISUAL_ONLY_NO_TARGET" for item in audit["visual_patterns"])
+    assert all(item["hit_count"] == 0 for item in audit["visual_patterns"])
+
+
+def test_new_visuals_freeze_pre_result_target_signal(built):
+    assert built["audit_snapshot"]["created_before_result"] is True
+    assert all(pattern.get("target_signal", {}).get("frozen_before_result") for pattern in built["visual_patterns"])
+
+
+def test_new_hk_result_changes_dataset_fingerprint(history):
+    before = pe.dataset_fingerprint("HK", history)
+    after = pe.dataset_fingerprint("HK", history + [{"result_date": "2026-12-31", "nomor": "2036"}])
+    assert before != after

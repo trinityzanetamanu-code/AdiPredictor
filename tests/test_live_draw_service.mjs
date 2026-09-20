@@ -5,6 +5,7 @@ import {
   attachDatasetValidation,
   LIVE_BOARD_URLS,
   parseSixDigitBoard,
+  isSecurityChallengeHtml,
   validateSixDigitBoard,
 } from '../src/liveDrawService.js';
 
@@ -57,13 +58,52 @@ test('history is a dedicated internal page and not inline under GeneratorPanel',
   const historyPage = await readFile(new URL('../src/components/PredictionHistoryPage.jsx', import.meta.url), 'utf8');
   assert.match(app, /internalPage === 'prediction-history'/);
   assert.match(app, /window\.history\.pushState/);
-  assert.match(app, /window\.history\.state\?\.adipredictorPage/);
   assert.match(app, /window\.addEventListener\('popstate'/);
+  assert.doesNotMatch(app, /window\.history\.back\(\)/);
+  assert.match(app, /setInternalPage\('main'\)/);
+  assert.match(app, /setActiveTab\('generator'\)/);
+  assert.match(app, /import\('@capacitor\/app'\)/);
   assert.doesNotMatch(app, /showHistory/);
   assert.doesNotMatch(app, /function PredictionHistoryPanel/);
   assert.match(historyPage, /data-page="prediction-history"/);
   assert.match(historyPage, /onClick=\{onBack\}/);
   assert.match(historyPage, /Kembali/);
+});
+
+test('Cloudflare challenge is detected and never parsed as a result board', () => {
+  const challenge = '<html><head><title>Just a moment...</title></head><body>challenge-platform</body></html>';
+  assert.equal(isSecurityChallengeHtml(challenge), true);
+  assert.throws(() => parseSixDigitBoard(challenge, 'HK'), /challenge/);
+});
+
+test('manual HK verification keeps cookie/token data out of normalized cache', async () => {
+  const source = await readFile(new URL('../src/hkVerificationService.js', import.meta.url), 'utf8');
+  assert.match(source, /HK_LAST_VERIFIED_BOARD/);
+  assert.doesNotMatch(source, /cf_clearance|document\.cookie|CookieManager/);
+  assert.match(source, /NORMALIZED_BOARD_READY/);
+});
+
+test('Singapore 4D board renders prizes and starter/consolation grids', async () => {
+  const source = await readFile(new URL('../src/components/LiveDrawFourDigitBoard.jsx', import.meta.url), 'utf8');
+  assert.match(source, /Hadiah 1/);
+  assert.match(source, /Hadiah 2/);
+  assert.match(source, /Hadiah 3/);
+  assert.match(source, /grid grid-cols-2/);
+  assert.match(source, /Starter/);
+  assert.match(source, /Consolation/);
+  assert.match(source, /Nomor pemenang/);
+  assert.doesNotMatch(source, /\.join\(' · '\)/);
+});
+
+test('audit UI is Indonesian and ambiguous direct hit wording is removed', async () => {
+  const audit = await readFile(new URL('../src/components/PredictionOutcomeAudit.jsx', import.meta.url), 'utf8');
+  const historyPage = await readFile(new URL('../src/components/PredictionHistoryPage.jsx', import.meta.url), 'utf8');
+  assert.match(audit, /TEMBUS TEPAT/);
+  assert.match(audit, /TEMBUS PERMUTASI/);
+  assert.match(audit, /TEMBUS BALIK/);
+  assert.match(audit, /TIDAK TEMBUS/);
+  assert.match(audit, /AUDIT MODEL P1–P7/);
+  assert.doesNotMatch(historyPage, /DIRECT HIT/);
 });
 
 test('native six-digit board never injects or executes source HTML', async () => {

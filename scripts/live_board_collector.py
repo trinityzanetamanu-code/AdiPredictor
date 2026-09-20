@@ -20,9 +20,9 @@ from bs4 import BeautifulSoup, Tag
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "public" / "data"
 SNAPSHOT_PATH = DATA_DIR / "live-draw.json"
-HK_URLS = (
-    "https://www.hongkongpools.com/live",
-    "https://www.hongkongpools.com/live.html",
+HK_SOURCES = (
+    ("https://www.hongkongpools.com/live", "HongkongPools Market Source"),
+    ("https://www.hongkongpools.com/live.html", "HongkongPools Market Source"),
 )
 SDY_PAGE_URL = "https://www.sydneypoolstoday.com/live.html"
 SDY_DATA_URL = "https://www.sydneypoolstoday.com/getLiveContent"
@@ -187,11 +187,11 @@ def attach_dataset_validation(board: dict, dataset_row: Optional[dict]) -> dict:
 
 def collect_hk(session: requests.Session) -> dict:
     errors = []
-    for url in HK_URLS:
+    for url, source_name in HK_SOURCES:
         try:
             response = session.get(url, headers=_headers(), timeout=25)
             html = _valid_response(response, url)
-            return parse_six_digit_board(html, "HK", "HongkongPools Market Source", url)
+            return parse_six_digit_board(html, "HK", source_name, url)
         except Exception as exc:  # preserve the last verified snapshot on any source failure
             errors.append(str(exc))
     raise LiveBoardError("; ".join(errors))

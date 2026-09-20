@@ -56,6 +56,8 @@ export default function LiveDrawSixDigitBoard({
   lastRefresh,
   onRefresh,
   onOpenSource,
+  onVerifySource,
+  verificationState,
 }) {
   const title = market === 'HK' ? 'HONGKONG POOLS MARKET LIVE' : 'SYDNEY MARKET LIVE';
   const match = board?.matches_dataset;
@@ -75,7 +77,7 @@ export default function LiveDrawSixDigitBoard({
                 ? 'border-sky-500/30 bg-sky-500/10 text-sky-300'
                 : 'border-amber-500/30 bg-amber-500/10 text-amber-300'
           }`}>
-            {status === 'ready' ? 'NATIVE BOARD' : status === 'checking' ? 'CHECKING' : 'CACHED / FALLBACK'}
+            {status === 'ready' ? 'PAPAN NATIVE' : status === 'checking' ? 'MEMERIKSA' : 'CACHE / CADANGAN'}
           </span>
         </div>
       </div>
@@ -94,23 +96,27 @@ export default function LiveDrawSixDigitBoard({
           <p className="mx-auto mt-2 max-w-lg text-xs leading-relaxed text-slate-400">
             Sumber mungkin sedang offline atau melindungi halaman dengan challenge. Aplikasi tidak mencoba bypass; gunakan snapshot berikutnya atau buka sumber.
           </p>
+          {market === 'HK' && onVerifySource && <button type="button" onClick={onVerifySource} className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-black text-amber-200">VERIFIKASI SUMBER HK</button>}
+          {verificationState && <p className="mt-2 text-[10px] text-slate-500">Status verifikasi: {verificationState.replaceAll('_', ' ')}</p>}
         </div>
       )}
 
       {board && (
         <div className="space-y-4 p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span className="text-slate-500">Draw date</span>
+            <span className="text-slate-500">Tanggal undian</span>
             <span className="font-semibold text-slate-200">{board.draw_date || '-'}</span>
           </div>
-          <PrizeRow label="1st Prize" number={board.first} featured />
+          <div className="grid gap-1 rounded-lg border border-slate-800 bg-slate-950/35 p-2 text-[9px] text-slate-500 sm:grid-cols-3"><span>SOURCE_DRAW_DATE: {board.draw_date || '-'}</span><span>DATASET_LATEST_DATE: {board.dataset_latest_date || '-'}</span><span>FETCHED_AT: {board.retrieved_at || lastRefresh || '-'}</span></div>
+          {board.dataset_latest_date && board.draw_date < board.dataset_latest_date && <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 p-2 text-center text-[10px] font-black text-amber-300">DATA LAMA / MENUNGGU UPDATE</div>}
+          <PrizeRow label="Hadiah 1" number={board.first} featured />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <PrizeRow label="2nd Prize" number={board.second} />
-            <PrizeRow label="3rd Prize" number={board.third} />
+            <PrizeRow label="Hadiah 2" number={board.second} />
+            <PrizeRow label="Hadiah 3" number={board.third} />
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <NumberGrid title="Starter Prize" numbers={board.starter} />
-            <NumberGrid title="Consolation Prize" numbers={board.consolation} />
+            <NumberGrid title="Starter" numbers={board.starter} />
+            <NumberGrid title="Consolation" numbers={board.consolation} />
           </div>
 
           <div className={`rounded-xl border p-4 ${
@@ -128,17 +134,18 @@ export default function LiveDrawSixDigitBoard({
               match === true ? 'text-emerald-300' : match === false ? 'text-amber-300' : 'text-slate-500'
             }`}>
               {match === true ? <CheckCircle2 className="h-4 w-4" /> : match === false ? <AlertTriangle className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4" />}
-              {match === true ? 'MATCHES PREDICTION DATASET' : match === false ? 'SOURCE / DATASET MISMATCH' : 'MENUNGGU DRAW DATE YANG DAPAT DIBANDINGKAN'}
+              {match === true ? 'COCOK DENGAN DATASET PREDIKSI' : match === false ? 'SUMBER / DATASET TIDAK COCOK' : 'MENUNGGU TANGGAL DRAW YANG DAPAT DIBANDINGKAN'}
             </div>
           </div>
         </div>
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 p-3">
-        <span className="text-[10px] text-slate-500">Checked: {lastRefresh || '-'}</span>
+        <span className="text-[10px] text-slate-500">Dicek: {lastRefresh || '-'}</span>
         <div className="flex gap-2">
+          {market === 'HK' && onVerifySource && verificationState === 'CHALLENGE_REQUIRED' && <button type="button" onClick={onVerifySource} className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-2 text-[10px] font-black text-amber-200">Verifikasi Sumber HK</button>}
           <button type="button" onClick={onRefresh} className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-2 text-[10px] font-semibold text-slate-200">
-            <RefreshCw className="h-3.5 w-3.5" /> Refresh data
+            <RefreshCw className="h-3.5 w-3.5" /> Perbarui data
           </button>
           <button type="button" onClick={onOpenSource} className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-2 text-[10px] font-semibold text-emerald-300">
             <ExternalLink className="h-3.5 w-3.5" /> Buka sumber

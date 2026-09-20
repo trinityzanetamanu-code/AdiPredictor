@@ -300,6 +300,50 @@ def parse_hk_six_digit_last4(html: str, market: str, source: dict, year: int) ->
     return results
 
 
+def parse_hk_dual_market_table(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
+    """Parse the exact HK Pools column while refusing adjacent HK Lotto/Siang markets."""
+    soup = BeautifulSoup(html, "html.parser")
+    expected = source.get("market_column", "HK Pools").strip().lower()
+    rejected = [value.lower() for value in source.get("reject_columns", [])]
+    target_table = None
+    target_index = None
+    for table in soup.find_all("table"):
+        for row in table.find_all("tr")[:12]:
+            cells = [re.sub(r"\s+", " ", cell.get_text(" ", strip=True)).strip() for cell in row.find_all(["th", "td"])]
+            matches = [index for index, value in enumerate(cells) if value.lower() == expected]
+            if len(matches) == 1:
+                target_table, target_index = table, matches[0]
+                break
+        if target_table is not None:
+            break
+    if target_table is None or target_index is None:
+        raise CollectorError(f"Kolom market exact {source.get('market_column', 'HK Pools')} tidak ditemukan")
+
+    header_text = re.sub(r"\s+", " ", target_table.get_text(" ", strip=True)).lower()
+    if expected not in header_text or not any(label in header_text for label in rejected):
+        raise CollectorError("Identitas dual-market HK tidak cukup untuk mencegah HK Lotto/Siang mix-up")
+
+    out: Dict[date, ParsedResult] = {}
+    for row in target_table.find_all("tr"):
+        cells = [re.sub(r"\s+", " ", cell.get_text(" ", strip=True)).strip() for cell in row.find_all(["th", "td"])]
+        if target_index >= len(cells):
+            continue
+        d = next((parsed for value in cells for parsed in [parse_date_flexible(value)] if parsed), None)
+        if d is None or d.year != year:
+            continue
+        number = normalize_cell(cells[target_index])
+        if not number:
+            continue
+        out[d] = ParsedResult(
+            market=market, result_date=d, number=number,
+            source_id=source["id"], source_name=source["name"], source_url=source["url"],
+        )
+    results = [out[d] for d in sorted(out)]
+    if len(results) < 7:
+        raise CollectorError(f"HK exact-column parser hanya menemukan {len(results)} result")
+    return results
+
+
 def parse_sgp_official_4d(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
     soup = BeautifulSoup(html, "html.parser")
     text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
@@ -558,6 +602,7 @@ def parse_indonesian_long_date_result4(
 PARSERS = {
     "weekday_grid": parse_weekday_grid,
     "hk_six_digit_last4": parse_hk_six_digit_last4,
+    "hk_dual_market_table": parse_hk_dual_market_table,
     "sgp_official_4d": parse_sgp_official_4d,
     "date_result_table": parse_date_result_table,
     "id_long_date_result4": parse_indonesian_long_date_result4,
@@ -591,6 +636,31 @@ def verify_results(market_cfg: dict, source_results: Dict[str, List[ParsedResult
             VerifiedResult(item=i, verification=verification, confirmations=1, source_ids=[primary_id])
             for i in items
         ]
+
+    if mode == "crosscheck_or_qualified_primary":
+        per_date: Dict[date, List[ParsedResult]] = {}
+        for items in source_results.values():
+            for item in items:
+                per_date.setdefault(item.result_date, []).append(item)
+        verified = []
+        for _, items in sorted(per_date.items()):
+            numbers = Counter(item.number for item in items)
+            number, count = numbers.most_common(1)[0]
+            if len(numbers) > 1 and count < 2:
+                # Conflicting current source data is never silently appended.
+                continue
+            agreeing = sorted(
+                [item for item in items if item.number == number],
+                key=lambda item: priority.get(item.source_id, 999),
+            )
+            verification = f"confirmed_{count}_sources" if count >= 2 else "provisional_primary"
+            verified.append(VerifiedResult(
+                item=agreeing[0], verification=verification, confirmations=count,
+                source_ids=[item.source_id for item in agreeing],
+            ))
+        if not verified:
+            raise CollectorError("Tidak ada result HK qualified yang bebas konflik")
+        return verified
 
     min_confirmations = int(market_cfg.get("min_confirmations", 2))
     per_date: Dict[date, List[ParsedResult]] = {}
@@ -716,6 +786,7 @@ def merge_records(
     verified: List[VerifiedResult],
     collected_at: str,
     replace_existing_metadata: bool = False,
+    upgrade_verification_metadata: bool = False,
 ) -> Tuple[List[dict], List[dict], int]:
     existing = read_existing(market)
     existing_by_date: Dict[str, dict] = {}
@@ -746,7 +817,12 @@ def merge_records(
                     f"CONFLICT {market} {key}: local={old.get('nomor')} verified_remote={rec['nomor']}"
                 )
 
-            if replace_existing_metadata:
+            should_upgrade = (
+                upgrade_verification_metadata
+                and old.get("verification") == "provisional_primary"
+                and str(rec.get("verification", "")).startswith("confirmed_")
+            )
+            if replace_existing_metadata or should_upgrade:
                 compare_fields = (
                     "periode",
                     "source_id",
@@ -792,6 +868,52 @@ def latest_dated(rows: List[dict]) -> Optional[dict]:
     return max(dated, key=lambda r: r["result_date"])
 
 
+def qualify_hk_source(items: List[ParsedResult], market_cfg: dict) -> dict:
+    fingerprint = market_cfg.get("identity_fingerprint", {})
+    observed = {item.result_date.isoformat(): item.number for item in items}
+    compared = {key: observed[key] for key in fingerprint if key in observed}
+    matches = sum(compared[key] == fingerprint[key] for key in compared)
+    conflicts = {key: {"expected": fingerprint[key], "actual": compared[key]} for key in compared if compared[key] != fingerprint[key]}
+    minimum = int(market_cfg.get("qualified_primary_min_history_matches", 7))
+    return {
+        "market_identity_match": matches >= minimum and not conflicts,
+        "historical_sequence_matches": matches,
+        "historical_sequence_compared": len(compared),
+        "historical_conflicts": conflicts,
+    }
+
+
+def expected_hk_draw_date(now: datetime, expected_time: str = "23:00") -> date:
+    if now.tzinfo is not None:
+        now = now.astimezone(ZoneInfo("Asia/Jakarta"))
+    hour, minute = (int(value) for value in expected_time.split(":"))
+    return now.date() if (now.hour, now.minute) >= (hour, minute) else now.date() - timedelta(days=1)
+
+
+def hk_source_health(items: List[ParsedResult], qualification: dict, collected_at: str, market_cfg: dict) -> dict:
+    latest = items[-1] if items else None
+    now = datetime.fromisoformat(collected_at)
+    expected = expected_hk_draw_date(now, market_cfg.get("expected_draw_time", "23:00"))
+    stale = latest is None or latest.result_date < expected
+    if latest:
+        draw_hour, draw_minute = (int(value) for value in market_cfg.get("expected_draw_time", "23:00").split(":"))
+        expected_at = datetime.combine(latest.result_date, datetime.min.time(), tzinfo=now.tzinfo).replace(hour=draw_hour, minute=draw_minute)
+        latency = max(0, int((now - expected_at).total_seconds() // 60)) if latest.result_date == expected else None
+    else:
+        latency = None
+    return {
+        **qualification,
+        "latest_date": latest.result_date.isoformat() if latest else None,
+        "latest_result": latest.number if latest else None,
+        "source_first_seen_at": collected_at if latest and latest.result_date == expected else None,
+        "expected_draw_date": expected.isoformat(),
+        "latency_minutes": latency,
+        "source_stale": stale,
+        "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE" if stale else "FRESH",
+        "health": "STALE" if stale else "HEALTHY",
+    }
+
+
 def collect_market(config: dict, market: str, year: int, collected_at: str) -> dict:
     market_cfg = config["markets"][market]
     sources = sorted(
@@ -802,6 +924,7 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
         raise CollectorError(f"Tidak ada source aktif untuk {market}")
 
     source_results: Dict[str, List[ParsedResult]] = {}
+    source_health = {}
     source_errors = []
     for source in sources:
         try:
@@ -809,6 +932,14 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
             runtime_source["url"] = source["url"].replace("{year}", str(year))
             html = fetch_html(runtime_source["url"])
             items = parse_source(html, market, runtime_source, year)
+            if market == "HK":
+                qualification = qualify_hk_source(items, market_cfg)
+                source_health[source["id"]] = hk_source_health(items, qualification, collected_at, market_cfg)
+                if not qualification["market_identity_match"]:
+                    raise CollectorError(
+                        f"MARKET_IDENTITY_MISMATCH matches={qualification['historical_sequence_matches']} "
+                        f"conflicts={qualification['historical_conflicts']}"
+                    )
             source_results[source["id"]] = items
             latest = items[-1] if items else None
             print(
@@ -821,6 +952,20 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
 
     verified = verify_results(market_cfg, source_results)
 
+    previous_health = {}
+    if STATUS_PATH.exists():
+        try:
+            previous_health = json.loads(STATUS_PATH.read_text(encoding="utf-8")).get("markets", {}).get(market, {}).get("source_health", {})
+        except Exception:
+            previous_health = {}
+    for source_id, health in source_health.items():
+        previous = previous_health.get(source_id, {})
+        if previous.get("latest_date") == health.get("latest_date") and previous.get("latest_result") == health.get("latest_result"):
+            if previous.get("source_first_seen_at"):
+                health["source_first_seen_at"] = previous["source_first_seen_at"]
+            if previous.get("latency_minutes") is not None:
+                health["latency_minutes"] = previous["latency_minutes"]
+
     for verified_item in verified:
         resolve_period_from_rule(verified_item.item, market_cfg)
 
@@ -831,10 +976,26 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
         replace_existing_metadata=bool(
             market_cfg.get("replace_existing_metadata", False)
         ),
+        upgrade_verification_metadata=bool(
+            market_cfg.get("upgrade_verification_metadata", market == "HK")
+        ),
     )
     write_market(market, rows)
     latest = latest_dated(rows)
     latest_verified = verified[-1]
+    if market == "HK" and latest and latest.get("collected_at"):
+        try:
+            first_seen = datetime.fromisoformat(latest["collected_at"])
+            draw_hour, draw_minute = (int(value) for value in market_cfg.get("expected_draw_time", "23:00").split(":"))
+            expected_at = datetime.combine(latest_verified.item.result_date, datetime.min.time(), tzinfo=first_seen.tzinfo).replace(hour=draw_hour, minute=draw_minute)
+            first_latency = max(0, int((first_seen - expected_at).total_seconds() // 60))
+            for health in source_health.values():
+                if health.get("latest_date") == latest.get("result_date") and health.get("latest_result") == latest.get("nomor"):
+                    health["source_first_seen_at"] = latest["collected_at"]
+                    health["latency_minutes"] = first_latency
+        except (TypeError, ValueError):
+            pass
+    source_health_changed = source_health != previous_health if source_health else False
 
     return {
         "market": market,
@@ -857,24 +1018,38 @@ def collect_market(config: dict, market: str, year: int, collected_at: str) -> d
             "source_ids": latest_verified.source_ids,
         },
         "source_errors": source_errors,
+        "source_health": source_health,
+        "_source_health_changed": source_health_changed,
+        "last_successful_data_update": latest.get("collected_at") if latest else None,
+        "last_source_check": collected_at,
+        "latest_source_draw_date": latest_verified.item.result_date.isoformat(),
     }
 
 
 def write_status(config: dict, results: List[dict], collected_at: str, year: int) -> bool:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+    previous_payload = {}
+    if STATUS_PATH.exists():
+        try:
+            previous_payload = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            previous_payload = {}
+    previous_markets = previous_payload.get("markets", {})
     # A polling check is not a successful new collection. Preserve the last
     # meaningful collector timestamp so scheduled runs do not create commits
     # solely because the clock changed.
     if STATUS_PATH.exists() and not any(
-        result.get("status") == "updated" for result in results
-    ):
+        result.get("status") == "updated" or result.get("_source_health_changed") for result in results
+    ) and all(result.get("market") in previous_markets for result in results):
         return False
+    merged_markets = dict(previous_markets)
+    merged_markets.update({r["market"]: {key: value for key, value in r.items() if not key.startswith("_")} for r in results})
     payload = {
         "schema_version": 2,
         "collected_at": collected_at,
         "target_year": year,
         "timezone": config.get("timezone", "Asia/Jakarta"),
-        "markets": {r["market"]: r for r in results},
+        "markets": merged_markets,
     }
     STATUS_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return True
