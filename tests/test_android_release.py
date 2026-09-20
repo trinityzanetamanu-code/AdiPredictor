@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "write_android_build_metadata.mjs"
+VERSION_SCRIPT = ROOT / "scripts" / "resolve_android_version.mjs"
 
 
 def run_metadata(tmp_path, *, channel, actual="aa:bb", expected="aabb", verified="true"):
@@ -62,3 +63,95 @@ def test_debug_metadata_is_never_an_update_channel(tmp_path):
     assert payload["channel"] == "ci-debug"
     assert payload["release_signing_runtime_verified"] is False
     assert payload["update_channel_ready"] is False
+
+
+def test_version_code_is_greater_than_previous_stable_metadata(tmp_path):
+    metadata = tmp_path / "app-release.json"
+    metadata.write_text(json.dumps({"version_code": 100250}))
+    output = tmp_path / "github-output.txt"
+    env = {
+        **os.environ,
+        "GITHUB_RUN_NUMBER": "100",
+        "ANDROID_RELEASE_METADATA_PATH": str(metadata),
+        "GITHUB_OUTPUT": str(output),
+    }
+    completed = subprocess.run(
+        ["node", str(VERSION_SCRIPT)],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    resolved = json.loads(completed.stdout)
+    assert resolved["previous_stable_version_code"] == 100250
+    assert resolved["version_code"] == 100251
+    assert "version_code=100251" in output.read_text()
+
+
+def test_version_code_honours_environment_last_release_guard(tmp_path):
+    metadata = tmp_path / "app-release.json"
+    metadata.write_text(json.dumps({"version_code": 100250}))
+    env = {
+        **os.environ,
+        "GITHUB_RUN_NUMBER": "100",
+        "ANDROID_RELEASE_METADATA_PATH": str(metadata),
+        "ANDROID_LAST_RELEASE_VERSION_CODE": "100400",
+    }
+    completed = subprocess.run(
+        ["node", str(VERSION_SCRIPT)],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    resolved = json.loads(completed.stdout)
+    assert resolved["previous_stable_version_code"] == 100400
+    assert resolved["version_code"] == 100401
+
+
+def test_pr_android_workflow_is_debug_only_and_secret_free():
+    workflow = (ROOT / ".github" / "workflows" / "deploy.yml").read_text()
+    assert "pull_request:" in workflow
+    assert "assembleDebug" in workflow
+    assert "ci-debug" in workflow
+    assert "UPDATE_CHANNEL_READY=false" in workflow
+    assert "RELEASE_SIGNING_RUNTIME_VERIFIED=false" in workflow
+    assert "assembleRelease" not in workflow
+    assert "ANDROID_KEYSTORE_BASE64" not in workflow
+    assert "secrets." not in workflow
+    assert "Publish Verified Stable Release Metadata" not in workflow
+
+
+def test_stable_release_workflow_is_manual_and_environment_protected():
+    workflow = (ROOT / ".github" / "workflows" / "android-release.yml").read_text()
+    assert "workflow_dispatch:" in workflow
+    assert "pull_request:" not in workflow
+    assert "inputs.confirm_release == true && github.ref == 'refs/heads/main'" in workflow
+    assert "environment: android-release" in workflow
+    assert '"refs/heads/main"' in workflow
+    assert "ref: ${{ github.sha }}" in workflow
+    assert "./gradlew assembleRelease" in workflow
+    assert "apksigner" in workflow
+    assert "ANDROID_EXPECTED_CERT_SHA256" in workflow
+    assert "Stable signer certificate mismatch; refusing to publish." in workflow
+    assert "apk_version_code > PREVIOUS_STABLE_VERSION_CODE" in workflow
+    assert "Publish Verified Stable Release Metadata" in workflow
+
+
+def test_public_release_metadata_cannot_be_populated_by_debug_build():
+    metadata = json.loads((ROOT / "public" / "app-release.json").read_text())
+    assert metadata["channel"] == "stable"
+    assert metadata["version_code"] is None
+    assert metadata["certificate_sha256"] is None
+    assert metadata["release_signing_runtime_verified"] is False
+    assert metadata["update_channel_ready"] is False
+
+
+def test_metadata_publisher_rejects_version_rollback_and_cert_rotation():
+    publisher = (ROOT / "scripts" / "publish_release_metadata.sh").read_text()
+    assert "new_version_code <= current_version_code" in publisher
+    assert "new_certificate" in publisher
+    assert "current_certificate" in publisher
+    assert "Refusing stable certificate rotation" in publisher

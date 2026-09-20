@@ -68,7 +68,8 @@ The Android application ID is permanently `com.adipredictor.app`. The CI workflo
 
 - `versionName`: package version plus CI build code, for example `2.0.0+build.100123`.
 - `versionCode`: the greatest of `100000 + github.run_number` and the last stable release code plus one. `ANDROID_LAST_RELEASE_VERSION_CODE` can pin the last distributed code if workflow history is migrated.
-- artifact name: `AdiPredictor-v<package-version>-build<versionCode>.apk`.
+- CI artifact: `AdiPredictor-v<package-version>-build<versionCode>-ci-debug.apk`;
+- verified stable artifact: `AdiPredictor-v<package-version>-build<versionCode>-stable.apk`.
 
 Stable release signing uses only GitHub Actions secrets:
 
@@ -77,11 +78,17 @@ Stable release signing uses only GitHub Actions secrets:
 - `ANDROID_KEY_ALIAS`
 - `ANDROID_KEY_PASSWORD`
 
-The repository variable (or same-named secret) `ANDROID_EXPECTED_CERT_SHA256` is mandatory when those four secrets are present. The workflow verifies the signed APK with `apksigner` and fails before publication if the actual signer differs. The optional numeric variable `ANDROID_LAST_RELEASE_VERSION_CODE` protects monotonic versioning across workflow migrations.
+Pull requests and ordinary CI use `.github/workflows/deploy.yml`, which is deliberately debug-only and has read-only repository permissions. It contains no signing-secret references, never decodes a keystore, never runs `assembleRelease`, and never publishes stable metadata.
 
-The keystore is decoded into the runner temporary directory, never committed, and removed after the build. When all signing secrets are absent (including untrusted pull requests), CI compiles and labels a `ci-debug` APK for build verification with `UPDATE_CHANNEL_READY=false`. A partial signing configuration fails closed. Only a certificate-verified `stable` artifact has `RELEASE_SIGNING_RUNTIME_VERIFIED=true`; its non-secret metadata is published to `public/app-release.json` on trusted main builds.
+Stable releases use the separate `.github/workflows/android-release.yml`. It is triggered only by `workflow_dispatch`, requires `confirm_release`, is restricted to `main`, and runs through the protected GitHub Environment `android-release`. The four keystore values are Environment secrets. `ANDROID_EXPECTED_CERT_SHA256` and `ANDROID_LAST_RELEASE_VERSION_CODE` are Environment variables.
+
+The expected certificate fingerprint is mandatory for a stable build. The workflow normalizes case and colon formatting, verifies the signed APK with `apksigner`, and fails before publication if the actual signer differs. The version resolver uses the workflow run number, `public/app-release.json`, and `ANDROID_LAST_RELEASE_VERSION_CODE`, then requires the new stable versionCode to be strictly greater than every recorded previous stable code.
+
+The keystore is decoded into the runner temporary directory only inside the protected release job, never committed, and removed after the build. CI debug metadata always has `UPDATE_CHANNEL_READY=false` and `RELEASE_SIGNING_RUNTIME_VERIFIED=false`. Only a certificate-verified stable artifact has both values set to `true`; only that workflow can publish non-secret metadata to `public/app-release.json`.
 
 Android can update an installed app in place only when the application ID and signing certificate match and the new version code is higher. Historical workflow builds used a runner-generated debug key and this repository contains neither that private key nor an old APK certificate. If that legacy key cannot be recovered outside the repository, one uninstall/reinstall is required to migrate to the stable release certificate. After that migration, retaining the same GitHub release keystore enables future in-place updates and preserves app data.
+
+Exact Termux keystore-generation commands, GitHub Environment setup, and the required two-release update test are documented in [`docs/android-release-signing.md`](docs/android-release-signing.md).
 
 ## Commands
 

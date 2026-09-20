@@ -1,0 +1,208 @@
+name: Build Stable Android Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_release:
+        description: 'Confirm a protected stable release build from main'
+        required: true
+        type: boolean
+        default: false
+      release_note:
+        description: 'Optional release note for the workflow summary'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: adipredictor-stable-android-release
+  cancel-in-progress: false
+
+jobs:
+  stable-release:
+    if: ${{ inputs.confirm_release == true && github.ref == 'refs/heads/main' }}
+    environment: android-release
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Require Trusted Main Ref
+        shell: bash
+        run: |
+          [[ "$GITHUB_REF" == "refs/heads/main" ]] || {
+            echo "Stable release is restricted to refs/heads/main." >&2
+            exit 1
+          }
+
+      - name: Checkout Exact Selected Commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Dependencies
+        run: python -m pip install pytest requests beautifulsoup4
+
+      - name: Run Full Python Test Suite
+        run: python -m pytest -q
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: zulu
+          java-version: '17'
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Test LiveDraw Configuration
+        run: npm run test:live
+
+      - name: Build Web Assets
+        run: npm run build
+
+      - name: Resolve Monotonic Stable Version
+        id: version
+        env:
+          ANDROID_LAST_RELEASE_VERSION_CODE: ${{ vars.ANDROID_LAST_RELEASE_VERSION_CODE }}
+        run: node scripts/resolve_android_version.mjs
+
+      - name: Add Android Platform and Configure Release
+        env:
+          ANDROID_VERSION_CODE: ${{ steps.version.outputs.version_code }}
+          ANDROID_VERSION_NAME: ${{ steps.version.outputs.version_name }}
+        run: |
+          npx cap add android
+          npx cap copy android
+          node scripts/configure_android_release.mjs
+
+      - name: Validate Protected Signing Configuration
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          EXPECTED_CERT_SHA256: ${{ vars.ANDROID_EXPECTED_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          [[ -n "$KEYSTORE_BASE64" ]] || { echo "ANDROID_KEYSTORE_BASE64 is missing" >&2; exit 1; }
+          [[ -n "$KEYSTORE_PASSWORD" ]] || { echo "ANDROID_KEYSTORE_PASSWORD is missing" >&2; exit 1; }
+          [[ -n "$KEY_ALIAS" ]] || { echo "ANDROID_KEY_ALIAS is missing" >&2; exit 1; }
+          [[ -n "$KEY_PASSWORD" ]] || { echo "ANDROID_KEY_PASSWORD is missing" >&2; exit 1; }
+          [[ -n "$EXPECTED_CERT_SHA256" ]] || { echo "ANDROID_EXPECTED_CERT_SHA256 is missing" >&2; exit 1; }
+
+      - name: Decode Persistent Release Keystore
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/adipredictor-release.jks"
+          chmod 600 "$RUNNER_TEMP/adipredictor-release.jks"
+
+      - name: Build Signed Stable Release APK
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/adipredictor-release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Verify Stable Identity, Version, and Certificate
+        id: artifact
+        shell: bash
+        env:
+          PACKAGE_VERSION: ${{ steps.version.outputs.package_version }}
+          VERSION_CODE: ${{ steps.version.outputs.version_code }}
+          VERSION_NAME: ${{ steps.version.outputs.version_name }}
+          PREVIOUS_STABLE_VERSION_CODE: ${{ steps.version.outputs.previous_stable_version_code }}
+          EXPECTED_CERT_SHA256: ${{ vars.ANDROID_EXPECTED_CERT_SHA256 }}
+          RELEASE_NOTE: ${{ inputs.release_note }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          artifact_name="AdiPredictor-v${PACKAGE_VERSION}-build${VERSION_CODE}-stable.apk"
+          cp android/app/build/outputs/apk/release/app-release.apk "artifacts/$artifact_name"
+          build_tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          badging="$("$build_tools/aapt" dump badging "artifacts/$artifact_name" | head -1)"
+          certs="$("$build_tools/apksigner" verify --print-certs "artifacts/$artifact_name")"
+          printf '%s\n' "$badging"
+          printf '%s\n' "$certs"
+          package_name="$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" <<< "$badging")"
+          apk_version_code="$(sed -n "s/.*versionCode='\([^']*\)'.*/\1/p" <<< "$badging")"
+          apk_version_name="$(sed -n "s/.*versionName='\([^']*\)'.*/\1/p" <<< "$badging")"
+          actual_cert="$(awk -F': ' '/certificate SHA-256 digest:/ {print $NF; exit}' <<< "$certs" | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+          expected_cert="$(tr -d ':[:space:]' <<< "$EXPECTED_CERT_SHA256" | tr '[:upper:]' '[:lower:]')"
+          [[ "$package_name" == "com.adipredictor.app" ]] || { echo "Unexpected package: $package_name" >&2; exit 1; }
+          [[ "$apk_version_code" == "$VERSION_CODE" ]] || { echo "Version code mismatch" >&2; exit 1; }
+          [[ "$apk_version_name" == "$VERSION_NAME" ]] || { echo "Version name mismatch" >&2; exit 1; }
+          (( apk_version_code > PREVIOUS_STABLE_VERSION_CODE )) || {
+            echo "Stable versionCode must be greater than the previous stable release." >&2
+            exit 1
+          }
+          [[ -n "$actual_cert" && "$actual_cert" == "$expected_cert" ]] || {
+            echo "Stable signer certificate mismatch; refusing to publish." >&2
+            exit 1
+          }
+          metadata_path="artifacts/app-release.json"
+          ANDROID_APPLICATION_ID="$package_name" \
+          ANDROID_VERSION_CODE="$VERSION_CODE" \
+          ANDROID_VERSION_NAME="$VERSION_NAME" \
+          ANDROID_ARTIFACT_NAME="$artifact_name" \
+          ANDROID_BUILD_CHANNEL="stable" \
+          ANDROID_CERT_SHA256="$actual_cert" \
+          ANDROID_EXPECTED_CERT_SHA256="$expected_cert" \
+          RELEASE_SIGNING_RUNTIME_VERIFIED="true" \
+          ANDROID_METADATA_PATH="$metadata_path" \
+          node scripts/write_android_build_metadata.mjs
+          echo "name=${artifact_name}" >> "$GITHUB_OUTPUT"
+          echo "metadata=${metadata_path}" >> "$GITHUB_OUTPUT"
+          {
+            echo '### Verified Stable Android Release'
+            echo "- applicationId=$package_name"
+            echo "- versionCode=$apk_version_code"
+            echo "- versionName=$apk_version_name"
+            echo "- certificateSha256=$actual_cert"
+            echo '- UPDATE_CHANNEL_READY=true'
+            echo '- RELEASE_SIGNING_RUNTIME_VERIFIED=true'
+            printf '%s\n' "- releaseNote=$RELEASE_NOTE"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish Verified Stable Release Metadata
+        env:
+          RELEASE_METADATA_SOURCE: ${{ github.workspace }}/${{ steps.artifact.outputs.metadata }}
+          MAX_PUSH_ATTEMPTS: '3'
+        run: bash scripts/publish_release_metadata.sh
+
+      - name: Upload Stable Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: |
+            artifacts/${{ steps.artifact.outputs.name }}
+            ${{ steps.artifact.outputs.metadata }}
+          if-no-files-found: error
+
+      - name: Remove Temporary Keystore
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f "$RUNNER_TEMP/adipredictor-release.jks" ]]; then
+            shred -u "$RUNNER_TEMP/adipredictor-release.jks" || rm -f "$RUNNER_TEMP/adipredictor-release.jks"
+          fi
