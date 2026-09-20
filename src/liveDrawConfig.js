@@ -7,12 +7,18 @@ export const PLAYER_MODES = Object.freeze({
 
 export const PLAYER_STATES = Object.freeze({
   LOADING: 'LOADING',
-  LIVE: 'LIVE',
+  READY: 'READY',
+  PLAYING: 'PLAYING',
   WAITING: 'WAITING',
   OFFLINE: 'OFFLINE',
   BLOCKED_EMBED: 'BLOCKED_EMBED',
   ERROR: 'ERROR',
 });
+
+export function scheduleBadgeLabel(status) {
+  if (status === 'LIVE_WINDOW') return 'DRAW WINDOW';
+  return String(status || 'OFFLINE').replaceAll('_', ' ');
+}
 
 export const SGP_COMPOSITE_SOURCE_LABEL = 'Third-party cross-checked market result';
 
@@ -47,7 +53,7 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     official: true,
     mode: PLAYER_MODES.IFRAME,
     pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/toto/index.html',
-    resultUrl: 'https://toto-results.singaporepools.com.sg/',
+    resultUrl: 'https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/toto_result_top_draws_en.html',
     playlistId: 'PLaXhIWKbyl3VHtnNcMwG6KOg04q6QQXge',
     embedUrl: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLaXhIWKbyl3VHtnNcMwG6KOg04q6QQXge&rel=0&playsinline=1',
     schedule: singaporeSchedule([1, 4]),

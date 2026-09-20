@@ -18,6 +18,15 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config" / "collector_sources.json"
 DATA_DIR = ROOT / "public" / "data"
 STATUS_PATH = DATA_DIR / "collector-status.json"
+OFFICIAL_SGP_PATH = DATA_DIR / "singapore-official.json"
+OFFICIAL_SGP_4D_URL = (
+    "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/"
+    "fourd_result_top_draws_en.html"
+)
+OFFICIAL_SGP_TOTO_URL = (
+    "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/"
+    "toto_result_top_draws_en.html"
+)
 
 DAY_INDEX = {
     "senin": 0, "sen": 0,
@@ -313,6 +322,128 @@ def parse_sgp_official_4d(html: str, market: str, source: dict, year: int) -> Li
     if len(results) < 3:
         raise CollectorError(f"SGP official parser hanya menemukan {len(results)} result")
     return results
+
+
+def _official_draw_header(text: str) -> re.Match:
+    match = re.search(
+        r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*"
+        r"(?P<day>\d{1,2})\s+(?P<month>[A-Za-z]{3})\s+(?P<year>\d{4})\s*"
+        r"(?:\||[-–])?\s*Draw\s+No\.?\s*(?P<draw>\d+)",
+        text,
+        re.I,
+    )
+    if match is None:
+        raise CollectorError("Official Singapore draw header tidak ditemukan")
+    return match
+
+
+def parse_official_singapore_4d_snapshot(html: str) -> dict:
+    """Parse the newest official 4D draw, including all published prize rows."""
+    text = re.sub(r"\s+", " ", BeautifulSoup(html, "html.parser").get_text(" ", strip=True))
+    header = _official_draw_header(text)
+    following = text[header.end():]
+    next_header = re.search(
+        r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*\d{1,2}\s+[A-Za-z]{3}\s+\d{4}\s*"
+        r"(?:\||[-–])?\s*Draw\s+No\.?",
+        following,
+        re.I,
+    )
+    block = following[:next_header.start()] if next_header else following
+
+    def prize(label: str) -> str:
+        match = re.search(rf"{label}\s+Prize\D{{0,30}}(\d{{4}})", block, re.I)
+        if match is None:
+            raise CollectorError(f"Official Singapore 4D {label} prize tidak ditemukan")
+        return match.group(1)
+
+    starter_match = re.search(r"Starter\s+Prizes(?P<body>.*?)Consolation\s+Prizes", block, re.I)
+    consolation_match = re.search(r"Consolation\s+Prizes(?P<body>.*)$", block, re.I)
+    starter = re.findall(r"(?<!\d)\d{4}(?!\d)", starter_match.group("body")) if starter_match else []
+    consolation = re.findall(r"(?<!\d)\d{4}(?!\d)", consolation_match.group("body")) if consolation_match else []
+    if len(starter) < 10 or len(consolation) < 10:
+        raise CollectorError("Official Singapore 4D starter/consolation tidak lengkap")
+
+    month = MONTH_MAP.get(header.group("month").lower())
+    if month is None:
+        raise CollectorError("Official Singapore 4D month tidak dikenali")
+    draw_date = date(int(header.group("year")), month, int(header.group("day")))
+    return {
+        "draw_date": draw_date.isoformat(),
+        "draw_no": header.group("draw"),
+        "first": prize("1st"),
+        "second": prize("2nd"),
+        "third": prize("3rd"),
+        "starter": starter[:10],
+        "consolation": consolation[:10],
+        "source_url": OFFICIAL_SGP_4D_URL,
+    }
+
+
+def parse_official_singapore_toto_snapshot(html: str) -> dict:
+    """Parse TOTO only while the official result page is publishing a draw."""
+    text = re.sub(r"\s+", " ", BeautifulSoup(html, "html.parser").get_text(" ", strip=True))
+    header = _official_draw_header(text)
+    winning_match = re.search(
+        r"Winning\s+Numbers(?P<body>.*?)Additional\s+Number",
+        text[header.end():],
+        re.I,
+    )
+    additional_match = re.search(
+        r"Additional\s+Number\D{0,40}(?P<number>\d{1,2})(?!\d)",
+        text[header.end():],
+        re.I,
+    )
+    if winning_match is None or additional_match is None:
+        raise CollectorError("Official Singapore TOTO result belum dipublikasikan")
+    winning = re.findall(r"(?<!\d)\d{1,2}(?!\d)", winning_match.group("body"))
+    if len(winning) < 6:
+        raise CollectorError("Official Singapore TOTO winning numbers tidak lengkap")
+    month = MONTH_MAP.get(header.group("month").lower())
+    if month is None:
+        raise CollectorError("Official Singapore TOTO month tidak dikenali")
+    draw_date = date(int(header.group("year")), month, int(header.group("day")))
+    return {
+        "draw_date": draw_date.isoformat(),
+        "draw_no": header.group("draw"),
+        "winning_numbers": [number.zfill(2) for number in winning[:6]],
+        "additional_number": additional_match.group("number").zfill(2),
+        "source_url": OFFICIAL_SGP_TOTO_URL,
+    }
+
+
+def collect_official_singapore(collected_at: str) -> dict:
+    """Refresh auxiliary official result metadata without changing the composite SGP dataset."""
+    existing = {}
+    if OFFICIAL_SGP_PATH.exists():
+        existing = json.loads(OFFICIAL_SGP_PATH.read_text(encoding="utf-8"))
+    payload = {
+        "source": "Singapore Pools",
+        "retrieved_at": existing.get("retrieved_at"),
+        "official_4d": existing.get("official_4d"),
+        "official_toto": existing.get("official_toto"),
+    }
+    errors = []
+    for key, url, parser in (
+        ("official_4d", OFFICIAL_SGP_4D_URL, parse_official_singapore_4d_snapshot),
+        ("official_toto", OFFICIAL_SGP_TOTO_URL, parse_official_singapore_toto_snapshot),
+    ):
+        try:
+            payload[key] = parser(fetch_html(url))
+        except Exception as exc:
+            errors.append({"source": key, "error": str(exc)})
+            print(f"[SGP-OFFICIAL] source={key} WARNING: {exc}", file=sys.stderr)
+
+    before = {key: existing.get(key) for key in ("source", "official_4d", "official_toto")}
+    after = {key: payload.get(key) for key in ("source", "official_4d", "official_toto")}
+    changed = before != after
+    if changed:
+        payload["retrieved_at"] = collected_at
+        OFFICIAL_SGP_PATH.parent.mkdir(parents=True, exist_ok=True)
+        OFFICIAL_SGP_PATH.write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+    return {"status": "updated" if changed else "no_change", "errors": errors}
 
 
 def parse_date_result_table(html: str, market: str, source: dict, year: int) -> List[ParsedResult]:
@@ -760,6 +891,12 @@ def main() -> int:
 
     results = []
     failures = []
+    if "SGP" in markets:
+        official = collect_official_singapore(collected_at)
+        print(
+            f"[SGP-OFFICIAL] {official['status']} "
+            f"warnings={len(official['errors'])}"
+        )
     for market in markets:
         try:
             r = collect_market(cfg, market, year, collected_at)

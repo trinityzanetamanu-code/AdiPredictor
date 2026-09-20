@@ -40,7 +40,9 @@ Visual patterns are rendered as SVG from actual archive rows under `public/predi
 
 The mobile navigation order is Analisis, Data, LiveDraw, Statistik, and Tafsir. LiveDraw embeds the public official Singapore Pools 4D/TOTO YouTube playlists, keeps official 4D/TOTO results separate from the cross-checked SGP composite market, and opens exact source pages through Capacitor Browser when embedding cannot be verified. HK is labelled `HongkongPools Market Source`, not an official Hong Kong lottery; SDY remains a cross-checked result monitor because no matching public broadcast has been verified. See `docs/live-source-investigation.md` for evidence and limitations.
 
-The player never proxies video, strips CSP/frame policy, bypasses access controls, or invents a live feed. Singapore LIVE badges follow the published 18:30 Singapore draw schedules (4D Wednesday/Saturday/Sunday and TOTO Monday/Thursday), with upcoming/result-posted states outside the live window.
+The player never proxies video, strips CSP/frame policy, bypasses access controls, or invents a live feed. Singapore schedule badges show **DRAW WINDOW**, not a claim that the embedded playlist is actively broadcasting. Player readiness/playback is reported separately, and a collapsible diagnostics panel exposes the source mode/host, schedule state, player state, refresh/reload times, and non-secret errors.
+
+`scripts/collector.py` also refreshes `public/data/singapore-official.json` from Singapore Pools' public 4D result archive and TOTO result page. The TOTO snapshot is preserved when its official page is between publication windows. This auxiliary official metadata never replaces or relabels the separate cross-checked SGP composite prediction dataset, and an unchanged result never creates a timestamp-only commit.
 
 Prediction History reads `history.json` and archived Quick Views; it never recreates old predictions in the browser.
 
@@ -65,7 +67,7 @@ The engine hashes the market, ordered date/result pairs, and engine version. An 
 The Android application ID is permanently `com.adipredictor.app`. The CI workflow generates the Capacitor Android project and applies:
 
 - `versionName`: package version plus CI build code, for example `2.0.0+build.100123`.
-- `versionCode`: `100000 + github.run_number`, which increases monotonically for this workflow.
+- `versionCode`: the greatest of `100000 + github.run_number` and the last stable release code plus one. `ANDROID_LAST_RELEASE_VERSION_CODE` can pin the last distributed code if workflow history is migrated.
 - artifact name: `AdiPredictor-v<package-version>-build<versionCode>.apk`.
 
 Stable release signing uses only GitHub Actions secrets:
@@ -75,7 +77,9 @@ Stable release signing uses only GitHub Actions secrets:
 - `ANDROID_KEY_ALIAS`
 - `ANDROID_KEY_PASSWORD`
 
-The keystore is decoded into the runner temporary directory, never committed, and removed after the build. When any signing secret is unavailable (including untrusted pull requests), CI compiles and labels a debug APK for build verification instead of pretending it is release-signed.
+The repository variable (or same-named secret) `ANDROID_EXPECTED_CERT_SHA256` is mandatory when those four secrets are present. The workflow verifies the signed APK with `apksigner` and fails before publication if the actual signer differs. The optional numeric variable `ANDROID_LAST_RELEASE_VERSION_CODE` protects monotonic versioning across workflow migrations.
+
+The keystore is decoded into the runner temporary directory, never committed, and removed after the build. When all signing secrets are absent (including untrusted pull requests), CI compiles and labels a `ci-debug` APK for build verification with `UPDATE_CHANNEL_READY=false`. A partial signing configuration fails closed. Only a certificate-verified `stable` artifact has `RELEASE_SIGNING_RUNTIME_VERIFIED=true`; its non-secret metadata is published to `public/app-release.json` on trusted main builds.
 
 Android can update an installed app in place only when the application ID and signing certificate match and the new version code is higher. Historical workflow builds used a runner-generated debug key and this repository contains neither that private key nor an old APK certificate. If that legacy key cannot be recovered outside the repository, one uninstall/reinstall is required to migrate to the stable release certificate. After that migration, retaining the same GitHub release keystore enables future in-place updates and preserves app data.
 

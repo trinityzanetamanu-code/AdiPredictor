@@ -1132,6 +1132,7 @@ function LiveDrawPanel() {
   const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError } = useApp();
   const [singaporeMode, setSingaporeMode] = useState(() => selectSingaporeMode());
   const [officialResults, setOfficialResults] = useState({ fourD: null, toto: null });
+  const [officialResultCheckedAt, setOfficialResultCheckedAt] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -1139,7 +1140,10 @@ function LiveDrawPanel() {
     const refreshOfficial = async () => {
       try {
         const [fourD, toto] = await Promise.all([loadOfficial4DResult(), loadOfficialTotoResult()]);
-        if (mounted) setOfficialResults({ fourD, toto });
+        if (mounted) {
+          setOfficialResults({ fourD, toto });
+          setOfficialResultCheckedAt(new Date().toISOString());
+        }
       } catch (error) {
         console.warn('Official Singapore result metadata unavailable:', error);
       }
@@ -1194,7 +1198,7 @@ function LiveDrawPanel() {
         </div>
       </section>
 
-      <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} />
+      <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
       <LiveDrawResultBoard
         title={sgpSource.title + ' Result'}
         badge="Official · Singapore Pools"

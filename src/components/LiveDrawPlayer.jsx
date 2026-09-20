@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 import { ExternalLink, Radio, RefreshCw } from 'lucide-react';
-import { PLAYER_MODES, PLAYER_STATES, calculateLiveState } from '../liveDrawConfig';
+import { PLAYER_MODES, PLAYER_STATES, calculateLiveState, scheduleBadgeLabel } from '../liveDrawConfig';
 
 export async function openLivePage(url) {
   if (!url) return false;
@@ -15,7 +15,8 @@ export async function openLivePage(url) {
 }
 
 const stateStyles = {
-  LIVE: 'border-rose-500/40 bg-rose-500/15 text-rose-300',
+  READY: 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300',
+  PLAYING: 'border-rose-500/40 bg-rose-500/15 text-rose-300',
   WAITING: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
   OFFLINE: 'border-slate-600 bg-slate-800/70 text-slate-300',
   BLOCKED_EMBED: 'border-orange-500/30 bg-orange-500/10 text-orange-300',
@@ -23,14 +24,25 @@ const stateStyles = {
   LOADING: 'border-sky-500/30 bg-sky-500/10 text-sky-300',
 };
 
-export default function LiveDrawPlayer({ source, lastChecked }) {
+function safeHost(url) {
+  try {
+    return url ? new URL(url).host : '-';
+  } catch {
+    return 'invalid-url';
+  }
+}
+
+export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh }) {
   const [reloadKey, setReloadKey] = useState(0);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.LOADING);
+  const [lastReload, setLastReload] = useState(null);
+  const [errorState, setErrorState] = useState(null);
   const scheduleState = useMemo(() => calculateLiveState(source.schedule), [source, reloadKey, lastChecked]);
 
   useEffect(() => {
     if (source.mode === PLAYER_MODES.IFRAME || source.mode === PLAYER_MODES.VIDEO) {
       setPlayerState(PLAYER_STATES.LOADING);
+      setErrorState(null);
     } else if (source.mode === PLAYER_MODES.OFFICIAL_PAGE) {
       setPlayerState(PLAYER_STATES.BLOCKED_EMBED);
     } else {
@@ -38,8 +50,17 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
     }
   }, [source, scheduleState.status, reloadKey]);
 
-  const isLive = scheduleState.status === 'LIVE_WINDOW';
-  const badge = isLive ? 'LIVE' : scheduleState.status.replace('_', ' ');
+  const isDrawWindow = scheduleState.status === 'LIVE_WINDOW';
+  const badge = scheduleBadgeLabel(scheduleState.status);
+  const reloadPlayer = () => {
+    setLastReload(new Date().toISOString());
+    setErrorState(null);
+    setReloadKey((value) => value + 1);
+  };
+  const playerError = () => {
+    setErrorState('Player embed gagal dimuat');
+    setPlayerState(PLAYER_STATES.ERROR);
+  };
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/60 shadow-xl">
@@ -47,13 +68,13 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="font-bold text-slate-100">{source.title}</h4>
-            <span className={`rounded-full border px-2 py-0.5 text-[9px] font-black ${isLive ? 'animate-pulse border-rose-500 bg-rose-500/15 text-rose-300' : 'border-slate-700 bg-slate-800 text-slate-300'}`}>
+            <span className={`rounded-full border px-2 py-0.5 text-[9px] font-black ${isDrawWindow ? 'border-amber-500/40 bg-amber-500/10 text-amber-300' : 'border-slate-700 bg-slate-800 text-slate-300'}`}>
               {badge}
             </span>
           </div>
           <p className="mt-1 text-[11px] text-slate-400">{source.sourceLabel} · {scheduleState.message}</p>
         </div>
-        <Radio className={isLive ? 'h-5 w-5 text-rose-400' : 'h-5 w-5 text-slate-500'} />
+        <Radio className={playerState === PLAYER_STATES.PLAYING ? 'h-5 w-5 text-rose-400' : 'h-5 w-5 text-slate-500'} />
       </div>
 
       <div className="relative aspect-video bg-slate-950">
@@ -73,8 +94,8 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
             allowFullScreen
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
-            onLoad={() => setPlayerState(isLive ? PLAYER_STATES.LIVE : PLAYER_STATES.WAITING)}
-            onError={() => setPlayerState(PLAYER_STATES.ERROR)}
+            onLoad={() => setPlayerState(PLAYER_STATES.READY)}
+            onError={playerError}
           />
         )}
         {source.mode === PLAYER_MODES.VIDEO && (
@@ -86,8 +107,10 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
             playsInline
             muted
             preload="metadata"
-            onCanPlay={() => setPlayerState(isLive ? PLAYER_STATES.LIVE : PLAYER_STATES.WAITING)}
-            onError={() => setPlayerState(PLAYER_STATES.ERROR)}
+            onCanPlay={() => setPlayerState(PLAYER_STATES.READY)}
+            onPlay={() => setPlayerState(PLAYER_STATES.PLAYING)}
+            onPause={() => setPlayerState(PLAYER_STATES.READY)}
+            onError={playerError}
           />
         )}
         {(source.mode === PLAYER_MODES.OFFICIAL_PAGE || source.mode === PLAYER_MODES.RESULT_ONLY) && (
@@ -108,7 +131,7 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
         <span className="text-[10px] text-slate-500">Checked: {lastChecked || '-'}</span>
         <div className="flex gap-2">
           {(source.mode === PLAYER_MODES.IFRAME || source.mode === PLAYER_MODES.VIDEO) && (
-            <button onClick={() => setReloadKey((value) => value + 1)} className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-2 text-[10px] font-semibold text-slate-200">
+            <button onClick={reloadPlayer} className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-2 text-[10px] font-semibold text-slate-200">
               <RefreshCw className="h-3.5 w-3.5" /> Muat ulang
             </button>
           )}
@@ -119,6 +142,19 @@ export default function LiveDrawPlayer({ source, lastChecked }) {
           )}
         </div>
       </div>
+      <details className="border-t border-slate-800 bg-slate-950/40 px-4 py-3 text-[10px] text-slate-400">
+        <summary className="cursor-pointer font-bold uppercase tracking-wider text-slate-300">LiveDraw Diagnostics</summary>
+        <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 break-all">
+          <dt>Source mode</dt><dd className="text-slate-200">{source.mode}</dd>
+          <dt>Source URL</dt><dd className="text-slate-200">{source.pageUrl || '-'}</dd>
+          <dt>Embed host</dt><dd className="text-slate-200">{safeHost(source.embedUrl || source.mediaUrl)}</dd>
+          <dt>Schedule state</dt><dd className="text-slate-200">{scheduleState.status}</dd>
+          <dt>Player state</dt><dd className="text-slate-200">{playerState}</dd>
+          <dt>Last result refresh</dt><dd className="text-slate-200">{lastResultRefresh || lastChecked || '-'}</dd>
+          <dt>Last player reload</dt><dd className="text-slate-200">{lastReload || '-'}</dd>
+          <dt>Error state</dt><dd className="text-slate-200">{errorState || '-'}</dd>
+        </dl>
+      </details>
     </section>
   );
 }

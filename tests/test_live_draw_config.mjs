@@ -3,8 +3,10 @@ import test from 'node:test';
 import {
   LIVE_DRAW_SOURCES,
   PLAYER_MODES,
+  PLAYER_STATES,
   SGP_COMPOSITE_SOURCE_LABEL,
   calculateLiveState,
+  scheduleBadgeLabel,
   selectSingaporeMode,
 } from '../src/liveDrawConfig.js';
 
@@ -43,6 +45,13 @@ test('schedule distinguishes upcoming live and posted states', () => {
   assert.equal(calculateLiveState(schedule, new Date('2026-09-19T10:00:00Z')).status, 'UPCOMING');
   assert.equal(calculateLiveState(schedule, new Date('2026-09-19T10:20:00Z')).status, 'LIVE_WINDOW');
   assert.equal(calculateLiveState(schedule, new Date('2026-09-19T12:00:00Z')).status, 'RESULT_POSTED');
+});
+
+test('draw schedule never claims actual player playback', () => {
+  assert.equal(scheduleBadgeLabel('LIVE_WINDOW'), 'DRAW WINDOW');
+  assert.equal(PLAYER_STATES.READY, 'READY');
+  assert.equal(PLAYER_STATES.PLAYING, 'PLAYING');
+  assert.equal(Object.hasOwn(PLAYER_STATES, 'LIVE'), false);
 });
 
 test('Singapore mode chooses official draw for the active day', () => {

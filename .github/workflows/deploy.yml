@@ -9,13 +9,14 @@ on:
       - 'public/data/**'
       - 'public/predictions/**'
       - 'public/patterns/**'
+      - 'public/app-release.json'
   pull_request:
     branches:
       - main
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-android:
@@ -51,11 +52,23 @@ jobs:
         shell: bash
         run: |
           package_version="$(node -p "require('./package.json').version")"
-          version_code="$((100000 + GITHUB_RUN_NUMBER))"
+          workflow_code="$((100000 + GITHUB_RUN_NUMBER))"
+          file_code="$(node -e "const p=require('./public/app-release.json'); console.log(Number(p.version_code)||0)")"
+          variable_code="${ANDROID_LAST_RELEASE_VERSION_CODE:-0}"
+          if ! [[ "$variable_code" =~ ^[0-9]+$ ]]; then
+            echo "ANDROID_LAST_RELEASE_VERSION_CODE must be numeric" >&2
+            exit 1
+          fi
+          last_code="$file_code"
+          if (( variable_code > last_code )); then last_code="$variable_code"; fi
+          version_code="$workflow_code"
+          if (( version_code <= last_code )); then version_code="$((last_code + 1))"; fi
           version_name="${package_version}+build.${version_code}"
           echo "package_version=${package_version}" >> "$GITHUB_OUTPUT"
           echo "version_code=${version_code}" >> "$GITHUB_OUTPUT"
           echo "version_name=${version_name}" >> "$GITHUB_OUTPUT"
+        env:
+          ANDROID_LAST_RELEASE_VERSION_CODE: ${{ vars.ANDROID_LAST_RELEASE_VERSION_CODE }}
 
       - name: Add Android Platform and Configure Version
         env:
@@ -74,12 +87,27 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          EXPECTED_CERT_SHA256: ${{ secrets.ANDROID_EXPECTED_CERT_SHA256 || vars.ANDROID_EXPECTED_CERT_SHA256 }}
         run: |
-          if [[ -n "$KEYSTORE_BASE64" && -n "$KEYSTORE_PASSWORD" && -n "$KEY_ALIAS" && -n "$KEY_PASSWORD" ]]; then
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          else
+          present=0
+          for value in "$KEYSTORE_BASE64" "$KEYSTORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD"; do
+            if [[ -n "$value" ]]; then present=$((present + 1)); fi
+          done
+          if (( present == 0 )); then
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Release secrets are unavailable; compiling a debug APK for verification."
+            echo "channel=ci-debug" >> "$GITHUB_OUTPUT"
+            echo "Release secrets are unavailable; debug APK is compile verification only."
+            echo "UPDATE_CHANNEL_READY=false"
+            echo "RELEASE_SIGNING_RUNTIME_VERIFIED=false"
+          elif (( present != 4 )); then
+            echo "Partial Android signing configuration is unsafe." >&2
+            exit 1
+          elif [[ -z "$EXPECTED_CERT_SHA256" ]]; then
+            echo "ANDROID_EXPECTED_CERT_SHA256 repository variable is required for a signed release." >&2
+            exit 1
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "channel=stable" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Decode Release Keystore
@@ -117,6 +145,9 @@ jobs:
           SIGNING_READY: ${{ steps.signing.outputs.ready }}
           PACKAGE_VERSION: ${{ steps.version.outputs.package_version }}
           VERSION_CODE: ${{ steps.version.outputs.version_code }}
+          VERSION_NAME: ${{ steps.version.outputs.version_name }}
+          EXPECTED_CERT_SHA256: ${{ secrets.ANDROID_EXPECTED_CERT_SHA256 || vars.ANDROID_EXPECTED_CERT_SHA256 }}
+          BUILD_CHANNEL: ${{ steps.signing.outputs.channel }}
         run: |
           mkdir -p artifacts
           if [[ "$SIGNING_READY" == "true" ]]; then
@@ -128,15 +159,60 @@ jobs:
           fi
           cp "$source_apk" "artifacts/$artifact_name"
           build_tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
-          "$build_tools/aapt" dump badging "artifacts/$artifact_name" | head -1
-          "$build_tools/apksigner" verify --print-certs "artifacts/$artifact_name"
+          badging="$("$build_tools/aapt" dump badging "artifacts/$artifact_name" | head -1)"
+          certs="$("$build_tools/apksigner" verify --print-certs "artifacts/$artifact_name")"
+          printf '%s\n' "$badging"
+          printf '%s\n' "$certs"
+          package_name="$(sed -n "s/^package: name='\([^']*\)'.*/\1/p" <<< "$badging")"
+          apk_version_code="$(sed -n "s/.*versionCode='\([^']*\)'.*/\1/p" <<< "$badging")"
+          apk_version_name="$(sed -n "s/.*versionName='\([^']*\)'.*/\1/p" <<< "$badging")"
+          actual_cert="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' <<< "$certs" | head -1 | tr -d ':[:space:]' | tr '[:upper:]' '[:lower:]')"
+          expected_cert="$(tr -d ':[:space:]' <<< "$EXPECTED_CERT_SHA256" | tr '[:upper:]' '[:lower:]')"
+          [[ "$package_name" == "com.adipredictor.app" ]] || { echo "Unexpected package: $package_name" >&2; exit 1; }
+          [[ "$apk_version_code" == "$VERSION_CODE" ]] || { echo "Version code mismatch" >&2; exit 1; }
+          [[ "$apk_version_name" == "$VERSION_NAME" ]] || { echo "Version name mismatch" >&2; exit 1; }
+          if [[ "$SIGNING_READY" == "true" ]]; then
+            [[ -n "$actual_cert" && "$actual_cert" == "$expected_cert" ]] || {
+              echo "Stable signer certificate mismatch; refusing to publish." >&2
+              exit 1
+            }
+            runtime_verified=true
+            metadata_path="artifacts/app-release.json"
+            echo "UPDATE_CHANNEL_READY=true"
+            echo "RELEASE_SIGNING_RUNTIME_VERIFIED=true"
+          else
+            runtime_verified=false
+            metadata_path="artifacts/app-build.json"
+            echo "UPDATE_CHANNEL_READY=false"
+            echo "RELEASE_SIGNING_RUNTIME_VERIFIED=false"
+          fi
+          ANDROID_APPLICATION_ID="$package_name" \
+          ANDROID_VERSION_CODE="$VERSION_CODE" \
+          ANDROID_VERSION_NAME="$VERSION_NAME" \
+          ANDROID_ARTIFACT_NAME="$artifact_name" \
+          ANDROID_BUILD_CHANNEL="$BUILD_CHANNEL" \
+          ANDROID_CERT_SHA256="$actual_cert" \
+          ANDROID_EXPECTED_CERT_SHA256="$expected_cert" \
+          RELEASE_SIGNING_RUNTIME_VERIFIED="$runtime_verified" \
+          ANDROID_METADATA_PATH="$metadata_path" \
+          node scripts/write_android_build_metadata.mjs
           echo "name=${artifact_name}" >> "$GITHUB_OUTPUT"
+          echo "metadata=${metadata_path}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish Verified Stable Release Metadata
+        if: steps.signing.outputs.ready == 'true' && github.ref == 'refs/heads/main'
+        env:
+          RELEASE_METADATA_SOURCE: ${{ github.workspace }}/${{ steps.artifact.outputs.metadata }}
+          MAX_PUSH_ATTEMPTS: '3'
+        run: bash scripts/publish_release_metadata.sh
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.artifact.outputs.name }}
-          path: artifacts/${{ steps.artifact.outputs.name }}
+          path: |
+            artifacts/${{ steps.artifact.outputs.name }}
+            ${{ steps.artifact.outputs.metadata }}
           if-no-files-found: error
 
       - name: Remove Temporary Keystore

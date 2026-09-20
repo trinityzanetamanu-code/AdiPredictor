@@ -1,3 +1,4 @@
+import json
 from datetime import date
 
 from scripts.collector import (
@@ -5,6 +6,9 @@ from scripts.collector import (
     parse_indonesian_long_date_result4,
     parse_hk_six_digit_last4,
     parse_sgp_official_4d,
+    parse_official_singapore_4d_snapshot,
+    parse_official_singapore_toto_snapshot,
+    collect_official_singapore,
     parse_weekday_grid,
     resolve_period_from_rule,
     verify_results,
@@ -88,6 +92,68 @@ def test_sgp_official_parser():
     results = parse_sgp_official_4d(html, "SGP", source("sgp_official_4d"), 2026)
     assert results[-1].number == "9224"
     assert results[-1].period == "SGP-5536"
+
+
+def test_official_singapore_snapshot_parsers():
+    four_d_html = """
+    <html><body>
+    Sat, 19 Sep 2026 | Draw No. 5537
+    1st Prize | 0921 2nd Prize | 3068 3rd Prize | 2114
+    Starter Prizes 0151 1665 3071 3364 4698 6211 6557 6602 7072 7527
+    Consolation Prizes 0973 2766 3221 3890 4749 4833 5331 7235 7531 7913
+    Wed, 16 Sep 2026 | Draw No. 5536
+    1st Prize | 9224 2nd Prize | 1136 3rd Prize | 8473
+    Starter Prizes 0001 0002 0003 0004 0005 0006 0007 0008 0009 0010
+    Consolation Prizes 0011 0012 0013 0014 0015 0016 0017 0018 0019 0020
+    </body></html>
+    """
+    toto_html = """
+    <html><body>
+    Thu, 17 Sep 2026 | Draw No. 4231
+    Winning Numbers 17 19 23 35 36 39
+    Additional Number 49
+    </body></html>
+    """
+    four_d = parse_official_singapore_4d_snapshot(four_d_html)
+    toto = parse_official_singapore_toto_snapshot(toto_html)
+    assert four_d["first"] == "0921"
+    assert four_d["starter"] == ["0151", "1665", "3071", "3364", "4698", "6211", "6557", "6602", "7072", "7527"]
+    assert four_d["consolation"][-1] == "7913"
+    assert toto["winning_numbers"] == ["17", "19", "23", "35", "36", "39"]
+    assert toto["additional_number"] == "49"
+
+
+def test_official_singapore_collector_does_not_write_timestamp_only(monkeypatch, tmp_path):
+    path = tmp_path / "singapore-official.json"
+    existing = {
+        "source": "Singapore Pools",
+        "retrieved_at": "2026-09-19T00:00:00+07:00",
+        "official_4d": {"draw_date": "2026-09-19", "first": "0921"},
+        "official_toto": {"draw_date": "2026-09-17", "winning_numbers": ["17"]},
+    }
+    path.write_text(json.dumps(existing), encoding="utf-8")
+    monkeypatch.setattr("scripts.collector.OFFICIAL_SGP_PATH", path)
+    monkeypatch.setattr("scripts.collector.fetch_html", lambda url: url)
+    monkeypatch.setattr(
+        "scripts.collector.parse_official_singapore_4d_snapshot",
+        lambda html: existing["official_4d"],
+    )
+    monkeypatch.setattr(
+        "scripts.collector.parse_official_singapore_toto_snapshot",
+        lambda html: existing["official_toto"],
+    )
+    result = collect_official_singapore("2026-09-20T00:00:00+07:00")
+    assert result["status"] == "no_change"
+    assert json.loads(path.read_text())["retrieved_at"] == "2026-09-19T00:00:00+07:00"
+
+
+def test_sgp_crosscheck_keeps_two_current_sources():
+    config = json.loads((__import__('pathlib').Path(__file__).parents[1] / "config" / "collector_sources.json").read_text())
+    sgp = config["markets"]["SGP"]
+    enabled = [source for source in sgp["sources"] if source.get("enabled", True)]
+    assert sgp["min_confirmations"] == 2
+    assert len(enabled) >= 2
+    assert all(source["id"] != "royaltoto_identical_98toto" for source in enabled)
 
 
 def test_date_result_table_parser():
