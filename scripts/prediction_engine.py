@@ -820,16 +820,32 @@ def extract_number(value):
 
 def audit_match(actual, candidate):
     candidate = str(candidate or "")
-    return {"candidate": candidate or None, "exact": candidate == actual, "permutation": len(candidate) == len(actual) and candidate != actual and Counter(candidate) == Counter(actual)}
+    exact = candidate == actual
+    permutation = len(candidate) == len(actual) and candidate != actual and Counter(candidate) == Counter(actual)
+    return {
+        "candidate": candidate or None,
+        "exact": exact,
+        "permutation": permutation,
+        "status": "EXACT" if exact else "PERMUTATION" if permutation else "MISS",
+    }
 
 
 def audit_list(actual, candidates, allow_reverse=False):
     values = [extract_number(item) for item in (candidates or [])]
     exact = actual in values
+    reverse_values = [value for value in values if str(value) == actual[::-1] and str(value) != actual] if allow_reverse else []
+    permutation_values = [
+        value for value in values
+        if str(value) != actual and len(str(value)) == len(actual) and Counter(str(value)) == Counter(actual)
+    ] if not allow_reverse else []
     return {
         "actual": actual, "candidates": values, "exact": exact,
-        "reverse": actual[::-1] in values and not exact if allow_reverse else False,
-        "permutation": any(value != actual and len(str(value)) == len(actual) and Counter(str(value)) == Counter(actual) for value in values) if not allow_reverse else False,
+        "exact_candidates": [value for value in values if str(value) == actual],
+        "reverse": bool(reverse_values) and not exact,
+        "reverse_candidates": reverse_values,
+        "permutation": bool(permutation_values),
+        "permutation_candidates": permutation_values,
+        "status": "EXACT" if exact else "REVERSE" if reverse_values else "PERMUTATION" if permutation_values else "MISS",
     }
 
 
@@ -841,13 +857,170 @@ def bbfs_audit(actual, bbfs):
         "distinct_digits_missed": sorted(distinct - digits),
         "occurrence_coverage": {"captured": occurrences, "total": 4, "rate": rnd(occurrences / 4)},
         "full_draw_coverage": distinct.issubset(digits),
+        "status": "FULL" if distinct.issubset(digits) else "PARTIAL",
     }
 
 
-def audit_prediction_payload(prediction, actual):
-    quick = prediction.get("quick_view", {})
-    four, three, two, bbfs = quick.get("four_d", {}), quick.get("three_d", {}), quick.get("two_d", {}), quick.get("bbfs", {})
+def repeat_signal_audit(actual, digit):
+    digit = str(digit or "")
+    occurrences = actual.count(digit) if len(digit) == 1 else 0
     return {
+        "digit": digit or None,
+        "actual_occurrences": occurrences,
+        "hit": occurrences > 0,
+        "status": "DIGIT_APPEARED" if occurrences else "MISS",
+        "definition": "Signal digit repeat dianggap tembus bila digit muncul minimal satu kali pada draw aktual.",
+    }
+
+
+def kembar_candidate_audit(actual, candidate):
+    candidate = str(candidate or "")
+    positions = {
+        "front": actual[:2] == candidate,
+        "middle": actual[1:3] == candidate,
+        "back": actual[2:] == candidate,
+    }
+    return {
+        "candidate": candidate or None,
+        "front": positions["front"],
+        "middle": positions["middle"],
+        "back": positions["back"],
+        "any_position": any(positions.values()),
+        "status": "EXACT" if any(positions.values()) else "MISS",
+    }
+
+
+def compact_audit_snapshot(prediction):
+    """Copy only pre-result signals required for a future audit."""
+    models = {}
+    required = (
+        "bbfs6", "bbfs5", "4d_top3", "3d_front_top5", "3d_back_top5",
+        "2d_front_top5", "2d_middle_top5", "2d_back_top5",
+    )
+    for name in MODELS:
+        source = prediction.get("models", {}).get(name, {})
+        if all(key in source for key in required):
+            models[name] = {key: source.get(key) for key in required}
+    visuals = []
+    for pattern in prediction.get("visual_patterns", []):
+        visuals.append({
+            "pattern_name": pattern.get("pattern_name"),
+            "visual_predictive_edge_confirmed": pattern.get("visual_predictive_edge_confirmed", False),
+            "target_signal": pattern.get("target_signal"),
+        })
+    final = prediction.get("final_candidates") or prediction.get("quick_view") or {}
+    return {
+        "snapshot_version": 1,
+        "created_before_result": True,
+        "models": models,
+        "p8_ai_instinct": prediction.get("p8_ai_instinct", {}),
+        "final_candidates": {
+            "bbfs": final.get("bbfs", {}),
+            "four_d": final.get("four_d", {}),
+            "three_d": final.get("three_d", {}),
+            "two_d": final.get("two_d", {}),
+            "repeat_signal": final.get("repeat_signal", {}),
+        },
+        "visual_patterns": visuals,
+    }
+
+
+def model_outcome_audit(snapshot, actual):
+    output = {}
+    for name in MODELS:
+        model = snapshot.get("models", {}).get(name)
+        required = (
+            "bbfs6", "bbfs5", "4d_top3", "3d_front_top5", "3d_back_top5",
+            "2d_front_top5", "2d_middle_top5", "2d_back_top5",
+        )
+        if not model or not all(key in model for key in required):
+            output[name] = {
+                "available": False,
+                "reason": "AUDIT MODEL RINCI TIDAK TERSEDIA PADA ARSIP LAMA",
+            }
+            continue
+        audits = {
+            "available": True,
+            "bbfs6": bbfs_audit(actual, model.get("bbfs6")),
+            "bbfs5": bbfs_audit(actual, model.get("bbfs5")),
+            "4d_top3": audit_list(actual, model.get("4d_top3")),
+            "3d_front_top5": audit_list(actual[:3], model.get("3d_front_top5")),
+            "3d_back_top5": audit_list(actual[1:], model.get("3d_back_top5")),
+            "2d_front_top5": audit_list(actual[:2], model.get("2d_front_top5"), True),
+            "2d_middle_top5": audit_list(actual[1:3], model.get("2d_middle_top5"), True),
+            "2d_back_top5": audit_list(actual[2:], model.get("2d_back_top5"), True),
+        }
+        direct = []
+        for field in ("4d_top3", "3d_front_top5", "3d_back_top5", "2d_front_top5", "2d_middle_top5", "2d_back_top5"):
+            item = audits[field]
+            if item["status"] != "MISS":
+                direct.append({"field": field, "status": item["status"], "candidate": (item.get("exact_candidates") or item.get("reverse_candidates") or item.get("permutation_candidates") or [None])[0]})
+        coverage = [field for field in ("bbfs6", "bbfs5") if audits[field]["full_draw_coverage"]]
+        audits["model_summary"] = {"direct_number_hits": direct, "support_coverage_hits": coverage}
+        output[name] = audits
+    return output
+
+
+def p8_outcome_audit(snapshot, actual):
+    p8 = snapshot.get("p8_ai_instinct", {})
+    required = ("bbfs6", "bbfs5", "four_d_main", "four_d_reserve", "three_d_front", "three_d_back", "two_d_front", "two_d_middle", "two_d_back", "repeat_digit")
+    if not all(key in p8 for key in required):
+        return {"available": False, "reason": "AUDIT P8 TIDAK TERSEDIA PADA ARSIP LAMA"}
+    return {
+        "available": True,
+        "bbfs6": bbfs_audit(actual, p8["bbfs6"]),
+        "bbfs5": bbfs_audit(actual, p8["bbfs5"]),
+        "4d_main": audit_match(actual, p8["four_d_main"]),
+        "4d_reserve": audit_match(actual, p8["four_d_reserve"]),
+        "3d_front": audit_match(actual[:3], p8["three_d_front"]),
+        "3d_back": audit_match(actual[1:], p8["three_d_back"]),
+        "2d_front": audit_list(actual[:2], [p8["two_d_front"]], True),
+        "2d_middle": audit_list(actual[1:3], [p8["two_d_middle"]], True),
+        "2d_back": audit_list(actual[2:], [p8["two_d_back"]], True),
+        "repeat_digit": repeat_signal_audit(actual, p8["repeat_digit"]),
+        "statistical_consensus_member": False,
+    }
+
+
+def visual_outcome_audit(snapshot, actual):
+    output = []
+    for pattern in snapshot.get("visual_patterns", []):
+        signal = pattern.get("target_signal")
+        if not signal or not signal.get("predicted_values"):
+            output.append({
+                "pattern_name": pattern.get("pattern_name"),
+                "target_signal": signal,
+                "actual": actual,
+                "status": "VISUAL_ONLY_NO_TARGET",
+                "matched_positions": [],
+                "hit_count": 0,
+                "reason": "SINYAL TARGET POLA VISUAL TIDAK TERSIMPAN PADA VERSI INI",
+            })
+            continue
+        matches = []
+        for predicted in signal["predicted_values"]:
+            index = int(predicted["position_index"])
+            if 0 <= index < len(actual) and actual[index] == str(predicted["digit"]):
+                matches.append(predicted["position"])
+        output.append({
+            "pattern_name": pattern.get("pattern_name"),
+            "target_signal": signal,
+            "actual": actual,
+            "status": "EXACT" if len(matches) == len(signal["predicted_values"]) else "PARTIAL" if matches else "MISS",
+            "matched_positions": matches,
+            "hit_count": len(matches),
+            "visual_predictive_edge_confirmed": pattern.get("visual_predictive_edge_confirmed", False),
+        })
+    return output
+
+
+def audit_prediction_payload(prediction, actual):
+    snapshot = prediction.get("audit_snapshot") or compact_audit_snapshot(prediction)
+    final = snapshot.get("final_candidates", {})
+    four, three, two, bbfs = final.get("four_d", {}), final.get("three_d", {}), final.get("two_d", {}), final.get("bbfs", {})
+    kembar = two.get("kembar", {})
+    repeat = final.get("repeat_signal", {})
+    output = {
         "target_date": prediction.get("target_date"),
         "archive_generated_at": prediction.get("generated_at"), "actual": actual,
         "previous_4d_main": audit_match(actual, extract_number(four.get("main"))),
@@ -857,8 +1030,40 @@ def audit_prediction_payload(prediction, actual):
         "3d_front": audit_list(actual[:3], three.get("front")), "3d_back": audit_list(actual[1:], three.get("back")),
         "2d_front": audit_list(actual[:2], two.get("front"), True), "2d_middle": audit_list(actual[1:3], two.get("middle"), True), "2d_back": audit_list(actual[2:], two.get("back"), True),
         "bbfs6": bbfs_audit(actual, bbfs.get("main6")), "bbfs5": bbfs_audit(actual, bbfs.get("main5")),
+        "kembar": {
+            "main": kembar_candidate_audit(actual, kembar.get("main")),
+            "reserve": kembar_candidate_audit(actual, kembar.get("reserve")),
+        },
+        "repeat_signals": {
+            "data_model": repeat_signal_audit(actual, repeat.get("data_digit")),
+            "p8": repeat_signal_audit(actual, repeat.get("p8_digit")),
+        },
+        "models": model_outcome_audit(snapshot, actual),
+        "p8": p8_outcome_audit(snapshot, actual),
+        "visual_patterns": visual_outcome_audit(snapshot, actual),
+        "audit_snapshot_version": snapshot.get("snapshot_version"),
+        "created_before_result": snapshot.get("created_before_result", False),
         "definitions": {"exact": "Same digits in the same order.", "reverse": "2D reverse is never exact.", "permutation": "Same digit multiset in another order is never exact."},
     }
+    direct_hits = []
+    final_slots = (
+        ("4D MAIN", output["previous_4d_main"]),
+        ("4D ALTERNATIF", output["previous_4d_alternative"]),
+        ("4D CADANGAN", output["previous_4d_reserve"]),
+        ("4D SINGLE PAIR", output["previous_4d_single_pair"]),
+        ("3D DEPAN", output["3d_front"]), ("3D BELAKANG", output["3d_back"]),
+        ("2D DEPAN", output["2d_front"]), ("2D TENGAH", output["2d_middle"]), ("2D BELAKANG", output["2d_back"]),
+    )
+    for label, entry in final_slots:
+        if entry.get("status") != "MISS":
+            values = entry.get("exact_candidates") or entry.get("reverse_candidates") or entry.get("permutation_candidates") or [entry.get("candidate")]
+            direct_hits.append({"category": label, "candidate": values[0], "status": entry.get("status")})
+    output["summary"] = {
+        "direct_number_hits": direct_hits,
+        "support_coverage_hits": [name.upper() for name in ("bbfs6", "bbfs5") if output[name]["full_draw_coverage"]],
+        "ambiguous_direct_hit_removed": True,
+    }
+    return output
 
 
 def prior_audit(market, latest_row):
@@ -984,6 +1189,42 @@ def visual_pattern_backtest(history, name, occurrences):
     }
 
 
+def visual_target_signal(history, name, occurrence, target_date):
+    """Freeze the pattern continuation target before the result exists."""
+    _, end, highlighted = occurrence
+    end_cells = [(position, digits_of(history[row])[position]) for row, position in highlighted if row == end]
+    if not end_cells:
+        return None
+    multi_digit = name in {"CROSSING", "BOX_FRAME", "2D_CHAIN", "POSITION_SHIFT", "3D_CHAIN"}
+    if multi_digit:
+        expected = list(dict.fromkeys(end_cells))
+        rule = "Semua digit endpoint pola berlanjut pada posisi endpoint yang sama di draw target."
+    else:
+        last_position, digit = end_cells[-1]
+        target_position = last_position
+        if name == "ZIG_ZAG" and len(highlighted) >= 2:
+            target_position = highlighted[-2][1]
+        elif name in {"DIAGONAL_NAIK", "DIAGONAL_TURUN", "SAME_DIGIT_TRAVELLING"}:
+            earlier = next(((row, pos) for row, pos in reversed(highlighted[:-1]) if row < end), None)
+            if earlier:
+                shifted = last_position + (last_position - earlier[1])
+                if 0 <= shifted < 4:
+                    target_position = shifted
+        expected = [(target_position, digit)]
+        rule = "Digit endpoint pola berlanjut tepat pada posisi target yang dibekukan sebelum result."
+    return {
+        "target_date": target_date,
+        "target_positions": [POSITIONS[position] for position, _ in expected],
+        "predicted_digits": [str(digit) for _, digit in expected],
+        "predicted_values": [
+            {"position": POSITIONS[position], "position_index": position, "digit": str(digit)}
+            for position, digit in expected
+        ],
+        "evaluation_rule": rule,
+        "frozen_before_result": True,
+    }
+
+
 def generate_visual_patterns(market, history, target_date, p5):
     patterns = sorted(((name, values) for name, values in visual_occurrences(history).items() if values), key=lambda item: (-len(item[1]), item[0]))[:6]
     directory = PRED_DIR / market.lower() / "visuals" / target_date; directory.mkdir(parents=True, exist_ok=True)
@@ -1005,6 +1246,7 @@ def generate_visual_patterns(market, history, target_date, p5):
             "edge_confirmed": backtest["visual_predictive_edge_confirmed"],
             "visual_note": "Visual pattern ditemukan; predictive edge terkonfirmasi." if backtest["visual_predictive_edge_confirmed"] else "Visual pattern ditemukan — predictive edge belum terbukti.",
             "backtest_definition": backtest["definition"],
+            "target_signal": visual_target_signal(history, name, occurrence, target_date),
             "image_path": relative,
         }
         (directory / filename).write_text(render_svg(market, history, name, occurrence, metadata), encoding="utf-8")
@@ -1069,6 +1311,7 @@ def build_prediction(market, history, config=None):
         "confidence": {"model_confidence": "RELATIVE", "data_quality": "HIGH" if not validation["missing_expected_draws"] else "MODERATE", "sample_size": len(history), "backtest_strength": rnd(mean(weights.values())), "consensus_strength": rnd(max(weights.values())), "relative_confidence": "MODERATE" if mean(weights.values()) >= .70 else "LOW", "disclaimer": DISCLAIMER},
         "candidate_counts": counts, "disclaimer": DISCLAIMER,
     }
+    payload["audit_snapshot"] = compact_audit_snapshot(payload)
     if p8["fingerprint"] != frozen_fingerprint: raise AssertionError("P8 changed after consensus")
     return payload
 
@@ -1096,7 +1339,7 @@ def write_prediction(market, payload, force=False):
 def history_hit_summary(audit):
     if not audit:
         return None
-    return {
+    summary = {
         "4d": {
             slot: audit.get(f"previous_4d_{slot}", {}).get("exact", False)
             for slot in ("main", "alternative", "reserve", "single_pair")
@@ -1114,7 +1357,11 @@ def history_hit_summary(audit):
         },
         "bbfs6_full_coverage": audit.get("bbfs6", {}).get("full_draw_coverage", False),
         "bbfs5_full_coverage": audit.get("bbfs5", {}).get("full_draw_coverage", False),
+        "direct_number_hits": audit.get("summary", {}).get("direct_number_hits", []),
+        "support_coverage_hits": audit.get("summary", {}).get("support_coverage_hits", []),
     }
+    summary["direct_number_hit_count"] = len(summary["direct_number_hits"])
+    return summary
 
 
 def history_record(market, prediction, actual_row=None, archive_path=None):
@@ -1146,6 +1393,9 @@ def history_record(market, prediction, actual_row=None, archive_path=None):
         "previous_prediction_audit": prediction.get("prior_prediction_audit"),
         "outcome_audit": outcome_audit,
         "hit_miss_summary": history_hit_summary(outcome_audit),
+        "detailed_model_audit_available": bool(outcome_audit and any(
+            item.get("available") for item in outcome_audit.get("models", {}).values()
+        )),
         "archive_path": archive_path,
     }
 
@@ -1175,7 +1425,7 @@ def update_history_index(market, history):
         ))
     records.sort(key=lambda item: (item.get("target_date") or "", item.get("generated_at") or ""), reverse=True)
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "index_engine": ENGINE_VERSION,
         "market": market,
         "count": len(records),

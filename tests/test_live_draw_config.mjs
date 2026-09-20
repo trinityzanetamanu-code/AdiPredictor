@@ -21,13 +21,13 @@ test('Singapore sources use exact official labels and HTTPS fallbacks', () => {
   }
 });
 
-test('HK feed is never labelled official Hong Kong lottery', () => {
+test('HK native board is never labelled official Hong Kong lottery', () => {
   const source = LIVE_DRAW_SOURCES.HK;
   assert.equal(source.official, false);
   assert.equal(source.sourceLabel, 'HongkongPools Market Source');
   assert.doesNotMatch(source.sourceLabel, /official hong kong lottery/i);
   assert.equal(source.pageUrl, 'https://www.hongkongpools.com/live');
-  assert.equal(source.mode, PLAYER_MODES.OFFICIAL_PAGE);
+  assert.equal(source.mode, PLAYER_MODES.NATIVE_BOARD);
 });
 
 test('SGP composite market remains explicitly non-official', () => {
@@ -35,9 +35,12 @@ test('SGP composite market remains explicitly non-official', () => {
   assert.doesNotMatch(SGP_COMPOSITE_SOURCE_LABEL, /^official/i);
 });
 
-test('unverified SDY source remains result-only', () => {
+test('SDY native board keeps a non-official market-source label', () => {
   assert.equal(LIVE_DRAW_SOURCES.SDY.official, false);
-  assert.equal(LIVE_DRAW_SOURCES.SDY.mode, PLAYER_MODES.RESULT_ONLY);
+  assert.equal(LIVE_DRAW_SOURCES.SDY.mode, PLAYER_MODES.NATIVE_BOARD);
+  assert.equal(LIVE_DRAW_SOURCES.SDY.sourceLabel, 'SydneyPoolsToday Market Source');
+  assert.equal(LIVE_DRAW_SOURCES.SDY.pageUrl, 'https://www.sydneypoolstoday.com/live.html');
+  assert.doesNotMatch(LIVE_DRAW_SOURCES.SDY.sourceLabel, /official/i);
 });
 
 test('schedule distinguishes upcoming live and posted states', () => {

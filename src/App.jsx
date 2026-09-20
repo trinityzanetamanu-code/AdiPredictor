@@ -20,7 +20,6 @@ import {
   CheckCircle2,
   Radio,
   History,
-  X,
 } from 'lucide-react';
 import {
   loadCollectorStatus,
@@ -29,12 +28,19 @@ import {
   loadPredictionHistory,
   loadOfficial4DResult,
   loadOfficialTotoResult,
+  loadLiveDrawSnapshot,
   loadTafsir,
   predictionAssetUrl,
 } from './dataClient';
-import LiveDrawPlayer from './components/LiveDrawPlayer';
+import LiveDrawPlayer, { openLivePage } from './components/LiveDrawPlayer';
 import LiveDrawResultBoard from './components/LiveDrawResultBoard';
+import LiveDrawFourDigitBoard, { TotoBoard } from './components/LiveDrawFourDigitBoard';
+import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
+import PredictionHistoryPage from './components/PredictionHistoryPage';
+import PredictionOutcomeAudit from './components/PredictionOutcomeAudit';
 import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, selectSingaporeMode } from './liveDrawConfig';
+import { attachDatasetValidation, fetchNativeLiveBoard } from './liveDrawService';
+import { loadLocalHKBoard, openHKManualVerification } from './hkVerificationService';
 
 const AppContext = createContext();
 
@@ -126,6 +132,11 @@ function verificationLabel(value) {
 
 export function AppProvider({ children }) {
   const [activeTab, setActiveTab] = useState('generator');
+  const [internalPage, setInternalPage] = useState(() =>
+    typeof window !== 'undefined' && window.location.hash === '#prediction-history'
+      ? 'prediction-history'
+      : 'main',
+  );
   const [marketCode, setMarketCode] = useState('HK');
   const [toastMessage, setToastMessage] = useState('');
 
@@ -239,11 +250,58 @@ export function AppProvider({ children }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (internalPage !== 'prediction-history') return undefined;
+    let listener;
+    let cancelled = false;
+    import('@capacitor/app').then(({ App }) => App.addListener('backButton', () => {
+      if (!cancelled) closePredictionHistory();
+    })).then((handle) => { listener = handle; }).catch(() => {});
+    return () => {
+      cancelled = true;
+      listener?.remove?.();
+    };
+  }, [internalPage]);
+
+  useEffect(() => {
+    const syncInternalPage = () => {
+      setInternalPage(window.location.hash === '#prediction-history' ? 'prediction-history' : 'main');
+    };
+    window.addEventListener('popstate', syncInternalPage);
+    return () => window.removeEventListener('popstate', syncInternalPage);
+  }, []);
+
+  const openPredictionHistory = () => {
+    setActiveTab('generator');
+    setInternalPage('prediction-history');
+    if (window.location.hash !== '#prediction-history') {
+      window.history.pushState({ adipredictorPage: 'prediction-history' }, '', '#prediction-history');
+    }
+  };
+
+  const closePredictionHistory = () => {
+    setActiveTab('generator');
+    setInternalPage('main');
+    window.history.replaceState({ adipredictorPage: 'main' }, '', window.location.pathname + window.location.search);
+  };
+
+  const navigateToTab = (tabId) => {
+    setActiveTab(tabId);
+    if (window.location.hash === '#prediction-history') {
+      window.history.replaceState({}, '', window.location.pathname + window.location.search);
+    }
+    setInternalPage('main');
+  };
+
   return (
     <AppContext.Provider
       value={{
         activeTab,
         setActiveTab,
+        navigateToTab,
+        internalPage,
+        openPredictionHistory,
+        closePredictionHistory,
         marketCode,
         setMarketCode,
         marketData,
@@ -278,7 +336,7 @@ function ToastNotification() {
 }
 
 function Navbar() {
-  const { activeTab, setActiveTab } = useApp();
+  const { activeTab, navigateToTab } = useApp();
   const tabs = [
     { id: 'generator', label: 'Analisis AI', icon: Sparkles },
     { id: 'results', label: 'Data Keluaran', icon: Database },
@@ -306,7 +364,7 @@ function Navbar() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => navigateToTab(tab.id)}
                 className={
                   'flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition ' +
                   (active
@@ -495,11 +553,6 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
     ].join('\n');
     copyToClipboard(text);
   };
-  const auditPermutationLabel = (entry, legacyExact = false) =>
-    (entry?.exact ?? legacyExact) ? 'EXACT' : entry?.permutation ? 'PERMUTATION' : 'MISS';
-  const auditReverseLabel = (entry, legacyExact = false) =>
-    (entry?.exact ?? legacyExact) ? 'EXACT' : entry?.reverse ? 'REVERSE' : 'MISS';
-
   return (
     <div className="lg:col-span-2 bg-slate-900/90 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-xl space-y-6">
       <div className="border-b border-slate-800 pb-4">
@@ -676,25 +729,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
             </div>
           </div>
 
-          {audit && (
-            <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs">
-              <summary className="font-semibold text-slate-200 cursor-pointer">Audit prediksi sebelumnya</summary>
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
-                <div>Aktual: <span className="font-mono text-slate-100">{audit.actual || '-'}</span></div>
-                <div>4D main: {auditPermutationLabel(audit.previous_4d_main, audit.four_d_exact)}</div>
-                <div>4D alternatif: {auditPermutationLabel(audit.previous_4d_alternative)}</div>
-                <div>4D cadangan: {auditPermutationLabel(audit.previous_4d_reserve)}</div>
-                <div>4D single pair: {auditPermutationLabel(audit.previous_4d_single_pair)}</div>
-                <div>3D depan: {auditPermutationLabel(audit['3d_front'], audit.three_d_front_hit)}</div>
-                <div>3D belakang: {auditPermutationLabel(audit['3d_back'], audit.three_d_back_hit)}</div>
-                <div>2D depan: {auditReverseLabel(audit['2d_front'])}</div>
-                <div>2D tengah: {auditReverseLabel(audit['2d_middle'])}</div>
-                <div>2D belakang: {auditReverseLabel(audit['2d_back'], audit.two_d_back_hit)}</div>
-                {audit.bbfs6 && <div>BBFS6: {audit.bbfs6.occurrence_coverage?.captured}/4 digit occurrence</div>}
-                {audit.bbfs5 && <div>BBFS5: {audit.bbfs5.occurrence_coverage?.captured}/4 digit occurrence</div>}
-              </div>
-            </details>
-          )}
+          {audit && <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4 text-xs"><summary className="cursor-pointer font-semibold text-slate-200">Audit prediksi sebelumnya</summary><div className="mt-3"><PredictionOutcomeAudit audit={audit} /></div></details>}
 
           {visuals.length > 0 && (
             <section className="space-y-3">
@@ -815,129 +850,6 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
   );
 }
 
-function historyNumber(value) {
-  return typeof value === 'object' && value !== null ? value.number : value;
-}
-
-function PredictionHistoryPanel({ marketCode, setMarketCode, history, onClose }) {
-  const records = history?.records || [];
-
-  return (
-    <section className="bg-slate-900/95 rounded-2xl border border-violet-500/25 p-5 sm:p-6 shadow-xl space-y-5">
-      <div className="flex items-start justify-between gap-4 border-b border-slate-800 pb-4">
-        <div>
-          <div className="flex items-center gap-2 text-violet-300">
-            <History className="w-5 h-5" />
-            <h3 className="text-lg font-bold">Histori Prediksi</h3>
-          </div>
-          <p className="mt-1 text-xs text-slate-400">
-            Membaca arsip prediksi asli; kandidat lama tidak dihitung ulang di aplikasi.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Tutup histori prediksi"
-          className="rounded-lg border border-slate-700 p-2 text-slate-400 hover:text-slate-100"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-
-      <div className="sm:max-w-xs">
-        <MarketSelect value={marketCode} onChange={setMarketCode} />
-      </div>
-
-      <div className="space-y-3 max-h-[72vh] overflow-y-auto pr-1">
-        {records.map((record) => {
-          const four = record.four_d || {};
-          const three = record.three_d || {};
-          const two = record.two_d || {};
-          const actual = record.actual_result;
-          const audit = record.outcome_audit;
-          const summary = record.hit_miss_summary;
-          const anyDirectHit = summary && (
-            Object.values(summary['4d'] || {}).some(Boolean) ||
-            summary['3d']?.front_exact || summary['3d']?.back_exact ||
-            Object.values(summary['2d'] || {}).some((item) => item?.exact)
-          );
-          return (
-            <details
-              key={`${record.target_date}-${record.dataset_fingerprint || record.generated_at}`}
-              className="rounded-xl border border-slate-800 bg-slate-950/50 p-4"
-            >
-              <summary className="cursor-pointer list-none">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="font-semibold text-slate-100">
-                      {record.target_date || '-'} · {record.target_period || '-'}
-                    </div>
-                    <div className="mt-1 text-[10px] text-slate-500">
-                      basis {record.basis_latest_date || '-'} · {record.basis_latest_result || '----'}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-mono text-lg font-bold text-emerald-400">
-                      {actual?.number || 'MENUNGGU'}
-                    </div>
-                    <div className={
-                      'text-[9px] font-semibold ' +
-                      (!actual ? 'text-amber-300' : anyDirectHit ? 'text-emerald-300' : 'text-slate-500')
-                    }>
-                      {!actual ? 'RESULT BELUM ADA' : anyDirectHit ? 'DIRECT HIT' : 'TIDAK ADA EXACT HIT'}
-                    </div>
-                  </div>
-                </div>
-              </summary>
-
-              <div className="mt-4 space-y-4 text-xs border-t border-slate-800 pt-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
-                  <div>Dibuat: <span className="text-slate-200">{formatSyncTime(record.generated_at)}</span></div>
-                  <div>Engine: <span className="text-slate-200">{record.engine_version || '-'}</span></div>
-                  <div>BBFS6: <span className="font-mono text-emerald-300">{record.bbfs6 || '-'}</span></div>
-                  <div>BBFS5: <span className="font-mono text-emerald-300">{record.bbfs5 || '-'}</span></div>
-                </div>
-
-                <div className="rounded-lg border border-slate-800 p-3 space-y-2">
-                  <div className="text-[10px] uppercase text-slate-500">Quick View Arsip</div>
-                  <div>4D <span className="font-mono text-slate-100">{[four.main, four.alternative, four.reserve, four.single_pair].map(historyNumber).filter(Boolean).join(' · ') || '-'}</span></div>
-                  <div>3D depan <span className="font-mono text-slate-100">{(three.front || []).map(historyNumber).join(' · ') || '-'}</span></div>
-                  <div>3D belakang <span className="font-mono text-slate-100">{(three.back || []).map(historyNumber).join(' · ') || '-'}</span></div>
-                  <div>2D depan <span className="font-mono text-slate-100">{(two.front || []).map(historyNumber).join(' · ') || '-'}</span></div>
-                  <div>2D tengah <span className="font-mono text-slate-100">{(two.middle || []).map(historyNumber).join(' · ') || '-'}</span></div>
-                  <div>2D belakang <span className="font-mono text-slate-100">{(two.back || []).map(historyNumber).join(' · ') || '-'}</span></div>
-                  <div>Kembar <span className="font-mono text-slate-100">{two.kembar?.main || '-'} · {two.kembar?.reserve || '-'}</span></div>
-                </div>
-
-                {actual && audit && (
-                  <div className="rounded-lg border border-slate-800 p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-400">
-                    <div>4D main: <span className="text-slate-200">{audit.previous_4d_main?.exact ? 'EXACT' : audit.previous_4d_main?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
-                    <div>4D alternatif: <span className="text-slate-200">{audit.previous_4d_alternative?.exact ? 'EXACT' : audit.previous_4d_alternative?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
-                    <div>4D cadangan: <span className="text-slate-200">{audit.previous_4d_reserve?.exact ? 'EXACT' : audit.previous_4d_reserve?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
-                    <div>4D single pair: <span className="text-slate-200">{audit.previous_4d_single_pair?.exact ? 'EXACT' : audit.previous_4d_single_pair?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
-                    <div>3D depan: <span className="text-slate-200">{audit['3d_front']?.exact ? 'EXACT' : audit['3d_front']?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
-                    <div>3D belakang: <span className="text-slate-200">{audit['3d_back']?.exact ? 'EXACT' : audit['3d_back']?.permutation ? 'PERMUTATION' : 'MISS'}</span></div>
-                    {['front', 'middle', 'back'].map((slot) => (
-                      <div key={slot}>2D {slot}: <span className="text-slate-200">{audit[`2d_${slot}`]?.exact ? 'EXACT' : audit[`2d_${slot}`]?.reverse ? 'REVERSE' : 'MISS'}</span></div>
-                    ))}
-                    <div>BBFS6: <span className="text-slate-200">{audit.bbfs6?.full_draw_coverage ? 'FULL' : `${audit.bbfs6?.occurrence_coverage?.captured ?? 0}/4`}</span></div>
-                  </div>
-                )}
-              </div>
-            </details>
-          );
-        })}
-
-        {!records.length && (
-          <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-8 text-center text-sm text-slate-500">
-            Indeks histori untuk market ini belum tersedia.
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
 function GeneratorPanel() {
   const {
     marketCode,
@@ -945,12 +857,10 @@ function GeneratorPanel() {
     marketData,
     collectorStatus,
     predictions,
-    predictionHistory,
+    openPredictionHistory,
     lastRefresh,
     dataError,
   } = useApp();
-  const [showHistory, setShowHistory] = useState(false);
-
   const activeData = marketData[marketCode] || [];
   const latest = activeData[0] || {
     tanggal: '-',
@@ -1006,17 +916,9 @@ function GeneratorPanel() {
           prediction={predictions[marketCode]}
           marketCode={marketCode}
           latest={latest}
-          onOpenHistory={() => setShowHistory(true)}
+          onOpenHistory={openPredictionHistory}
         />
       </div>
-      {showHistory && (
-        <PredictionHistoryPanel
-          marketCode={marketCode}
-          setMarketCode={setMarketCode}
-          history={predictionHistory[marketCode]}
-          onClose={() => setShowHistory(false)}
-        />
-      )}
     </div>
   );
 }
@@ -1130,11 +1032,22 @@ function liveDrawState({ isRefreshing, dataError, status, latest, prediction }) 
 
 function LiveDrawPanel() {
   const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError } = useApp();
+  const [liveMarket, setLiveMarket] = useState('HK');
   const [singaporeMode, setSingaporeMode] = useState(() => selectSingaporeMode());
   const [officialResults, setOfficialResults] = useState({ fourD: null, toto: null });
   const [officialResultCheckedAt, setOfficialResultCheckedAt] = useState(null);
+  const [boardState, setBoardState] = useState({
+    board: null,
+    status: 'checking',
+    fetchMode: 'cached_snapshot',
+    error: null,
+    checkedAt: null,
+  });
+  const [boardRefreshNonce, setBoardRefreshNonce] = useState(0);
+  const [hkVerificationState, setHkVerificationState] = useState(null);
 
   useEffect(() => {
+    if (liveMarket !== 'SGP') return undefined;
     let mounted = true;
     let timer;
     const refreshOfficial = async () => {
@@ -1162,14 +1075,101 @@ function LiveDrawPanel() {
       mounted = false;
       window.clearTimeout(timer);
     };
-  }, [singaporeMode]);
+  }, [singaporeMode, liveMarket]);
+
+  useEffect(() => {
+    if (!['HK', 'SDY'].includes(liveMarket)) return undefined;
+    let mounted = true;
+    let timer;
+
+    const refreshBoard = async () => {
+      if (mounted) {
+        setBoardState({
+          board: null,
+          status: 'checking',
+          fetchMode: 'checking_source',
+          error: null,
+          checkedAt: null,
+        });
+      }
+      let cachedSnapshot = null;
+      try {
+        cachedSnapshot = await loadLiveDrawSnapshot();
+      } catch (error) {
+        console.warn('Cached live board unavailable:', error);
+      }
+
+      const cached = cachedSnapshot?.markets?.[liveMarket] || null;
+      const localVerified = liveMarket === 'HK' ? loadLocalHKBoard() : null;
+      const datasetRow = marketData[liveMarket]?.[0] || null;
+      let selectedBoard = localVerified ? attachDatasetValidation(localVerified, datasetRow) : cached ? attachDatasetValidation(cached, datasetRow) : null;
+      let fetchMode = localVerified ? 'device_local_verified_board' : cached ? 'github_cached_snapshot' : 'no_snapshot';
+      let errorMessage = null;
+      let status = cached ? 'cached' : 'unavailable';
+
+      try {
+        const direct = await fetchNativeLiveBoard(liveMarket);
+        if (direct.available && direct.board) {
+          selectedBoard = attachDatasetValidation(direct.board, datasetRow);
+          fetchMode = direct.reason;
+          status = 'ready';
+        } else if (direct.reason === 'web_platform') {
+          fetchMode = cached ? 'web_cached_snapshot' : 'web_snapshot_unavailable';
+        }
+      } catch (error) {
+        errorMessage = error?.message || 'Direct native source gagal';
+        if (liveMarket === 'HK' && /HTTP 403|challenge|verifikasi keamanan/i.test(errorMessage)) setHkVerificationState('CHALLENGE_REQUIRED');
+        status = selectedBoard ? 'cached' : 'unavailable';
+      }
+
+      if (mounted) {
+        setBoardState({
+          board: selectedBoard,
+          status,
+          fetchMode,
+          error: errorMessage,
+          checkedAt: new Date().toISOString(),
+        });
+      }
+    };
+
+    refreshBoard();
+    timer = window.setInterval(refreshBoard, 60000);
+    return () => {
+      mounted = false;
+      window.clearInterval(timer);
+    };
+  }, [
+    liveMarket,
+    boardRefreshNonce,
+    marketData.HK?.[0]?.result_date,
+    marketData.HK?.[0]?.nomor,
+    marketData.SDY?.[0]?.result_date,
+    marketData.SDY?.[0]?.nomor,
+  ]);
 
   const sgpSource = LIVE_DRAW_SOURCES[singaporeMode];
   const sgpOfficialResult = singaporeMode === 'SGP_4D' ? officialResults.fourD : officialResults.toto;
-  const hkRow = marketData.HK?.[0] || null;
   const sgpRow = marketData.SGP?.[0] || null;
-  const sdyRow = marketData.SDY?.[0] || null;
   const checkedLabel = formatSyncTime(lastRefresh);
+  const selectedRow = marketData[liveMarket]?.[0] || null;
+  const selectedSource = LIVE_DRAW_SOURCES[liveMarket];
+  const selectedCollectorState = liveDrawState({
+    isRefreshing,
+    dataError,
+    status: collectorStatus?.markets?.[liveMarket],
+    latest: selectedRow,
+    prediction: predictions[liveMarket],
+  });
+  const verifyHK = async () => {
+    setHkVerificationState('MANUAL_VERIFICATION_OPEN');
+    const result = await openHKManualVerification();
+    setHkVerificationState(result.state);
+    if (result.board) {
+      const datasetRow = marketData.HK?.[0] || null;
+      setBoardState({ board: attachDatasetValidation(result.board, datasetRow), status: 'ready', fetchMode: 'manual_in_app_verified', error: null, checkedAt: new Date().toISOString() });
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -1181,70 +1181,71 @@ function LiveDrawPanel() {
           <div>
             <h3 className="text-lg font-bold text-slate-100">LiveDraw · Broadcast & Verified Results</h3>
             <p className="mt-1 text-xs text-slate-400">
-              Player resmi digunakan bila tersedia. Sumber yang tidak dapat di-embed dibuka melalui in-app browser tanpa proxy atau bypass.
+              Tabel HK dan SDY dirender native dari data angka saja. HTML, iklan, dan script sumber tidak pernah dijalankan di aplikasi.
             </p>
           </div>
         </div>
 
-        <div className="mt-5 flex gap-2 rounded-xl border border-slate-800 bg-slate-950/60 p-1.5">
-          {[
-            ['SGP_4D', 'Singapore 4D'],
-            ['SGP_TOTO', 'Singapore TOTO'],
-          ].map(([mode, label]) => (
-            <button key={mode} onClick={() => setSingaporeMode(mode)} className={`flex-1 rounded-lg px-3 py-2 text-[11px] font-bold transition ${singaporeMode === mode ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}>
-              {label}
+        <div className="mt-5 grid grid-cols-3 gap-2 rounded-xl border border-slate-800 bg-slate-950/60 p-1.5">
+          {['HK', 'SDY', 'SGP'].map((market) => (
+            <button key={market} onClick={() => setLiveMarket(market)} className={`rounded-lg px-3 py-2 text-xs font-black transition ${liveMarket === market ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}>
+              {market}
             </button>
           ))}
         </div>
+
+        {liveMarket === 'SGP' && (
+          <div className="mt-3 flex gap-2 rounded-xl border border-slate-800 bg-slate-950/60 p-1.5">
+            {[
+              ['SGP_4D', 'Singapore 4D'],
+              ['SGP_TOTO', 'Singapore TOTO'],
+            ].map(([mode, label]) => (
+              <button key={mode} onClick={() => setSingaporeMode(mode)} className={`flex-1 rounded-lg px-3 py-2 text-[11px] font-bold transition ${singaporeMode === mode ? 'bg-violet-500 text-white' : 'text-slate-400 hover:text-slate-200'}`}>
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
-      <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
-      <LiveDrawResultBoard
-        title={sgpSource.title + ' Result'}
-        badge="Official · Singapore Pools"
-        result={sgpOfficialResult}
-        type={singaporeMode}
-        note="Hasil official ditampilkan terpisah dari composite market dataset AdiPredictor."
-      />
-      <LiveDrawResultBoard
-        title="SGP Composite Market Result"
-        badge={SGP_COMPOSITE_SOURCE_LABEL}
-        result={sgpRow}
-        note="Composite 4-digit ini adalah basis dataset prediction SGP dan bukan official Singapore Pools 4D/TOTO result."
-      />
-
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <div className="space-y-3">
-          <LiveDrawPlayer source={LIVE_DRAW_SOURCES.HK} lastChecked={checkedLabel} />
+      {liveMarket === 'SGP' ? (
+        <>
+          <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
+          {singaporeMode === 'SGP_4D'
+            ? <LiveDrawFourDigitBoard result={sgpOfficialResult} />
+            : <TotoBoard result={sgpOfficialResult} />}
           <LiveDrawResultBoard
-            title="HK Market Result"
-            badge="HongkongPools Market Source"
-            result={hkRow}
-            note={LIVE_DRAW_SOURCES.HK.note}
+            title="SGP Composite Market Result"
+            badge={SGP_COMPOSITE_SOURCE_LABEL}
+            result={sgpRow}
+            note="Composite 4-digit ini adalah basis dataset prediction SGP dan bukan official Singapore Pools 4D/TOTO result."
           />
-        </div>
-        <div className="space-y-3">
-          <LiveDrawPlayer source={LIVE_DRAW_SOURCES.SDY} lastChecked={checkedLabel} />
-          <LiveDrawResultBoard
-            title="SDY Verified Result"
-            badge="Market Source · Cross-checked result"
-            result={sdyRow}
-            note={LIVE_DRAW_SOURCES.SDY.note}
-          />
-        </div>
-      </div>
+        </>
+      ) : (
+        <LiveDrawSixDigitBoard
+          market={liveMarket}
+          board={boardState.board?.market === liveMarket ? boardState.board : null}
+          sourceLabel={selectedSource.sourceLabel}
+          sourceUrl={selectedSource.pageUrl}
+          fetchMode={boardState.fetchMode}
+          status={boardState.status}
+          error={boardState.error}
+          lastRefresh={formatSyncTime(boardState.checkedAt)}
+          onRefresh={() => setBoardRefreshNonce((value) => value + 1)}
+          onOpenSource={() => openLivePage(selectedSource.pageUrl)}
+          onVerifySource={liveMarket === 'HK' ? verifyHK : null}
+          verificationState={liveMarket === 'HK' ? hkVerificationState : null}
+        />
+      )}
 
       <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4">
-        <div className="grid gap-2 text-[11px] sm:grid-cols-3">
-          {['HK', 'SGP', 'SDY'].map((market) => {
-            const row = marketData[market]?.[0] || null;
-            const state = liveDrawState({ isRefreshing, dataError, status: collectorStatus?.markets?.[market], latest: row, prediction: predictions[market] });
-            return <div key={market} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/50 p-3"><span className="font-bold text-slate-200">{market} collector</span><span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold ${state.className}`}>{state.label}</span></div>;
-          })}
+        <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/50 p-3 text-[11px]">
+          <span className="font-bold text-slate-200">{liveMarket} collector</span>
+          <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold ${selectedCollectorState.className}`}>{selectedCollectorState.label}</span>
         </div>
         <div className="mt-3 grid gap-2 text-[10px] text-slate-500 sm:grid-cols-3">
-          <span>Data collected: {formatSyncTime(hkRow?.collected_at || collectorStatus?.collected_at)}</span>
-          <span>Prediction generated: {formatSyncTime(predictions.HK?.generated_at)}</span>
+          <span>Data collected: {formatSyncTime(selectedRow?.collected_at || collectorStatus?.collected_at)}</span>
+          <span>Prediction generated: {formatSyncTime(predictions[liveMarket]?.generated_at)}</span>
           <span>App last checked: {checkedLabel}</span>
         </div>
       </section>
@@ -1398,7 +1399,7 @@ function Footer() {
 }
 
 function MobileNavigation() {
-  const { activeTab, setActiveTab } = useApp();
+  const { activeTab, navigateToTab } = useApp();
   const tabs = [
     { id: 'generator', label: 'Analisis', icon: Sparkles },
     { id: 'results', label: 'Data', icon: Database },
@@ -1415,7 +1416,7 @@ function MobileNavigation() {
         return (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => navigateToTab(tab.id)}
             className={
               'flex-1 min-w-0 flex flex-col items-center gap-1 px-1 py-1.5 rounded-lg text-[9px] ' +
               (active ? 'text-emerald-400 font-bold' : 'text-slate-400')
@@ -1439,19 +1440,37 @@ export default function App() {
 }
 
 function MainContent() {
-  const { activeTab } = useApp();
+  const {
+    activeTab,
+    internalPage,
+    marketCode,
+    setMarketCode,
+    predictionHistory,
+    closePredictionHistory,
+  } = useApp();
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col">
       <Navbar />
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
-        {activeTab === 'generator' && <GeneratorPanel />}
-        {activeTab === 'results' && <ResultsPanel />}
-        {activeTab === 'livedraw' && <LiveDrawPanel />}
-        {activeTab === 'analytics' && <AnalyticsPanel />}
-        {activeTab === 'dreams' && <DreamBookPanel />}
+        {internalPage === 'prediction-history' ? (
+          <PredictionHistoryPage
+            marketCode={marketCode}
+            setMarketCode={setMarketCode}
+            history={predictionHistory[marketCode]}
+            onBack={closePredictionHistory}
+          />
+        ) : (
+          <>
+            {activeTab === 'generator' && <GeneratorPanel />}
+            {activeTab === 'results' && <ResultsPanel />}
+            {activeTab === 'livedraw' && <LiveDrawPanel />}
+            {activeTab === 'analytics' && <AnalyticsPanel />}
+            {activeTab === 'dreams' && <DreamBookPanel />}
+          </>
+        )}
       </main>
-      <MobileNavigation />
+      {internalPage === 'main' && <MobileNavigation />}
       <Footer />
       <ToastNotification />
     </div>

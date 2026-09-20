@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test:live": "node --test tests/test_live_draw_config.mjs",
+    "test:live": "node --test tests/test_live_draw_config.mjs tests/test_live_draw_service.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.3",
     "@capacitor/browser": "^6.0.6",
     "@capacitor/cli": "^6.0.0",
     "@capacitor/core": "^6.0.0",

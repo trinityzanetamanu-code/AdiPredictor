@@ -142,7 +142,14 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+# Python test/runtime caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
 # Capacitor Android is generated in CI; signing material must never be tracked.
 android/
+!scripts/android/
+!scripts/android/*.java
 *.jks
 *.keystore

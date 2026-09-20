@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "retrieved_at": "2026-09-20T22:03:49+07:00",
+  "markets": {
+    "SDY": {
+      "market": "SDY",
+      "source": "SydneyPoolsToday Market Source",
+      "source_url": "https://www.sydneypoolstoday.com/live.html",
+      "draw_date": "2026-09-20",
+      "first": "249349",
+      "second": "123625",
+      "third": "371735",
+      "starter": [
+        "708580"
+      ],
+      "consolation": [
+        "222673"
+      ],
+      "full_first_prize_6d": "249349",
+      "derived_4d": "9349",
+      "dataset_4d": "9349",
+      "matches_dataset": true,
+      "verification": "matches_prediction_dataset",
+      "retrieved_at": "2026-09-20T22:03:49+07:00"
+    }
+  }
+}

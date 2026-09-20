@@ -1,0 +1,18 @@
+import React from 'react';
+
+function FourDigits({ number, featured = false }) {
+  const value = /^\d{4}$/.test(String(number || '')) ? String(number) : '----';
+  return <div className="flex justify-center gap-1" aria-label={value}>{value.split('').map((digit, index) => <span key={`${digit}-${index}`} className={`${featured ? 'h-12 w-10 text-xl text-emerald-300 border-emerald-500/30 bg-emerald-500/10' : 'h-8 w-7 text-sm text-slate-100 border-slate-700 bg-slate-900'} flex items-center justify-center rounded-lg border font-mono font-black`}>{digit}</span>)}</div>;
+}
+
+function Grid({ title, numbers }) {
+  return <div className="rounded-xl border border-slate-800 bg-slate-950/45 p-3"><div className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">{title}</div><div className="grid grid-cols-2 gap-2">{(numbers || []).map((number, index) => <div key={`${number}-${index}`} className="min-w-0 rounded-lg border border-slate-800/80 p-1.5"><FourDigits number={number} /></div>)}</div></div>;
+}
+
+export function TotoBoard({ result }) {
+  return <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4 sm:p-5"><div className="flex items-start justify-between gap-3"><div><h4 className="font-black text-slate-100">SINGAPORE TOTO OFFICIAL</h4><p className="mt-1 text-[11px] text-slate-400">Tanggal undian {result?.draw_date || '-'} · Nomor undian {result?.draw_no || '-'}</p></div><span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold text-emerald-300">Official · Singapore Pools</span></div><div className="mt-5"><div className="mb-2 text-[10px] font-bold uppercase text-slate-500">Nomor pemenang</div><div className="flex flex-wrap gap-2">{(result?.winning_numbers || []).map((number) => <span key={number} className="flex h-10 w-10 items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/10 font-mono font-black text-violet-200">{number}</span>)}</div></div><div className="mt-4 inline-block rounded-xl border border-amber-500/25 bg-amber-500/10 p-3"><div className="text-[9px] font-bold uppercase text-amber-300">Nomor tambahan</div><div className="mt-1 font-mono text-2xl font-black text-amber-200">{result?.additional_number || '--'}</div></div></section>;
+}
+
+export default function LiveDrawFourDigitBoard({ result }) {
+  return <section className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90"><div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-800 bg-gradient-to-r from-emerald-500/10 to-slate-900 p-4 sm:p-5"><div><h4 className="font-black text-slate-100">SINGAPORE 4D OFFICIAL</h4><p className="mt-1 text-[11px] text-slate-400">Tanggal undian {result?.draw_date || '-'} · Nomor undian {result?.draw_no || '-'}</p></div><span className="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold text-emerald-300">Official · Singapore Pools</span></div><div className="space-y-4 p-4 sm:p-5"><div className="rounded-xl border border-emerald-500/20 bg-slate-950/45 p-3 text-center"><div className="mb-2 text-[10px] font-bold uppercase text-slate-500">Hadiah 1</div><FourDigits number={result?.first} featured /></div><div className="grid grid-cols-2 gap-3">{[['Hadiah 2',result?.second],['Hadiah 3',result?.third]].map(([label,value]) => <div key={label} className="rounded-xl border border-slate-800 bg-slate-950/45 p-3 text-center"><div className="mb-2 text-[10px] font-bold uppercase text-slate-500">{label}</div><FourDigits number={value} /></div>)}</div><div className="grid gap-3 sm:grid-cols-2"><Grid title="Starter" numbers={result?.starter} /><Grid title="Consolation" numbers={result?.consolation} /></div></div></section>;
+}

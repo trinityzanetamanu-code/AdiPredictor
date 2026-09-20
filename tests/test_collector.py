@@ -1,10 +1,12 @@
 import json
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 from scripts.collector import (
     parse_date_result_table,
     parse_indonesian_long_date_result4,
     parse_hk_six_digit_last4,
+    parse_hk_dual_market_table,
     parse_sgp_official_4d,
     parse_official_singapore_4d_snapshot,
     parse_official_singapore_toto_snapshot,
@@ -13,6 +15,10 @@ from scripts.collector import (
     resolve_period_from_rule,
     verify_results,
     ParsedResult,
+    VerifiedResult,
+    expected_hk_draw_date,
+    qualify_hk_source,
+    merge_records,
 )
 
 
@@ -75,6 +81,65 @@ def test_hk_six_digit_last4():
     results = parse_hk_six_digit_last4(html, "HK", source("hk_six_digit_last4"), 2026)
     assert results[-1].result_date == date(2026, 9, 17)
     assert results[-1].number == "9059"
+
+
+def test_hk_dual_market_parser_selects_hk_pools_not_lotto():
+    rows = [
+        ("12-09-2026", "0040", "9001"), ("13-09-2026", "9298", "9002"),
+        ("14-09-2026", "4332", "9003"), ("15-09-2026", "0379", "9004"),
+        ("16-09-2026", "5065", "9005"), ("17-09-2026", "9059", "9006"),
+        ("18-09-2026", "3725", "9007"), ("19-09-2026", "0860", "9008"),
+        ("20-09-2026", "2036", "7401"),
+    ]
+    html = '<table><tr><th>Tanggal</th><th>HK Pools</th><th>HK Lotto</th></tr>' + ''.join(
+        f'<tr><td>{day}</td><td>{pool}</td><td>{lotto}</td></tr>' for day, pool, lotto in rows
+    ) + '</table>'
+    cfg = {**source("hk_dual_market_table"), "market_column": "HK Pools", "reject_columns": ["HK Lotto"]}
+    parsed = parse_hk_dual_market_table(html, "HK", cfg, 2026)
+    assert parsed[-1].number == "2036"
+    assert all(item.number != "7401" for item in parsed)
+
+
+def test_hk_source_identity_requires_seven_exact_matches():
+    fingerprint = {f"2026-09-{day:02d}": value for day, value in zip(range(12, 20), ["0040", "9298", "4332", "0379", "5065", "9059", "3725", "0860"])}
+    items = [ParsedResult("HK", date.fromisoformat(day), value, "x", "x", "https://x") for day, value in fingerprint.items()]
+    cfg = {"identity_fingerprint": fingerprint, "qualified_primary_min_history_matches": 7}
+    assert qualify_hk_source(items, cfg)["market_identity_match"] is True
+    items[-1].number = "9999"
+    assert qualify_hk_source(items, cfg)["market_identity_match"] is False
+
+
+def test_hk_draw_date_uses_market_timezone_near_midnight():
+    jakarta = ZoneInfo("Asia/Jakarta")
+    instant = datetime(2026, 9, 20, 23, 50, tzinfo=jakarta)
+    assert expected_hk_draw_date(instant) == date(2026, 9, 20)
+    assert expected_hk_draw_date(instant.astimezone(ZoneInfo("Asia/Hong_Kong"))) == date(2026, 9, 20)
+    assert expected_hk_draw_date(instant.astimezone(ZoneInfo("Asia/Jayapura"))) == date(2026, 9, 20)
+
+
+def test_hk_qualified_primary_provisional_confirmation_and_conflict():
+    cfg = {"verification_mode": "crosscheck_or_qualified_primary", "sources": [
+        {"id": "fast", "priority": 1, "enabled": True}, {"id": "slow", "priority": 2, "enabled": True},
+    ]}
+    fast = ParsedResult("HK", date(2026, 9, 20), "2036", "fast", "Fast", "https://fast")
+    result = verify_results(cfg, {"fast": [fast]})[-1]
+    assert result.verification == "provisional_primary"
+    slow = ParsedResult("HK", date(2026, 9, 20), "2036", "slow", "Slow", "https://slow")
+    assert verify_results(cfg, {"fast": [fast], "slow": [slow]})[-1].verification == "confirmed_2_sources"
+    slow.number = "9999"
+    with __import__('pytest').raises(Exception):
+        verify_results(cfg, {"fast": [fast], "slow": [slow]})
+
+
+def test_hk_duplicate_polling_is_idempotent(tmp_path, monkeypatch):
+    monkeypatch.setattr("scripts.collector.DATA_DIR", tmp_path)
+    item = ParsedResult("HK", date(2026, 9, 20), "2036", "fast", "Fast", "https://fast")
+    verified = [VerifiedResult(item, "provisional_primary", 1, ["fast"])]
+    rows, new_rows, _ = merge_records("HK", verified, "2026-09-20T23:05:00+07:00")
+    (tmp_path / "hk.json").write_text(json.dumps(rows), encoding="utf-8")
+    rows_again, new_again, _ = merge_records("HK", verified, "2026-09-20T23:15:00+07:00")
+    assert len(rows_again) == 1
+    assert new_rows and new_again == []
 
 
 def test_sgp_official_parser():

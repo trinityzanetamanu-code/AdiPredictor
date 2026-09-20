@@ -10,6 +10,7 @@ on:
       - 'fix/**'
     paths:
       - 'scripts/collector.py'
+      - 'scripts/live_board_collector.py'
       - 'scripts/prediction_engine.py'
       - 'scripts/publish_generated_data.sh'
       - 'config/collector_sources.json'
@@ -20,6 +21,7 @@ on:
       - main
     paths:
       - 'scripts/collector.py'
+      - 'scripts/live_board_collector.py'
       - 'scripts/prediction_engine.py'
       - 'scripts/publish_generated_data.sh'
       - 'config/collector_sources.json'

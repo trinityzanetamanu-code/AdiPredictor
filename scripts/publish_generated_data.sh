@@ -31,6 +31,7 @@ for attempt in $(seq 1 "$max_attempts"); do
 
   git add public/data/hk.json public/data/sgp.json public/data/sdy.json
   git add public/data/singapore-official.json
+  git add public/data/live-draw.json
   git add public/data/collector-status.json public/predictions
 
   if git diff --cached --quiet; then
