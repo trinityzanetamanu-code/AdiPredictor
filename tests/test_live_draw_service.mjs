@@ -57,6 +57,7 @@ test('history is a dedicated internal page and not inline under GeneratorPanel',
   const historyPage = await readFile(new URL('../src/components/PredictionHistoryPage.jsx', import.meta.url), 'utf8');
   assert.match(app, /internalPage === 'prediction-history'/);
   assert.match(app, /window\.history\.pushState/);
+  assert.match(app, /window\.history\.state\?\.adipredictorPage/);
   assert.match(app, /window\.addEventListener\('popstate'/);
   assert.doesNotMatch(app, /showHistory/);
   assert.doesNotMatch(app, /function PredictionHistoryPanel/);

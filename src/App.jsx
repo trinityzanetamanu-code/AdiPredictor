@@ -265,7 +265,10 @@ export function AppProvider({ children }) {
 
   const closePredictionHistory = () => {
     setActiveTab('generator');
-    if (window.location.hash === '#prediction-history' && window.history.length > 1) {
+    if (
+      window.location.hash === '#prediction-history' &&
+      window.history.state?.adipredictorPage === 'prediction-history'
+    ) {
       window.history.back();
     } else {
       window.history.replaceState({}, '', window.location.pathname + window.location.search);
@@ -1093,7 +1096,15 @@ function LiveDrawPanel() {
     let timer;
 
     const refreshBoard = async () => {
-      if (mounted) setBoardState((current) => ({ ...current, status: current.board ? current.status : 'checking', error: null }));
+      if (mounted) {
+        setBoardState({
+          board: null,
+          status: 'checking',
+          fetchMode: 'checking_source',
+          error: null,
+          checkedAt: null,
+        });
+      }
       let cachedSnapshot = null;
       try {
         cachedSnapshot = await loadLiveDrawSnapshot();
@@ -1219,7 +1230,7 @@ function LiveDrawPanel() {
       ) : (
         <LiveDrawSixDigitBoard
           market={liveMarket}
-          board={boardState.board}
+          board={boardState.board?.market === liveMarket ? boardState.board : null}
           sourceLabel={selectedSource.sourceLabel}
           sourceUrl={selectedSource.pageUrl}
           fetchMode={boardState.fetchMode}
