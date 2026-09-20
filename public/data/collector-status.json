@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-20T11:46:30+07:00",
+  "collected_at": "2026-09-20T16:41:06+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -97,7 +97,7 @@
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -108,40 +108,49 @@
       "parsed_counts": {
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 233,
-        "datatogel_sdy": 262,
-        "livenomor_sdy": 262
+        "datatogel_sdy": 263,
+        "livenomor_sdy": 263
       },
-      "verified_count": 262,
-      "new_count": 0,
+      "verified_count": 263,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-10",
+          "number": "1671",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-09-20",
+          "number": "9349",
+          "verification": "confirmed_3_sources"
+        }
+      ],
       "latest": {
-        "id": 20260919,
-        "tanggal": "19 Sep 2026",
-        "periode": "SD-3549",
-        "nomor": "8748",
-        "result_date": "2026-09-19",
+        "id": 20260920,
+        "tanggal": "20 Sep 2026",
+        "periode": "SD-3550",
+        "nomor": "9349",
+        "result_date": "2026-09-20",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-09-19T23:42:48+07:00",
-        "verification": "confirmed_4_sources",
-        "confirmations": 4
+        "collected_at": "2026-09-20T16:41:06+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "latest_verified": {
-        "date": "2026-09-19",
-        "number": "8748",
-        "verification": "confirmed_4_sources",
+        "date": "2026-09-20",
+        "number": "9349",
+        "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ]
