@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-21T01:18:53+07:00",
+  "collected_at": "2026-09-21T06:46:44+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -10,13 +10,11 @@
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
-        "livenomor_hk",
-        "livedrawhk_crosscheck"
+        "livenomor_hk"
       ],
       "parsed_counts": {
         "nexipools_hk": 30,
-        "livenomor_hk": 263,
-        "livedrawhk_crosscheck": 15
+        "livenomor_hk": 263
       },
       "verified_count": 263,
       "new_count": 0,
@@ -44,14 +42,18 @@
       "latest_verified": {
         "date": "2026-09-20",
         "number": "2036",
-        "verification": "confirmed_3_sources",
+        "verification": "confirmed_2_sources",
         "source_ids": [
           "nexipools_hk",
-          "livenomor_hk",
-          "livedrawhk_crosscheck"
+          "livenomor_hk"
         ]
       },
-      "source_errors": [],
+      "source_errors": [
+        {
+          "source": "livedrawhk_crosscheck",
+          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5651 bytes"
+        }
+      ],
       "source_health": {
         "nexipools_hk": {
           "market_identity_match": true,
@@ -80,29 +82,15 @@
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
-        },
-        "livedrawhk_crosscheck": {
-          "market_identity_match": true,
-          "historical_sequence_matches": 8,
-          "historical_sequence_compared": 8,
-          "historical_conflicts": {},
-          "latest_date": "2026-09-20",
-          "latest_result": "2036",
-          "source_first_seen_at": "2026-09-21T01:05:26+07:00",
-          "expected_draw_date": "2026-09-20",
-          "latency_minutes": 125,
-          "source_stale": false,
-          "reason": "FRESH",
-          "health": "HEALTHY"
         }
       },
       "last_successful_data_update": "2026-09-21T01:05:26+07:00",
-      "last_source_check": "2026-09-21T01:18:53+07:00",
+      "last_source_check": "2026-09-21T06:46:44+07:00",
       "latest_source_draw_date": "2026-09-20"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -117,15 +105,9 @@
         "livenomor_sdy": 263
       },
       "verified_count": 263,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-20",
-          "number": "9349",
-          "verification": "confirmed_4_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260920,
         "tanggal": "20 Sep 2026",
@@ -160,7 +142,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-21T01:13:14+07:00",
-      "last_source_check": "2026-09-21T01:13:14+07:00",
+      "last_source_check": "2026-09-21T06:46:44+07:00",
       "latest_source_draw_date": "2026-09-20"
     },
     "SGP": {
@@ -209,7 +191,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-20T20:00:50+07:00",
-      "last_source_check": "2026-09-21T01:14:40+07:00",
+      "last_source_check": "2026-09-21T06:46:44+07:00",
       "latest_source_draw_date": "2026-09-20"
     }
   }
