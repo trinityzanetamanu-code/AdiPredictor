@@ -122,6 +122,17 @@ export async function loadOfficialTotoResult() {
   return data?.official_toto || null;
 }
 
+export async function loadLiveDrawSnapshot() {
+  const data = await remoteFirst(
+    'data/live-draw.json',
+    './data/live-draw.json',
+    true,
+  );
+  return data?.markets
+    ? data
+    : { schema_version: 1, retrieved_at: null, markets: {} };
+}
+
 
 export async function loadTafsir() {
   const data = await remoteFirst(

@@ -14,6 +14,11 @@ from zoneinfo import ZoneInfo
 import requests
 from bs4 import BeautifulSoup
 
+try:
+    from scripts.live_board_collector import collect_live_boards
+except ImportError:  # direct execution: python scripts/collector.py
+    from live_board_collector import collect_live_boards
+
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config" / "collector_sources.json"
 DATA_DIR = ROOT / "public" / "data"
@@ -891,6 +896,12 @@ def main() -> int:
 
     results = []
     failures = []
+    live_board = collect_live_boards(markets, collected_at)
+    print(
+        f"[LIVE-BOARD] {live_board['status']} "
+        f"markets={','.join(live_board['markets']) or '-'} "
+        f"warnings={len(live_board['errors'])}"
+    )
     if "SGP" in markets:
         official = collect_official_singapore(collected_at)
         print(

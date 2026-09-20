@@ -3,6 +3,7 @@ export const PLAYER_MODES = Object.freeze({
   IFRAME: 'IFRAME',
   OFFICIAL_PAGE: 'OFFICIAL_PAGE',
   RESULT_ONLY: 'RESULT_ONLY',
+  NATIVE_BOARD: 'NATIVE_BOARD',
 });
 
 export const PLAYER_STATES = Object.freeze({
@@ -64,21 +65,23 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     title: 'HK Market Live',
     sourceLabel: 'HongkongPools Market Source',
     official: false,
-    mode: PLAYER_MODES.OFFICIAL_PAGE,
+    mode: PLAYER_MODES.NATIVE_BOARD,
     pageUrl: 'https://www.hongkongpools.com/live',
+    fallbackUrl: 'https://www.hongkongpools.com/live.html',
     schedule: null,
     note: 'HKJC Mark Six is a different official Hong Kong lottery and is not the dataset used by this prediction market.',
   },
   SDY: {
     id: 'SDY',
     market: 'SDY',
-    title: 'SDY Live Result Monitor',
-    sourceLabel: 'Market Source · Cross-checked result',
+    title: 'Sydney Market Live',
+    sourceLabel: 'SydneyPoolsToday Market Source',
     official: false,
-    mode: PLAYER_MODES.RESULT_ONLY,
-    pageUrl: null,
+    mode: PLAYER_MODES.NATIVE_BOARD,
+    pageUrl: 'https://www.sydneypoolstoday.com/live.html',
+    dataUrl: 'https://www.sydneypoolstoday.com/getLiveContent',
     schedule: null,
-    note: 'No public embeddable live broadcast matching the configured SDY market source has been verified.',
+    note: 'Data tabel diparsing sebagai teks/gambar digit dan dirender native; script serta iklan sumber tidak dijalankan.',
   },
 });
 
