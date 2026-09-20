@@ -141,3 +141,8 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Capacitor Android is generated in CI; signing material must never be tracked.
+android/
+*.jks
+*.keystore

@@ -20,7 +20,6 @@ import {
   CheckCircle2,
   Radio,
   History,
-  ExternalLink,
   X,
 } from 'lucide-react';
 import {
@@ -28,9 +27,14 @@ import {
   loadMarketData,
   loadPrediction,
   loadPredictionHistory,
+  loadOfficial4DResult,
+  loadOfficialTotoResult,
   loadTafsir,
   predictionAssetUrl,
 } from './dataClient';
+import LiveDrawPlayer from './components/LiveDrawPlayer';
+import LiveDrawResultBoard from './components/LiveDrawResultBoard';
+import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, selectSingaporeMode } from './liveDrawConfig';
 
 const AppContext = createContext();
 
@@ -1126,6 +1130,46 @@ function liveDrawState({ isRefreshing, dataError, status, latest, prediction }) 
 
 function LiveDrawPanel() {
   const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError } = useApp();
+  const [singaporeMode, setSingaporeMode] = useState(() => selectSingaporeMode());
+  const [officialResults, setOfficialResults] = useState({ fourD: null, toto: null });
+  const [officialResultCheckedAt, setOfficialResultCheckedAt] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    let timer;
+    const refreshOfficial = async () => {
+      try {
+        const [fourD, toto] = await Promise.all([loadOfficial4DResult(), loadOfficialTotoResult()]);
+        if (mounted) {
+          setOfficialResults({ fourD, toto });
+          setOfficialResultCheckedAt(new Date().toISOString());
+        }
+      } catch (error) {
+        console.warn('Official Singapore result metadata unavailable:', error);
+      }
+    };
+    const scheduleNext = () => {
+      const source = LIVE_DRAW_SOURCES[singaporeMode];
+      const live = calculateLiveState(source.schedule).status === 'LIVE_WINDOW';
+      timer = window.setTimeout(async () => {
+        await refreshOfficial();
+        if (mounted) scheduleNext();
+      }, live ? 15000 : 60000);
+    };
+    refreshOfficial();
+    scheduleNext();
+    return () => {
+      mounted = false;
+      window.clearTimeout(timer);
+    };
+  }, [singaporeMode]);
+
+  const sgpSource = LIVE_DRAW_SOURCES[singaporeMode];
+  const sgpOfficialResult = singaporeMode === 'SGP_4D' ? officialResults.fourD : officialResults.toto;
+  const hkRow = marketData.HK?.[0] || null;
+  const sgpRow = marketData.SGP?.[0] || null;
+  const sdyRow = marketData.SDY?.[0] || null;
+  const checkedLabel = formatSyncTime(lastRefresh);
 
   return (
     <div className="space-y-5">
@@ -1135,66 +1179,73 @@ function LiveDrawPanel() {
             <Radio className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-100">LiveDraw · Verified Result Monitor</h3>
+            <h3 className="text-lg font-bold text-slate-100">LiveDraw · Broadcast & Verified Results</h3>
             <p className="mt-1 text-xs text-slate-400">
-              Monitor ini membaca hasil collector nyata. Tidak ada video atau angka live buatan.
+              Player resmi digunakan bila tersedia. Sumber yang tidak dapat di-embed dibuka melalui in-app browser tanpa proxy atau bypass.
             </p>
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="mt-5 flex gap-2 rounded-xl border border-slate-800 bg-slate-950/60 p-1.5">
+          {[
+            ['SGP_4D', 'Singapore 4D'],
+            ['SGP_TOTO', 'Singapore TOTO'],
+          ].map(([mode, label]) => (
+            <button key={mode} onClick={() => setSingaporeMode(mode)} className={`flex-1 rounded-lg px-3 py-2 text-[11px] font-bold transition ${singaporeMode === mode ? 'bg-emerald-500 text-slate-950' : 'text-slate-400 hover:text-slate-200'}`}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
+      <LiveDrawResultBoard
+        title={sgpSource.title + ' Result'}
+        badge="Official · Singapore Pools"
+        result={sgpOfficialResult}
+        type={singaporeMode}
+        note="Hasil official ditampilkan terpisah dari composite market dataset AdiPredictor."
+      />
+      <LiveDrawResultBoard
+        title="SGP Composite Market Result"
+        badge={SGP_COMPOSITE_SOURCE_LABEL}
+        result={sgpRow}
+        note="Composite 4-digit ini adalah basis dataset prediction SGP dan bukan official Singapore Pools 4D/TOTO result."
+      />
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="space-y-3">
+          <LiveDrawPlayer source={LIVE_DRAW_SOURCES.HK} lastChecked={checkedLabel} />
+          <LiveDrawResultBoard
+            title="HK Market Result"
+            badge="HongkongPools Market Source"
+            result={hkRow}
+            note={LIVE_DRAW_SOURCES.HK.note}
+          />
+        </div>
+        <div className="space-y-3">
+          <LiveDrawPlayer source={LIVE_DRAW_SOURCES.SDY} lastChecked={checkedLabel} />
+          <LiveDrawResultBoard
+            title="SDY Verified Result"
+            badge="Market Source · Cross-checked result"
+            result={sdyRow}
+            note={LIVE_DRAW_SOURCES.SDY.note}
+          />
+        </div>
+      </div>
+
+      <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-4">
+        <div className="grid gap-2 text-[11px] sm:grid-cols-3">
           {['HK', 'SGP', 'SDY'].map((market) => {
             const row = marketData[market]?.[0] || null;
-            const status = collectorStatus?.markets?.[market] || null;
-            const state = liveDrawState({ isRefreshing, dataError, status, latest: row, prediction: predictions[market] });
-            return (
-              <article key={market} className="rounded-2xl border border-slate-800 bg-slate-950/50 p-5 space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-500">Market</div>
-                    <div className="text-xl font-black text-slate-100">{market}</div>
-                  </div>
-                  <span className={`rounded-full border px-2.5 py-1 text-[9px] font-bold ${state.className}`}>
-                    {state.label}
-                  </span>
-                </div>
-
-                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 py-4 text-center">
-                  <div className="text-[10px] uppercase text-slate-500">Latest Result</div>
-                  <div className="mt-1 font-mono text-3xl font-black text-emerald-400">{row?.nomor || '----'}</div>
-                </div>
-
-                <dl className="space-y-2.5 text-xs">
-                  {[
-                    ['Period', row?.periode || '-'],
-                    ['Result date', row?.result_date || row?.tanggal || '-'],
-                    ['Verification', verificationLabel(row?.verification)],
-                    ['Source', row?.source_name || '-'],
-                    ['Collector updated', formatSyncTime(row?.collected_at || collectorStatus?.collected_at)],
-                    ['App last checked', formatSyncTime(lastRefresh)],
-                    ['Auto refresh', 'Aktif · 60 detik'],
-                  ].map(([label, value]) => (
-                    <div key={label} className="flex items-start justify-between gap-3">
-                      <dt className="text-slate-500">{label}</dt>
-                      <dd className="text-right text-slate-200 font-medium">{value}</dd>
-                    </div>
-                  ))}
-                </dl>
-
-                {row?.source_url && (
-                  <a
-                    href={row.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2.5 text-xs font-semibold text-slate-200"
-                  >
-                    Buka Sumber Live
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </article>
-            );
+            const state = liveDrawState({ isRefreshing, dataError, status: collectorStatus?.markets?.[market], latest: row, prediction: predictions[market] });
+            return <div key={market} className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/50 p-3"><span className="font-bold text-slate-200">{market} collector</span><span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold ${state.className}`}>{state.label}</span></div>;
           })}
+        </div>
+        <div className="mt-3 grid gap-2 text-[10px] text-slate-500 sm:grid-cols-3">
+          <span>Data collected: {formatSyncTime(hkRow?.collected_at || collectorStatus?.collected_at)}</span>
+          <span>Prediction generated: {formatSyncTime(predictions.HK?.generated_at)}</span>
+          <span>App last checked: {checkedLabel}</span>
         </div>
       </section>
     </div>

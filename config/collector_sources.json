@@ -76,9 +76,10 @@
           "id": "royaltoto_identical_98toto",
           "name": "98TOTO Singapore Market",
           "url": "https://98toto.info/pasaran.html",
-          "parser": "date_result_table",
-          "enabled": true,
-          "priority": 10
+      "parser": "date_result_table",
+      "enabled": false,
+      "priority": 10,
+      "note": "Disabled 2026-09-20: public page is stale at January 2025 and the current parser returns no usable 2026 results. The two remaining independent SGP sources still satisfy min_confirmations=2."
         },
         {
           "id": "paitosgplengkap",

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "channel": "stable",
+  "application_id": "com.adipredictor.app",
+  "version_name": null,
+  "version_code": null,
+  "certificate_sha256": null,
+  "expected_certificate_sha256": null,
+  "release_signing_runtime_verified": false,
+  "update_channel_ready": false,
+  "legacy_signing_key_recoverable": false,
+  "one_time_reinstall_required": true,
+  "artifact_name": null,
+  "build_date": null,
+  "status": "WAITING_FOR_STABLE_RELEASE_SIGNING"
+}

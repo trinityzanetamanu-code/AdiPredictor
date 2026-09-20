@@ -395,22 +395,55 @@ def visual_backtests(history):
     }
 
 
+def visual_only_edge(history):
+    hits = trials = 0
+    for i in range(MINIMUM_TRAINING_RECORDS, len(history)):
+        actual, previous = digits_of(history[i]), digits_of(history[i - 1])
+        for target in range(4):
+            for source in (target - 1, target + 1):
+                if 0 <= source < 4:
+                    trials += 1
+                    hits += actual[target] == previous[source]
+    interval = wilson_interval(hits, trials)
+    return trials >= 30 and interval[0] > .10
+
+
 def model_p5(history, details=False):
-    fallback, latest = position_frequency(history[-180:]), digits_of(history[-1]); matrix = []
-    for target in range(4):
-        hits, trials = [.5] * 10, [1.] * 10
-        neighbors = [p for p in (target - 1, target + 1) if 0 <= p < 4]
-        for i in range(1, len(history)):
-            before, after = digits_of(history[i-1]), digits_of(history[i])
-            for source in neighbors:
-                d = before[source]; trials[d] += 1; hits[d] += after[target] == d
-        bumps = [0.] * 10
-        for source in neighbors: bumps[latest[source]] += .06
-        matrix.append([.64 * fallback[target][d] + .30 * hits[d] / trials[d] + bumps[d] for d in range(10)])
-    matrix = normalize_matrix(matrix)
+    fallback = normalize_matrix(position_frequency(history[-180:]))
+    tests = visual_backtests(history) if details else None
+    edge_confirmed = tests["visual_predictive_edge_confirmed"] if tests else visual_only_edge(history)
+
+    # Locked P5 gate: an unconfirmed visual signal cannot change any P5 rank.
+    # In that case P5 is the positional fallback model, without a transition
+    # term and without the former latest-neighbour bump.
+    if not edge_confirmed:
+        matrix = fallback
+        p5_mode = "fallback"
+    else:
+        latest = digits_of(history[-1]); matrix = []
+        for target in range(4):
+            hits, trials = [.5] * 10, [1.] * 10
+            neighbors = [p for p in (target - 1, target + 1) if 0 <= p < 4]
+            for i in range(1, len(history)):
+                before, after = digits_of(history[i-1]), digits_of(history[i])
+                for source in neighbors:
+                    d = before[source]; trials[d] += 1; hits[d] += after[target] == d
+            bumps = [0.] * 10
+            for source in neighbors: bumps[latest[source]] += .06
+            matrix.append([.64 * fallback[target][d] + .30 * hits[d] / trials[d] + bumps[d] for d in range(10)])
+        matrix = normalize_matrix(matrix)
+        p5_mode = "hybrid"
+
     if not details: return matrix, {}
-    tests = visual_backtests(history)
-    return matrix, {"visual_only": tests["visual_only_backtest"], "fallback": tests["fallback_backtest"], "hybrid": tests["hybrid_backtest"], **tests}
+    return matrix, {
+        "P5_MODE": p5_mode,
+        "p5_mode": p5_mode,
+        "visual_contribution_enabled": edge_confirmed,
+        "visual_only": tests["visual_only_backtest"],
+        "fallback": tests["fallback_backtest"],
+        "hybrid": tests["hybrid_backtest"],
+        **tests,
+    }
 
 
 def structure_signature(number):
@@ -905,28 +938,79 @@ def render_svg(market, history, name, occurrence, metadata):
     return "\n".join(parts) + "\n"
 
 
+def visual_pattern_backtest(history, name, occurrences):
+    """Backtest continuation for one visual pattern type only."""
+    hits = trials = 0
+    multi_digit = name in {"CROSSING", "BOX_FRAME", "2D_CHAIN", "POSITION_SHIFT", "3D_CHAIN"}
+    for _, end, highlighted in occurrences:
+        if end + 1 >= len(history):
+            continue
+        next_digits = digits_of(history[end + 1])
+        end_cells = [(position, digits_of(history[row])[position]) for row, position in highlighted if row == end]
+        if not end_cells:
+            continue
+        if multi_digit:
+            expected = list(dict.fromkeys(end_cells))
+        else:
+            last_position, digit = end_cells[-1]
+            target_position = last_position
+            if name == "ZIG_ZAG" and len(highlighted) >= 2:
+                target_position = highlighted[-2][1]
+            elif name in {"DIAGONAL_NAIK", "DIAGONAL_TURUN", "SAME_DIGIT_TRAVELLING"}:
+                earlier = next(((row, pos) for row, pos in reversed(highlighted[:-1]) if row < end), None)
+                if earlier:
+                    shifted = last_position + (last_position - earlier[1])
+                    if 0 <= shifted < 4:
+                        target_position = shifted
+            expected = [(target_position, digit)]
+        trials += 1
+        hits += all(next_digits[position] == digit for position, digit in expected)
+
+    width = max((len({position for position, _ in [
+        (cell[1], digits_of(history[cell[0]])[cell[1]])
+        for cell in occurrence[2] if cell[0] == occurrence[1]
+    ]}) for occurrence in occurrences), default=1) if multi_digit else 1
+    baseline = 0.1 ** max(1, width)
+    interval = wilson_interval(hits, trials)
+    edge = trials >= 30 and interval[0] > baseline
+    return {
+        "hits": hits,
+        "trials": trials,
+        "hit_rate": rnd(rate(hits, trials)),
+        "baseline": rnd(baseline),
+        "wilson_95_ci": interval,
+        "visual_predictive_edge_confirmed": edge,
+        "definition": "Exact next-draw continuation at the pattern endpoint position(s).",
+    }
+
+
 def generate_visual_patterns(market, history, target_date, p5):
     patterns = sorted(((name, values) for name, values in visual_occurrences(history).items() if values), key=lambda item: (-len(item[1]), item[0]))[:6]
     directory = PRED_DIR / market.lower() / "visuals" / target_date; directory.mkdir(parents=True, exist_ok=True)
     output = []
     for index, (name, values) in enumerate(patterns, 1):
         occurrence = values[-1]; start, end, highlighted = occurrence
+        backtest = visual_pattern_backtest(history, name, values)
         filename = f"pattern-{index:02d}.svg"; relative = f"predictions/{market.lower()}/visuals/{target_date}/{filename}"
         metadata = {
             "pattern_name": name, "market": market,
             "source_period": f"{history[start]['result_date']}..{history[end]['result_date']}",
             "start_point": history[start]["result_date"], "end_point": history[end]["result_date"],
             "digits_used": sorted({str(digits_of(history[row])[p]) for row, p in highlighted}),
-            "number_of_occurrences": len(values), "historical_hit_rate": p5["visual_only_backtest"]["hit_rate"],
-            "baseline": .10,
+            "number_of_occurrences": len(values), "backtest_samples": backtest["trials"],
+            "historical_hit_rate": backtest["hit_rate"],
+            "baseline": backtest["baseline"], "wilson_95_ci": backtest["wilson_95_ci"],
             "visual_pattern_confirmed": True,
-            "visual_predictive_edge_confirmed": p5["visual_predictive_edge_confirmed"],
-            "edge_confirmed": p5["visual_predictive_edge_confirmed"],
-            "visual_note": "Visual pattern ditemukan; predictive edge terkonfirmasi." if p5["visual_predictive_edge_confirmed"] else "Visual pattern ditemukan — predictive edge belum terbukti.",
+            "visual_predictive_edge_confirmed": backtest["visual_predictive_edge_confirmed"],
+            "edge_confirmed": backtest["visual_predictive_edge_confirmed"],
+            "visual_note": "Visual pattern ditemukan; predictive edge terkonfirmasi." if backtest["visual_predictive_edge_confirmed"] else "Visual pattern ditemukan — predictive edge belum terbukti.",
+            "backtest_definition": backtest["definition"],
             "image_path": relative,
         }
         (directory / filename).write_text(render_svg(market, history, name, occurrence, metadata), encoding="utf-8")
         output.append(metadata)
+    p5["visual_predictive_edge_confirmed"] = any(item["visual_predictive_edge_confirmed"] for item in output)
+    p5["visual_vote_weight"] = 1.0 if p5["visual_predictive_edge_confirmed"] else 0.0
     return output
 
 
@@ -966,7 +1050,7 @@ def build_prediction(market, history, config=None):
         "data_3d": 10, "p8_3d": 2, "total_3d_candidates": 12,
         "regular_data_2d": 15, "data_kembar_2d": 2, "p8_2d": 3,
         "total_2d_candidates": 20, "total_direct_number_candidates": 38,
-        "total_bbfs_scenarios": 6, "total_repeat_digit_signals": 2,
+        "total_bbfs_scenarios": 7, "total_repeat_digit_signals": 2,
     }
     final = {"bbfs": bbfs, "four_d": four, "three_d": three, "two_d": two, "repeat_signal": {"data_digit": repeat_digit, "p8_digit": p8["repeat_digit"]}}
     quick = {**final, "p8_ai_instinct": {key: p8[key] for key in ("bbfs6", "bbfs5", "four_d_main", "four_d_reserve", "three_d_front", "three_d_back", "two_d_front", "two_d_middle", "two_d_back", "repeat_digit")}, "model_comparison": [{"model": name, "reliability_weight": weights[name]} for name in sorted(MODELS, key=lambda name: (-weights[name], name))], "candidate_counts": counts}
@@ -996,7 +1080,7 @@ def write_prediction(market, payload, force=False):
     except json.JSONDecodeError: existing = None
     if not force and existing and existing.get("dataset_fingerprint") == payload["dataset_fingerprint"] and existing.get("engine_version", existing.get("engine")) == ENGINE_VERSION and existing.get("latest_result", {}).get("date") == payload["latest_result"]["date"] and str(existing.get("latest_result", {}).get("number", "")).zfill(4) == payload["latest_result"]["number"]:
         return False, "unchanged"
-    text = json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"; latest_path.write_text(text, encoding="utf-8")
+    text = json.dumps(payload, ensure_ascii=False, allow_nan=False, separators=(",", ":")) + "\n"; latest_path.write_text(text, encoding="utf-8")
     if not archive_path.exists(): archive_path.write_text(text, encoding="utf-8")
     else:
         try: archived = json.loads(archive_path.read_text(encoding="utf-8"))
@@ -1098,7 +1182,7 @@ def update_history_index(market, history):
         "records": records,
     }
     history_path = market_dir / "history.json"
-    text = json.dumps(payload, indent=2, ensure_ascii=False, allow_nan=False) + "\n"
+    text = json.dumps(payload, ensure_ascii=False, allow_nan=False, separators=(",", ":")) + "\n"
     if history_path.exists() and history_path.read_text(encoding="utf-8") == text:
         return False
     history_path.write_text(text, encoding="utf-8")
@@ -1124,7 +1208,7 @@ def run(markets, force=False):
         print(f"[{market}] target={payload['target_date']} {payload['target_period']} 4D={q['four_d']['main']['number']} BBFS6={q['bbfs']['main6']} n={len(history)} status={status}")
     status_path = PRED_DIR / "status.json"
     if changed_any or force or not status_path.exists():
-        status_path.write_text(json.dumps({"generated_at": datetime.now(JAKARTA).isoformat(timespec="seconds"), "engine": ENGINE_VERSION, "markets": summary}, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
+        status_path.write_text(json.dumps({"generated_at": datetime.now(JAKARTA).isoformat(timespec="seconds"), "engine": ENGINE_VERSION, "markets": summary}, ensure_ascii=False, allow_nan=False, separators=(",", ":")) + "\n", encoding="utf-8")
     return summary
 
 

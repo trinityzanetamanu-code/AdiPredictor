@@ -2,13 +2,16 @@ name: Auto Result Collector
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/10 * * * *'
   push:
     branches:
       - main
       - 'feature/**'
+      - 'fix/**'
     paths:
       - 'scripts/collector.py'
+      - 'scripts/prediction_engine.py'
+      - 'scripts/publish_generated_data.sh'
       - 'config/collector_sources.json'
       - 'tests/**'
       - '.github/workflows/auto-scraper.yml'
@@ -17,6 +20,8 @@ on:
       - main
     paths:
       - 'scripts/collector.py'
+      - 'scripts/prediction_engine.py'
+      - 'scripts/publish_generated_data.sh'
       - 'config/collector_sources.json'
       - 'tests/**'
       - '.github/workflows/auto-scraper.yml'
@@ -27,11 +32,7 @@ on:
         required: false
         default: 'ALL'
         type: choice
-        options:
-          - ALL
-          - HK
-          - SGP
-          - SDY
+        options: [ALL, HK, SGP, SDY]
 
 permissions:
   contents: write
@@ -43,56 +44,37 @@ concurrency:
 jobs:
   collect-results:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    timeout-minutes: 25
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Collector Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 pytest
+      - name: Install Dependencies
+        run: pip install requests beautifulsoup4 pytest
 
-      - name: Parser Unit Tests
-        run: python -m pytest -q tests/test_collector.py
+      - name: Run Full Test Suite
+        run: python -m pytest -q
 
-      - name: Collect Latest Results
+      - name: Validate Collector and Engine Without Publishing
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main')
         env:
           MARKET: ${{ github.event.inputs.market || 'ALL' }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ] || { [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; }; then
-            python scripts/collector.py --market "$MARKET" --strict
-          else
-            python scripts/collector.py --market "$MARKET"
-          fi
+          python scripts/collector.py --market "$MARKET" --strict
+          python scripts/prediction_engine.py --market ALL
 
-      - name: Generate P1-P8 Predictions
-        run: python scripts/prediction_engine.py
-
-      - name: Show Collector Diff
-        run: |
-          git status --short
-          git diff -- public/data/hk.json public/data/sgp.json public/data/sdy.json public/data/collector-status.json || true
-
-      - name: Commit New Results To Main
+      - name: Publish Fresh Result and Prediction With Safe Retry
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
-          git add public/data/hk.json public/data/sgp.json public/data/sdy.json
-          git add public/data/collector-status.json
-          git add public/predictions
-
-          if git diff --cached --quiet; then
-            echo "Tidak ada result/prediksi baru. Tidak membuat commit."
-            exit 0
-          fi
-          git commit -m "data: auto-update verified lottery results [skip ci]"
-          git push
+        env:
+          MARKET: ${{ github.event.inputs.market || 'ALL' }}
+          INCLUDE_COLLECTOR: '1'
+          PREDICTION_FORCE: '0'
+          MAX_PUSH_ATTEMPTS: '3'
+        run: bash scripts/publish_generated_data.sh

@@ -2,10 +2,11 @@ name: Prediction Engine P1-P8
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'scripts/prediction_engine.py'
+      - 'scripts/publish_generated_data.sh'
+      - 'tests/test_prediction_engine.py'
       - '.github/workflows/prediction-engine.yml'
   workflow_dispatch:
 
@@ -19,46 +20,27 @@ concurrency:
 jobs:
   predict:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
+    timeout-minutes: 25
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Generate P1-P8 Predictions
-        run: python scripts/prediction_engine.py
+      - name: Install Test Dependencies
+        run: pip install pytest requests beautifulsoup4
 
-      - name: Show Prediction Summary
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          for market in ('hk','sgp','sdy'):
-              path = Path(f'public/predictions/{market}/latest.json')
-              data = json.loads(path.read_text())
-              q = data['quick_view']
-              print(
-                  market.upper(),
-                  'target=', data['target_date'],
-                  data.get('target_period'),
-                  '4D=', q['four_d']['main'],
-                  'BBFS6=', q['bbfs']['main6'],
-              )
-          PY
+      - name: Run Full Test Suite
+        run: python -m pytest -q
 
-      - name: Commit Predictions To Main
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add public/predictions
-          if git diff --cached --quiet; then
-            echo "Prediksi tidak berubah."
-            exit 0
-          fi
-          git commit -m "prediction: refresh P1-P8 outputs [skip ci]"
-          git push
+      - name: Regenerate and Publish Against Latest Main
+        env:
+          INCLUDE_COLLECTOR: '0'
+          PREDICTION_FORCE: '1'
+          MAX_PUSH_ATTEMPTS: '3'
+        run: bash scripts/publish_generated_data.sh
