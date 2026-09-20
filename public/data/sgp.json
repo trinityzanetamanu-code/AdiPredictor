@@ -1,5 +1,23 @@
 [
   {
+    "id": 20260920,
+    "tanggal": "20 Sep 2026",
+    "periode": "SGP-2480",
+    "nomor": "9622",
+    "result_date": "2026-09-20",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-20T20:00:50+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20260919,
     "tanggal": "19 Sep 2026",
     "periode": "SGP-2479",
