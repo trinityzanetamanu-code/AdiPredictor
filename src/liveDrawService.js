@@ -214,6 +214,15 @@ export function deriveHKLiveState({ scheduleState, datasetRow, prediction, fullB
   return { state: scheduleState === 'RESULT_POSTED' ? 'SOURCE_DELAYED' : 'BEFORE_LIVE_WINDOW', has4d: false, hasFull: false, predictionReady: false };
 }
 
+export function selectCurrentHKFastResult({ datasetRow, marketDrawDate, liveState }) {
+  const validResult = /^\d{4}$/.test(String(datasetRow?.nomor || '')) &&
+    /^\d{4}-\d{2}-\d{2}$/.test(String(datasetRow?.result_date || ''));
+  if (!validResult) return null;
+  const currentDrawDate = datasetRow.result_date === marketDrawDate;
+  const verifiedCurrentState = ['RESULT_4D_VERIFIED', 'RESULT_FINAL'].includes(liveState);
+  return currentDrawDate || verifiedCurrentState ? datasetRow : null;
+}
+
 export function attachDatasetValidation(board, datasetRow) {
   if (!board) return null;
   const dataset4d = String(datasetRow?.nomor || '').padStart(4, '0');

@@ -39,7 +39,7 @@ import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
 import PredictionHistoryPage from './components/PredictionHistoryPage';
 import PredictionOutcomeAudit from './components/PredictionOutcomeAudit';
 import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, selectSingaporeMode } from './liveDrawConfig';
-import { attachDatasetValidation, deriveHKLiveState, fetchNativeLiveBoard, liveBoardRefreshMs, zonedISODate } from './liveDrawService';
+import { attachDatasetValidation, deriveHKLiveState, fetchNativeLiveBoard, liveBoardRefreshMs, selectCurrentHKFastResult, zonedISODate } from './liveDrawService';
 import { loadLocalHKBoard, openHKManualVerification } from './hkVerificationService';
 import { predictionChangeNote, predictionFreshness } from './predictionFreshness';
 import { replaceInternalPage } from './historyNavigation';
@@ -1204,6 +1204,13 @@ function LiveDrawPanel() {
         challengeRequired: hkVerificationState === 'CHALLENGE_REQUIRED',
       })
     : null;
+  const hkFastResult = liveMarket === 'HK'
+    ? selectCurrentHKFastResult({
+        datasetRow: selectedRow,
+        marketDrawDate: zonedISODate(new Date(), 'Asia/Jakarta'),
+        liveState: hkLive?.state,
+      })
+    : null;
 
   return (
     <div className="space-y-5">
@@ -1270,7 +1277,7 @@ function LiveDrawPanel() {
           onVerifySource={liveMarket === 'HK' ? verifyHK : null}
           verificationState={liveMarket === 'HK' ? hkVerificationState : null}
           liveState={liveMarket === 'HK' ? hkLive?.state : selectedScheduleState}
-          fastResult={liveMarket === 'HK' && /^\d{4}$/.test(String(selectedRow?.nomor || '')) ? selectedRow : null}
+          fastResult={hkFastResult}
           predictionReady={liveMarket === 'HK' ? hkLive?.predictionReady : false}
         />
       )}

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { replaceInternalPage, resolvedHistoryRecords } from '../src/historyNavigation.js';
 import { predictionFreshness } from '../src/predictionFreshness.js';
-import { deriveHKLiveState, parseSixDigitBoard } from '../src/liveDrawService.js';
+import { deriveHKLiveState, parseSixDigitBoard, selectCurrentHKFastResult } from '../src/liveDrawService.js';
 
 test('History exposes resolved records only and excludes pending count', () => {
   const resolved = { target_date: '2026-09-20', actual_result: { number: '2036' } };
@@ -37,9 +37,21 @@ test('HK rowspan/multirow sections retain every starter and consolation number',
 
 test('HK live state waits with spinners and resolves independently at 4D/full-6D layers', () => {
   const old = { result_date: '2026-09-20', nomor: '2036', is_current_draw: 0 };
-  assert.equal(deriveHKLiveState({ scheduleState: 'LIVE_WINDOW', datasetRow: old }).state, 'LIVE_WAITING');
+  const waiting = deriveHKLiveState({ scheduleState: 'LIVE_WINDOW', datasetRow: old });
+  assert.equal(waiting.state, 'LIVE_WAITING');
+  assert.equal(selectCurrentHKFastResult({
+    datasetRow: old,
+    marketDrawDate: '2026-09-21',
+    liveState: waiting.state,
+  }), null, 'yesterday result must be hidden while current draw is waiting');
   const current = { ...old, result_date: '2026-09-21', nomor: '9912', is_current_draw: 1 };
-  assert.equal(deriveHKLiveState({ scheduleState: 'LIVE_WINDOW', datasetRow: current }).state, 'RESULT_4D_VERIFIED');
+  const verified = deriveHKLiveState({ scheduleState: 'LIVE_WINDOW', datasetRow: current });
+  assert.equal(verified.state, 'RESULT_4D_VERIFIED');
+  assert.deepEqual(selectCurrentHKFastResult({
+    datasetRow: current,
+    marketDrawDate: '2026-09-21',
+    liveState: verified.state,
+  }), current);
   const fullBoard = { draw_date: '2026-09-21', first: '789912', second: '123456', third: '654321', starter: ['111111'], consolation: ['222222'] };
   assert.equal(deriveHKLiveState({ scheduleState: 'RESULT_POSTED', datasetRow: current, fullBoard }).state, 'RESULT_FINAL');
   assert.equal(deriveHKLiveState({ scheduleState: 'RESULT_POSTED', datasetRow: current, fullBoard: { ...fullBoard, draw_date: '2026-09-20', first: '782036' } }).state, 'FULL_6D_AVAILABLE');
