@@ -1256,7 +1256,33 @@ def generate_visual_patterns(market, history, target_date, p5):
     return output
 
 
-def build_prediction(market, history, config=None):
+def _candidate_number(value):
+    return value.get("number") if isinstance(value, dict) else value
+
+
+def prediction_sections(payload):
+    quick = payload.get("quick_view", {}) if payload else {}
+    bbfs, four = quick.get("bbfs", {}), quick.get("four_d", {})
+    three, two = quick.get("three_d", {}), quick.get("two_d", {})
+    p8 = payload.get("p8_ai_instinct", {}) if payload else {}
+    numbers = lambda values: [_candidate_number(value) for value in (values or [])]
+    return {
+        "bbfs6": bbfs.get("main6"),
+        "bbfs5": bbfs.get("main5"),
+        "four_d": [_candidate_number(four.get(key)) for key in ("main", "alternative", "reserve", "single_pair")],
+        "three_d_front": numbers(three.get("front")),
+        "three_d_back": numbers(three.get("back")),
+        "two_d_front": numbers(two.get("front")),
+        "two_d_middle": numbers(two.get("middle")),
+        "two_d_back": numbers(two.get("back")),
+        "p8": {key: p8.get(key) for key in (
+            "bbfs6", "bbfs5", "four_d_main", "four_d_reserve", "three_d_front",
+            "three_d_back", "two_d_front", "two_d_middle", "two_d_back", "repeat_digit",
+        )},
+    }
+
+
+def build_prediction(market, history, config=None, previous_prediction=None):
     config = config or load_config(); validation = validate_dataset(market, history, config)
     if validation["data_validation_status"] != "VALID": raise RuntimeError(f"{market}: invalid dataset")
     latest = history[-1]; target = target_date_for(market, date.fromisoformat(latest["result_date"]), config)
@@ -1300,6 +1326,8 @@ def build_prediction(market, history, config=None):
         "schema_version": SCHEMA_VERSION, "engine": ENGINE_VERSION, "engine_version": ENGINE_VERSION,
         "market": market, "generated_at": datetime.now(JAKARTA).isoformat(timespec="seconds"),
         "dataset_fingerprint": dataset_fingerprint(market, history),
+        "prediction_basis_date": latest["result_date"],
+        "prediction_basis_result": number_of(latest),
         "latest_result": {"date": latest["result_date"], "period": latest.get("periode"), "number": number_of(latest), "collected_at": latest.get("collected_at")},
         "target_date": target.isoformat(), "target_period": increment_period(latest.get("periode")),
         "dataset": {"count": len(history), "first_date": history[0]["result_date"], "last_date": latest["result_date"]},
@@ -1310,6 +1338,20 @@ def build_prediction(market, history, config=None):
         "final_candidates": final, "visual_patterns": visuals, "quick_view": quick,
         "confidence": {"model_confidence": "RELATIVE", "data_quality": "HIGH" if not validation["missing_expected_draws"] else "MODERATE", "sample_size": len(history), "backtest_strength": rnd(mean(weights.values())), "consensus_strength": rnd(max(weights.values())), "relative_confidence": "MODERATE" if mean(weights.values()) >= .70 else "LOW", "disclaimer": DISCLAIMER},
         "candidate_counts": counts, "disclaimer": DISCLAIMER,
+    }
+    previous_fingerprint = None
+    if previous_prediction:
+        candidate = previous_prediction.get("dataset_fingerprint")
+        previous_fingerprint = candidate if candidate != payload["dataset_fingerprint"] else previous_prediction.get("previous_dataset_fingerprint")
+    payload["previous_dataset_fingerprint"] = previous_fingerprint
+    payload["recalculated_after_new_result"] = bool(
+        previous_prediction and previous_prediction.get("dataset_fingerprint") != payload["dataset_fingerprint"]
+    )
+    previous_sections = prediction_sections(previous_prediction)
+    current_sections = prediction_sections(payload)
+    payload["changed_from_previous"] = {
+        key: (previous_sections[key] != value if previous_prediction else None)
+        for key, value in current_sections.items()
     }
     payload["audit_snapshot"] = compact_audit_snapshot(payload)
     if p8["fingerprint"] != frozen_fingerprint: raise AssertionError("P8 changed after consensus")
@@ -1377,6 +1419,9 @@ def history_record(market, prediction, actual_row=None, archive_path=None):
         "engine_version": prediction.get("engine_version", prediction.get("engine")),
         "schema_version": prediction.get("schema_version", 1),
         "dataset_fingerprint": prediction.get("dataset_fingerprint"),
+        "previous_dataset_fingerprint": prediction.get("previous_dataset_fingerprint"),
+        "recalculated_after_new_result": prediction.get("recalculated_after_new_result"),
+        "changed_from_previous": prediction.get("changed_from_previous"),
         "basis_latest_date": basis.get("date"),
         "basis_latest_result": basis.get("number"),
         "bbfs6": quick.get("bbfs", {}).get("main6"),
@@ -1443,22 +1488,43 @@ def run(markets, force=False):
     config, summary, changed_any = load_config(), {}, False
     for market in markets:
         history = load_history(market); fingerprint = dataset_fingerprint(market, history); latest_path = PRED_DIR / market.lower() / "latest.json"
-        if not force and latest_path.exists():
+        existing = None
+        if latest_path.exists():
             try: existing = json.loads(latest_path.read_text(encoding="utf-8"))
             except json.JSONDecodeError: existing = {}
+        if not force and existing is not None:
             if existing.get("dataset_fingerprint") == fingerprint and existing.get("engine_version", existing.get("engine")) == ENGINE_VERSION:
                 print(f"[{market}] unchanged fingerprint={fingerprint[:12]}; skipped")
                 changed_any |= update_history_index(market, history)
                 summary[market] = {"status": "unchanged", "latest": existing.get("latest_result"), "target_date": existing.get("target_date"), "dataset_fingerprint": fingerprint}
                 continue
-        payload = build_prediction(market, history, config); changed, status = write_prediction(market, payload, force)
+        comparison_previous = existing
+        # A one-time metadata upgrade may force the current deterministic
+        # prediction without a new dataset. In that case compare against the
+        # immutable prediction whose target became the current basis draw.
+        if force and existing and existing.get("dataset_fingerprint") == fingerprint and not existing.get("previous_dataset_fingerprint"):
+            prior_path = latest_path.parent / "archive" / f"{existing.get('latest_result', {}).get('date', '')}.json"
+            if prior_path.exists():
+                try:
+                    prior_candidate = json.loads(prior_path.read_text(encoding="utf-8"))
+                    if prior_candidate.get("dataset_fingerprint") != fingerprint:
+                        comparison_previous = prior_candidate
+                except json.JSONDecodeError:
+                    pass
+        payload = build_prediction(market, history, config, previous_prediction=comparison_previous); changed, status = write_prediction(market, payload, force)
         changed_any |= changed; q = payload["quick_view"]
         changed_any |= update_history_index(market, history)
         summary[market] = {"status": status, "latest": payload["latest_result"], "target_date": payload["target_date"], "target_period": payload["target_period"], "four_d_main": q["four_d"]["main"]["number"], "bbfs6": q["bbfs"]["main6"], "dataset_count": len(history), "dataset_fingerprint": fingerprint}
         print(f"[{market}] target={payload['target_date']} {payload['target_period']} 4D={q['four_d']['main']['number']} BBFS6={q['bbfs']['main6']} n={len(history)} status={status}")
     status_path = PRED_DIR / "status.json"
     if changed_any or force or not status_path.exists():
-        status_path.write_text(json.dumps({"generated_at": datetime.now(JAKARTA).isoformat(timespec="seconds"), "engine": ENGINE_VERSION, "markets": summary}, ensure_ascii=False, allow_nan=False, separators=(",", ":")) + "\n", encoding="utf-8")
+        existing_markets = {}
+        if status_path.exists():
+            try:
+                existing_markets = json.loads(status_path.read_text(encoding="utf-8")).get("markets", {})
+            except json.JSONDecodeError:
+                pass
+        status_path.write_text(json.dumps({"generated_at": datetime.now(JAKARTA).isoformat(timespec="seconds"), "engine": ENGINE_VERSION, "markets": {**existing_markets, **summary}}, ensure_ascii=False, allow_nan=False, separators=(",", ":")) + "\n", encoding="utf-8")
     return summary
 
 

@@ -38,10 +38,16 @@ export async function openHKManualVerification() {
   try {
     const response = await HKVerification.open();
     if (response?.status === HK_VERIFICATION_STATES.VERIFICATION_CANCELLED) return { state: response.status };
-    if (response?.status !== HK_VERIFICATION_STATES.RESULT_PAGE_READY || !response.html) throw new Error('Halaman hasil belum siap');
+    if (response?.status === HK_VERIFICATION_STATES.VERIFICATION_FAILED) {
+      throw Object.assign(new Error(response.error || 'BRIDGE_FAILED'), { code: response.error || 'BRIDGE_FAILED' });
+    }
+    if (response?.status !== HK_VERIFICATION_STATES.RESULT_PAGE_READY || !response.html) {
+      throw Object.assign(new Error('BRIDGE_FAILED'), { code: 'BRIDGE_FAILED' });
+    }
     const board = parseSixDigitBoard(response.html, 'HK', response.url);
-    return { state: HK_VERIFICATION_STATES.NORMALIZED_BOARD_READY, board: storeLocalHKBoard(board) };
+    return { state: HK_VERIFICATION_STATES.NORMALIZED_BOARD_READY, board: storeLocalHKBoard(board), error: null };
   } catch (error) {
-    return { state: HK_VERIFICATION_STATES.VERIFICATION_FAILED, error: error?.message || 'Verifikasi sumber HK gagal' };
+    const code = error?.code || error?.message || 'BRIDGE_FAILED';
+    return { state: HK_VERIFICATION_STATES.VERIFICATION_FAILED, error: code };
   }
 }

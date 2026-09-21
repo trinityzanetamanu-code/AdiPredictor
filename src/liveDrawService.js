@@ -72,6 +72,12 @@ function numbersFromHtml(fragment) {
   for (let index = 0; index + 5 < digits.length; index += 6) {
     output.push(digits.slice(index, index + 6).join(''));
   }
+  // Some boards render each digit in a separate span/div rather than as an
+  // image or a contiguous string. Group only isolated digit text tokens.
+  const textDigits = decodeText(fragment).split(/\s+/).filter((token) => /^\d$/.test(token));
+  for (let index = 0; index + 5 < textDigits.length; index += 6) {
+    output.push(textDigits.slice(index, index + 6).join(''));
+  }
   return [...new Set(output.filter((number) => /^\d{6}$/.test(number)))];
 }
 
@@ -86,12 +92,19 @@ const LABELS = Object.freeze({
 function extractPrizeRows(html) {
   const buckets = { first: [], second: [], third: [], starter: [], consolation: [] };
   const rows = [...String(html || '').matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((match) => match[1]);
+  let activeMultirowSection = null;
   for (const row of rows) {
     const labelText = decodeText(row);
     const matchedKeys = Object.entries(LABELS).filter(([, pattern]) => pattern.test(labelText));
-    if (matchedKeys.length !== 1) continue;
-    const [key] = matchedKeys[0];
-    buckets[key].push(...numbersFromHtml(row));
+    if (matchedKeys.length === 1) {
+      const [key] = matchedKeys[0];
+      buckets[key].push(...numbersFromHtml(row));
+      activeMultirowSection = ['starter', 'consolation'].includes(key) ? key : null;
+      continue;
+    }
+    if (matchedKeys.length === 0 && activeMultirowSection) {
+      buckets[activeMultirowSection].push(...numbersFromHtml(row));
+    }
   }
 
   // Some simple source pages do not use table rows. Keep a bounded fallback
@@ -105,20 +118,28 @@ function extractPrizeRows(html) {
 }
 
 export function validateSixDigitBoard(board) {
-  if (!board || !['HK', 'SDY'].includes(board.market)) throw new Error('Market live board tidak valid');
+  if (!board || !['HK', 'SDY'].includes(board.market)) throw boardError('BOARD_VALIDATION_FAILED', 'Market live board tidak valid');
   for (const field of ['first', 'second', 'third']) {
-    if (!/^\d{6}$/.test(String(board[field] || ''))) throw new Error(`${field} harus exact 6 digit`);
+    if (!/^\d{6}$/.test(String(board[field] || ''))) {
+      throw boardError(field === 'first' ? 'FIRST_PRIZE_INVALID' : 'BOARD_VALIDATION_FAILED', `${field} harus exact 6 digit`);
+    }
   }
   for (const field of ['starter', 'consolation']) {
-    if (!Array.isArray(board[field]) || board[field].some((number) => !/^\d{6}$/.test(String(number)))) {
-      throw new Error(`${field} berisi nomor malformed`);
+    if (!Array.isArray(board[field]) || !board[field].length || board[field].some((number) => !/^\d{6}$/.test(String(number)))) {
+      throw boardError(field === 'starter' ? 'STARTER_PARSE_FAILED' : 'CONSOLATION_PARSE_FAILED', `${field} berisi nomor malformed`);
     }
   }
   if (!/^\d{4}$/.test(String(board.derived_4d || '')) || board.derived_4d !== board.first.slice(-4)) {
-    throw new Error('derived_4d tidak sesuai last-four Prize 1');
+    throw boardError('BOARD_VALIDATION_FAILED', 'derived_4d tidak sesuai last-four Prize 1');
   }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(board.draw_date || ''))) throw new Error('Draw date tidak valid');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(board.draw_date || ''))) throw boardError('DATE_NOT_FOUND', 'Draw date tidak valid');
   return board;
+}
+
+export function boardError(code, message) {
+  const error = new Error(message || code);
+  error.code = code;
+  return error;
 }
 
 export function isSecurityChallengeHtml(html) {
@@ -126,9 +147,9 @@ export function isSecurityChallengeHtml(html) {
 }
 
 export function parseSixDigitBoard(html, market, sourceUrl = LIVE_BOARD_URLS[market]?.pageUrl) {
-  if (!String(html || '').trim()) throw new Error('HTML live board kosong');
+  if (!String(html || '').trim()) throw boardError('TABLE_NOT_FOUND', 'HTML live board kosong');
   if (isSecurityChallengeHtml(html)) {
-    throw new Error('Source dilindungi challenge; tidak mencoba bypass');
+    throw boardError('CHALLENGE_REQUIRED', 'Source dilindungi challenge; tidak mencoba bypass');
   }
   const rows = extractPrizeRows(html);
   const first = rows.first[0] || '';
@@ -146,6 +167,51 @@ export function parseSixDigitBoard(html, market, sourceUrl = LIVE_BOARD_URLS[mar
     derived_4d: first.slice(-4),
   };
   return validateSixDigitBoard(board);
+}
+
+export const HK_LIVE_STATES = Object.freeze({
+  BEFORE_LIVE_WINDOW: 'BEFORE_LIVE_WINDOW',
+  LIVE_WAITING: 'LIVE_WAITING',
+  PARTIAL_RESULT: 'PARTIAL_RESULT',
+  RESULT_4D_VERIFIED: 'RESULT_4D_VERIFIED',
+  FULL_6D_AVAILABLE: 'FULL_6D_AVAILABLE',
+  RESULT_FINAL: 'RESULT_FINAL',
+  SOURCE_DELAYED: 'SOURCE_DELAYED',
+  MANUAL_VERIFICATION_REQUIRED: 'MANUAL_VERIFICATION_REQUIRED',
+});
+
+export function zonedISODate(now = new Date(), timezone = 'Asia/Jakarta') {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(now);
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+export function deriveHKLiveState({ scheduleState, datasetRow, prediction, fullBoard, challengeRequired = false }) {
+  const dataset4d = String(datasetRow?.nomor || '').padStart(4, '0');
+  const has4d = /^\d{4}$/.test(dataset4d);
+  const hasFull = Boolean(fullBoard &&
+    ['first', 'second', 'third'].every((field) => /^\d{6}$/.test(String(fullBoard[field] || ''))) &&
+    ['starter', 'consolation'].every((field) => Array.isArray(fullBoard[field]) && fullBoard[field].length));
+  const basis = prediction?.latest_result || {};
+  const predictionReady = has4d && basis.date === datasetRow?.result_date &&
+    String(basis.number || '').padStart(4, '0') === dataset4d && prediction?.target_date > basis.date;
+  if (hasFull && fullBoard.draw_date === datasetRow?.result_date && fullBoard.first.slice(-4) === dataset4d) {
+    return { state: 'RESULT_FINAL', has4d, hasFull: true, predictionReady };
+  }
+  if (hasFull) return { state: 'FULL_6D_AVAILABLE', has4d, hasFull: true, predictionReady };
+  if (fullBoard && [fullBoard.first, fullBoard.second, fullBoard.third].some(Boolean)) {
+    return { state: 'PARTIAL_RESULT', has4d, hasFull: false, predictionReady };
+  }
+  if (scheduleState === 'LIVE_WINDOW') {
+    return has4d && Number(datasetRow?.is_current_draw || 0) === 1
+      ? { state: 'RESULT_4D_VERIFIED', has4d, hasFull: false, predictionReady }
+      : { state: 'LIVE_WAITING', has4d: false, hasFull: false, predictionReady: false };
+  }
+  if (challengeRequired && !hasFull) return { state: 'MANUAL_VERIFICATION_REQUIRED', has4d, hasFull: false, predictionReady };
+  if (has4d) return { state: 'RESULT_4D_VERIFIED', has4d, hasFull: false, predictionReady };
+  return { state: scheduleState === 'RESULT_POSTED' ? 'SOURCE_DELAYED' : 'BEFORE_LIVE_WINDOW', has4d: false, hasFull: false, predictionReady: false };
 }
 
 export function attachDatasetValidation(board, datasetRow) {
@@ -223,5 +289,5 @@ export async function fetchNativeLiveBoard(market) {
 
 export function liveBoardRefreshMs(source) {
   if (!source?.schedule) return 60000;
-  return source.scheduleState === 'LIVE_WINDOW' ? 20000 : 90000;
+  return source.scheduleState === 'LIVE_WINDOW' ? 10000 : 75000;
 }

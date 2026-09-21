@@ -28,6 +28,13 @@ public class HKVerificationPlugin extends Plugin {
             return;
         }
         JSObject response = new JSObject();
+        String error = data.getStringExtra("error");
+        if (error != null && !error.isEmpty()) {
+            response.put("status", "VERIFICATION_FAILED");
+            response.put("error", error);
+            call.resolve(response);
+            return;
+        }
         response.put("status", "RESULT_PAGE_READY");
         response.put("url", data.getStringExtra("url"));
         response.put("html", data.getStringExtra("html"));
