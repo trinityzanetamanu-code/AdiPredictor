@@ -2,14 +2,14 @@
   "schema_version": 1,
   "channel": "stable",
   "application_id": "com.adipredictor.app",
-  "version_name": "2.0.0+build.100007",
-  "version_code": 100007,
+  "version_name": "2.0.0+build.100008",
+  "version_code": 100008,
   "certificate_sha256": "58b36eaa357b65483d1adcc67321305b799f3b3283ad3ad7e13457cf96b8deb5",
   "expected_certificate_sha256": "58b36eaa357b65483d1adcc67321305b799f3b3283ad3ad7e13457cf96b8deb5",
   "release_signing_runtime_verified": true,
   "update_channel_ready": true,
   "legacy_signing_key_recoverable": false,
   "one_time_reinstall_required": true,
-  "artifact_name": "AdiPredictor-v2.0.0-build100007-stable.apk",
-  "build_date": "2026-09-20T23:50:02.096Z"
+  "artifact_name": "AdiPredictor-v2.0.0-build100008-stable.apk",
+  "build_date": "2026-09-21T14:56:17.240Z"
 }
