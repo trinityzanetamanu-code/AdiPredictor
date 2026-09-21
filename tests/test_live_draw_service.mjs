@@ -57,8 +57,9 @@ test('history is a dedicated internal page and not inline under GeneratorPanel',
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
   const historyPage = await readFile(new URL('../src/components/PredictionHistoryPage.jsx', import.meta.url), 'utf8');
   assert.match(app, /internalPage === 'prediction-history'/);
-  assert.match(app, /window\.history\.pushState/);
-  assert.match(app, /window\.addEventListener\('popstate'/);
+  assert.match(app, /replaceInternalPage/);
+  assert.doesNotMatch(app, /window\.history\.pushState/);
+  assert.doesNotMatch(app, /window\.addEventListener\('popstate'/);
   assert.doesNotMatch(app, /window\.history\.back\(\)/);
   assert.match(app, /setInternalPage\('main'\)/);
   assert.match(app, /setActiveTab\('generator'\)/);
@@ -68,6 +69,7 @@ test('history is a dedicated internal page and not inline under GeneratorPanel',
   assert.match(historyPage, /data-page="prediction-history"/);
   assert.match(historyPage, /onClick=\{onBack\}/);
   assert.match(historyPage, /Kembali/);
+  assert.match(historyPage, /resolvedHistoryRecords/);
 });
 
 test('Cloudflare challenge is detected and never parsed as a result board', () => {

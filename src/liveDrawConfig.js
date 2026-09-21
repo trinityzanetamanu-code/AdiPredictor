@@ -68,7 +68,14 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     mode: PLAYER_MODES.NATIVE_BOARD,
     pageUrl: 'https://www.hongkongpools.com/live',
     fallbackUrl: 'https://www.hongkongpools.com/live.html',
-    schedule: null,
+    schedule: {
+      timezone: 'Asia/Jakarta',
+      days: [0, 1, 2, 3, 4, 5, 6],
+      startHour: 22,
+      startMinute: 45,
+      liveLeadMinutes: 15,
+      liveTailMinutes: 60,
+    },
     note: 'HKJC Mark Six is a different official Hong Kong lottery and is not the dataset used by this prediction market.',
   },
   SDY: {

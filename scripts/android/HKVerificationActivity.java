@@ -60,7 +60,7 @@ public class HKVerificationActivity extends Activity {
         Button use = new Button(this);
         use.setText("Gunakan tabel hasil");
         use.setOnClickListener(v -> webView.evaluateJavascript(
-            "(function(){var ts=Array.from(document.querySelectorAll('table')).filter(function(t){var x=(t.innerText||'').toLowerCase();return x.includes('1st')&&x.includes('starter')&&x.includes('consolation');});var body=(document.body&&document.body.innerText)||'';var d=(body.match(/(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)?\\s*,?\\s*(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}\\s*,?\\s+\\d{4}/i)||body.match(/\\d{1,2}[-/]\\d{1,2}[-/]\\d{4}/)||[''])[0];var h='<div>'+d+'</div>'+ts.map(function(t){return t.outerHTML;}).join('');AdiResultBridge.accept(h,location.href);})()", null));
+            "(function(){try{var ts=Array.from(document.querySelectorAll('table')).filter(function(t){var x=(t.innerText||'').toLowerCase();return x.includes('1st')&&x.includes('starter')&&x.includes('consolation');});if(!ts.length){AdiResultBridge.fail('TABLE_NOT_FOUND');return;}var body=(document.body&&document.body.innerText)||'';var d=(body.match(/(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)?\\s*,?\\s*(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}\\s*,?\\s+\\d{4}/i)||body.match(/\\d{1,2}[-/]\\d{1,2}[-/]\\d{4}/)||[''])[0];if(!d){AdiResultBridge.fail('DATE_NOT_FOUND');return;}var h='<div>'+d+'</div>'+ts.map(function(t){return t.outerHTML;}).join('');AdiResultBridge.accept(h,location.href);}catch(e){AdiResultBridge.fail('BRIDGE_FAILED');}})()", null));
         buttons.addView(cancel, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         buttons.addView(use, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         root.addView(buttons);
@@ -76,6 +76,14 @@ public class HKVerificationActivity extends Activity {
                 Intent result = new Intent();
                 result.putExtra("html", html);
                 result.putExtra("url", url);
+                setResult(Activity.RESULT_OK, result);
+                finish();
+            });
+        }
+        @JavascriptInterface public void fail(String code) {
+            runOnUiThread(() -> {
+                Intent result = new Intent();
+                result.putExtra("error", code == null ? "BRIDGE_FAILED" : code);
                 setResult(Activity.RESULT_OK, result);
                 finish();
             });

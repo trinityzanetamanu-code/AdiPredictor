@@ -92,3 +92,17 @@ Run the workflow a second time from the updated `main` to create release B. Conf
 - Android installs B over A without uninstalling A.
 
 Only that device test establishes `ANDROID_UPDATE_IN_PLACE_TEST=PASS`.
+
+## Verified device update path
+
+Device validation completed after Stable Release B:
+
+- `FROM_VERSION_CODE=100001`
+- `TO_VERSION_CODE=100007`
+- `APPLICATION_ID=com.adipredictor.app`
+- `PACKAGE_MATCH=TRUE`
+- `CERT_MATCH=TRUE`
+- `ANDROID_UPDATE_IN_PLACE_TEST=PASS`
+- `FUTURE_STABLE_UPDATE_PATH=VALIDATED`
+
+Release B was installed directly over Release A without uninstalling it and Android accepted it as an update. This records the successful stable channel test; it does not alter the legacy one-time migration history or the persistent signing identity.

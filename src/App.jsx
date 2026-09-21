@@ -39,8 +39,10 @@ import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
 import PredictionHistoryPage from './components/PredictionHistoryPage';
 import PredictionOutcomeAudit from './components/PredictionOutcomeAudit';
 import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, selectSingaporeMode } from './liveDrawConfig';
-import { attachDatasetValidation, fetchNativeLiveBoard } from './liveDrawService';
+import { attachDatasetValidation, deriveHKLiveState, fetchNativeLiveBoard, liveBoardRefreshMs, selectCurrentHKFastResult, zonedISODate } from './liveDrawService';
 import { loadLocalHKBoard, openHKManualVerification } from './hkVerificationService';
+import { predictionChangeNote, predictionFreshness } from './predictionFreshness';
+import { replaceInternalPage } from './historyNavigation';
 
 const AppContext = createContext();
 
@@ -162,6 +164,7 @@ export function AppProvider({ children }) {
   const [dataError, setDataError] = useState('');
 
   const toastTimerRef = useRef(null);
+  const analysisScrollRef = useRef(0);
 
   const showToast = (msg) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -251,44 +254,41 @@ export function AppProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (internalPage !== 'prediction-history') return undefined;
     let listener;
     let cancelled = false;
     import('@capacitor/app').then(({ App }) => App.addListener('backButton', () => {
-      if (!cancelled) closePredictionHistory();
-    })).then((handle) => { listener = handle; }).catch(() => {});
+      if (cancelled) return;
+      if (internalPage === 'prediction-history') closePredictionHistory();
+      else App.exitApp();
+    })).then((handle) => {
+      if (cancelled) handle?.remove?.();
+      else listener = handle;
+    }).catch(() => {});
     return () => {
       cancelled = true;
       listener?.remove?.();
     };
   }, [internalPage]);
 
-  useEffect(() => {
-    const syncInternalPage = () => {
-      setInternalPage(window.location.hash === '#prediction-history' ? 'prediction-history' : 'main');
-    };
-    window.addEventListener('popstate', syncInternalPage);
-    return () => window.removeEventListener('popstate', syncInternalPage);
-  }, []);
-
   const openPredictionHistory = () => {
+    analysisScrollRef.current = window.scrollY || 0;
     setActiveTab('generator');
     setInternalPage('prediction-history');
-    if (window.location.hash !== '#prediction-history') {
-      window.history.pushState({ adipredictorPage: 'prediction-history' }, '', '#prediction-history');
-    }
+    replaceInternalPage(window.history, window.location, 'prediction-history');
+    window.scrollTo({ top: 0, behavior: 'auto' });
   };
 
   const closePredictionHistory = () => {
     setActiveTab('generator');
     setInternalPage('main');
-    window.history.replaceState({ adipredictorPage: 'main' }, '', window.location.pathname + window.location.search);
+    replaceInternalPage(window.history, window.location, 'main');
+    window.requestAnimationFrame(() => window.scrollTo({ top: analysisScrollRef.current, behavior: 'auto' }));
   };
 
   const navigateToTab = (tabId) => {
     setActiveTab(tabId);
     if (window.location.hash === '#prediction-history') {
-      window.history.replaceState({}, '', window.location.pathname + window.location.search);
+      replaceInternalPage(window.history, window.location, 'main');
     }
     setInternalPage('main');
   };
@@ -312,6 +312,7 @@ export function AppProvider({ children }) {
         isRefreshing,
         lastRefresh,
         dataError,
+        refreshData,
         copyToClipboard,
         toastMessage,
       }}
@@ -497,17 +498,18 @@ function CandidateChips({ items = [] }) {
 }
 
 function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
-  const { copyToClipboard } = useApp();
+  const { copyToClipboard, refreshData } = useApp();
   const candidateNumber = (value) =>
     typeof value === 'object' && value !== null ? value.number : value;
 
-  const predictionLatest = prediction?.latest_result;
-  const latestNumber = String(latest?.nomor || '').padStart(4, '0');
-  const predictionFresh =
-    !!prediction &&
-    (!predictionLatest ||
-      (predictionLatest.date === latest?.result_date &&
-        String(predictionLatest.number || '').padStart(4, '0') === latestNumber));
+  const freshness = predictionFreshness(prediction, latest);
+  const predictionFresh = freshness.fresh;
+
+  useEffect(() => {
+    if (!prediction || predictionFresh) return undefined;
+    const timer = window.setTimeout(() => refreshData(true), 5000);
+    return () => window.clearTimeout(timer);
+  }, [prediction?.dataset_fingerprint, latest?.result_date, latest?.nomor, predictionFresh]);
 
   const quick =
     predictionFresh
@@ -576,6 +578,15 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
             <div className="text-slate-500">
               Dibuat {formatSyncTime(prediction.generated_at)}
             </div>
+          </div>
+
+          <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-3 text-[11px]">
+            <div className="grid gap-1 sm:grid-cols-3">
+              <span className="text-slate-400">Data terbaru: <strong className="text-slate-200">{prediction.prediction_basis_date || prediction.latest_result?.date} · {prediction.prediction_basis_result || prediction.latest_result?.number}</strong></span>
+              <span className="text-slate-400">Target: <strong className="text-slate-200">{prediction.target_date} · {prediction.target_period}</strong></span>
+              <span className="font-bold text-emerald-300">✓ DIHITUNG ULANG DARI DATA TERBARU</span>
+            </div>
+            {predictionChangeNote(prediction) && <div className="mt-2 text-slate-500">{predictionChangeNote(prediction)}</div>}
           </div>
 
           <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-5 text-center">
@@ -827,7 +838,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
           <div>
             <h4 className="font-bold text-slate-100">Prediksi sedang disinkronkan</h4>
             <p className="text-xs text-slate-400 mt-2 max-w-md">
-              Hasil terbaru sudah berubah. Aplikasi menunggu file prediksi P1–P8 yang sesuai dengan result terbaru agar prediksi lama tidak ditampilkan.
+              Hasil terbaru sudah berubah. Aplikasi menunggu file prediksi P1–P8 yang sesuai dengan result terbaru agar prediksi lama tidak ditampilkan. ({freshness.reason})
             </p>
           </div>
         </div>
@@ -1017,10 +1028,7 @@ function liveDrawState({ isRefreshing, dataError, status, latest, prediction }) 
   if (dataError || (!latest && status?.source_errors?.length)) {
     return { key: 'source_unavailable', label: 'SOURCE UNAVAILABLE', className: 'text-rose-300 bg-rose-500/10 border-rose-500/25' };
   }
-  const predictionBasis = prediction?.latest_result;
-  const predictionCaughtUp = predictionBasis && latest &&
-    predictionBasis.date === latest.result_date &&
-    String(predictionBasis.number || '').padStart(4, '0') === String(latest.nomor || '').padStart(4, '0');
+  const predictionCaughtUp = predictionFreshness(prediction, latest).fresh;
   if (Number(status?.new_count || 0) > 0 && !predictionCaughtUp) {
     return { key: 'new_result_detected', label: 'NEW RESULT DETECTED', className: 'text-amber-300 bg-amber-500/10 border-amber-500/25' };
   }
@@ -1031,7 +1039,7 @@ function liveDrawState({ isRefreshing, dataError, status, latest, prediction }) 
 }
 
 function LiveDrawPanel() {
-  const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError } = useApp();
+  const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError, refreshData } = useApp();
   const [liveMarket, setLiveMarket] = useState('HK');
   const [singaporeMode, setSingaporeMode] = useState(() => selectSingaporeMode());
   const [officialResults, setOfficialResults] = useState({ fourD: null, toto: null });
@@ -1083,14 +1091,16 @@ function LiveDrawPanel() {
     let timer;
 
     const refreshBoard = async () => {
+      const source = LIVE_DRAW_SOURCES[liveMarket];
+      const scheduleState = calculateLiveState(source.schedule).status;
+      if (liveMarket === 'HK' && scheduleState === 'LIVE_WINDOW') refreshData(true);
       if (mounted) {
-        setBoardState({
-          board: null,
+        setBoardState((current) => ({
+          ...current,
           status: 'checking',
           fetchMode: 'checking_source',
           error: null,
-          checkedAt: null,
-        });
+        }));
       }
       let cachedSnapshot = null;
       try {
@@ -1133,11 +1143,19 @@ function LiveDrawPanel() {
       }
     };
 
+    const scheduleNext = () => {
+      const source = LIVE_DRAW_SOURCES[liveMarket];
+      const scheduleState = calculateLiveState(source.schedule).status;
+      timer = window.setTimeout(async () => {
+        await refreshBoard();
+        if (mounted) scheduleNext();
+      }, liveBoardRefreshMs({ ...source, scheduleState }));
+    };
     refreshBoard();
-    timer = window.setInterval(refreshBoard, 60000);
+    scheduleNext();
     return () => {
       mounted = false;
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
     };
   }, [
     liveMarket,
@@ -1154,6 +1172,7 @@ function LiveDrawPanel() {
   const checkedLabel = formatSyncTime(lastRefresh);
   const selectedRow = marketData[liveMarket]?.[0] || null;
   const selectedSource = LIVE_DRAW_SOURCES[liveMarket];
+  const selectedScheduleState = calculateLiveState(selectedSource.schedule).status;
   const selectedCollectorState = liveDrawState({
     isRefreshing,
     dataError,
@@ -1168,8 +1187,30 @@ function LiveDrawPanel() {
     if (result.board) {
       const datasetRow = marketData.HK?.[0] || null;
       setBoardState({ board: attachDatasetValidation(result.board, datasetRow), status: 'ready', fetchMode: 'manual_in_app_verified', error: null, checkedAt: new Date().toISOString() });
+    } else if (result.error) {
+      setBoardState((current) => ({ ...current, status: current.board ? 'cached' : 'unavailable', error: result.error, checkedAt: new Date().toISOString() }));
     }
   };
+  const hkRowForState = liveMarket === 'HK' && selectedRow ? {
+    ...selectedRow,
+    is_current_draw: selectedRow.result_date === zonedISODate(new Date(), 'Asia/Jakarta') ? 1 : 0,
+  } : selectedRow;
+  const hkLive = liveMarket === 'HK'
+    ? deriveHKLiveState({
+        scheduleState: selectedScheduleState,
+        datasetRow: hkRowForState,
+        prediction: predictions.HK,
+        fullBoard: boardState.board?.market === 'HK' ? boardState.board : null,
+        challengeRequired: hkVerificationState === 'CHALLENGE_REQUIRED',
+      })
+    : null;
+  const hkFastResult = liveMarket === 'HK'
+    ? selectCurrentHKFastResult({
+        datasetRow: selectedRow,
+        marketDrawDate: zonedISODate(new Date(), 'Asia/Jakarta'),
+        liveState: hkLive?.state,
+      })
+    : null;
 
   return (
     <div className="space-y-5">
@@ -1235,6 +1276,9 @@ function LiveDrawPanel() {
           onOpenSource={() => openLivePage(selectedSource.pageUrl)}
           onVerifySource={liveMarket === 'HK' ? verifyHK : null}
           verificationState={liveMarket === 'HK' ? hkVerificationState : null}
+          liveState={liveMarket === 'HK' ? hkLive?.state : selectedScheduleState}
+          fastResult={hkFastResult}
+          predictionReady={liveMarket === 'HK' ? hkLive?.predictionReady : false}
         />
       )}
 

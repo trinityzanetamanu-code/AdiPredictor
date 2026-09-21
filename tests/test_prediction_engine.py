@@ -57,6 +57,30 @@ def test_deterministic_same_data_same_prediction(history, tmp_path, monkeypatch)
     assert stable_payload(first) == stable_payload(second)
 
 
+def test_recalculation_proof_tracks_new_dataset_without_requiring_every_candidate_to_change(history, tmp_path, monkeypatch):
+    monkeypatch.setattr(pe, "PRED_DIR", tmp_path)
+    before = pe.build_prediction("HK", history[:-1])
+    after = pe.build_prediction("HK", history, previous_prediction=before)
+    assert after["prediction_basis_date"] == history[-1]["result_date"]
+    assert after["prediction_basis_result"] == history[-1]["nomor"]
+    assert after["previous_dataset_fingerprint"] == before["dataset_fingerprint"]
+    assert after["dataset_fingerprint"] != before["dataset_fingerprint"]
+    assert after["recalculated_after_new_result"] is True
+    assert set(after["changed_from_previous"]) == {
+        "bbfs6", "bbfs5", "four_d", "three_d_front", "three_d_back",
+        "two_d_front", "two_d_middle", "two_d_back", "p8",
+    }
+
+
+def test_atomic_publish_pipeline_orders_collector_engine_and_single_commit():
+    source = (pe.ROOT / "scripts" / "publish_generated_data.sh").read_text(encoding="utf-8")
+    collector = source.index("collector.py")
+    engine = source.index("prediction_engine.py")
+    git_add = source.index("git add")
+    git_commit = source.index("git commit")
+    assert collector < engine < git_add < git_commit
+
+
 def test_dataset_validation(history):
     result = pe.validate_dataset("HK", history)
     assert result["data_validation_status"] == "VALID"

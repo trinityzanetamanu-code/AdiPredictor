@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, History } from 'lucide-react';
 import PredictionOutcomeAudit from './PredictionOutcomeAudit';
+import { resolvedHistoryRecords } from '../historyNavigation';
 
 const MARKET_OPTIONS = [
   ['HK', 'Pasaran HK Pool'],
@@ -28,7 +29,7 @@ function formatTime(value) {
 }
 
 export default function PredictionHistoryPage({ marketCode, setMarketCode, history, onBack }) {
-  const records = history?.records || [];
+  const records = resolvedHistoryRecords(history);
 
   return (
     <div className="space-y-5" data-page="prediction-history">
@@ -57,6 +58,9 @@ export default function PredictionHistoryPage({ marketCode, setMarketCode, histo
         </div>
 
         <div className="p-5 sm:p-6">
+          <div className="mb-4 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+            Histori selesai: {records.length}
+          </div>
           <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Pasaran</label>
           <div className="mt-2 grid grid-cols-3 gap-2 rounded-xl border border-slate-800 bg-slate-950/60 p-1.5 sm:max-w-md">
             {MARKET_OPTIONS.map(([code, label]) => (
@@ -148,7 +152,7 @@ export default function PredictionHistoryPage({ marketCode, setMarketCode, histo
 
         {!records.length && (
           <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-10 text-center text-sm text-slate-500">
-            Indeks histori untuk market ini belum tersedia.
+            Belum ada prediksi dengan hasil undian yang sudah selesai untuk market ini.
           </div>
         )}
       </section>

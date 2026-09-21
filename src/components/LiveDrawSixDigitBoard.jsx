@@ -21,6 +21,30 @@ function DigitNumber({ value, compact = false }) {
   );
 }
 
+function SpinnerDigits({ count = 6 }) {
+  return (
+    <div className="flex justify-center gap-2" aria-label="Menunggu digit hasil terverifikasi" data-spinner-digits={count}>
+      {Array.from({ length: count }, (_, index) => (
+        <span key={index} className="h-9 w-9 rounded-full border-4 border-slate-700 border-t-emerald-400 bg-slate-950/50 animate-spin" aria-hidden="true" />
+      ))}
+    </div>
+  );
+}
+
+function WaitingPrizeRows() {
+  return (
+    <div className="space-y-3 p-4 sm:p-5" data-hk-live-waiting="true">
+      <div className="rounded-xl border border-sky-500/25 bg-sky-500/5 p-3 text-center text-xs font-bold text-sky-300">Menunggu hasil terverifikasi…</div>
+      {['Hadiah 1', 'Hadiah 2', 'Hadiah 3'].map((label) => (
+        <div key={label} className="rounded-xl border border-slate-800 bg-slate-950/45 p-4 text-center">
+          <div className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</div>
+          <SpinnerDigits />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PrizeRow({ label, number, featured = false }) {
   return (
     <div className="rounded-xl border border-slate-800 bg-slate-950/45 p-3 text-center">
@@ -58,6 +82,9 @@ export default function LiveDrawSixDigitBoard({
   onOpenSource,
   onVerifySource,
   verificationState,
+  liveState,
+  fastResult,
+  predictionReady,
 }) {
   const title = market === 'HK' ? 'HONGKONG POOLS MARKET LIVE' : 'SYDNEY MARKET LIVE';
   const match = board?.matches_dataset;
@@ -82,14 +109,26 @@ export default function LiveDrawSixDigitBoard({
         </div>
       </div>
 
-      {!board && status === 'checking' && (
-        <div className="animate-pulse space-y-3 p-5">
-          <div className="h-24 rounded-xl bg-slate-800/70" />
-          <div className="grid grid-cols-2 gap-3"><div className="h-20 rounded-xl bg-slate-800/70" /><div className="h-20 rounded-xl bg-slate-800/70" /></div>
+      {market === 'HK' && fastResult && (
+        <div className="border-b border-slate-800 p-4 sm:p-5" data-hk-fast-result="true">
+          <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4 text-center">
+            <div className="text-[10px] font-black uppercase tracking-wider text-emerald-300">Hasil HK terkonfirmasi</div>
+            <div className="mt-2 font-mono text-4xl font-black text-emerald-400">{fastResult.nomor}</div>
+            <div className="mt-1 text-[10px] text-slate-500">{fastResult.result_date} · {fastResult.periode || '-'}</div>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-2 text-[10px]">
+            <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-2"><span className="text-slate-500">STATUS HASIL</span><div className="mt-1 font-bold text-emerald-300">TERKONFIRMASI</div></div>
+            <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-2"><span className="text-slate-500">STATUS PREDIKSI</span><div className={`mt-1 font-bold ${predictionReady ? 'text-emerald-300' : 'text-amber-300'}`}>{predictionReady ? 'TARGET BARU SIAP' : 'MENGHITUNG…'}</div></div>
+          </div>
+          {!board && <div className="mt-3 text-center text-xs text-amber-300">Menunggu tabel 6D lengkap</div>}
         </div>
       )}
 
-      {!board && status !== 'checking' && (
+      {!board && liveState === 'LIVE_WAITING' && <WaitingPrizeRows />}
+
+      {!board && status === 'checking' && liveState !== 'LIVE_WAITING' && <div className="animate-pulse space-y-3 p-5"><div className="h-24 rounded-xl bg-slate-800/70" /><div className="grid grid-cols-2 gap-3"><div className="h-20 rounded-xl bg-slate-800/70" /><div className="h-20 rounded-xl bg-slate-800/70" /></div></div>}
+
+      {!board && status !== 'checking' && liveState !== 'LIVE_WAITING' && (
         <div className="p-8 text-center">
           <AlertTriangle className="mx-auto h-8 w-8 text-amber-300" />
           <h5 className="mt-3 font-bold text-slate-200">Live board belum dapat diambil</h5>
