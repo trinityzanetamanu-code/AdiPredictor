@@ -21,6 +21,20 @@ test('HK text board parses full 6D and derives last four', async () => {
   assert.equal(board.derived_4d, '0860');
 });
 
+test('KocokHK public mirror table parses as structurally valid live data', async () => {
+  const board = parseSixDigitBoard(
+    await fixture('kocokhk-public-board.html'),
+    'HK',
+    LIVE_BOARD_URLS.HK.publicMirrorUrl,
+  );
+  assert.equal(board.source, 'KocokHK Mirror');
+  assert.equal(board.draw_date, '2026-09-21');
+  assert.equal(board.first, '219608');
+  assert.equal(board.derived_4d, '9608');
+  assert.equal(board.starter.length, 4);
+  assert.equal(board.consolation.length, 8);
+});
+
 test('SDY image filenames map deterministically to six digits', async () => {
   const board = parseSixDigitBoard(await fixture('sdy-live-board-image.html'), 'SDY');
   assert.equal(board.first, '708748');
@@ -48,6 +62,7 @@ test('dataset comparison reports match and mismatch without overwriting either v
 });
 
 test('source URLs are exact HTTPS market pages with no ad endpoints', () => {
+  assert.equal(LIVE_BOARD_URLS.HK.publicMirrorUrl, 'https://rankcrack.com/hk.php');
   assert.equal(LIVE_BOARD_URLS.HK.pageUrl, 'https://www.hongkongpools.com/live');
   assert.equal(LIVE_BOARD_URLS.SDY.pageUrl, 'https://www.sydneypoolstoday.com/live.html');
   assert.equal(LIVE_BOARD_URLS.SDY.dataUrl, 'https://www.sydneypoolstoday.com/getLiveContent');

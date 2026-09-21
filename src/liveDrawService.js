@@ -1,5 +1,6 @@
 export const LIVE_BOARD_URLS = Object.freeze({
   HK: {
+    publicMirrorUrl: 'https://rankcrack.com/hk.php',
     pageUrl: 'https://www.hongkongpools.com/live',
     fallbackUrl: 'https://www.hongkongpools.com/live.html',
     source: 'HongkongPools Market Source',
@@ -155,7 +156,9 @@ export function parseSixDigitBoard(html, market, sourceUrl = LIVE_BOARD_URLS[mar
   const first = rows.first[0] || '';
   const board = {
     market,
-    source: LIVE_BOARD_URLS[market]?.source || `${market} Market Source`,
+    source: sourceUrl === LIVE_BOARD_URLS.HK?.publicMirrorUrl
+      ? 'KocokHK Mirror'
+      : LIVE_BOARD_URLS[market]?.source || `${market} Market Source`,
     source_url: sourceUrl,
     draw_date: parseLiveBoardDate(html),
     first,
@@ -223,6 +226,12 @@ export function selectCurrentHKFastResult({ datasetRow, marketDrawDate, liveStat
   return currentDrawDate || verifiedCurrentState ? datasetRow : null;
 }
 
+export function selectBoardForLiveDisplay({ board, market, scheduleState, marketDrawDate }) {
+  if (!board || board.market !== market) return null;
+  if (market === 'HK' && scheduleState === 'LIVE_WINDOW' && board.draw_date !== marketDrawDate) return null;
+  return board;
+}
+
 export function attachDatasetValidation(board, datasetRow) {
   if (!board) return null;
   const dataset4d = String(datasetRow?.nomor || '').padStart(4, '0');
@@ -273,7 +282,7 @@ export async function fetchNativeLiveBoard(market) {
 
   if (market === 'HK') {
     let lastError;
-    for (const url of [LIVE_BOARD_URLS.HK.pageUrl, LIVE_BOARD_URLS.HK.fallbackUrl]) {
+    for (const url of [LIVE_BOARD_URLS.HK.publicMirrorUrl, LIVE_BOARD_URLS.HK.pageUrl, LIVE_BOARD_URLS.HK.fallbackUrl]) {
       try {
         const html = await nativeGet(CapacitorHttp, url);
         return { available: true, reason: 'native_http', board: parseSixDigitBoard(html, 'HK', url) };

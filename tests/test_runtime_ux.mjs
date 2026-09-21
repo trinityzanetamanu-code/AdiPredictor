@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { replaceInternalPage, resolvedHistoryRecords } from '../src/historyNavigation.js';
 import { predictionFreshness } from '../src/predictionFreshness.js';
-import { deriveHKLiveState, parseSixDigitBoard, selectCurrentHKFastResult } from '../src/liveDrawService.js';
+import { deriveHKLiveState, parseSixDigitBoard, selectBoardForLiveDisplay, selectCurrentHKFastResult } from '../src/liveDrawService.js';
 
 test('History exposes resolved records only and excludes pending count', () => {
   const resolved = { target_date: '2026-09-20', actual_result: { number: '2036' } };
@@ -56,6 +56,12 @@ test('HK live state waits with spinners and resolves independently at 4D/full-6D
   assert.equal(deriveHKLiveState({ scheduleState: 'RESULT_POSTED', datasetRow: current, fullBoard }).state, 'RESULT_FINAL');
   assert.equal(deriveHKLiveState({ scheduleState: 'RESULT_POSTED', datasetRow: current, fullBoard: { ...fullBoard, draw_date: '2026-09-20', first: '782036' } }).state, 'FULL_6D_AVAILABLE');
   assert.equal(deriveHKLiveState({ scheduleState: 'LIVE_WINDOW', datasetRow: current, fullBoard: { first: '789912', second: '' } }).state, 'PARTIAL_RESULT');
+});
+
+test('stale full board is filtered during a new live window before state derivation', async () => {
+  const stale = { market: 'HK', draw_date: '2026-09-20', first: '782036' };
+  assert.equal(selectBoardForLiveDisplay({ board: stale, market: 'HK', scheduleState: 'LIVE_WINDOW', marketDrawDate: '2026-09-21' }), null);
+  assert.equal(selectBoardForLiveDisplay({ board: { ...stale, draw_date: '2026-09-21' }, market: 'HK', scheduleState: 'LIVE_WINDOW', marketDrawDate: '2026-09-21' })?.draw_date, '2026-09-21');
 });
 
 test('spinner UX contains rotating rings and no generated or random digit animation', async () => {

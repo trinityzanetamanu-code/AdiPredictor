@@ -16,7 +16,8 @@ test('Singapore sources use exact official labels and HTTPS fallbacks', () => {
     assert.equal(source.official, true);
     assert.equal(source.sourceLabel, 'Official · Singapore Pools');
     assert.match(source.pageUrl, /^https:\/\/www\.singaporepools\.com\.sg\//);
-    assert.match(source.embedUrl, /^https:\/\/www\.youtube-nocookie\.com\/embed\/videoseries/);
+    assert.match(source.embedUrl, /^https:\/\/www\.youtube\.com\/embed\/videoseries/);
+    assert.match(source.embedUrl, /enablejsapi=1/);
     assert.equal(source.mode, PLAYER_MODES.IFRAME);
   }
 });
@@ -52,8 +53,8 @@ test('schedule distinguishes upcoming live and posted states', () => {
 
 test('draw schedule never claims actual player playback', () => {
   assert.equal(scheduleBadgeLabel('LIVE_WINDOW'), 'DRAW WINDOW');
-  assert.equal(PLAYER_STATES.READY, 'READY');
-  assert.equal(PLAYER_STATES.PLAYING, 'PLAYING');
+  assert.equal(PLAYER_STATES.READY, 'PLAYER_READY');
+  assert.equal(PLAYER_STATES.PLAYING, 'PLAYER_PLAYING');
   assert.equal(Object.hasOwn(PLAYER_STATES, 'LIVE'), false);
 });
 

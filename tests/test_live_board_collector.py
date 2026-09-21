@@ -35,6 +35,20 @@ def test_hk_full_six_digit_parser_and_derived_last_four():
     assert board["draw_date"] == "2026-09-19"
 
 
+def test_kocokhk_public_mirror_parser_handles_multirow_prizes():
+    board = parse_six_digit_board(
+        fixture("kocokhk-public-board.html"),
+        "HK",
+        "KocokHK Mirror",
+        "https://rankcrack.com/hk.php",
+    )
+    assert board["draw_date"] == "2026-09-21"
+    assert board["first"] == "219608"
+    assert board["derived_4d"] == "9608"
+    assert board["starter"] == ["337753", "024355", "318386", "835920"]
+    assert len(board["consolation"]) == 8
+
+
 def test_hk_malformed_board_is_rejected():
     malformed = fixture("hk-live-board.html").replace("510860", "51086", 1)
     with pytest.raises(LiveBoardError, match="first harus exact 6 digit"):

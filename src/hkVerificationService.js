@@ -21,13 +21,13 @@ export function loadLocalHKBoard() {
   } catch { return null; }
 }
 
-export function storeLocalHKBoard(board) {
+export function storeLocalHKBoard(board, provenance = 'structurally_valid_live_source') {
   const normalized = {
     market: 'HK', source: board.source, source_url: board.source_url,
     draw_date: board.draw_date, first: board.first, second: board.second, third: board.third,
     starter: board.starter, consolation: board.consolation,
     full_first_prize_6d: board.first, derived_4d: board.derived_4d,
-    retrieved_at: new Date().toISOString(), verification: 'manual_source_session',
+    retrieved_at: new Date().toISOString(), verification: provenance,
   };
   localStorage.setItem(HK_BOARD_CACHE_KEY, JSON.stringify(normalized));
   return normalized;
@@ -45,7 +45,7 @@ export async function openHKManualVerification() {
       throw Object.assign(new Error('BRIDGE_FAILED'), { code: 'BRIDGE_FAILED' });
     }
     const board = parseSixDigitBoard(response.html, 'HK', response.url);
-    return { state: HK_VERIFICATION_STATES.NORMALIZED_BOARD_READY, board: storeLocalHKBoard(board), error: null };
+    return { state: HK_VERIFICATION_STATES.NORMALIZED_BOARD_READY, board: storeLocalHKBoard(board, 'manual_source_session'), error: null };
   } catch (error) {
     const code = error?.code || error?.message || 'BRIDGE_FAILED';
     return { state: HK_VERIFICATION_STATES.VERIFICATION_FAILED, error: code };

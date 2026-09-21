@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "public" / "data"
 SNAPSHOT_PATH = DATA_DIR / "live-draw.json"
 HK_SOURCES = (
+    ("https://rankcrack.com/hk.php", "KocokHK Mirror"),
     ("https://www.hongkongpools.com/live", "HongkongPools Market Source"),
     ("https://www.hongkongpools.com/live.html", "HongkongPools Market Source"),
 )
@@ -118,7 +119,7 @@ def validate_board(board: dict) -> dict:
             raise LiveBoardError(f"{field} harus exact 6 digit")
     for field in ("starter", "consolation"):
         values = board.get(field)
-        if not isinstance(values, list) or any(not re.fullmatch(r"\d{6}", str(value)) for value in values):
+        if not isinstance(values, list) or not values or any(not re.fullmatch(r"\d{6}", str(value)) for value in values):
             raise LiveBoardError(f"{field} berisi nomor malformed")
     if board.get("derived_4d") != board["first"][-4:]:
         raise LiveBoardError("derived_4d bukan last-four Prize 1")
@@ -134,12 +135,17 @@ def parse_six_digit_board(html: str, market: str, source: str, source_url: str) 
         raise LiveBoardError("Source dilindungi challenge; bypass tidak dicoba")
     soup = BeautifulSoup(html or "", "html.parser")
     buckets: dict[str, list[str]] = {key: [] for key in LABELS}
+    active_multirow_section: Optional[str] = None
     for row in soup.find_all("tr"):
         text = re.sub(r"\s+", " ", row.get_text(" ", strip=True))
         matched = [key for key, pattern in LABELS.items() if pattern.search(text)]
-        if len(matched) != 1:
+        if len(matched) == 1:
+            key = matched[0]
+            buckets[key].extend(_numbers_from_container(row))
+            active_multirow_section = key if key in {"starter", "consolation"} else None
             continue
-        buckets[matched[0]].extend(_numbers_from_container(row))
+        if not matched and active_multirow_section:
+            buckets[active_multirow_section].extend(_numbers_from_container(row))
     buckets = {key: list(dict.fromkeys(values)) for key, values in buckets.items()}
     first = (buckets["first"] or [""])[0]
     board = {
@@ -187,11 +193,15 @@ def attach_dataset_validation(board: dict, dataset_row: Optional[dict]) -> dict:
 
 def collect_hk(session: requests.Session) -> dict:
     errors = []
+    dataset_date = (_dataset_row("HK") or {}).get("result_date")
     for url, source_name in HK_SOURCES:
         try:
             response = session.get(url, headers=_headers(), timeout=25)
             html = _valid_response(response, url)
-            return parse_six_digit_board(html, "HK", source_name, url)
+            board = parse_six_digit_board(html, "HK", source_name, url)
+            if dataset_date and board["draw_date"] < dataset_date:
+                raise LiveBoardError(f"Source stale: {board['draw_date']} < dataset {dataset_date}")
+            return board
         except Exception as exc:  # preserve the last verified snapshot on any source failure
             errors.append(str(exc))
     raise LiveBoardError("; ".join(errors))

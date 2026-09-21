@@ -7,13 +7,16 @@ export const PLAYER_MODES = Object.freeze({
 });
 
 export const PLAYER_STATES = Object.freeze({
-  LOADING: 'LOADING',
-  READY: 'READY',
-  PLAYING: 'PLAYING',
-  WAITING: 'WAITING',
-  OFFLINE: 'OFFLINE',
-  BLOCKED_EMBED: 'BLOCKED_EMBED',
-  ERROR: 'ERROR',
+  LOADING: 'PLAYER_LOADING',
+  READY: 'PLAYER_READY',
+  PLAYING: 'PLAYER_PLAYING',
+  WAITING: 'PLAYER_WAITING',
+  BLOCKED: 'PLAYER_BLOCKED',
+  BLOCKED_EMBED: 'PLAYER_BLOCKED',
+  ERROR: 'PLAYER_ERROR',
+  TIMEOUT: 'PLAYER_TIMEOUT',
+  UNAVAILABLE: 'PLAYER_UNAVAILABLE',
+  OFFLINE: 'PLAYER_UNAVAILABLE',
 });
 
 export function scheduleBadgeLabel(status) {
@@ -25,6 +28,7 @@ export const SGP_COMPOSITE_SOURCE_LABEL = 'Third-party cross-checked market resu
 
 const singaporeSchedule = (days) => ({
   timezone: 'Asia/Singapore',
+  utcOffsetMinutes: 480,
   days,
   startHour: 18,
   startMinute: 30,
@@ -40,10 +44,12 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     sourceLabel: 'Official · Singapore Pools',
     official: true,
     mode: PLAYER_MODES.IFRAME,
-    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/4d/index.html',
+    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/4d/index.html#draw-video',
     resultUrl: 'https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html',
     playlistId: 'PLaXhIWKbyl3U-lDz1iRRZ8-rabk_uZbCY',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLaXhIWKbyl3U-lDz1iRRZ8-rabk_uZbCY&rel=0&playsinline=1',
+    currentVideoId: 'SByHDTZjxEI',
+    embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLaXhIWKbyl3U-lDz1iRRZ8-rabk_uZbCY&rel=0&playsinline=1&enablejsapi=1',
+    runtimePlaybackStatus: 'ANDROID_RUNTIME_TEST_REQUIRED',
     schedule: singaporeSchedule([0, 3, 6]),
   },
   SGP_TOTO: {
@@ -53,10 +59,12 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     sourceLabel: 'Official · Singapore Pools',
     official: true,
     mode: PLAYER_MODES.IFRAME,
-    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/toto/index.html',
+    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/toto/index.html#draw-video',
     resultUrl: 'https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/toto_result_top_draws_en.html',
     playlistId: 'PLaXhIWKbyl3VHtnNcMwG6KOg04q6QQXge',
-    embedUrl: 'https://www.youtube-nocookie.com/embed/videoseries?list=PLaXhIWKbyl3VHtnNcMwG6KOg04q6QQXge&rel=0&playsinline=1',
+    currentVideoId: '1xc5gepZWQU',
+    embedUrl: 'https://www.youtube.com/embed/videoseries?list=PLaXhIWKbyl3VHtnNcMwG6KOg04q6QQXge&rel=0&playsinline=1&enablejsapi=1',
+    runtimePlaybackStatus: 'ANDROID_RUNTIME_TEST_REQUIRED',
     schedule: singaporeSchedule([1, 4]),
   },
   HK: {
@@ -64,12 +72,15 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     market: 'HK',
     title: 'HK Market Live',
     sourceLabel: 'HongkongPools Market Source',
+    liveSourceLabel: 'KocokHK Mirror',
+    publicMirrorUrl: 'https://rankcrack.com/hk.php',
     official: false,
     mode: PLAYER_MODES.NATIVE_BOARD,
     pageUrl: 'https://www.hongkongpools.com/live',
     fallbackUrl: 'https://www.hongkongpools.com/live.html',
     schedule: {
       timezone: 'Asia/Jakarta',
+      utcOffsetMinutes: 420,
       days: [0, 1, 2, 3, 4, 5, 6],
       startHour: 22,
       startMinute: 45,
