@@ -103,6 +103,13 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
   },
 });
 
+export function resolveLiveDrawSource(market, singaporeMode = 'SGP_4D') {
+  if (market === 'SGP') {
+    return LIVE_DRAW_SOURCES[singaporeMode] || LIVE_DRAW_SOURCES.SGP_4D;
+  }
+  return LIVE_DRAW_SOURCES[market] || null;
+}
+
 function zonedParts(now, timezone) {
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone: timezone,
