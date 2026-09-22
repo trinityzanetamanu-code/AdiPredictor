@@ -1,6 +1,6 @@
 # Native live-board source investigation
 
-Audit date: 20 September 2026. This document describes result-table ingestion only. AdiPredictor does not embed advertisements, execute source JavaScript, or proxy third-party pages.
+Audit date: 21 September 2026. This document describes result-table ingestion only. AdiPredictor does not embed advertisements, execute source JavaScript, or proxy third-party pages.
 
 ## HK market
 
@@ -16,6 +16,17 @@ Audit date: 20 September 2026. This document describes result-table ingestion on
 - Two-layer runtime UX: the qualified collector-compatible sources provide the independently verified 4D result without waiting for the full table. The full 6D prizes are added by a validated public page response or the manual in-app WebView. During the configured draw window, empty prize rows use non-numeric spinner rings; the app never animates random or guessed digits.
 - Cached fallback: `public/data/live-draw.json`, maintained idempotently by the existing Auto Result Collector whenever a complete board can be validated. The separate table at `https://www.livedrawhkpools6d.com/` only publishes the six-digit first result; its last-four sequence is qualified for dataset cross-checking, but it is not fabricated into a complete native prize board.
 - Final fallback: open the exact source page with Capacitor Browser. External advertising/script content is never inserted into the native result board.
+
+### KocokHK public mirror investigation
+
+- `https://kocokhk.live/` is publicly accessible without authentication or a managed challenge in the audit environment. It is an AMP shell and must be labelled **KocokHK Mirror**, not official.
+- Its live iframe is `https://rankcrack.com/live-draw-hk.php`. That page performs a public jQuery `.load('hk.php')` at startup and every **30 seconds**.
+- The resolved public result endpoint is `https://rankcrack.com/hk.php`. It returned a text HTML table containing the draw date, exact 6-digit Prize 1/2/3, Starter, and Consolation rows. It did not require credentials, challenge solving, cookies, or a token.
+- At audit time the table published 21 September 2026 with Prize 1 `219608`, whose structurally derived last-four is `9608`. This value is runtime evidence only and is not hard-coded.
+- A separate result-history iframe exists at `https://tabelupdate.online/`; it exposed the matching recent 4D sequence but lagged the live endpoint by one draw during the audit. It is not selected as the primary live feed.
+- `https://kocokhk.online/` redirected through changing domains and timed out in the audit environment. It is not selected.
+- No public JSON, WebSocket, or YouTube/video endpoint was found. The selected mode is a normal public HTML-table GET. The app parses text only; it does not frame the advertising page or execute its scripts.
+- Runtime priority: KocokHK public table, existing structurally valid public source, device/GitHub normalized cache, then the HongkongPools page as a manually opened reference. Persistent `hk.json` and P1–P8 remain controlled exclusively by the existing multi-source collector.
 
 ### HK freshness and market identity
 
@@ -35,9 +46,10 @@ The previous single-source path could remain at 19 September 2026 (`0860`) after
 
 ## Singapore
 
-The existing architecture is unchanged:
+The result architecture remains independent from the player:
 
-- Singapore 4D and TOTO use the official Singapore Pools pages and the existing privacy-enhanced YouTube player.
+- Singapore 4D and TOTO use the official Singapore Pools draw pages and current official YouTube playlists. Playback uses the YouTube IFrame API; iframe load/readiness alone is not treated as playback evidence.
+- A bounded watchdog replaces an unusable or blocked player with a clear official-link fallback. Official result boards remain visible even if Android WebView cannot play the video.
 - Official 4D/TOTO results remain separate from the SGP composite prediction market.
 - The SGP composite value is never labelled as an official Singapore Pools result.
 

@@ -29,6 +29,7 @@ import {
   loadOfficial4DResult,
   loadOfficialTotoResult,
   loadLiveDrawSnapshot,
+  loadAppReleaseMetadata,
   loadTafsir,
   predictionAssetUrl,
 } from './dataClient';
@@ -38,11 +39,21 @@ import LiveDrawFourDigitBoard, { TotoBoard } from './components/LiveDrawFourDigi
 import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
 import PredictionHistoryPage from './components/PredictionHistoryPage';
 import PredictionOutcomeAudit from './components/PredictionOutcomeAudit';
+import NotificationSettingsPanel from './components/NotificationSettingsPanel';
 import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, selectSingaporeMode } from './liveDrawConfig';
-import { attachDatasetValidation, deriveHKLiveState, fetchNativeLiveBoard, liveBoardRefreshMs, selectCurrentHKFastResult, zonedISODate } from './liveDrawService';
-import { loadLocalHKBoard, openHKManualVerification } from './hkVerificationService';
+import { attachDatasetValidation, deriveHKLiveState, fetchNativeLiveBoard, liveBoardRefreshMs, selectBoardForLiveDisplay, selectCurrentHKFastResult, zonedISODate } from './liveDrawService';
+import { loadLocalHKBoard, storeLocalHKBoard } from './hkVerificationService';
 import { predictionChangeNote, predictionFreshness } from './predictionFreshness';
 import { replaceInternalPage } from './historyNavigation';
+import { collectorHealth, datasetFreshness, datasetFreshnessMessage, DATASET_FRESHNESS } from './collectorHealth';
+import { deliverRuntimeNotifications, registerNotificationActionListener, scheduleLiveDrawReminders } from './notificationService';
+import {
+  createRuntimeLatestResult,
+  effectiveLatestResult,
+  predictionMayDisplay,
+  runtimeResultSyncState,
+  RUNTIME_SYNC_STATE,
+} from './runtimeResultSync';
 
 const AppContext = createContext();
 
@@ -109,6 +120,18 @@ function marketLabel(code) {
   return MARKET_META[code]?.label || code;
 }
 
+function formatResultDate(row) {
+  if (row?.tanggal) return row.tanggal;
+  if (!row?.result_date) return '-';
+  try {
+    return new Intl.DateTimeFormat('id-ID', {
+      timeZone: 'UTC', day: '2-digit', month: 'short', year: 'numeric',
+    }).format(new Date(`${row.result_date}T00:00:00Z`));
+  } catch {
+    return row.result_date;
+  }
+}
+
 function formatSyncTime(value) {
   if (!value) return '-';
   try {
@@ -140,6 +163,8 @@ export function AppProvider({ children }) {
       : 'main',
   );
   const [marketCode, setMarketCode] = useState('HK');
+  const [resultsMarket, setResultsMarket] = useState('HK');
+  const [liveDrawMarket, setLiveDrawMarket] = useState('HK');
   const [toastMessage, setToastMessage] = useState('');
 
   const [marketData, setMarketData] = useState({
@@ -162,9 +187,15 @@ export function AppProvider({ children }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(null);
   const [dataError, setDataError] = useState('');
+  const [releaseMetadata, setReleaseMetadata] = useState(null);
+  const [runtimeLatestResults, setRuntimeLatestResults] = useState({ HK: null, SGP: null, SDY: null });
 
   const toastTimerRef = useRef(null);
   const analysisScrollRef = useRef(0);
+  const notificationSnapshotRef = useRef(null);
+  const marketDataRef = useRef(marketData);
+  const acceleratedRefreshRef = useRef(null);
+  const runtimeEventKeyRef = useRef(null);
 
   const showToast = (msg) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -197,6 +228,7 @@ export function AppProvider({ children }) {
         sgpHistory,
         sdyHistory,
         remoteTafsir,
+        remoteReleaseMetadata,
       ] =
         await Promise.all([
           loadMarketData('HK'),
@@ -210,9 +242,12 @@ export function AppProvider({ children }) {
           loadPredictionHistory('SGP'),
           loadPredictionHistory('SDY'),
           loadTafsir(),
+          loadAppReleaseMetadata(),
         ]);
 
-      setMarketData({ HK: hk, SGP: sgp, SDY: sdy });
+      const nextMarketData = { HK: hk, SGP: sgp, SDY: sdy };
+      marketDataRef.current = nextMarketData;
+      setMarketData(nextMarketData);
       setCollectorStatus(status);
       setPredictions({ HK: hkPred, SGP: sgpPred, SDY: sdyPred });
       setPredictionHistory({
@@ -223,14 +258,64 @@ export function AppProvider({ children }) {
       if (Array.isArray(remoteTafsir) && remoteTafsir.length) {
         setTafsirData(remoteTafsir);
       }
+      setReleaseMetadata(remoteReleaseMetadata);
+      const notificationSnapshot = {
+        marketData: { HK: hk, SGP: sgp, SDY: sdy },
+        predictions: { HK: hkPred, SGP: sgpPred, SDY: sdyPred },
+        histories: { HK: hkHistory, SGP: sgpHistory, SDY: sdyHistory },
+        releaseMetadata: remoteReleaseMetadata,
+      };
+      await deliverRuntimeNotifications(notificationSnapshot, notificationSnapshotRef.current).catch((error) => {
+        console.warn('Notifikasi runtime dilewati:', error?.message || error);
+      });
+      notificationSnapshotRef.current = notificationSnapshot;
       setLastRefresh(new Date().toISOString());
       setDataError('');
+      return { marketData: nextMarketData };
     } catch (err) {
       console.error('Gagal sinkronisasi data:', err);
       setDataError(err?.message || 'Gagal sinkronisasi data');
     } finally {
       setIsRefreshing(false);
     }
+  };
+
+  const stopAcceleratedRefresh = () => {
+    if (acceleratedRefreshRef.current) window.clearInterval(acceleratedRefreshRef.current);
+    acceleratedRefreshRef.current = null;
+  };
+
+  const startAcceleratedRefresh = (runtimeResult) => {
+    stopAcceleratedRefresh();
+    let attempts = 0;
+    const checkPersistentData = async () => {
+      attempts += 1;
+      const refreshed = await refreshData(true);
+      const dataset = refreshed?.marketData?.[runtimeResult.market]?.[0] || marketDataRef.current[runtimeResult.market]?.[0] || null;
+      const sync = runtimeResultSyncState(runtimeResult, dataset);
+      if (sync.reconciled || sync.conflict || attempts >= 20) stopAcceleratedRefresh();
+    };
+    checkPersistentData();
+    acceleratedRefreshRef.current = window.setInterval(checkPersistentData, 12000);
+  };
+
+  const publishRuntimeLatestResult = ({ market, board }) => {
+    const runtimeResult = createRuntimeLatestResult({ market, board });
+    const dataset = marketDataRef.current[runtimeResult.market]?.[0] || null;
+    const sync = runtimeResultSyncState(runtimeResult, dataset);
+    if (sync.conflict) {
+      setRuntimeLatestResults((current) => ({ ...current, [runtimeResult.market]: runtimeResult }));
+      refreshData(true);
+      return sync;
+    }
+    if (sync.state !== RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET) return sync;
+    const eventKey = `${runtimeResult.market}:${runtimeResult.result_date}:${runtimeResult.nomor}`;
+    setRuntimeLatestResults((current) => ({ ...current, [runtimeResult.market]: runtimeResult }));
+    if (runtimeEventKeyRef.current !== eventKey) {
+      runtimeEventKeyRef.current = eventKey;
+      startAcceleratedRefresh(runtimeResult);
+    }
+    return sync;
   };
 
   useEffect(() => {
@@ -250,6 +335,7 @@ export function AppProvider({ children }) {
       document.removeEventListener('visibilitychange', onVisible);
       window.removeEventListener('focus', onFocus);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      stopAcceleratedRefresh();
     };
   }, []);
 
@@ -269,6 +355,24 @@ export function AppProvider({ children }) {
       listener?.remove?.();
     };
   }, [internalPage]);
+
+  useEffect(() => {
+    let handle;
+    let cancelled = false;
+    registerNotificationActionListener((target) => {
+      if (cancelled) return;
+      setMarketCode(target.market);
+      setResultsMarket(target.market);
+      setLiveDrawMarket(target.market);
+      setActiveTab(target.tab);
+      setInternalPage(target.internalPage);
+      replaceInternalPage(window.history, window.location, target.internalPage);
+      if (target.showUpdate) showToast('Informasi update stable tersedia pada metadata aplikasi.');
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }).then((listener) => { if (cancelled) listener?.remove?.(); else handle = listener; });
+    scheduleLiveDrawReminders().catch(() => {});
+    return () => { cancelled = true; handle?.remove?.(); };
+  }, []);
 
   const openPredictionHistory = () => {
     analysisScrollRef.current = window.scrollY || 0;
@@ -304,6 +408,10 @@ export function AppProvider({ children }) {
         closePredictionHistory,
         marketCode,
         setMarketCode,
+        resultsMarket,
+        setResultsMarket,
+        liveDrawMarket,
+        setLiveDrawMarket,
         marketData,
         collectorStatus,
         predictions,
@@ -312,6 +420,9 @@ export function AppProvider({ children }) {
         isRefreshing,
         lastRefresh,
         dataError,
+        releaseMetadata,
+        runtimeLatestResults,
+        publishRuntimeLatestResult,
         refreshData,
         copyToClipboard,
         toastMessage,
@@ -400,7 +511,7 @@ function MarketSelect({ value, onChange }) {
   );
 }
 
-function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt }) {
+function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt, backendHealth, datasetState }) {
   const latestStatus = status?.latest_verified || status?.latest;
 
   return (
@@ -412,8 +523,20 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
 
       <div className="space-y-3 text-xs">
         <div className="flex items-center justify-between gap-4">
-          <span className="text-slate-400">Auto refresh</span>
+          <span className="text-slate-400">App refresh</span>
           <span className="text-emerald-400 font-semibold">Aktif · 60 detik</span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Backend collector</span>
+          <span className={`font-semibold text-right ${backendHealth?.state === 'COLLECTOR_HEALTHY' ? 'text-emerald-300' : backendHealth?.state === 'COLLECTOR_DELAYED' ? 'text-amber-300' : 'text-rose-300'}`}>
+            {backendHealth?.label || 'Status belum diketahui'}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Freshness dataset</span>
+          <span className="font-semibold text-right text-slate-200">{datasetState?.state || 'UNKNOWN'}</span>
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -497,13 +620,13 @@ function CandidateChips({ items = [] }) {
   );
 }
 
-function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
+function PredictionCard({ prediction, marketCode, latest, onOpenHistory, datasetState, runtimePredictionState }) {
   const { copyToClipboard, refreshData } = useApp();
   const candidateNumber = (value) =>
     typeof value === 'object' && value !== null ? value.number : value;
 
   const freshness = predictionFreshness(prediction, latest);
-  const predictionFresh = freshness.fresh;
+  const predictionFresh = freshness.fresh && runtimePredictionState?.visible !== false;
 
   useEffect(() => {
     if (!prediction || predictionFresh) return undefined;
@@ -568,6 +691,11 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
 
       {predictionFresh && quick ? (
         <div className="space-y-5">
+          {datasetState && ![DATASET_FRESHNESS.CURRENT, DATASET_FRESHNESS.WAITING_FOR_DRAW].includes(datasetState.state) && (
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200" data-dataset-freshness-warning>
+              <strong>{datasetState.state}</strong> · {datasetFreshnessMessage(datasetState)}
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
             <div className="text-slate-400">
               Target:{' '}
@@ -838,7 +966,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory }) {
           <div>
             <h4 className="font-bold text-slate-100">Prediksi sedang disinkronkan</h4>
             <p className="text-xs text-slate-400 mt-2 max-w-md">
-              Hasil terbaru sudah berubah. Aplikasi menunggu file prediksi P1–P8 yang sesuai dengan result terbaru agar prediksi lama tidak ditampilkan. ({freshness.reason})
+              Hasil terbaru sudah berubah. Aplikasi menunggu sinkronisasi dataset dan prediksi P1–P8 baru agar prediksi lama tidak ditampilkan. ({runtimePredictionState?.reason || freshness.reason})
             </p>
           </div>
         </div>
@@ -868,17 +996,27 @@ function GeneratorPanel() {
     marketData,
     collectorStatus,
     predictions,
+    runtimeLatestResults,
     openPredictionHistory,
     lastRefresh,
     dataError,
   } = useApp();
   const activeData = marketData[marketCode] || [];
-  const latest = activeData[0] || {
+  const datasetLatest = activeData[0] || {
     tanggal: '-',
     nomor: '----',
     periode: '-',
   };
+  const effective = effectiveLatestResult(datasetLatest, runtimeLatestResults[marketCode]);
+  const latest = effective.result || datasetLatest;
+  const runtimePredictionState = predictionMayDisplay({
+    prediction: predictions[marketCode],
+    dataset: datasetLatest,
+    runtime: runtimeLatestResults[marketCode],
+  });
   const status = collectorStatus?.markets?.[marketCode] || null;
+  const backendHealth = collectorHealth(collectorStatus);
+  const datasetState = datasetFreshness({ market: marketCode, latest: datasetLatest, collectorStatus });
 
   return (
     <div className="space-y-6">
@@ -892,8 +1030,22 @@ function GeneratorPanel() {
               Hasil Keluaran Terakhir ({latest.periode})
             </span>
             <h4 className="text-sm font-bold text-slate-200">
-              {marketLabel(marketCode)} - {latest.tanggal}
+              {marketLabel(marketCode)} - {formatResultDate(latest)}
             </h4>
+            {effective.source === 'LIVE_DRAW_RUNTIME' ? (
+              <div className="mt-1 text-[10px] text-amber-300" data-effective-result-source="LIVE_DRAW_RUNTIME">
+                LiveDraw terbaru · Diperbarui {formatSyncTime(latest.updated_at)} · Dataset analisis sedang sinkron...
+              </div>
+            ) : (
+              <div className="mt-1 text-[10px] text-emerald-300" data-effective-result-source="DATASET">
+                Tersinkronisasi · Data dikoleksi {formatSyncTime(datasetLatest.collected_at || collectorStatus?.collected_at)}
+              </div>
+            )}
+            {effective.sync.conflict && (
+              <div className="mt-1 text-[10px] font-bold text-rose-300" data-live-dataset-conflict>
+                LIVE_DATASET_CONFLICT · Dataset terverifikasi tetap menjadi acuan prediksi.
+              </div>
+            )}
           </div>
         </div>
 
@@ -920,14 +1072,19 @@ function GeneratorPanel() {
             dataError={dataError}
             collectedAt={collectorStatus?.collected_at}
             predictionAt={predictions[marketCode]?.generated_at}
+            backendHealth={backendHealth}
+            datasetState={datasetState}
           />
+          <NotificationSettingsPanel />
         </div>
 
         <PredictionCard
           prediction={predictions[marketCode]}
           marketCode={marketCode}
-          latest={latest}
+          latest={datasetLatest}
           onOpenHistory={openPredictionHistory}
+          datasetState={datasetState}
+          runtimePredictionState={runtimePredictionState}
         />
       </div>
     </div>
@@ -935,8 +1092,7 @@ function GeneratorPanel() {
 }
 
 function ResultsPanel() {
-  const { marketData } = useApp();
-  const [selectedMarket, setSelectedMarket] = useState('HK');
+  const { marketData, resultsMarket: selectedMarket, setResultsMarket: setSelectedMarket } = useApp();
   const [selectedYear, setSelectedYear] = useState('2026');
   const sourceData = marketData[selectedMarket] || [];
 
@@ -1024,23 +1180,22 @@ function ResultsPanel() {
 }
 
 function liveDrawState({ isRefreshing, dataError, status, latest, prediction }) {
-  if (isRefreshing) return { key: 'checking', label: 'CHECKING', className: 'text-sky-300 bg-sky-500/10 border-sky-500/25' };
+  if (isRefreshing) return { key: 'checking', label: 'MEMERIKSA', className: 'text-sky-300 bg-sky-500/10 border-sky-500/25' };
   if (dataError || (!latest && status?.source_errors?.length)) {
-    return { key: 'source_unavailable', label: 'SOURCE UNAVAILABLE', className: 'text-rose-300 bg-rose-500/10 border-rose-500/25' };
+    return { key: 'source_unavailable', label: 'TIDAK TERSEDIA', className: 'text-rose-300 bg-rose-500/10 border-rose-500/25' };
   }
   const predictionCaughtUp = predictionFreshness(prediction, latest).fresh;
   if (Number(status?.new_count || 0) > 0 && !predictionCaughtUp) {
-    return { key: 'new_result_detected', label: 'NEW RESULT DETECTED', className: 'text-amber-300 bg-amber-500/10 border-amber-500/25' };
+    return { key: 'new_result_detected', label: 'HASIL BARU · SINKRONISASI', className: 'text-amber-300 bg-amber-500/10 border-amber-500/25' };
   }
   if (latest?.verification) {
-    return { key: 'verified', label: 'VERIFIED', className: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/25' };
+    return { key: 'available', label: 'TERSEDIA', className: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/25' };
   }
-  return { key: 'waiting', label: 'WAITING', className: 'text-slate-300 bg-slate-500/10 border-slate-500/25' };
+  return { key: 'waiting', label: 'CADANGAN', className: 'text-slate-300 bg-slate-500/10 border-slate-500/25' };
 }
 
 function LiveDrawPanel() {
-  const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError, refreshData } = useApp();
-  const [liveMarket, setLiveMarket] = useState('HK');
+  const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError, refreshData, publishRuntimeLatestResult, liveDrawMarket: liveMarket, setLiveDrawMarket: setLiveMarket } = useApp();
   const [singaporeMode, setSingaporeMode] = useState(() => selectSingaporeMode());
   const [officialResults, setOfficialResults] = useState({ fourD: null, toto: null });
   const [officialResultCheckedAt, setOfficialResultCheckedAt] = useState(null);
@@ -1052,7 +1207,6 @@ function LiveDrawPanel() {
     checkedAt: null,
   });
   const [boardRefreshNonce, setBoardRefreshNonce] = useState(0);
-  const [hkVerificationState, setHkVerificationState] = useState(null);
 
   useEffect(() => {
     if (liveMarket !== 'SGP') return undefined;
@@ -1123,13 +1277,21 @@ function LiveDrawPanel() {
           selectedBoard = attachDatasetValidation(direct.board, datasetRow);
           fetchMode = direct.reason;
           status = 'ready';
+          if (liveMarket === 'HK') storeLocalHKBoard(direct.board, 'public_mirror_structural_validation');
         } else if (direct.reason === 'web_platform') {
           fetchMode = cached ? 'web_cached_snapshot' : 'web_snapshot_unavailable';
         }
       } catch (error) {
         errorMessage = error?.message || 'Direct native source gagal';
-        if (liveMarket === 'HK' && /HTTP 403|challenge|verifikasi keamanan/i.test(errorMessage)) setHkVerificationState('CHALLENGE_REQUIRED');
         status = selectedBoard ? 'cached' : 'unavailable';
+      }
+
+      if (liveMarket === 'HK' && selectedBoard) {
+        try {
+          publishRuntimeLatestResult({ market: 'HK', board: selectedBoard });
+        } catch (error) {
+          errorMessage = error?.code || error?.message || 'BOARD_VALIDATION_FAILED';
+        }
       }
 
       if (mounted) {
@@ -1173,6 +1335,13 @@ function LiveDrawPanel() {
   const selectedRow = marketData[liveMarket]?.[0] || null;
   const selectedSource = LIVE_DRAW_SOURCES[liveMarket];
   const selectedScheduleState = calculateLiveState(selectedSource.schedule).status;
+  const hkMarketDrawDate = zonedISODate(new Date(), 'Asia/Jakarta');
+  const boardForDisplay = selectBoardForLiveDisplay({
+    board: boardState.board,
+    market: liveMarket,
+    scheduleState: selectedScheduleState,
+    marketDrawDate: hkMarketDrawDate,
+  });
   const selectedCollectorState = liveDrawState({
     isRefreshing,
     dataError,
@@ -1180,34 +1349,23 @@ function LiveDrawPanel() {
     latest: selectedRow,
     prediction: predictions[liveMarket],
   });
-  const verifyHK = async () => {
-    setHkVerificationState('MANUAL_VERIFICATION_OPEN');
-    const result = await openHKManualVerification();
-    setHkVerificationState(result.state);
-    if (result.board) {
-      const datasetRow = marketData.HK?.[0] || null;
-      setBoardState({ board: attachDatasetValidation(result.board, datasetRow), status: 'ready', fetchMode: 'manual_in_app_verified', error: null, checkedAt: new Date().toISOString() });
-    } else if (result.error) {
-      setBoardState((current) => ({ ...current, status: current.board ? 'cached' : 'unavailable', error: result.error, checkedAt: new Date().toISOString() }));
-    }
-  };
   const hkRowForState = liveMarket === 'HK' && selectedRow ? {
     ...selectedRow,
-    is_current_draw: selectedRow.result_date === zonedISODate(new Date(), 'Asia/Jakarta') ? 1 : 0,
+    is_current_draw: selectedRow.result_date === hkMarketDrawDate ? 1 : 0,
   } : selectedRow;
   const hkLive = liveMarket === 'HK'
     ? deriveHKLiveState({
         scheduleState: selectedScheduleState,
         datasetRow: hkRowForState,
         prediction: predictions.HK,
-        fullBoard: boardState.board?.market === 'HK' ? boardState.board : null,
-        challengeRequired: hkVerificationState === 'CHALLENGE_REQUIRED',
+        fullBoard: boardForDisplay?.market === 'HK' ? boardForDisplay : null,
+        challengeRequired: false,
       })
     : null;
   const hkFastResult = liveMarket === 'HK'
     ? selectCurrentHKFastResult({
         datasetRow: selectedRow,
-        marketDrawDate: zonedISODate(new Date(), 'Asia/Jakarta'),
+        marketDrawDate: hkMarketDrawDate,
         liveState: hkLive?.state,
       })
     : null;
@@ -1220,7 +1378,7 @@ function LiveDrawPanel() {
             <Radio className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-100">LiveDraw · Broadcast & Verified Results</h3>
+            <h3 className="text-lg font-bold text-slate-100">LiveDraw · Siaran & Hasil Pasaran</h3>
             <p className="mt-1 text-xs text-slate-400">
               Tabel HK dan SDY dirender native dari data angka saja. HTML, iklan, dan script sumber tidak pernah dijalankan di aplikasi.
             </p>
@@ -1265,17 +1423,15 @@ function LiveDrawPanel() {
       ) : (
         <LiveDrawSixDigitBoard
           market={liveMarket}
-          board={boardState.board?.market === liveMarket ? boardState.board : null}
-          sourceLabel={selectedSource.sourceLabel}
-          sourceUrl={selectedSource.pageUrl}
+          board={boardForDisplay}
+          sourceLabel={boardState.board?.source || selectedSource.sourceLabel}
+          sourceUrl={boardState.board?.source_url || selectedSource.pageUrl}
           fetchMode={boardState.fetchMode}
           status={boardState.status}
           error={boardState.error}
           lastRefresh={formatSyncTime(boardState.checkedAt)}
           onRefresh={() => setBoardRefreshNonce((value) => value + 1)}
-          onOpenSource={() => openLivePage(selectedSource.pageUrl)}
-          onVerifySource={liveMarket === 'HK' ? verifyHK : null}
-          verificationState={liveMarket === 'HK' ? hkVerificationState : null}
+          onOpenSource={() => openLivePage(boardState.board?.source_url || selectedSource.pageUrl)}
           liveState={liveMarket === 'HK' ? hkLive?.state : selectedScheduleState}
           fastResult={hkFastResult}
           predictionReady={liveMarket === 'HK' ? hkLive?.predictionReady : false}
@@ -1420,6 +1576,7 @@ function DreamBookPanel() {
 
 function Footer() {
   const { isRefreshing, collectorStatus } = useApp();
+  const health = collectorHealth(collectorStatus);
 
   return (
     <footer className="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500 mt-auto">
@@ -1432,9 +1589,7 @@ function Footer() {
         <span>
           {isRefreshing
             ? 'Sinkronisasi data...'
-            : collectorStatus
-              ? 'Auto collector aktif'
-              : 'Menggunakan data fallback'}
+            : health.label}
         </span>
       </div>
       <p>© 2026 AdiPredictor Application. All rights reserved.</p>

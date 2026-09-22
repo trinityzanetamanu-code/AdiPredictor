@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, CheckCircle2, ExternalLink, RefreshCw, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, ExternalLink, RefreshCw } from 'lucide-react';
 
 function DigitNumber({ value, compact = false }) {
   const digits = /^\d{6}$/.test(String(value || '')) ? String(value) : '------';
@@ -23,7 +23,7 @@ function DigitNumber({ value, compact = false }) {
 
 function SpinnerDigits({ count = 6 }) {
   return (
-    <div className="flex justify-center gap-2" aria-label="Menunggu digit hasil terverifikasi" data-spinner-digits={count}>
+    <div className="flex justify-center gap-2" aria-label="Menunggu digit hasil LiveDraw" data-spinner-digits={count}>
       {Array.from({ length: count }, (_, index) => (
         <span key={index} className="h-9 w-9 rounded-full border-4 border-slate-700 border-t-emerald-400 bg-slate-950/50 animate-spin" aria-hidden="true" />
       ))}
@@ -34,7 +34,7 @@ function SpinnerDigits({ count = 6 }) {
 function WaitingPrizeRows() {
   return (
     <div className="space-y-3 p-4 sm:p-5" data-hk-live-waiting="true">
-      <div className="rounded-xl border border-sky-500/25 bg-sky-500/5 p-3 text-center text-xs font-bold text-sky-300">Menunggu hasil terverifikasi…</div>
+      <div className="rounded-xl border border-sky-500/25 bg-sky-500/5 p-3 text-center text-xs font-bold text-sky-300">Menunggu hasil LiveDraw…</div>
       {['Hadiah 1', 'Hadiah 2', 'Hadiah 3'].map((label) => (
         <div key={label} className="rounded-xl border border-slate-800 bg-slate-950/45 p-4 text-center">
           <div className="mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</div>
@@ -80,14 +80,11 @@ export default function LiveDrawSixDigitBoard({
   lastRefresh,
   onRefresh,
   onOpenSource,
-  onVerifySource,
-  verificationState,
   liveState,
   fastResult,
   predictionReady,
 }) {
   const title = market === 'HK' ? 'HONGKONG POOLS MARKET LIVE' : 'SYDNEY MARKET LIVE';
-  const match = board?.matches_dataset;
 
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 shadow-xl" data-live-board={market}>
@@ -112,12 +109,12 @@ export default function LiveDrawSixDigitBoard({
       {market === 'HK' && fastResult && (
         <div className="border-b border-slate-800 p-4 sm:p-5" data-hk-fast-result="true">
           <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4 text-center">
-            <div className="text-[10px] font-black uppercase tracking-wider text-emerald-300">Hasil HK terkonfirmasi</div>
+            <div className="text-[10px] font-black uppercase tracking-wider text-emerald-300">Hasil HK terbaru</div>
             <div className="mt-2 font-mono text-4xl font-black text-emerald-400">{fastResult.nomor}</div>
             <div className="mt-1 text-[10px] text-slate-500">{fastResult.result_date} · {fastResult.periode || '-'}</div>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2 text-[10px]">
-            <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-2"><span className="text-slate-500">STATUS HASIL</span><div className="mt-1 font-bold text-emerald-300">TERKONFIRMASI</div></div>
+            <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-2"><span className="text-slate-500">STATUS HASIL</span><div className="mt-1 font-bold text-emerald-300">DATA LIVE TERSEDIA</div></div>
             <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-2"><span className="text-slate-500">STATUS PREDIKSI</span><div className={`mt-1 font-bold ${predictionReady ? 'text-emerald-300' : 'text-amber-300'}`}>{predictionReady ? 'TARGET BARU SIAP' : 'MENGHITUNG…'}</div></div>
           </div>
           {!board && <div className="mt-3 text-center text-xs text-amber-300">Menunggu tabel 6D lengkap</div>}
@@ -133,10 +130,8 @@ export default function LiveDrawSixDigitBoard({
           <AlertTriangle className="mx-auto h-8 w-8 text-amber-300" />
           <h5 className="mt-3 font-bold text-slate-200">Live board belum dapat diambil</h5>
           <p className="mx-auto mt-2 max-w-lg text-xs leading-relaxed text-slate-400">
-            Sumber mungkin sedang offline atau melindungi halaman dengan challenge. Aplikasi tidak mencoba bypass; gunakan snapshot berikutnya atau buka sumber.
+            Sumber mungkin sedang offline atau melindungi halaman dengan pemeriksaan keamanan. Aplikasi tidak mencoba bypass; gunakan snapshot berikutnya atau buka sumber secara manual.
           </p>
-          {market === 'HK' && onVerifySource && <button type="button" onClick={onVerifySource} className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-black text-amber-200">VERIFIKASI SUMBER HK</button>}
-          {verificationState && <p className="mt-2 text-[10px] text-slate-500">Status verifikasi: {verificationState.replaceAll('_', ' ')}</p>}
         </div>
       )}
 
@@ -158,23 +153,9 @@ export default function LiveDrawSixDigitBoard({
             <NumberGrid title="Consolation" numbers={board.consolation} />
           </div>
 
-          <div className={`rounded-xl border p-4 ${
-            match === true
-              ? 'border-emerald-500/25 bg-emerald-500/5'
-              : match === false
-                ? 'border-amber-500/30 bg-amber-500/5'
-                : 'border-slate-800 bg-slate-950/40'
-          }`}>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div><div className="text-[9px] uppercase text-slate-500">Derived last-four</div><div className="mt-1 font-mono text-lg font-black text-emerald-300">{board.derived_4d || '----'}</div></div>
-              <div><div className="text-[9px] uppercase text-slate-500">Prediction dataset 4D</div><div className="mt-1 font-mono text-lg font-black text-slate-200">{board.dataset_4d || '----'}</div></div>
-            </div>
-            <div className={`mt-3 flex items-center gap-2 text-[10px] font-bold ${
-              match === true ? 'text-emerald-300' : match === false ? 'text-amber-300' : 'text-slate-500'
-            }`}>
-              {match === true ? <CheckCircle2 className="h-4 w-4" /> : match === false ? <AlertTriangle className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4" />}
-              {match === true ? 'COCOK DENGAN DATASET PREDIKSI' : match === false ? 'SUMBER / DATASET TIDAK COCOK' : 'MENUNGGU TANGGAL DRAW YANG DAPAT DIBANDINGKAN'}
-            </div>
+          <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4 text-center">
+            <div className="text-[9px] uppercase text-slate-500">Derived last-four</div>
+            <div className="mt-1 font-mono text-2xl font-black text-emerald-300">{board.derived_4d || '----'}</div>
           </div>
         </div>
       )}
@@ -182,7 +163,6 @@ export default function LiveDrawSixDigitBoard({
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 p-3">
         <span className="text-[10px] text-slate-500">Dicek: {lastRefresh || '-'}</span>
         <div className="flex gap-2">
-          {market === 'HK' && onVerifySource && verificationState === 'CHALLENGE_REQUIRED' && <button type="button" onClick={onVerifySource} className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-2 text-[10px] font-black text-amber-200">Verifikasi Sumber HK</button>}
           <button type="button" onClick={onRefresh} className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-2 text-[10px] font-semibold text-slate-200">
             <RefreshCw className="h-3.5 w-3.5" /> Perbarui data
           </button>
@@ -199,6 +179,11 @@ export default function LiveDrawSixDigitBoard({
           <dt>Fetch mode</dt><dd className="text-slate-200">{fetchMode || 'cached_snapshot'}</dd>
           <dt>Board status</dt><dd className="text-slate-200">{status}</dd>
           <dt>Last refresh</dt><dd className="text-slate-200">{lastRefresh || '-'}</dd>
+          <dt>Source draw date</dt><dd className="text-slate-200">{board?.draw_date || '-'}</dd>
+          <dt>Live derived 4D</dt><dd className="text-slate-200">{board?.derived_4d || '-'}</dd>
+          <dt>Dataset latest date</dt><dd className="text-slate-200">{board?.dataset_latest_date || '-'}</dd>
+          <dt>Dataset 4D</dt><dd className="text-slate-200">{board?.dataset_4d || '-'}</dd>
+          <dt>Sync state</dt><dd className="text-slate-200">{board?.verification || 'not_compared'}</dd>
           <dt>Error</dt><dd className="text-slate-200">{error || '-'}</dd>
         </dl>
       </details>

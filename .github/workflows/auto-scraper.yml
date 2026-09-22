@@ -2,7 +2,8 @@ name: Auto Result Collector
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    # Keep the 10-minute cadence off the busiest top-of-hour boundaries.
+    - cron: '3,13,23,33,43,53 * * * *'
   push:
     branches:
       - main

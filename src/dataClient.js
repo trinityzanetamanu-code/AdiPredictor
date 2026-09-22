@@ -133,6 +133,14 @@ export async function loadLiveDrawSnapshot() {
     : { schema_version: 1, retrieved_at: null, markets: {} };
 }
 
+export async function loadAppReleaseMetadata() {
+  return remoteFirst(
+    'app-release.json',
+    './app-release.json',
+    true,
+  );
+}
+
 
 export async function loadTafsir() {
   const data = await remoteFirst(
