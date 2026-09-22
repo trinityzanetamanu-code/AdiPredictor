@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "retrieved_at": "2026-09-21T21:07:20+07:00",
+  "retrieved_at": "2026-09-22T09:49:45+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -21,7 +21,38 @@
       "dataset_4d": "1697",
       "matches_dataset": true,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-09-21T21:07:20+07:00"
+      "retrieved_at": "2026-09-22T09:49:45+07:00"
+    },
+    "HK": {
+      "market": "HK",
+      "source": "KocokHK Mirror",
+      "source_url": "https://rankcrack.com/hk.php",
+      "draw_date": "2026-09-21",
+      "first": "219608",
+      "second": "341526",
+      "third": "740005",
+      "starter": [
+        "337753",
+        "024355",
+        "318386",
+        "835920"
+      ],
+      "consolation": [
+        "504891",
+        "141515",
+        "169517",
+        "037967",
+        "548933",
+        "301967",
+        "961249",
+        "697967"
+      ],
+      "full_first_prize_6d": "219608",
+      "derived_4d": "9608",
+      "dataset_4d": "9608",
+      "matches_dataset": true,
+      "verification": "matches_prediction_dataset",
+      "retrieved_at": "2026-09-22T09:49:45+07:00"
     }
   }
 }
