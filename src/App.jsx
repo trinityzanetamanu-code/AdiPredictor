@@ -40,7 +40,7 @@ import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
 import PredictionHistoryPage from './components/PredictionHistoryPage';
 import PredictionOutcomeAudit from './components/PredictionOutcomeAudit';
 import NotificationSettingsPanel from './components/NotificationSettingsPanel';
-import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, selectSingaporeMode } from './liveDrawConfig';
+import { LIVE_DRAW_SOURCES, SGP_COMPOSITE_SOURCE_LABEL, calculateLiveState, resolveLiveDrawSource, selectSingaporeMode } from './liveDrawConfig';
 import { attachDatasetValidation, deriveHKLiveState, fetchNativeLiveBoard, liveBoardRefreshMs, selectBoardForLiveDisplay, selectCurrentHKFastResult, zonedISODate } from './liveDrawService';
 import { loadLocalHKBoard, storeLocalHKBoard } from './hkVerificationService';
 import { predictionChangeNote, predictionFreshness } from './predictionFreshness';
@@ -1333,8 +1333,8 @@ function LiveDrawPanel() {
   const sgpRow = marketData.SGP?.[0] || null;
   const checkedLabel = formatSyncTime(lastRefresh);
   const selectedRow = marketData[liveMarket]?.[0] || null;
-  const selectedSource = LIVE_DRAW_SOURCES[liveMarket];
-  const selectedScheduleState = calculateLiveState(selectedSource.schedule).status;
+  const selectedSource = resolveLiveDrawSource(liveMarket, singaporeMode);
+  const selectedScheduleState = calculateLiveState(selectedSource?.schedule).status;
   const hkMarketDrawDate = zonedISODate(new Date(), 'Asia/Jakarta');
   const boardForDisplay = selectBoardForLiveDisplay({
     board: boardState.board,

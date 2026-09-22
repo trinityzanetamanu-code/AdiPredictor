@@ -7,6 +7,7 @@ import {
   SGP_COMPOSITE_SOURCE_LABEL,
   calculateLiveState,
   scheduleBadgeLabel,
+  resolveLiveDrawSource,
   selectSingaporeMode,
 } from '../src/liveDrawConfig.js';
 
@@ -34,6 +35,14 @@ test('HK native board is never labelled official Hong Kong lottery', () => {
 test('SGP composite market remains explicitly non-official', () => {
   assert.equal(SGP_COMPOSITE_SOURCE_LABEL, 'Third-party cross-checked market result');
   assert.doesNotMatch(SGP_COMPOSITE_SOURCE_LABEL, /^official/i);
+});
+
+test('SGP tab resolves the selected official source instead of an undefined SGP key', () => {
+  assert.equal(LIVE_DRAW_SOURCES.SGP, undefined);
+  assert.equal(resolveLiveDrawSource('SGP', 'SGP_4D'), LIVE_DRAW_SOURCES.SGP_4D);
+  assert.equal(resolveLiveDrawSource('SGP', 'SGP_TOTO'), LIVE_DRAW_SOURCES.SGP_TOTO);
+  assert.equal(resolveLiveDrawSource('SGP', 'UNKNOWN_MODE'), LIVE_DRAW_SOURCES.SGP_4D);
+  assert.equal(resolveLiveDrawSource('HK', 'SGP_4D'), LIVE_DRAW_SOURCES.HK);
 });
 
 test('SDY native board keeps a non-official market-source label', () => {
