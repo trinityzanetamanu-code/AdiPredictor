@@ -1,5 +1,23 @@
 [
   {
+    "id": 20260923,
+    "tanggal": "23 Sep 2026",
+    "periode": "SGP-2482",
+    "nomor": "5272",
+    "result_date": "2026-09-23",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-23T19:07:39+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20260921,
     "tanggal": "21 Sep 2026",
     "periode": "SGP-2481",
