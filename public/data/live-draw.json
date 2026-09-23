@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "retrieved_at": "2026-09-23T23:53:02+07:00",
+  "retrieved_at": "2026-09-24T02:54:48+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -21,7 +21,7 @@
       "dataset_4d": "0217",
       "matches_dataset": true,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-09-23T23:53:02+07:00"
+      "retrieved_at": "2026-09-24T02:54:48+07:00"
     },
     "HK": {
       "market": "HK",
@@ -49,10 +49,10 @@
       ],
       "full_first_prize_6d": "879540",
       "derived_4d": "9540",
-      "dataset_4d": "4659",
-      "matches_dataset": null,
-      "verification": "dataset_date_mismatch",
-      "retrieved_at": "2026-09-23T23:53:02+07:00"
+      "dataset_4d": "9540",
+      "matches_dataset": true,
+      "verification": "matches_prediction_dataset",
+      "retrieved_at": "2026-09-24T02:54:48+07:00"
     }
   }
 }
