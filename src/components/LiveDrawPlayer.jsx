@@ -50,7 +50,7 @@ export class LiveDrawPlayerBoundary extends React.Component {
         <p className="text-sm font-bold text-slate-100">Player video tidak dapat dirender.</p>
         <p className="mt-2 text-xs text-slate-400">Result board tetap tersedia. Gunakan halaman resmi untuk menonton.</p>
         <button type="button" onClick={this.props.onOpenOfficial} className="mt-4 inline-flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-bold text-amber-200">
-          <ExternalLink className="h-4 w-4" /> Buka Live Resmi
+          <ExternalLink className="h-4 w-4" /> Buka Halaman Resmi
         </button>
       </section>
     );
@@ -280,11 +280,11 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
           <div className={`rounded-full border px-3 py-1 text-[10px] font-bold ${stateStyles[playerState] || stateStyles[PLAYER_STATES.UNAVAILABLE]}`}>{nativeSgpContainment ? 'SGP_ANDROID_EMBED_CONTAINMENT' : playerState}</div>
           <p className="max-w-md text-xs leading-relaxed text-slate-300">
             {nativeSgpContainment
-              ? 'Pemutaran video dibuka melalui halaman resmi untuk menjaga kestabilan aplikasi.'
+              ? 'Embed video dinonaktifkan di Android untuk menjaga kestabilan aplikasi. Halaman hasil resmi dapat dibuka di Browser; status tayangan live belum diverifikasi.'
               : playerMessages[playerState] || source.note}
           </p>
           {!nativeSgpContainment && [PLAYER_STATES.READY, PLAYER_STATES.WAITING].includes(playerState) && <button type="button" onClick={requestPlayback} className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-emerald-300"><Play className="h-4 w-4" /> {mediaPresentation.playLabel}</button>}
-          {(nativeSgpContainment || [PLAYER_STATES.TIMEOUT, PLAYER_STATES.BLOCKED, PLAYER_STATES.ERROR, PLAYER_STATES.UNAVAILABLE].includes(playerState)) && <button type="button" onClick={() => openLivePage(source.pageUrl)} className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-bold text-amber-200"><ExternalLink className="h-4 w-4" /> Buka Live Resmi</button>}
+          {(nativeSgpContainment || [PLAYER_STATES.TIMEOUT, PLAYER_STATES.BLOCKED, PLAYER_STATES.ERROR, PLAYER_STATES.UNAVAILABLE].includes(playerState)) && <button type="button" onClick={() => openLivePage(source.pageUrl)} className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-bold text-amber-200"><ExternalLink className="h-4 w-4" /> Buka Halaman Resmi</button>}
         </div>}
       </div>
 
@@ -292,7 +292,7 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
         <span className="text-[10px] text-slate-500">Dicek: {lastChecked || '-'}</span>
         <div className="flex gap-2">
           {!nativeSgpContainment && <button onClick={reloadPlayer} className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-2 text-[10px] font-semibold text-slate-200"><RefreshCw className="h-3.5 w-3.5" /> Muat ulang</button>}
-          <button onClick={() => openLivePage(source.pageUrl)} className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-2 text-[10px] font-semibold text-emerald-300"><ExternalLink className="h-3.5 w-3.5" /> Buka Live Resmi</button>
+          <button onClick={() => openLivePage(source.pageUrl)} className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-2 text-[10px] font-semibold text-emerald-300"><ExternalLink className="h-3.5 w-3.5" /> Buka Halaman Resmi</button>
         </div>
       </div>
       <details className="border-t border-slate-800 bg-slate-950/40 px-4 py-3 text-[10px] text-slate-400">

@@ -61,7 +61,7 @@ export function resolveMediaPresentation({ scheduleStatus, hasPlaylist, verified
     drawState,
     mediaState: MEDIA_STATES.UNAVAILABLE,
     label: 'Media tidak tersedia',
-    playLabel: 'Buka Live Resmi',
+    playLabel: 'Buka Halaman Resmi',
   };
 }
 
@@ -85,7 +85,7 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     sourceLabel: 'Official · Singapore Pools',
     official: true,
     mode: PLAYER_MODES.IFRAME,
-    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/4d/index.html#draw-video',
+    pageUrl: 'https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx',
     resultUrl: 'https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html',
     playlistId: 'PLaXhIWKbyl3U-lDz1iRRZ8-rabk_uZbCY',
     currentVideoId: 'SByHDTZjxEI',
@@ -100,7 +100,7 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     sourceLabel: 'Official · Singapore Pools',
     official: true,
     mode: PLAYER_MODES.IFRAME,
-    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/toto/index.html#draw-video',
+    pageUrl: 'https://www.singaporepools.com.sg/en/product/pages/toto_results.aspx',
     resultUrl: 'https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/toto_result_top_draws_en.html',
     playlistId: 'PLaXhIWKbyl3VHtnNcMwG6KOg04q6QQXge',
     currentVideoId: '1xc5gepZWQU',

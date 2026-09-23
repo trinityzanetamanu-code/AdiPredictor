@@ -60,6 +60,8 @@ import {
   shouldProbeNativeRuntimeBoard,
 } from './runtimeResultReconciliation';
 import { LIVE_DRAW_DIAGNOSTIC_EVENTS, recordLiveDrawDiagnostic } from './liveDrawDiagnostics';
+import { createLatestRefreshCoordinator } from './refreshDataCoordinator';
+import { analyzeFourDConsensusTie } from './predictionConsensus';
 
 const AppContext = createContext();
 
@@ -203,7 +205,11 @@ export function AppProvider({ children }) {
   const acceleratedRefreshRef = useRef(null);
   const runtimeEventKeyRef = useRef(null);
   const runtimeLatestResultsRef = useRef(runtimeLatestResults);
+  const refreshCoordinatorRef = useRef(null);
   const runtimeReconciliationRunnerRef = useRef(null);
+  if (!refreshCoordinatorRef.current) {
+    refreshCoordinatorRef.current = createLatestRefreshCoordinator();
+  }
   if (!runtimeReconciliationRunnerRef.current) {
     runtimeReconciliationRunnerRef.current = createBoundedReconciliationRunner({ minIntervalMs: 3000 });
   }
@@ -224,6 +230,7 @@ export function AppProvider({ children }) {
   };
 
   const refreshData = async (silent = false) => {
+    const requestId = refreshCoordinatorRef.current.begin();
     if (!silent) setIsRefreshing(true);
 
     try {
@@ -257,6 +264,9 @@ export function AppProvider({ children }) {
         ]);
 
       const nextMarketData = { HK: hk, SGP: sgp, SDY: sdy };
+      if (!refreshCoordinatorRef.current.isLatest(requestId)) {
+        return { marketData: marketDataRef.current, discarded: true };
+      }
       marketDataRef.current = nextMarketData;
       setMarketData(nextMarketData);
       setRuntimeLatestResults((current) => {
@@ -285,18 +295,25 @@ export function AppProvider({ children }) {
         histories: { HK: hkHistory, SGP: sgpHistory, SDY: sdyHistory },
         releaseMetadata: remoteReleaseMetadata,
       };
-      await deliverRuntimeNotifications(notificationSnapshot, notificationSnapshotRef.current).catch((error) => {
+      const previousNotificationSnapshot = notificationSnapshotRef.current;
+      notificationSnapshotRef.current = notificationSnapshot;
+      await deliverRuntimeNotifications(notificationSnapshot, previousNotificationSnapshot).catch((error) => {
         console.warn('Notifikasi runtime dilewati:', error?.message || error);
       });
-      notificationSnapshotRef.current = notificationSnapshot;
-      setLastRefresh(new Date().toISOString());
-      setDataError('');
-      return { marketData: nextMarketData };
+      if (refreshCoordinatorRef.current.isLatest(requestId)) {
+        setLastRefresh(new Date().toISOString());
+        setDataError('');
+      }
+      return refreshCoordinatorRef.current.isLatest(requestId)
+        ? { marketData: nextMarketData }
+        : { marketData: marketDataRef.current, discarded: true };
     } catch (err) {
       console.error('Gagal sinkronisasi data:', err);
-      setDataError(err?.message || 'Gagal sinkronisasi data');
+      if (refreshCoordinatorRef.current.isLatest(requestId)) {
+        setDataError(err?.message || 'Gagal sinkronisasi data');
+      }
     } finally {
-      setIsRefreshing(false);
+      if (refreshCoordinatorRef.current.isLatest(requestId)) setIsRefreshing(false);
     }
   };
 
@@ -799,6 +816,12 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
   const counts = predictionFresh
     ? prediction?.candidate_counts || quick?.candidate_counts || {}
     : {};
+  const fourDConsensusTie = predictionFresh
+    ? analyzeFourDConsensusTie({
+      rankings: weighted.candidate_rankings?.['4d_top3'] || [],
+      models,
+    })
+    : null;
 
   const fourD =
     candidateNumber(four?.main) ||
@@ -870,6 +893,14 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
             <div className="mt-2 font-mono text-4xl sm:text-5xl font-black text-emerald-400">
               {fourD || '----'}
             </div>
+            {fourDConsensusTie && (
+              <div className="mx-auto mt-3 max-w-xl rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-left text-[10px] leading-relaxed text-amber-100" data-four-d-consensus-tie>
+                <strong>Skor konsensus seri:</strong>{' '}
+                {fourDConsensusTie.candidates.map((candidate) => candidate.number).join(' = ')}
+                {' '}({fourDConsensusTie.score.toFixed(6)}). Posisi kandidat di Top3 model tidak masuk ke skor;
+                label Main mengikuti tie-break angka menaik yang deterministik, bukan probabilitas tembus 4D.
+              </div>
+            )}
             <div className="mt-3 flex flex-wrap justify-center gap-2">
               {fourD && (
                 <button
@@ -1102,6 +1133,9 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
 
           <div className="rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-[10px] text-slate-500 leading-relaxed">
             {prediction.disclaimer || confidence.disclaimer || 'Prediksi dibuat otomatis dari histori dan model P1–P8. Nilai confidence adalah ukuran relatif, bukan jaminan hasil.'}
+            <div className="mt-2" data-consensus-score-definition>
+              Skor w adalah jumlah bobot walk-forward model yang memuat kandidat di Top-K. Bintang adalah ambang dukungan dan skor relatif; keduanya bukan estimasi probabilitas 4D.
+            </div>
           </div>
         </div>
       ) : prediction && !predictionFresh ? (

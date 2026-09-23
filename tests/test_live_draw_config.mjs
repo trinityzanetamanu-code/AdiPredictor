@@ -19,7 +19,7 @@ test('Singapore sources use exact official labels and HTTPS fallbacks', () => {
     const source = LIVE_DRAW_SOURCES[key];
     assert.equal(source.official, true);
     assert.equal(source.sourceLabel, 'Official · Singapore Pools');
-    assert.match(source.pageUrl, /^https:\/\/www\.singaporepools\.com\.sg\//);
+    assert.match(source.pageUrl, /^https:\/\/www\.singaporepools\.com\.sg\/en\/product\/pages\//);
     assert.match(source.embedUrl, /^https:\/\/www\.youtube\.com\/embed\/videoseries/);
     assert.match(source.embedUrl, /enablejsapi=1/);
     assert.equal(source.mode, PLAYER_MODES.IFRAME);
@@ -107,7 +107,7 @@ test('native Singapore official buttons use Capacitor Browser with the correct m
   await openLivePage(LIVE_DRAW_SOURCES.SGP_4D.pageUrl, dependencies);
   await openLivePage(LIVE_DRAW_SOURCES.SGP_TOTO.pageUrl, dependencies);
   assert.deepEqual(opened, [
-    { url: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/4d/index.html#draw-video', presentationStyle: 'popover' },
-    { url: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/toto/index.html#draw-video', presentationStyle: 'popover' },
+    { url: 'https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx', presentationStyle: 'popover' },
+    { url: 'https://www.singaporepools.com.sg/en/product/pages/toto_results.aspx', presentationStyle: 'popover' },
   ]);
 });

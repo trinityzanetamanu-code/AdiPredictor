@@ -278,12 +278,12 @@ test('SGP player timeout is fail-safe and official result boards render independ
   ]);
   assert.doesNotMatch(player, /onLoad=\{\(\) => setPlayerState/);
   assert.match(player, /PLAYBACK_EVIDENCE_TIMEOUT/);
-  assert.match(player, /Buka Live Resmi/);
+  assert.match(player, /Buka Halaman Resmi/);
   assert.match(app, /<LiveDrawFourDigitBoard[\s\S]*<LiveDrawPlayerBoundary/);
   assert.match(app, /<TotoBoard[\s\S]*<LiveDrawPlayerBoundary/);
   assert.match(app, /<LiveDrawResultBoard[\s\S]*<LiveDrawPlayerBoundary/);
   assert.match(player, /data-sgp-android-embed-containment/);
-  assert.match(player, /Pemutaran video dibuka melalui halaman resmi untuk menjaga kestabilan aplikasi/);
+  assert.match(player, /Embed video dinonaktifkan di Android untuk menjaga kestabilan aplikasi/);
 });
 
 test('LiveDraw diagnostics keep a bounded sanitized event ring', () => {
