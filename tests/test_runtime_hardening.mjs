@@ -17,6 +17,17 @@ import {
 } from '../src/notificationService.js';
 import { PLAYER_STATES } from '../src/liveDrawConfig.js';
 import { watchdogPlayerState } from '../src/youtubePlayerService.js';
+import {
+  createBoundedReconciliationRunner,
+  reconcileRuntimeCandidates,
+  shouldProbeNativeRuntimeBoard,
+} from '../src/runtimeResultReconciliation.js';
+import {
+  formatLiveDrawDiagnostics,
+  getLiveDrawDiagnostics,
+  recordLiveDrawDiagnostic,
+  resetLiveDrawDiagnosticsForTest,
+} from '../src/liveDrawDiagnostics.js';
 
 const liveBoard = {
   market: 'HK', source: 'KocokHK Mirror', source_url: 'https://rankcrack.com/hk.php',
@@ -26,6 +37,13 @@ const liveBoard = {
 };
 const datasetOld = { result_date: '2026-09-20', nomor: '2036', periode: 'HK-3550' };
 const datasetNew = { result_date: '2026-09-21', nomor: '9608', periode: 'HK-3551' };
+
+const phaseOneBoard = {
+  market: 'HK', source: 'KocokHK Mirror', source_url: 'https://rankcrack.com/hk.php',
+  draw_date: '2026-09-22', first: '394659', second: '626462', third: '382671',
+  starter: ['840151'], consolation: ['763573'], derived_4d: '4659',
+  retrieved_at: '2026-09-22T16:20:00Z',
+};
 
 test('LiveDraw result immediately overlays Analysis while persistent prediction waits', () => {
   const runtime = createRuntimeLatestResult({ market: 'HK', board: liveBoard });
@@ -61,6 +79,94 @@ test('same-date disagreement is explicit conflict and dataset remains historical
   assert.equal(effectiveLatestResult(conflictDataset, runtime).result.nomor, '1111');
 });
 
+test('cold-start snapshot publishes D1 without mutating persistent D0 history', () => {
+  const persistent = {
+    HK: [{ result_date: '2026-09-21', nomor: '9608', periode: 'HK-3551' }],
+    SDY: [],
+    SGP: [],
+  };
+  const before = structuredClone(persistent);
+  const reconciled = reconcileRuntimeCandidates({
+    marketData: persistent,
+    snapshot: { markets: { HK: phaseOneBoard } },
+    currentRuntimeResults: { HK: null, SDY: null, SGP: null },
+  });
+  const runtime = reconciled.runtimeLatestResults.HK;
+  assert.equal(runtime.nomor, '4659');
+  assert.equal(effectiveLatestResult(persistent.HK[0], runtime).result.nomor, '4659');
+  assert.equal(predictionMayDisplay({
+    prediction: { prediction_basis_date: '2026-09-21', prediction_basis_result: '9608' },
+    dataset: persistent.HK[0],
+    runtime,
+  }).visible, false);
+  assert.deepEqual(persistent, before, 'runtime reconciliation must not append to canonical history');
+});
+
+test('persistent catch-up clears runtime overlay and same-date disagreement remains conflict', () => {
+  const runtime = createRuntimeLatestResult({ market: 'HK', board: phaseOneBoard });
+  const caughtUp = reconcileRuntimeCandidates({
+    marketData: { HK: [{ result_date: '2026-09-22', nomor: '4659' }], SDY: [], SGP: [] },
+    snapshot: { markets: { HK: phaseOneBoard } },
+    currentRuntimeResults: { HK: runtime },
+  });
+  assert.equal(caughtUp.decisions.HK.state, RUNTIME_SYNC_STATE.DATASET_SYNCED);
+  assert.equal(caughtUp.runtimeLatestResults.HK, null);
+
+  const conflict = reconcileRuntimeCandidates({
+    marketData: { HK: [{ result_date: '2026-09-22', nomor: '1111' }], SDY: [], SGP: [] },
+    snapshot: { markets: { HK: phaseOneBoard } },
+    currentRuntimeResults: { HK: null },
+  });
+  assert.equal(conflict.decisions.HK.state, RUNTIME_SYNC_STATE.LIVE_DATASET_CONFLICT);
+  assert.equal(conflict.runtimeLatestResults.HK.nomor, '4659');
+  assert.equal(effectiveLatestResult({ result_date: '2026-09-22', nomor: '1111' }, conflict.runtimeLatestResults.HK).result.nomor, '1111');
+});
+
+test('native probing is limited to HK draw freshness windows', () => {
+  const dataset = { result_date: '2026-09-21', nomor: '9608' };
+  assert.equal(shouldProbeNativeRuntimeBoard({
+    market: 'HK', scheduleState: 'LIVE_WINDOW', marketDrawDate: '2026-09-22', dataset, snapshotRuntime: null,
+  }), true);
+  assert.equal(shouldProbeNativeRuntimeBoard({
+    market: 'HK', scheduleState: 'UPCOMING', marketDrawDate: '2026-09-22', dataset, snapshotRuntime: null,
+  }), false);
+  assert.equal(shouldProbeNativeRuntimeBoard({
+    market: 'SDY', scheduleState: 'LIVE_WINDOW', marketDrawDate: '2026-09-22', dataset, snapshotRuntime: null,
+  }), false);
+  assert.equal(shouldProbeNativeRuntimeBoard({
+    market: 'HK', scheduleState: 'LIVE_WINDOW', marketDrawDate: '2026-09-22', dataset,
+    snapshotRuntime: { result_date: '2026-09-22', nomor: '4659' },
+  }), false);
+  assert.equal(shouldProbeNativeRuntimeBoard({
+    market: 'HK', scheduleState: 'LIVE_WINDOW', marketDrawDate: '2026-09-22',
+    dataset: { result_date: '2026-09-22', nomor: '4659' },
+    snapshotRuntime: { result_date: '2026-09-22', nomor: '4659' },
+  }), false);
+});
+
+test('resume reconciliation gate coalesces overlap and throttles duplicate foreground events', async () => {
+  let clock = 10_000;
+  let calls = 0;
+  let release;
+  const runner = createBoundedReconciliationRunner({ minIntervalMs: 3000, now: () => clock });
+  const task = () => {
+    calls += 1;
+    return new Promise((resolve) => { release = resolve; });
+  };
+  const first = runner(task, { force: true });
+  const overlapping = runner(task);
+  await Promise.resolve();
+  assert.equal(calls, 1);
+  release({ cycle: 1 });
+  assert.deepEqual(await first, { cycle: 1 });
+  assert.deepEqual(await overlapping, { cycle: 1 });
+  assert.equal((await runner(task)).reason, 'RECONCILIATION_THROTTLED');
+  clock += 3001;
+  const second = runner(() => { calls += 1; return { cycle: 2 }; });
+  assert.deepEqual(await second, { cycle: 2 });
+  assert.equal(calls, 2);
+});
+
 test('collector health distinguishes fresh delayed stale and dataset staleness', () => {
   const now = new Date('2026-09-21T20:00:00Z');
   const status = (minutes) => ({ collected_at: new Date(now.getTime() - minutes * 60_000).toISOString(), markets: {} });
@@ -85,8 +191,29 @@ test('SGP player timeout is fail-safe and official result boards render independ
   assert.doesNotMatch(player, /onLoad=\{\(\) => setPlayerState/);
   assert.match(player, /PLAYBACK_EVIDENCE_TIMEOUT/);
   assert.match(player, /Buka Live Resmi/);
-  assert.match(app, /<LiveDrawPlayer[\s\S]*<LiveDrawFourDigitBoard/);
-  assert.match(app, /<LiveDrawPlayer[\s\S]*<TotoBoard/);
+  assert.match(app, /<LiveDrawFourDigitBoard[\s\S]*<LiveDrawPlayerBoundary/);
+  assert.match(app, /<TotoBoard[\s\S]*<LiveDrawPlayerBoundary/);
+  assert.match(app, /<LiveDrawResultBoard[\s\S]*<LiveDrawPlayerBoundary/);
+  assert.match(player, /data-sgp-android-embed-containment/);
+  assert.match(player, /Pemutaran video dibuka melalui halaman resmi untuk menjaga kestabilan aplikasi/);
+});
+
+test('LiveDraw diagnostics keep a bounded sanitized event ring', () => {
+  resetLiveDrawDiagnosticsForTest();
+  for (let index = 0; index < 45; index += 1) {
+    recordLiveDrawDiagnostic('PLAYER_PLAYING', {
+      source: 'SGP_4D',
+      index,
+      url: 'https://sensitive.example/path',
+      token: 'secret',
+    });
+  }
+  const events = getLiveDrawDiagnostics();
+  assert.equal(events.length, 40);
+  assert.equal(events[0].details.index, '5');
+  assert.equal(Object.hasOwn(events[0].details, 'url'), false);
+  assert.equal(Object.hasOwn(events[0].details, 'token'), false);
+  assert.doesNotMatch(formatLiveDrawDiagnostics(), /sensitive|secret/);
 });
 
 test('notification events require verified result and deterministic keys dedupe', () => {
@@ -148,11 +275,13 @@ test('P1-P8 engine methodology remains untouched by runtime plumbing', async () 
 });
 
 test('runtime display plumbing cannot persist a historical result', async () => {
-  const [runtime, config] = await Promise.all([
+  const [runtime, reconciliation, config] = await Promise.all([
     readFile(new URL('../src/runtimeResultSync.js', import.meta.url), 'utf8'),
+    readFile(new URL('../src/runtimeResultReconciliation.js', import.meta.url), 'utf8'),
     readFile(new URL('../config/collector_sources.json', import.meta.url), 'utf8'),
   ]);
   assert.doesNotMatch(runtime, /public\/data|collector\.py|writeFile|setMarketData/);
+  assert.doesNotMatch(reconciliation, /public\/data|collector\.py|writeFile|setMarketData/);
   assert.match(config, /crosscheck_or_qualified_primary/);
   assert.match(config, /nexipools_hk/);
   assert.match(config, /livenomor_hk/);

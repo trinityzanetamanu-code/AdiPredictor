@@ -78,6 +78,25 @@ test('Android History back closes internally and root back exits without browser
   assert.match(app, /App\.exitApp\(\)/);
 });
 
+test('Results latest card may use runtime overlay while canonical history remains separate', async () => {
+  const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  assert.match(app, /data-results-latest-source=\{effective\.source\}/);
+  assert.match(app, /LIVE · MENUNGGU SINKRONISASI DATASET/);
+  assert.match(app, /data-canonical-history-list/);
+  assert.match(app, /Hasil runtime belum dimasukkan ke arsip/);
+  assert.match(app, /KONFLIK RUNTIME · DATASET TETAP ACUAN/);
+});
+
+test('cold start and native resume use one bounded runtime reconciliation path', async () => {
+  const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  assert.match(app, /runForegroundReconciliation\('COLD_START'/);
+  assert.match(app, /App\.addListener\('appStateChange'/);
+  assert.match(app, /runForegroundReconciliation\('APP_RESUME'\)/);
+  assert.match(app, /createBoundedReconciliationRunner/);
+  assert.match(app, /loadLiveDrawSnapshot\(\)/);
+  assert.match(app, /shouldProbeNativeRuntimeBoard/);
+});
+
 test('manual bridge reports explicit extraction diagnostics', async () => {
   const activity = await readFile(new URL('../scripts/android/HKVerificationActivity.java', import.meta.url), 'utf8');
   const service = await readFile(new URL('../src/hkVerificationService.js', import.meta.url), 'utf8');

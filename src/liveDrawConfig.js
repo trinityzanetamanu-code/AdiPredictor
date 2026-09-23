@@ -19,9 +19,50 @@ export const PLAYER_STATES = Object.freeze({
   OFFLINE: 'PLAYER_UNAVAILABLE',
 });
 
+export const MEDIA_STATES = Object.freeze({
+  UPCOMING: 'UPCOMING',
+  LIVE: 'LIVE',
+  LAST_COMPLETED_DRAW: 'LAST_COMPLETED_DRAW',
+  RESULT_POSTED: 'RESULT_POSTED',
+  UNAVAILABLE: 'UNAVAILABLE',
+});
+
 export function scheduleBadgeLabel(status) {
   if (status === 'LIVE_WINDOW') return 'DRAW WINDOW';
   return String(status || 'OFFLINE').replaceAll('_', ' ');
+}
+
+export function resolveMediaPresentation({ scheduleStatus, hasPlaylist, verifiedLive = false }) {
+  const drawState = scheduleStatus === 'LIVE_WINDOW'
+    ? MEDIA_STATES.LIVE
+    : scheduleStatus === 'RESULT_POSTED'
+      ? MEDIA_STATES.RESULT_POSTED
+      : scheduleStatus === 'UPCOMING'
+        ? MEDIA_STATES.UPCOMING
+        : MEDIA_STATES.UNAVAILABLE;
+
+  if (drawState === MEDIA_STATES.LIVE && verifiedLive) {
+    return {
+      drawState,
+      mediaState: MEDIA_STATES.LIVE,
+      label: 'Siaran live terverifikasi',
+      playLabel: 'Putar siaran live',
+    };
+  }
+  if (hasPlaylist) {
+    return {
+      drawState,
+      mediaState: MEDIA_STATES.LAST_COMPLETED_DRAW,
+      label: 'Rekaman draw terakhir',
+      playLabel: 'Putar rekaman draw terakhir',
+    };
+  }
+  return {
+    drawState,
+    mediaState: MEDIA_STATES.UNAVAILABLE,
+    label: 'Media tidak tersedia',
+    playLabel: 'Buka Live Resmi',
+  };
 }
 
 export const SGP_COMPOSITE_SOURCE_LABEL = 'Third-party cross-checked market result';

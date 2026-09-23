@@ -33,7 +33,7 @@ import {
   loadTafsir,
   predictionAssetUrl,
 } from './dataClient';
-import LiveDrawPlayer, { openLivePage } from './components/LiveDrawPlayer';
+import LiveDrawPlayer, { LiveDrawPlayerBoundary, openLivePage } from './components/LiveDrawPlayer';
 import LiveDrawResultBoard from './components/LiveDrawResultBoard';
 import LiveDrawFourDigitBoard, { TotoBoard } from './components/LiveDrawFourDigitBoard';
 import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
@@ -54,6 +54,12 @@ import {
   runtimeResultSyncState,
   RUNTIME_SYNC_STATE,
 } from './runtimeResultSync';
+import {
+  createBoundedReconciliationRunner,
+  reconcileRuntimeCandidates,
+  shouldProbeNativeRuntimeBoard,
+} from './runtimeResultReconciliation';
+import { LIVE_DRAW_DIAGNOSTIC_EVENTS, recordLiveDrawDiagnostic } from './liveDrawDiagnostics';
 
 const AppContext = createContext();
 
@@ -196,6 +202,11 @@ export function AppProvider({ children }) {
   const marketDataRef = useRef(marketData);
   const acceleratedRefreshRef = useRef(null);
   const runtimeEventKeyRef = useRef(null);
+  const runtimeLatestResultsRef = useRef(runtimeLatestResults);
+  const runtimeReconciliationRunnerRef = useRef(null);
+  if (!runtimeReconciliationRunnerRef.current) {
+    runtimeReconciliationRunnerRef.current = createBoundedReconciliationRunner({ minIntervalMs: 3000 });
+  }
 
   const showToast = (msg) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -248,6 +259,15 @@ export function AppProvider({ children }) {
       const nextMarketData = { HK: hk, SGP: sgp, SDY: sdy };
       marketDataRef.current = nextMarketData;
       setMarketData(nextMarketData);
+      setRuntimeLatestResults((current) => {
+        const reconciled = reconcileRuntimeCandidates({
+          marketData: nextMarketData,
+          snapshot: null,
+          currentRuntimeResults: current,
+        }).runtimeLatestResults;
+        runtimeLatestResultsRef.current = reconciled;
+        return reconciled;
+      });
       setCollectorStatus(status);
       setPredictions({ HK: hkPred, SGP: sgpPred, SDY: sdyPred });
       setPredictionHistory({
@@ -299,18 +319,95 @@ export function AppProvider({ children }) {
     acceleratedRefreshRef.current = window.setInterval(checkPersistentData, 12000);
   };
 
+  const reconcileRuntimeSources = async ({ marketDataOverride, reason }) => {
+    const canonicalData = marketDataOverride || marketDataRef.current;
+    let snapshot;
+    try {
+      snapshot = await loadLiveDrawSnapshot();
+    } catch (error) {
+      console.warn('Runtime snapshot tidak tersedia:', error?.message || error);
+      snapshot = { schema_version: 1, retrieved_at: null, markets: {} };
+    }
+
+    let snapshotRuntime = null;
+    try {
+      if (snapshot?.markets?.HK) snapshotRuntime = createRuntimeLatestResult({ market: 'HK', board: snapshot.markets.HK });
+    } catch {
+      snapshotRuntime = null;
+    }
+
+    const now = new Date();
+    const scheduleState = calculateLiveState(LIVE_DRAW_SOURCES.HK.schedule, now).status;
+    const marketDrawDate = zonedISODate(now, 'Asia/Jakarta');
+    const shouldProbe = shouldProbeNativeRuntimeBoard({
+      market: 'HK',
+      scheduleState,
+      marketDrawDate,
+      dataset: canonicalData?.HK?.[0] || null,
+      snapshotRuntime,
+    });
+
+    if (shouldProbe) {
+      try {
+        const direct = await fetchNativeLiveBoard('HK');
+        if (direct.available && direct.board) {
+          snapshot = {
+            ...snapshot,
+            markets: { ...(snapshot?.markets || {}), HK: direct.board },
+          };
+          storeLocalHKBoard(direct.board, `startup_runtime_reconciliation:${reason}`);
+        }
+      } catch (error) {
+        console.warn('Direct runtime reconciliation dilewati:', error?.message || error);
+      }
+    }
+
+    const reconciled = reconcileRuntimeCandidates({
+      marketData: canonicalData,
+      snapshot,
+      currentRuntimeResults: runtimeLatestResultsRef.current,
+    });
+    runtimeLatestResultsRef.current = reconciled.runtimeLatestResults;
+    setRuntimeLatestResults(reconciled.runtimeLatestResults);
+
+    for (const decision of Object.values(reconciled.decisions)) {
+      if (decision.state === RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET && decision.candidate) {
+        const eventKey = `${decision.candidate.market}:${decision.candidate.result_date}:${decision.candidate.nomor}`;
+        if (runtimeEventKeyRef.current !== eventKey) {
+          runtimeEventKeyRef.current = eventKey;
+          startAcceleratedRefresh(decision.candidate);
+        }
+      }
+    }
+    return reconciled;
+  };
+
+  const runForegroundReconciliation = (reason, { force = false, initial = false } = {}) => (
+    runtimeReconciliationRunnerRef.current(async () => {
+      const refreshed = await refreshData(!initial);
+      return reconcileRuntimeSources({
+        marketDataOverride: refreshed?.marketData || marketDataRef.current,
+        reason,
+      });
+    }, { force })
+  );
+
   const publishRuntimeLatestResult = ({ market, board }) => {
     const runtimeResult = createRuntimeLatestResult({ market, board });
     const dataset = marketDataRef.current[runtimeResult.market]?.[0] || null;
     const sync = runtimeResultSyncState(runtimeResult, dataset);
     if (sync.conflict) {
-      setRuntimeLatestResults((current) => ({ ...current, [runtimeResult.market]: runtimeResult }));
+      const next = { ...runtimeLatestResultsRef.current, [runtimeResult.market]: runtimeResult };
+      runtimeLatestResultsRef.current = next;
+      setRuntimeLatestResults(next);
       refreshData(true);
       return sync;
     }
     if (sync.state !== RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET) return sync;
     const eventKey = `${runtimeResult.market}:${runtimeResult.result_date}:${runtimeResult.nomor}`;
-    setRuntimeLatestResults((current) => ({ ...current, [runtimeResult.market]: runtimeResult }));
+    const next = { ...runtimeLatestResultsRef.current, [runtimeResult.market]: runtimeResult };
+    runtimeLatestResultsRef.current = next;
+    setRuntimeLatestResults(next);
     if (runtimeEventKeyRef.current !== eventKey) {
       runtimeEventKeyRef.current = eventKey;
       startAcceleratedRefresh(runtimeResult);
@@ -319,13 +416,18 @@ export function AppProvider({ children }) {
   };
 
   useEffect(() => {
-    refreshData(false);
+    runForegroundReconciliation('COLD_START', { force: true, initial: true });
 
     const interval = setInterval(() => refreshData(true), 60000);
     const onVisible = () => {
-      if (document.visibilityState === 'visible') refreshData(true);
+      const visible = document.visibilityState === 'visible';
+      recordLiveDrawDiagnostic(
+        visible ? LIVE_DRAW_DIAGNOSTIC_EVENTS.TAB_VISIBLE : LIVE_DRAW_DIAGNOSTIC_EVENTS.TAB_HIDDEN,
+        { scope: 'APP' },
+      );
+      if (visible) runForegroundReconciliation('TAB_VISIBLE');
     };
-    const onFocus = () => refreshData(true);
+    const onFocus = () => runForegroundReconciliation('WINDOW_FOCUS');
 
     document.addEventListener('visibilitychange', onVisible);
     window.addEventListener('focus', onFocus);
@@ -336,6 +438,26 @@ export function AppProvider({ children }) {
       window.removeEventListener('focus', onFocus);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       stopAcceleratedRefresh();
+    };
+  }, []);
+
+  useEffect(() => {
+    let listener;
+    let cancelled = false;
+    import('@capacitor/app').then(({ App }) => App.addListener('appStateChange', ({ isActive }) => {
+      if (cancelled) return;
+      recordLiveDrawDiagnostic(
+        isActive ? LIVE_DRAW_DIAGNOSTIC_EVENTS.APP_RESUME : LIVE_DRAW_DIAGNOSTIC_EVENTS.APP_BACKGROUND,
+        { scope: 'APP' },
+      );
+      if (isActive) runForegroundReconciliation('APP_RESUME');
+    })).then((handle) => {
+      if (cancelled) handle?.remove?.();
+      else listener = handle;
+    }).catch(() => {});
+    return () => {
+      cancelled = true;
+      listener?.remove?.();
     };
   }, []);
 
@@ -1092,9 +1214,17 @@ function GeneratorPanel() {
 }
 
 function ResultsPanel() {
-  const { marketData, resultsMarket: selectedMarket, setResultsMarket: setSelectedMarket } = useApp();
+  const {
+    marketData,
+    runtimeLatestResults,
+    resultsMarket: selectedMarket,
+    setResultsMarket: setSelectedMarket,
+  } = useApp();
   const [selectedYear, setSelectedYear] = useState('2026');
   const sourceData = marketData[selectedMarket] || [];
+  const datasetLatest = sourceData[0] || null;
+  const effective = effectiveLatestResult(datasetLatest, runtimeLatestResults[selectedMarket]);
+  const latest = effective.result || datasetLatest;
 
   const years = Array.from(
     new Set(
@@ -1146,7 +1276,42 @@ function ResultsPanel() {
         </div>
       </div>
 
-      <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/50 max-h-[72vh] overflow-y-auto">
+      {latest && (
+        <section
+          className="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"
+          data-results-latest-source={effective.source}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Keluaran terbaru</p>
+              <p className="mt-1 text-sm font-bold text-slate-100">{formatResultDate(latest)} · {latest.periode}</p>
+              {effective.source === 'LIVE_DRAW_RUNTIME' && (
+                <span className="mt-2 inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-[9px] font-black text-amber-200" data-runtime-result-awaiting-sync>
+                  LIVE · MENUNGGU SINKRONISASI DATASET
+                </span>
+              )}
+              {effective.source === 'DATASET' && !effective.sync.conflict && (
+                <span className="mt-2 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[9px] font-black text-emerald-200">
+                  DATASET TERVERIFIKASI
+                </span>
+              )}
+              {effective.sync.conflict && (
+                <span className="mt-2 inline-flex rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[9px] font-black text-rose-200" data-results-runtime-conflict>
+                  KONFLIK RUNTIME · DATASET TETAP ACUAN
+                </span>
+              )}
+            </div>
+            <span className="font-mono text-2xl font-black tracking-wider text-emerald-400">{latest.nomor}</span>
+          </div>
+          {effective.source === 'LIVE_DRAW_RUNTIME' && (
+            <p className="mt-3 text-[10px] text-slate-400">
+              Hasil runtime belum dimasukkan ke arsip. Daftar historis di bawah tetap berasal dari dataset canonical.
+            </p>
+          )}
+        </section>
+      )}
+
+      <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/50 max-h-[72vh] overflow-y-auto" data-canonical-history-list>
         {listData.map((row, index) => (
           <div
             key={(row.result_date || row.tanggal) + '-' + row.nomor + '-' + index}
@@ -1409,7 +1574,6 @@ function LiveDrawPanel() {
 
       {liveMarket === 'SGP' ? (
         <>
-          <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
           {singaporeMode === 'SGP_4D'
             ? <LiveDrawFourDigitBoard result={sgpOfficialResult} />
             : <TotoBoard result={sgpOfficialResult} />}
@@ -1419,6 +1583,12 @@ function LiveDrawPanel() {
             result={sgpRow}
             note="Composite 4-digit ini adalah basis dataset prediction SGP dan bukan official Singapore Pools 4D/TOTO result."
           />
+          <LiveDrawPlayerBoundary
+            resetKey={sgpSource.id}
+            onOpenOfficial={() => openLivePage(sgpSource.pageUrl)}
+          >
+            <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
+          </LiveDrawPlayerBoundary>
         </>
       ) : (
         <LiveDrawSixDigitBoard

@@ -2,12 +2,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   LIVE_DRAW_SOURCES,
+  MEDIA_STATES,
   PLAYER_MODES,
   PLAYER_STATES,
   SGP_COMPOSITE_SOURCE_LABEL,
   calculateLiveState,
   scheduleBadgeLabel,
   resolveLiveDrawSource,
+  resolveMediaPresentation,
   selectSingaporeMode,
 } from '../src/liveDrawConfig.js';
 
@@ -70,4 +72,26 @@ test('draw schedule never claims actual player playback', () => {
 test('Singapore mode chooses official draw for the active day', () => {
   assert.equal(selectSingaporeMode(new Date('2026-09-19T10:20:00Z')), 'SGP_4D');
   assert.equal(selectSingaporeMode(new Date('2026-09-17T10:20:00Z')), 'SGP_TOTO');
+});
+
+test('UPCOMING playlist fallback is labelled as the last completed draw, never live', () => {
+  const presentation = resolveMediaPresentation({
+    scheduleStatus: 'UPCOMING',
+    hasPlaylist: true,
+    verifiedLive: false,
+  });
+  assert.equal(presentation.drawState, MEDIA_STATES.UPCOMING);
+  assert.equal(presentation.mediaState, MEDIA_STATES.LAST_COMPLETED_DRAW);
+  assert.equal(presentation.label, 'Rekaman draw terakhir');
+  assert.doesNotMatch(presentation.playLabel, /siaran live/i);
+});
+
+test('draw window does not promote an unverified playlist to live media', () => {
+  const presentation = resolveMediaPresentation({
+    scheduleStatus: 'LIVE_WINDOW',
+    hasPlaylist: true,
+    verifiedLive: false,
+  });
+  assert.equal(presentation.drawState, MEDIA_STATES.LIVE);
+  assert.equal(presentation.mediaState, MEDIA_STATES.LAST_COMPLETED_DRAW);
 });
