@@ -365,6 +365,7 @@ export function AppProvider({ children }) {
     const reconciled = reconcileRuntimeCandidates({
       marketData: canonicalData,
       snapshot,
+      localBoards: { HK: loadLocalHKBoard() },
       currentRuntimeResults: runtimeLatestResultsRef.current,
     });
     runtimeLatestResultsRef.current = reconciled.runtimeLatestResults;
@@ -650,7 +651,7 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <span className="text-slate-400">Backend collector</span>
+          <span className="text-slate-400">Status publik collector</span>
           <span className={`font-semibold text-right ${backendHealth?.state === 'COLLECTOR_HEALTHY' ? 'text-emerald-300' : backendHealth?.state === 'COLLECTOR_DELAYED' ? 'text-amber-300' : 'text-rose-300'}`}>
             {backendHealth?.label || 'Status belum diketahui'}
           </span>
@@ -674,9 +675,32 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <span className="text-slate-400">Data dikoleksi</span>
+          <span className="text-slate-400">Hasil terakhir diperbarui</span>
           <span className="text-slate-200 text-right">
-            {formatSyncTime(collectedAt || latestStatus?.collected_at)}
+            {formatSyncTime(status?.last_successful_data_update || latestStatus?.collected_at)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Cek sumber dalam status publik</span>
+          <span className="text-slate-200 text-right">
+            {formatSyncTime(status?.last_source_check)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Pemeriksaan backend terbaru</span>
+          <span className="text-slate-200 text-right">
+            {backendHealth?.backendCheckAvailable
+              ? formatSyncTime(backendHealth.backendLastCheckAt)
+              : 'Tidak tersedia di data publik'}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Status publik diterbitkan</span>
+          <span className="text-slate-200 text-right">
+            {formatSyncTime(collectedAt)}
           </span>
         </div>
 

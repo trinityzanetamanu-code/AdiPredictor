@@ -22,6 +22,65 @@ function runtimeFromSnapshot(market, snapshot, updatedAt) {
   }
 }
 
+function runtimeFromBoard(market, board, updatedAt) {
+  if (!board) return { runtime: null, error: null };
+  try {
+    return {
+      runtime: createRuntimeLatestResult({ market, board, updatedAt }),
+      error: null,
+    };
+  } catch (error) {
+    return {
+      runtime: null,
+      error: error?.message || 'RUNTIME_BOARD_INVALID',
+    };
+  }
+}
+
+function validRuntime(runtime) {
+  return runtimeResultSyncState(runtime, null).state === RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET;
+}
+
+function chooseRuntimeCandidate({ dataset, current, snapshot, local }) {
+  const inputs = [
+    { runtime: current, source: 'IN_MEMORY_RUNTIME' },
+    { runtime: snapshot, source: 'LIVE_DRAW_SNAPSHOT' },
+    { runtime: local, source: 'DEVICE_LOCAL_BOARD' },
+  ].filter(({ runtime }) => validRuntime(runtime));
+  let selected = inputs[0] || { runtime: null, source: 'DATASET_ONLY' };
+  const conflicts = [];
+
+  for (const incoming of inputs.slice(1)) {
+    if (incoming.runtime.result_date > selected.runtime.result_date) {
+      selected = incoming;
+      continue;
+    }
+    if (incoming.runtime.result_date < selected.runtime.result_date) continue;
+    if (String(incoming.runtime.nomor) === String(selected.runtime.nomor)) continue;
+
+    conflicts.push({
+      result_date: incoming.runtime.result_date,
+      kept_source: selected.source,
+      kept_result: selected.runtime.nomor,
+      conflicting_source: incoming.source,
+      conflicting_result: incoming.runtime.nomor,
+    });
+
+    // On an equal-date disagreement, canonical data may select the candidate
+    // that agrees with it. Without that proof, retain the already selected
+    // candidate so a late network response cannot flip runtime state.
+    if (
+      dataset?.result_date === incoming.runtime.result_date
+      && String(dataset?.nomor || '') === String(incoming.runtime.nomor)
+      && String(dataset?.nomor || '') !== String(selected.runtime.nomor)
+    ) {
+      selected = incoming;
+    }
+  }
+
+  return { ...selected, conflicts };
+}
+
 /**
  * Reconciles ephemeral runtime candidates without ever modifying the canonical
  * market arrays. A missing/invalid snapshot may not erase a still-valid
@@ -30,6 +89,7 @@ function runtimeFromSnapshot(market, snapshot, updatedAt) {
 export function reconcileRuntimeCandidates({
   marketData,
   snapshot,
+  localBoards = {},
   currentRuntimeResults = {},
   updatedAt = new Date().toISOString(),
 }) {
@@ -38,8 +98,15 @@ export function reconcileRuntimeCandidates({
 
   for (const market of RUNTIME_RECONCILIATION_MARKETS) {
     const parsed = runtimeFromSnapshot(market, snapshot, updatedAt);
-    const candidate = parsed.runtime || currentRuntimeResults[market] || null;
+    const parsedLocal = runtimeFromBoard(market, localBoards[market], updatedAt);
     const dataset = marketData?.[market]?.[0] || null;
+    const selected = chooseRuntimeCandidate({
+      dataset,
+      current: currentRuntimeResults[market],
+      snapshot: parsed.runtime,
+      local: parsedLocal.runtime,
+    });
+    const candidate = selected.runtime;
     const sync = runtimeResultSyncState(candidate, dataset);
     const keepOverlay = Boolean(candidate) && (
       sync.state === RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET || sync.conflict
@@ -50,7 +117,10 @@ export function reconcileRuntimeCandidates({
       ...sync,
       candidate: keepOverlay ? candidate : null,
       snapshot_error: parsed.error,
-      source: parsed.runtime ? 'LIVE_DRAW_SNAPSHOT' : candidate ? 'IN_MEMORY_RUNTIME' : 'DATASET_ONLY',
+      local_board_error: parsedLocal.error,
+      runtime_conflict: selected.conflicts.length > 0,
+      runtime_conflicts: selected.conflicts,
+      source: selected.source,
     };
   }
 

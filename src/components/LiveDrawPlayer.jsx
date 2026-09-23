@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 import { Copy, ExternalLink, Play, Radio, RefreshCw } from 'lucide-react';
 import {
@@ -17,13 +16,9 @@ import {
   subscribeLiveDrawDiagnostics,
 } from '../liveDrawDiagnostics';
 import { loadYouTubeIframeAPI, watchdogPlayerState, youtubeStateToPlayerState } from '../youtubePlayerService';
+import { openLivePage } from '../liveDrawExternalNavigation';
 
-export async function openLivePage(url) {
-  if (!url) return false;
-  if (Capacitor.isNativePlatform()) await Browser.open({ url, presentationStyle: 'popover' });
-  else window.open(url, '_blank', 'noopener,noreferrer');
-  return true;
-}
+export { openLivePage } from '../liveDrawExternalNavigation';
 
 export class LiveDrawPlayerBoundary extends React.Component {
   constructor(props) {

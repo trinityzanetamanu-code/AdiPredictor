@@ -8,7 +8,7 @@ import {
   runtimeResultSyncState,
   RUNTIME_SYNC_STATE,
 } from '../src/runtimeResultSync.js';
-import { collectorHealth, datasetFreshness, COLLECTOR_HEALTH, DATASET_FRESHNESS } from '../src/collectorHealth.js';
+import { collectorHealth, collectorTimestampEvidence, datasetFreshness, COLLECTOR_HEALTH, DATASET_FRESHNESS } from '../src/collectorHealth.js';
 import {
   buildRuntimeNotificationEvents,
   claimEventOnce,
@@ -102,6 +102,71 @@ test('cold-start snapshot publishes D1 without mutating persistent D0 history', 
   assert.deepEqual(persistent, before, 'runtime reconciliation must not append to canonical history');
 });
 
+test('stale snapshot cannot regress a newer in-memory runtime result', () => {
+  const persistent = { HK: [datasetNew], SDY: [], SGP: [] };
+  const newerRuntime = createRuntimeLatestResult({ market: 'HK', board: phaseOneBoard });
+  const reconciled = reconcileRuntimeCandidates({
+    marketData: persistent,
+    snapshot: { markets: { HK: liveBoard } },
+    currentRuntimeResults: { HK: newerRuntime },
+  });
+  assert.equal(reconciled.runtimeLatestResults.HK.result_date, '2026-09-22');
+  assert.equal(reconciled.runtimeLatestResults.HK.nomor, '4659');
+  assert.equal(reconciled.decisions.HK.source, 'IN_MEMORY_RUNTIME');
+});
+
+test('invalid or out-of-order snapshot response cannot erase runtime progress', () => {
+  const persistent = { HK: [datasetNew], SDY: [], SGP: [] };
+  const newerRuntime = createRuntimeLatestResult({ market: 'HK', board: phaseOneBoard });
+  const invalid = reconcileRuntimeCandidates({
+    marketData: persistent,
+    snapshot: { markets: { HK: { ...phaseOneBoard, first: 'invalid' } } },
+    currentRuntimeResults: { HK: newerRuntime },
+  });
+  assert.equal(invalid.runtimeLatestResults.HK.nomor, '4659');
+  assert.equal(invalid.decisions.HK.snapshot_error, 'RUNTIME_FIRST_INVALID');
+
+  const firstResponse = reconcileRuntimeCandidates({
+    marketData: persistent,
+    snapshot: { markets: { HK: phaseOneBoard } },
+    currentRuntimeResults: {},
+  });
+  const lateOlderResponse = reconcileRuntimeCandidates({
+    marketData: persistent,
+    snapshot: { markets: { HK: liveBoard } },
+    currentRuntimeResults: firstResponse.runtimeLatestResults,
+  });
+  assert.equal(lateOlderResponse.runtimeLatestResults.HK.nomor, '4659');
+});
+
+test('validated local HK board participates in cold-start reconciliation outside fetch windows', () => {
+  const persistent = { HK: [datasetNew], SDY: [], SGP: [] };
+  const before = structuredClone(persistent);
+  const reconciled = reconcileRuntimeCandidates({
+    marketData: persistent,
+    snapshot: { markets: { HK: liveBoard } },
+    localBoards: { HK: phaseOneBoard },
+    currentRuntimeResults: {},
+  });
+  assert.equal(reconciled.runtimeLatestResults.HK.nomor, '4659');
+  assert.equal(reconciled.decisions.HK.source, 'DEVICE_LOCAL_BOARD');
+  assert.deepEqual(persistent, before);
+});
+
+test('same-date runtime disagreement is diagnostic and does not override canonical authority', () => {
+  const conflictingBoard = { ...phaseOneBoard, first: '391111', derived_4d: '1111' };
+  const runtime = createRuntimeLatestResult({ market: 'HK', board: phaseOneBoard });
+  const reconciled = reconcileRuntimeCandidates({
+    marketData: { HK: [{ result_date: '2026-09-22', nomor: '1111' }], SDY: [], SGP: [] },
+    snapshot: { markets: { HK: conflictingBoard } },
+    currentRuntimeResults: { HK: runtime },
+  });
+  assert.equal(reconciled.decisions.HK.runtime_conflict, true);
+  assert.equal(reconciled.decisions.HK.source, 'LIVE_DRAW_SNAPSHOT');
+  assert.equal(reconciled.decisions.HK.state, RUNTIME_SYNC_STATE.DATASET_SYNCED);
+  assert.equal(reconciled.runtimeLatestResults.HK, null);
+});
+
 test('persistent catch-up clears runtime overlay and same-date disagreement remains conflict', () => {
   const runtime = createRuntimeLatestResult({ market: 'HK', board: phaseOneBoard });
   const caughtUp = reconcileRuntimeCandidates({
@@ -175,6 +240,29 @@ test('collector health distinguishes fresh delayed stale and dataset staleness',
   assert.equal(collectorHealth(status(121), now).state, COLLECTOR_HEALTH.STALE);
   const stale = datasetFreshness({ market: 'HK', latest: datasetOld, collectorStatus: status(121), now: new Date('2026-09-22T17:00:00Z') });
   assert.equal(stale.state, DATASET_FRESHNESS.STALE);
+});
+
+test('collector timestamps distinguish published evidence from unavailable backend checks', () => {
+  const now = new Date('2026-09-23T09:38:54Z');
+  const status = {
+    collected_at: '2026-09-22T17:38:54Z',
+    markets: {
+      HK: {
+        last_source_check: '2026-09-22T17:38:54Z',
+        last_successful_data_update: '2026-09-22T17:10:00Z',
+      },
+    },
+  };
+  const evidence = collectorTimestampEvidence(status);
+  assert.equal(evidence.publishedStatusAt, '2026-09-22T17:38:54.000Z');
+  assert.equal(evidence.publishedSourceCheckAt, '2026-09-22T17:38:54.000Z');
+  assert.equal(evidence.latestResultUpdateAt, '2026-09-22T17:10:00.000Z');
+  assert.equal(evidence.backendCheckAvailable, false);
+  assert.equal(evidence.backendLastCheckAt, null);
+  const health = collectorHealth(status, now);
+  assert.equal(health.state, COLLECTOR_HEALTH.STALE);
+  assert.match(health.label, /^Status publik lama · diterbitkan/);
+  assert.doesNotMatch(health.label, /cek publik|backend|Collector stale/);
 });
 
 test('YouTube API ready or iframe load alone never proves playback', () => {

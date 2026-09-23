@@ -12,6 +12,7 @@ import {
   resolveMediaPresentation,
   selectSingaporeMode,
 } from '../src/liveDrawConfig.js';
+import { openLivePage } from '../src/liveDrawExternalNavigation.js';
 
 test('Singapore sources use exact official labels and HTTPS fallbacks', () => {
   for (const key of ['SGP_4D', 'SGP_TOTO']) {
@@ -94,4 +95,19 @@ test('draw window does not promote an unverified playlist to live media', () => 
   });
   assert.equal(presentation.drawState, MEDIA_STATES.LIVE);
   assert.equal(presentation.mediaState, MEDIA_STATES.LAST_COMPLETED_DRAW);
+});
+
+test('native Singapore official buttons use Capacitor Browser with the correct mode URL', async () => {
+  const opened = [];
+  const dependencies = {
+    isNativePlatform: () => true,
+    browserOpen: async (options) => { opened.push(options); },
+    windowOpen: () => { throw new Error('native flow must not use window.open'); },
+  };
+  await openLivePage(LIVE_DRAW_SOURCES.SGP_4D.pageUrl, dependencies);
+  await openLivePage(LIVE_DRAW_SOURCES.SGP_TOTO.pageUrl, dependencies);
+  assert.deepEqual(opened, [
+    { url: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/4d/index.html#draw-video', presentationStyle: 'popover' },
+    { url: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/toto/index.html#draw-video', presentationStyle: 'popover' },
+  ]);
 });
