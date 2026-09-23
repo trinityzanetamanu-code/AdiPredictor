@@ -81,10 +81,18 @@ test('Android History back closes internally and root back exits without browser
 test('Results latest card may use runtime overlay while canonical history remains separate', async () => {
   const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
   assert.match(app, /data-results-latest-source=\{effective\.source\}/);
-  assert.match(app, /LIVE · MENUNGGU SINKRONISASI DATASET/);
+  assert.match(app, /SUMBER LIVE · BELUM TERVERIFIKASI DATASET/);
+  assert.match(app, /SUMBER BERUBAH \/ KONFLIK/);
   assert.match(app, /data-canonical-history-list/);
-  assert.match(app, /Hasil runtime belum dimasukkan ke arsip/);
+  assert.match(app, /Angka ini hanya terlihat pada sumber live dan belum dimasukkan ke arsip/);
   assert.match(app, /KONFLIK RUNTIME · DATASET TETAP ACUAN/);
+});
+
+test('runtime prediction copy never claims an unverified backend synchronization is running', async () => {
+  const app = await readFile(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  assert.match(app, /Menunggu dataset dan prediksi terverifikasi/);
+  assert.match(app, /dataset canonical belum mengonfirmasinya/);
+  assert.doesNotMatch(app, /Prediksi sedang disinkronkan|Dataset analisis sedang sinkron/);
 });
 
 test('cold start and native resume use one bounded runtime reconciliation path', async () => {

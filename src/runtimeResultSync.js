@@ -34,6 +34,10 @@ export function createRuntimeLatestResult({ market, board, updatedAt = new Date(
     source_url: board.source_url || null,
     source_draw_6d: board.first,
     updated_at: board.retrieved_at || updatedAt,
+    verification: board.verification || 'structurally_valid_single_source',
+    runtime_conflict: Boolean(board.runtime_conflict),
+    runtime_conflicts: Array.isArray(board.runtime_conflicts) ? board.runtime_conflicts.slice(-8) : [],
+    runtime_observations: Array.isArray(board.runtime_observations) ? board.runtime_observations.slice(-8) : [],
   };
 }
 

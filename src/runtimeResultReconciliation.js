@@ -41,6 +41,33 @@ function validRuntime(runtime) {
   return runtimeResultSyncState(runtime, null).state === RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET;
 }
 
+function runtimeTimestamp(runtime) {
+  const parsed = Date.parse(String(runtime?.updated_at || ''));
+  return Number.isFinite(parsed) ? parsed : Number.NEGATIVE_INFINITY;
+}
+
+function conflictKey(conflict) {
+  return [
+    conflict.result_date,
+    conflict.first_result,
+    conflict.second_result,
+    conflict.first_observed_at,
+    conflict.second_observed_at,
+  ].join('|');
+}
+
+function mergeRuntimeConflicts(...collections) {
+  const merged = [];
+  const seen = new Set();
+  for (const conflict of collections.flat().filter(Boolean)) {
+    const key = conflictKey(conflict);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(conflict);
+  }
+  return merged.slice(-8);
+}
+
 function chooseRuntimeCandidate({ dataset, current, snapshot, local }) {
   const inputs = [
     { runtime: current, source: 'IN_MEMORY_RUNTIME' },
@@ -48,7 +75,11 @@ function chooseRuntimeCandidate({ dataset, current, snapshot, local }) {
     { runtime: local, source: 'DEVICE_LOCAL_BOARD' },
   ].filter(({ runtime }) => validRuntime(runtime));
   let selected = inputs[0] || { runtime: null, source: 'DATASET_ONLY' };
-  const conflicts = [];
+  let conflicts = mergeRuntimeConflicts(
+    current?.runtime_conflicts,
+    snapshot?.runtime_conflicts,
+    local?.runtime_conflicts,
+  );
 
   for (const incoming of inputs.slice(1)) {
     if (incoming.runtime.result_date > selected.runtime.result_date) {
@@ -56,26 +87,39 @@ function chooseRuntimeCandidate({ dataset, current, snapshot, local }) {
       continue;
     }
     if (incoming.runtime.result_date < selected.runtime.result_date) continue;
-    if (String(incoming.runtime.nomor) === String(selected.runtime.nomor)) continue;
+    if (String(incoming.runtime.nomor) === String(selected.runtime.nomor)) {
+      if (runtimeTimestamp(incoming.runtime) > runtimeTimestamp(selected.runtime)) selected = incoming;
+      continue;
+    }
 
-    conflicts.push({
+    const conflict = {
       result_date: incoming.runtime.result_date,
-      kept_source: selected.source,
-      kept_result: selected.runtime.nomor,
-      conflicting_source: incoming.source,
-      conflicting_result: incoming.runtime.nomor,
-    });
+      first_source: selected.source,
+      first_result: selected.runtime.nomor,
+      first_observed_at: selected.runtime.updated_at || null,
+      second_source: incoming.source,
+      second_result: incoming.runtime.nomor,
+      second_observed_at: incoming.runtime.updated_at || null,
+      resolution: 'LATEST_OBSERVATION_DISPLAYED_UNVERIFIED',
+    };
 
     // On an equal-date disagreement, canonical data may select the candidate
-    // that agrees with it. Without that proof, retain the already selected
-    // candidate so a late network response cannot flip runtime state.
+    // that agrees with it. Without canonical proof, display the newest
+    // observation while retaining explicit conflict evidence. This prevents a
+    // stale snapshot from resurrecting an earlier number after app restart.
     if (
       dataset?.result_date === incoming.runtime.result_date
       && String(dataset?.nomor || '') === String(incoming.runtime.nomor)
       && String(dataset?.nomor || '') !== String(selected.runtime.nomor)
     ) {
       selected = incoming;
+      conflict.resolution = 'CANONICAL_DATASET_MATCH';
+    } else if (runtimeTimestamp(incoming.runtime) > runtimeTimestamp(selected.runtime)) {
+      selected = incoming;
     }
+    conflict.selected_source = selected.source;
+    conflict.selected_result = selected.runtime.nomor;
+    conflicts = mergeRuntimeConflicts(conflicts, [conflict]);
   }
 
   return { ...selected, conflicts };
@@ -106,7 +150,17 @@ export function reconcileRuntimeCandidates({
       snapshot: parsed.runtime,
       local: parsedLocal.runtime,
     });
-    const candidate = selected.runtime;
+    const candidate = selected.runtime
+      ? {
+          ...selected.runtime,
+          verification: selected.runtime.verification || 'structurally_valid_single_source',
+          runtime_conflict: Boolean(selected.runtime.runtime_conflict || selected.conflicts.length),
+          runtime_conflicts: mergeRuntimeConflicts(
+            selected.runtime.runtime_conflicts,
+            selected.conflicts,
+          ),
+        }
+      : null;
     const sync = runtimeResultSyncState(candidate, dataset);
     const keepOverlay = Boolean(candidate) && (
       sync.state === RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET || sync.conflict
@@ -125,6 +179,27 @@ export function reconcileRuntimeCandidates({
   }
 
   return { runtimeLatestResults, decisions };
+}
+
+export function reconcileRuntimeObservation({
+  market,
+  board,
+  marketData,
+  currentRuntimeResults = {},
+  updatedAt = new Date().toISOString(),
+}) {
+  const code = String(market || '').toUpperCase();
+  const snapshot = { markets: { [code]: { ...board, retrieved_at: board?.retrieved_at || updatedAt } } };
+  const reconciled = reconcileRuntimeCandidates({
+    marketData,
+    snapshot,
+    currentRuntimeResults,
+    updatedAt,
+  });
+  return {
+    ...reconciled,
+    decision: reconciled.decisions[code],
+  };
 }
 
 export function shouldProbeNativeRuntimeBoard({

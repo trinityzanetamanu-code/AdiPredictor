@@ -56,6 +56,7 @@ import {
 } from './runtimeResultSync';
 import {
   createBoundedReconciliationRunner,
+  reconcileRuntimeObservation,
   reconcileRuntimeCandidates,
   shouldProbeNativeRuntimeBoard,
 } from './runtimeResultReconciliation';
@@ -368,11 +369,14 @@ export function AppProvider({ children }) {
       try {
         const direct = await fetchNativeLiveBoard('HK');
         if (direct.available && direct.board) {
+          const storedBoard = storeLocalHKBoard(
+            direct.board,
+            `startup_runtime_reconciliation:${reason}`,
+          );
           snapshot = {
             ...snapshot,
-            markets: { ...(snapshot?.markets || {}), HK: direct.board },
+            markets: { ...(snapshot?.markets || {}), HK: storedBoard },
           };
-          storeLocalHKBoard(direct.board, `startup_runtime_reconciliation:${reason}`);
         }
       } catch (error) {
         console.warn('Direct runtime reconciliation dilewati:', error?.message || error);
@@ -411,21 +415,19 @@ export function AppProvider({ children }) {
   );
 
   const publishRuntimeLatestResult = ({ market, board }) => {
-    const runtimeResult = createRuntimeLatestResult({ market, board });
-    const dataset = marketDataRef.current[runtimeResult.market]?.[0] || null;
-    const sync = runtimeResultSyncState(runtimeResult, dataset);
-    if (sync.conflict) {
-      const next = { ...runtimeLatestResultsRef.current, [runtimeResult.market]: runtimeResult };
-      runtimeLatestResultsRef.current = next;
-      setRuntimeLatestResults(next);
-      refreshData(true);
-      return sync;
-    }
-    if (sync.state !== RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET) return sync;
+    const reconciled = reconcileRuntimeObservation({
+      market,
+      board,
+      marketData: marketDataRef.current,
+      currentRuntimeResults: runtimeLatestResultsRef.current,
+    });
+    const runtimeResult = reconciled.decision?.candidate;
+    const sync = reconciled.decision;
+    runtimeLatestResultsRef.current = reconciled.runtimeLatestResults;
+    setRuntimeLatestResults(reconciled.runtimeLatestResults);
+    if (sync?.conflict) refreshData(true);
+    if (sync?.state !== RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET || !runtimeResult) return sync;
     const eventKey = `${runtimeResult.market}:${runtimeResult.result_date}:${runtimeResult.nomor}`;
-    const next = { ...runtimeLatestResultsRef.current, [runtimeResult.market]: runtimeResult };
-    runtimeLatestResultsRef.current = next;
-    setRuntimeLatestResults(next);
     if (runtimeEventKeyRef.current !== eventKey) {
       runtimeEventKeyRef.current = eventKey;
       startAcceleratedRefresh(runtimeResult);
@@ -1144,9 +1146,9 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
             <Clock3 className="w-7 h-7 text-amber-300" />
           </div>
           <div>
-            <h4 className="font-bold text-slate-100">Prediksi sedang disinkronkan</h4>
+            <h4 className="font-bold text-slate-100">Menunggu dataset dan prediksi terverifikasi</h4>
             <p className="text-xs text-slate-400 mt-2 max-w-md">
-              Hasil terbaru sudah berubah. Aplikasi menunggu sinkronisasi dataset dan prediksi P1–P8 baru agar prediksi lama tidak ditampilkan. ({runtimePredictionState?.reason || freshness.reason})
+              Sumber live melihat hasil yang lebih baru, tetapi dataset canonical belum mengonfirmasinya. Prediksi lama disembunyikan sampai dataset dan prediksi P1–P8 baru tersedia. ({runtimePredictionState?.reason || freshness.reason})
             </p>
           </div>
         </div>
@@ -1207,18 +1209,23 @@ function GeneratorPanel() {
           </div>
           <div>
             <span className="text-[10px] uppercase font-mono text-slate-400">
-              Hasil Keluaran Terakhir ({latest.periode})
+              {effective.source === 'LIVE_DRAW_RUNTIME' ? 'Hasil terlihat di sumber live' : 'Hasil keluaran terakhir'} ({latest.periode})
             </span>
             <h4 className="text-sm font-bold text-slate-200">
               {marketLabel(marketCode)} - {formatResultDate(latest)}
             </h4>
             {effective.source === 'LIVE_DRAW_RUNTIME' ? (
               <div className="mt-1 text-[10px] text-amber-300" data-effective-result-source="LIVE_DRAW_RUNTIME">
-                LiveDraw terbaru · Diperbarui {formatSyncTime(latest.updated_at)} · Dataset analisis sedang sinkron...
+                Terlihat {formatSyncTime(latest.updated_at)} · Belum terverifikasi dataset · Menunggu dataset dan prediksi terverifikasi.
               </div>
             ) : (
               <div className="mt-1 text-[10px] text-emerald-300" data-effective-result-source="DATASET">
                 Tersinkronisasi · Data dikoleksi {formatSyncTime(datasetLatest.collected_at || collectorStatus?.collected_at)}
+              </div>
+            )}
+            {effective.source === 'LIVE_DRAW_RUNTIME' && latest.runtime_conflict && (
+              <div className="mt-1 text-[10px] font-bold text-rose-300" data-runtime-source-conflict>
+                SUMBER LIVE BERUBAH/KONFLIK · Angka terbaru hanya observasi runtime, bukan hasil canonical.
               </div>
             )}
             {effective.sync.conflict && (
@@ -1345,7 +1352,12 @@ function ResultsPanel() {
               <p className="mt-1 text-sm font-bold text-slate-100">{formatResultDate(latest)} · {latest.periode}</p>
               {effective.source === 'LIVE_DRAW_RUNTIME' && (
                 <span className="mt-2 inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-[9px] font-black text-amber-200" data-runtime-result-awaiting-sync>
-                  LIVE · MENUNGGU SINKRONISASI DATASET
+                  SUMBER LIVE · BELUM TERVERIFIKASI DATASET
+                </span>
+              )}
+              {effective.source === 'LIVE_DRAW_RUNTIME' && latest.runtime_conflict && (
+                <span className="ml-2 mt-2 inline-flex rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[9px] font-black text-rose-200" data-runtime-source-conflict>
+                  SUMBER BERUBAH / KONFLIK
                 </span>
               )}
               {effective.source === 'DATASET' && !effective.sync.conflict && (
@@ -1363,7 +1375,7 @@ function ResultsPanel() {
           </div>
           {effective.source === 'LIVE_DRAW_RUNTIME' && (
             <p className="mt-3 text-[10px] text-slate-400">
-              Hasil runtime belum dimasukkan ke arsip. Daftar historis di bawah tetap berasal dari dataset canonical.
+              Angka ini hanya terlihat pada sumber live dan belum dimasukkan ke arsip. Daftar historis di bawah tetap berasal dari dataset canonical terverifikasi.
             </p>
           )}
         </section>
@@ -1430,6 +1442,10 @@ function LiveDrawPanel() {
     checkedAt: null,
   });
   const [boardRefreshNonce, setBoardRefreshNonce] = useState(0);
+  const boardRequestCoordinatorRef = useRef(null);
+  if (!boardRequestCoordinatorRef.current) {
+    boardRequestCoordinatorRef.current = createLatestRefreshCoordinator();
+  }
 
   useEffect(() => {
     if (liveMarket !== 'SGP') return undefined;
@@ -1468,6 +1484,7 @@ function LiveDrawPanel() {
     let timer;
 
     const refreshBoard = async () => {
+      const requestId = boardRequestCoordinatorRef.current.begin();
       const source = LIVE_DRAW_SOURCES[liveMarket];
       const scheduleState = calculateLiveState(source.schedule).status;
       if (liveMarket === 'HK' && scheduleState === 'LIVE_WINDOW') refreshData(true);
@@ -1496,11 +1513,14 @@ function LiveDrawPanel() {
 
       try {
         const direct = await fetchNativeLiveBoard(liveMarket);
+        if (!mounted || !boardRequestCoordinatorRef.current.isLatest(requestId)) return;
         if (direct.available && direct.board) {
-          selectedBoard = attachDatasetValidation(direct.board, datasetRow);
+          const runtimeBoard = liveMarket === 'HK'
+            ? storeLocalHKBoard(direct.board, 'public_mirror_structural_validation')
+            : direct.board;
+          selectedBoard = attachDatasetValidation(runtimeBoard, datasetRow);
           fetchMode = direct.reason;
           status = 'ready';
-          if (liveMarket === 'HK') storeLocalHKBoard(direct.board, 'public_mirror_structural_validation');
         } else if (direct.reason === 'web_platform') {
           fetchMode = cached ? 'web_cached_snapshot' : 'web_snapshot_unavailable';
         }
@@ -1509,6 +1529,7 @@ function LiveDrawPanel() {
         status = selectedBoard ? 'cached' : 'unavailable';
       }
 
+      if (!mounted || !boardRequestCoordinatorRef.current.isLatest(requestId)) return;
       if (liveMarket === 'HK' && selectedBoard) {
         try {
           publishRuntimeLatestResult({ market: 'HK', board: selectedBoard });
