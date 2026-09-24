@@ -56,13 +56,19 @@ def test_trace_exposes_numeric_tie_without_calling_score_probability():
 
 def test_published_0094_artifact_keeps_provenance_mismatch_visible():
     import json
+    import sys
 
     root = Path(__file__).resolve().parents[1]
     artifact = json.loads((root / "public/predictions/hk/archive/2026-09-23.json").read_text())
     report = PROVENANCE.compare_artifact("HK", artifact, load_history("HK"))
     assert report["fingerprint_match"] is True
-    assert report["status"] == "MISMATCH"
     assert report["fields"]["bbfs5_full_draw_coverage"]["artifact"]["hits"] == 51
-    assert report["fields"]["bbfs5_full_draw_coverage"]["replay"]["hits"] == 49
     assert report["fields"]["bbfs6_full_draw_coverage"]["artifact"]["hits"] == 114
-    assert report["fields"]["bbfs6_full_draw_coverage"]["replay"]["hits"] == 116
+    if sys.version_info[:2] == (3, 11):
+        assert report["status"] == "MATCH"
+        assert report["replay_p1_weight_with_artifact_peers"] == 0.854575
+        assert report["replay_0094_p1_p4_score_with_artifact_p4"] == 1.704213
+    else:
+        assert report["status"] == "MISMATCH"
+        assert report["fields"]["bbfs5_full_draw_coverage"]["replay"]["hits"] == 49
+        assert report["fields"]["bbfs6_full_draw_coverage"]["replay"]["hits"] == 116

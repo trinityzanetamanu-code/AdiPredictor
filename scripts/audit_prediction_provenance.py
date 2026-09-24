@@ -11,8 +11,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import platform
 import sys
 from pathlib import Path
+from statistics import mean
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -59,6 +61,34 @@ def p1_walk_forward_trace(history):
     return finalize_walk_forward(stats), trace, hashlib.sha256(material.encode()).hexdigest()
 
 
+def p1_weight_with_artifact_peers(artifact, replay):
+    """Apply the production weight formula using replay P1 and artifact peers."""
+    metrics = {}
+    for name, model in artifact.get("models", {}).items():
+        result = dict(model.get("walk_forward", {}))
+        if name == "P1":
+            result.update(replay)
+        metrics[name] = {
+            "2d_top5": mean(result[f"2d_{slot}_top5"]["rate"] for slot in ("front", "middle", "back")),
+            "3d_top5": mean(result[f"3d_{slot}_top5"]["rate"] for slot in ("front", "back")),
+            "bbfs6_full": result["bbfs6_full_draw_coverage"]["rate"],
+            "bbfs5_full": result["bbfs5_full_draw_coverage"]["rate"],
+            "4d_top3": result["4d_top3"]["rate"],
+        }
+    best = {key: max(value[key] for value in metrics.values()) for key in next(iter(metrics.values()))}
+    low_4d = max(model["walk_forward"]["4d_top3"]["hits"] for model in artifact["models"].values()) < 5
+    contributions = {"2d_top5": .30, "3d_top5": .25, "bbfs6_full": .25, "bbfs5_full": .10, "4d_top3": .10}
+    if low_4d:
+        contributions.pop("4d_top3")
+        total = sum(contributions.values())
+        contributions = {key: value / total for key, value in contributions.items()}
+    scores = {
+        name: sum(contributions[key] * value[key] / best[key] for key in contributions)
+        for name, value in metrics.items()
+    }
+    return round(scores["P1"] / max(scores.values()), 6)
+
+
 def compare_artifact(market, artifact, history):
     boundary = artifact.get("dataset", {}).get("last_date")
     bounded = [row for row in history if not boundary or row["result_date"] <= boundary]
@@ -74,12 +104,16 @@ def compare_artifact(market, artifact, history):
     }
     fingerprint = dataset_fingerprint(market, bounded)
     engine_source = (ROOT / "scripts" / "prediction_engine.py").read_bytes()
+    replay_weight = p1_weight_with_artifact_peers(artifact, replay)
+    artifact_p1_weight = artifact.get("models", {}).get("P1", {}).get("reliability_weight")
+    artifact_p4_weight = artifact.get("models", {}).get("P4", {}).get("reliability_weight")
     return {
         "status": "MATCH" if all(item["match"] for item in fields.values()) else "MISMATCH",
         "market": market,
         "target_date": artifact.get("target_date"),
         "generated_at": artifact.get("generated_at"),
         "engine_version": artifact.get("engine_version", artifact.get("engine")),
+        "python_runtime": f"{platform.python_implementation()} {platform.python_version()}",
         "replay_engine_source_sha256": hashlib.sha256(engine_source).hexdigest(),
         "artifact_has_engine_source_sha256": bool(artifact.get("engine_source_sha256")),
         "dataset_rows": len(bounded),
@@ -90,11 +124,15 @@ def compare_artifact(market, artifact, history):
         "classification_trace_sha256": trace_digest,
         "artifact_has_per_target_classification_trace": False,
         "fields": fields,
+        "artifact_p1_weight": artifact_p1_weight,
+        "replay_p1_weight_with_artifact_peers": replay_weight,
+        "artifact_0094_p1_p4_score": round(artifact_p1_weight + artifact_p4_weight, 6),
+        "replay_0094_p1_p4_score_with_artifact_p4": round(replay_weight + artifact_p4_weight, 6),
         "last_replay_classifications": trace[-5:],
         "limitation": (
             "The artifact stores aggregate counts but no per-target BBFS classification "
-            "trace or engine source hash. A mismatch cannot identify the unpublished "
-            "evaluator variant that produced it."
+            "trace or engine source hash. CPython 3.11 reproduces the artifact; CPython "
+            "3.12+ uses a more accurate float sum and changes near-tie BBFS ordering."
         ),
     }
 
