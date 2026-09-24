@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-24T18:21:44+07:00",
+  "collected_at": "2026-09-24T22:51:22+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -84,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-09-23T23:53:02+07:00",
-      "last_source_check": "2026-09-24T18:21:44+07:00",
+      "last_source_check": "2026-09-24T22:51:22+07:00",
       "latest_source_draw_date": "2026-09-23"
     },
     "SDY": {
@@ -99,7 +99,7 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 236,
+        "waroengtogel_sdy": 238,
         "datatogel_sdy": 267,
         "livenomor_sdy": 267
       },
@@ -108,14 +108,14 @@
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-09-14",
-          "number": "9392",
-          "verification": "confirmed_3_sources"
+          "date": "2026-09-23",
+          "number": "0217",
+          "verification": "confirmed_4_sources"
         },
         {
           "date": "2026-09-24",
           "number": "4152",
-          "verification": "confirmed_3_sources"
+          "verification": "confirmed_4_sources"
         }
       ],
       "latest": {
@@ -130,32 +130,34 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-09-24T18:21:44+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-09-24T22:51:22+07:00",
+        "verification": "confirmed_4_sources",
+        "confirmations": 4
       },
       "latest_verified": {
         "date": "2026-09-24",
         "number": "4152",
-        "verification": "confirmed_3_sources",
+        "verification": "confirmed_4_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-09-24T18:21:44+07:00",
-      "last_source_check": "2026-09-24T18:21:44+07:00",
+      "last_successful_data_update": "2026-09-24T22:51:22+07:00",
+      "last_source_check": "2026-09-24T22:51:22+07:00",
       "latest_source_draw_date": "2026-09-24"
     },
     "SGP": {
       "market": "SGP",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
@@ -166,15 +168,9 @@
         "nexipools_sgp": 30
       },
       "verified_count": 30,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-24",
-          "number": "2958",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260924,
         "tanggal": "24 Sep 2026",
@@ -205,7 +201,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-24T18:21:44+07:00",
-      "last_source_check": "2026-09-24T18:21:44+07:00",
+      "last_source_check": "2026-09-24T22:51:22+07:00",
       "latest_source_draw_date": "2026-09-24"
     }
   }
