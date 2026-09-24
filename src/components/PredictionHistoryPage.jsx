@@ -141,14 +141,14 @@ function ModelDetails({ archive }) {
   );
 }
 
-function VisualPatterns({ archive, marketRows, outcomeAudit }) {
+function VisualPatterns({ archive, outcomeAudit }) {
   const patterns = archive.visual_patterns;
   if (!Array.isArray(patterns) || !patterns.length) return <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-xs text-amber-300">Pola Visual: {unavailable}. Tidak ada gambar atau sinyal yang dibuat setelah fakta.</div>;
   return (
-    <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
-      <summary className="cursor-pointer text-xs font-bold text-slate-200">Pola Visual — paito canonical sebelum target</summary>
+    <details className="rounded-xl border border-violet-500/25 bg-violet-500/5 p-4" data-section="pola-visual">
+      <summary className="cursor-pointer text-xs font-bold text-violet-200">Pola Visual — bukti dan SVG arsip asli</summary>
       <div className="mt-3 space-y-4">
-        <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-[10px] text-amber-200">P5_VISUAL_EDGE_CONFIRMED=FALSE. Penyajian paito ini tidak menambah vote P5 dan tidak mengganti SVG historis yang dibekukan.</div>
+        <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-[10px] text-amber-200">P5_VISUAL_EDGE_CONFIRMED=FALSE. Bagian ini mempertahankan pola P1–P8, metadata, aturan, bobot, hasil audit, dan SVG historis yang dibekukan.</div>
         {patterns.map((pattern, index) => {
           const audit = outcomeAudit?.visual_patterns?.find((item) => item.pattern_name === pattern.pattern_name);
           return (
@@ -156,12 +156,25 @@ function VisualPatterns({ archive, marketRows, outcomeAudit }) {
             <summary className="cursor-pointer text-[11px] font-bold text-emerald-300">{pattern.pattern_name?.replaceAll('_', ' ')}</summary>
             <div className="mt-3 space-y-3 text-[10px] text-slate-400">
               <div className="grid gap-1 sm:grid-cols-2"><Field label="Sumber periode">{pattern.source_period}</Field><Field label="Aturan pola">{pattern.backtest_definition}</Field><Field label="Baseline">{pattern.baseline != null ? Number(pattern.baseline).toFixed(6) : null}</Field><Field label="Aturan audit">{pattern.target_signal?.evaluation_rule || 'belum tersedia'}</Field><Field label="Hasil audit">{audit ? `${audit.status} · aktual ${audit.actual}${audit.matched_positions?.length ? ` · posisi ${audit.matched_positions.join(', ')}` : ''}` : 'Menunggu hasil / tidak tersedia pada arsip asli'}</Field></div>
-              <VisualPaitoViewer marketRows={marketRows} prediction={archive} pattern={pattern} />
               {pattern.image_path ? <details className="rounded-lg border border-slate-800 p-3"><summary className="cursor-pointer text-slate-300">SVG historis asli (tetap dibekukan)</summary><img className="mt-3 w-full rounded-lg border border-slate-800" loading="lazy" src={predictionAssetUrl(pattern.image_path, archive.dataset_fingerprint)} alt={`SVG historis ${pattern.pattern_name}`} /></details> : <div className="text-amber-300">SVG historis {unavailable}.</div>}
             </div>
           </details>
           );
         })}
+      </div>
+    </details>
+  );
+}
+
+function PaitoPatterns({ archive, marketRows }) {
+  return (
+    <details className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4" data-section="pola-paito">
+      <summary className="cursor-pointer text-xs font-bold text-emerald-200">Pola Paito — tabel historis untuk belajar</summary>
+      <div className="mt-3 space-y-3">
+        <div className="rounded-lg border border-slate-700 bg-slate-950/40 p-3 text-[10px] leading-relaxed text-slate-300">
+          Ini visualisasi turunan dari hasil canonical yang tersedia pada aplikasi dan dibatasi metadata arsip. Pola Paito terpisah dari Pola Visual, tidak mengganti SVG historis, bukan rumus terverifikasi, dan tidak masuk voting, skor, atau Main P1–P8.
+        </div>
+        <VisualPaitoViewer marketRows={marketRows} prediction={archive} patterns={archive.visual_patterns || []} />
       </div>
     </details>
   );
@@ -175,7 +188,7 @@ function ArchiveDetails({ archive, record, marketRows }) {
       {actual && record.outcome_audit ? <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4"><summary className="cursor-pointer text-xs font-bold">Audit prediksi tanggal ini</summary><div className="mt-3"><PredictionOutcomeAudit audit={record.outcome_audit} /></div></details> : null}
       {!actual && <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 p-3 text-xs text-amber-300">Menunggu hasil. Audit tembus belum dibuat.</div>}
       {archive.prior_prediction_audit && <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4"><summary className="cursor-pointer text-xs font-bold">Audit prediksi sebelumnya yang tersimpan</summary><div className="mt-3"><PredictionOutcomeAudit audit={archive.prior_prediction_audit} /></div></details>}
-      <QuickView archive={archive} /><ConsensusDetails archive={archive} /><ModelDetails archive={archive} /><VisualPatterns archive={archive} marketRows={marketRows} outcomeAudit={record.outcome_audit} />
+      <QuickView archive={archive} /><ConsensusDetails archive={archive} /><ModelDetails archive={archive} /><VisualPatterns archive={archive} outcomeAudit={record.outcome_audit} /><PaitoPatterns archive={archive} marketRows={marketRows} />
     </section>
   );
 }

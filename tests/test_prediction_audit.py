@@ -18,6 +18,10 @@ SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "audit_prediction_con
 SPEC = importlib.util.spec_from_file_location("audit_prediction_consensus", SCRIPT)
 AUDIT = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(AUDIT)
+PROVENANCE_SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "audit_prediction_provenance.py"
+PROVENANCE_SPEC = importlib.util.spec_from_file_location("audit_prediction_provenance", PROVENANCE_SCRIPT)
+PROVENANCE = importlib.util.module_from_spec(PROVENANCE_SPEC)
+PROVENANCE_SPEC.loader.exec_module(PROVENANCE)
 
 
 def test_incremental_audit_weights_match_production_walk_forward():
@@ -48,3 +52,17 @@ def test_trace_exposes_numeric_tie_without_calling_score_probability():
     assert ranked[0]["number"] == "0094"
     assert ranked[0]["reliability_weighted_score"] == ranked[1]["reliability_weighted_score"]
     assert "probability" not in AUDIT.__doc__.lower()
+
+
+def test_published_0094_artifact_keeps_provenance_mismatch_visible():
+    import json
+
+    root = Path(__file__).resolve().parents[1]
+    artifact = json.loads((root / "public/predictions/hk/archive/2026-09-23.json").read_text())
+    report = PROVENANCE.compare_artifact("HK", artifact, load_history("HK"))
+    assert report["fingerprint_match"] is True
+    assert report["status"] == "MISMATCH"
+    assert report["fields"]["bbfs5_full_draw_coverage"]["artifact"]["hits"] == 51
+    assert report["fields"]["bbfs5_full_draw_coverage"]["replay"]["hits"] == 49
+    assert report["fields"]["bbfs6_full_draw_coverage"]["artifact"]["hits"] == 114
+    assert report["fields"]["bbfs6_full_draw_coverage"]["replay"]["hits"] == 116

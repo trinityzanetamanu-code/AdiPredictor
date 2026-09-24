@@ -1,32 +1,126 @@
 export const PAITO_POSITIONS = ['AS', 'KOP', 'KEPALA', 'EKOR'];
 
-function resultNumber(row) {
-  return String(row?.nomor || row?.number || '').padStart(4, '0');
+export function normalizePaitoNumber(row) {
+  const raw = row?.nomor ?? row?.number;
+  if (raw === null || raw === undefined) return null;
+  const value = String(raw).trim();
+  if (!/^\d{1,4}$/.test(value)) return null;
+  return value.padStart(4, '0');
 }
 
-export function buildHistoricalPaitoRows(marketRows, targetDate, limit = 18) {
-  return (marketRows || [])
-    .filter((row) => (
-      /^\d{4}-\d{2}-\d{2}$/.test(String(row?.result_date || ''))
-      && row.result_date < targetDate
-      && /^\d{4}$/.test(resultNumber(row))
-    ))
-    .sort((a, b) => a.result_date.localeCompare(b.result_date))
+function validDate(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(value || ''));
+}
+
+function collectedAfter(row, generatedAt) {
+  if (!row?.collected_at || !generatedAt) return false;
+  const collected = Date.parse(row.collected_at);
+  const generated = Date.parse(generatedAt);
+  return Number.isFinite(collected) && Number.isFinite(generated) && collected > generated;
+}
+
+export function paitoArchiveBoundary(prediction = {}) {
+  const targetDate = prediction.target_date || null;
+  const basisDate = prediction.dataset?.last_date
+    || prediction.prediction_basis_date
+    || prediction.latest_result?.date
+    || null;
+  return {
+    targetDate,
+    basisDate,
+    generatedAt: prediction.generated_at || null,
+    datasetCount: prediction.dataset?.count ?? null,
+    firstDate: prediction.dataset?.first_date || null,
+    fingerprint: prediction.dataset_fingerprint || null,
+  };
+}
+
+export function buildHistoricalPaitoDataset(marketRows, prediction = {}, limit = 18) {
+  const boundary = paitoArchiveBoundary(
+    typeof prediction === 'string' ? { target_date: prediction } : prediction,
+  );
+  const diagnostics = {
+    invalidNumberRows: 0,
+    outsideArchiveBoundaryRows: 0,
+    collectedAfterPredictionRows: 0,
+    conflictDates: [],
+  };
+  const bounded = [];
+
+  for (const row of marketRows || []) {
+    const date = row?.result_date;
+    const number = normalizePaitoNumber(row);
+    if (!validDate(date)) continue;
+    if (!number) {
+      diagnostics.invalidNumberRows += 1;
+      continue;
+    }
+    const outsideBasis = boundary.basisDate ? date > boundary.basisDate : false;
+    const atOrAfterTarget = boundary.targetDate ? date >= boundary.targetDate : false;
+    if (outsideBasis || atOrAfterTarget) {
+      diagnostics.outsideArchiveBoundaryRows += 1;
+      continue;
+    }
+    if (collectedAfter(row, boundary.generatedAt)) {
+      diagnostics.collectedAfterPredictionRows += 1;
+      continue;
+    }
+    bounded.push({ row, date, number });
+  }
+
+  const byDate = new Map();
+  for (const candidate of bounded) {
+    if (!byDate.has(candidate.date)) byDate.set(candidate.date, []);
+    byDate.get(candidate.date).push(candidate);
+  }
+
+  const safe = [];
+  for (const [date, candidates] of byDate) {
+    const numbers = new Set(candidates.map((candidate) => candidate.number));
+    if (numbers.size > 1) {
+      diagnostics.conflictDates.push(date);
+      continue;
+    }
+    safe.push(candidates.at(-1));
+  }
+
+  const rows = safe
+    .sort((a, b) => a.date.localeCompare(b.date))
     .slice(-limit)
-    .map((row) => ({
-      date: row.result_date,
+    .map(({ row, date, number }) => ({
+      date,
       period: row.periode || row.period || '-',
-      number: resultNumber(row),
-      digits: resultNumber(row).split(''),
+      number,
+      digits: number.split(''),
+      verification: row.verification || null,
+      sources: (row.source_ids || row.sources || (row.source_id ? [row.source_id] : [])).map((source) => (
+        typeof source === 'string' ? source : source?.source_id || source?.name
+      )).filter(Boolean),
+      collectedAt: row.collected_at || null,
     }));
+
+  return {
+    rows,
+    boundary,
+    diagnostics,
+    exactSnapshotProven: false,
+  };
 }
 
-function combinations(options, index = 0, current = [], output = []) {
+export function buildHistoricalPaitoRows(marketRows, prediction, limit = 18) {
+  return buildHistoricalPaitoDataset(marketRows, prediction, limit).rows;
+}
+
+function combinations(options, index = 0, current = [], output = [], limit = 100) {
+  if (output.length >= limit) return output;
   if (index >= options.length) {
     output.push(current);
     return output;
   }
-  for (const value of options[index]) combinations(options, index + 1, [...current, value], output);
+  for (const value of options[index]) {
+    combinations(options, index + 1, [...current, value], output, limit);
+    if (output.length >= limit) break;
+  }
   return output;
 }
 
@@ -49,7 +143,7 @@ function matchesRule(name, columns) {
   return false;
 }
 
-export function deriveArchivedPatternPath(rows, pattern) {
+export function deriveArchivedPatternPaths(rows, pattern, limit = 25) {
   const inRange = rows
     .map((row, rowIndex) => ({ ...row, rowIndex }))
     .filter((row) => row.date >= pattern?.start_point && row.date <= pattern?.end_point);
@@ -61,14 +155,31 @@ export function deriveArchivedPatternPath(rows, pattern) {
     .filter((cell) => digits.has(cell.digit)));
   if (choices.some((group) => !group.length)) return [];
 
-  const valid = combinations(choices).find((cells) => (
-    matchesRule(pattern.pattern_name, cells.map((cell) => cell.columnIndex))
-  ));
-  return valid || [];
+  return combinations(choices, 0, [], [], 100)
+    .filter((cells) => matchesRule(pattern.pattern_name, cells.map((cell) => cell.columnIndex)))
+    .slice(0, limit);
 }
 
-export function patternDisplayStatus(pattern, path) {
-  if (!pattern) return 'Metadata pola tidak tersedia pada arsip asli.';
-  if (!path?.length) return 'Lintasan tidak dapat direkonstruksi dari metadata arsip tanpa mengarang sel.';
-  return 'Lintasan diturunkan dari draw sebelum target dan metadata pola yang dibekukan.';
+export function deriveArchivedPatternPath(rows, pattern) {
+  return deriveArchivedPatternPaths(rows, pattern, 1)[0] || [];
+}
+
+export function archivedPatternPathProvenance(rows, pattern) {
+  const paths = deriveArchivedPatternPaths(rows, pattern);
+  const hasFrozenCells = Array.isArray(pattern?.highlighted_cells) && pattern.highlighted_cells.length > 1;
+  return {
+    path: paths[0] || [],
+    alternatives: paths.length,
+    exact: hasFrozenCells,
+    status: hasFrozenCells ? 'FROZEN_ARCHIVE_CELLS' : 'ILLUSTRATIVE_RECONSTRUCTION',
+    reason: hasFrozenCells
+      ? 'Koordinat sel tersedia pada arsip asli.'
+      : 'Arsip ini tidak menyimpan koordinat sel lintasan. Garis memilih satu kombinasi yang memenuhi metadata dan bukan bukti lintasan prediksi asli.',
+  };
+}
+
+export function patternDisplayStatus(pattern, provenance) {
+  if (!pattern) return 'Tidak ada pola arsip yang dipilih; tabel hanya menampilkan hasil historis.';
+  if (!provenance?.path?.length) return 'Lintasan tidak dapat direkonstruksi dari metadata arsip tanpa mengarang sel.';
+  return provenance.reason;
 }
