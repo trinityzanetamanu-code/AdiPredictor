@@ -1,3 +1,5 @@
+import { normalizeArchivePath, validatePredictionArchive } from './predictionArchive';
+
 const REMOTE_ROOT =
   'https://raw.githubusercontent.com/trinityzanetamanu-code/AdiPredictor/main/public';
 
@@ -7,9 +9,12 @@ const MARKET_FILES = {
   SDY: 'sdy',
 };
 
-async function fetchJson(url, timeoutMs = 12000) {
+async function fetchJson(url, timeoutMs = 12000, externalSignal = null) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const abortFromCaller = () => controller.abort();
+  if (externalSignal?.aborted) controller.abort();
+  externalSignal?.addEventListener?.('abort', abortFromCaller, { once: true });
 
   try {
     const separator = url.includes('?') ? '&' : '?';
@@ -26,20 +31,22 @@ async function fetchJson(url, timeoutMs = 12000) {
     return await response.json();
   } finally {
     clearTimeout(timer);
+    externalSignal?.removeEventListener?.('abort', abortFromCaller);
   }
 }
 
-async function remoteFirst(relativePath, localPath, optional = false) {
+async function remoteFirst(relativePath, localPath, optional = false, signal = null) {
   try {
-    return await fetchJson(REMOTE_ROOT + '/' + relativePath);
+    return await fetchJson(REMOTE_ROOT + '/' + relativePath, 12000, signal);
   } catch (remoteError) {
+    if (signal?.aborted) throw remoteError;
     if (!localPath) {
       if (optional) return null;
       throw remoteError;
     }
 
     try {
-      return await fetchJson(localPath);
+      return await fetchJson(localPath, 12000, signal);
     } catch (localError) {
       if (optional) return null;
       throw new Error(
@@ -94,6 +101,17 @@ export async function loadPredictionHistory(marketCode) {
   return data && Array.isArray(data.records)
     ? data
     : { schema_version: 1, market: marketCode, count: 0, records: [] };
+}
+
+export async function loadPredictionArchive(marketCode, indexRecord, { signal } = {}) {
+  const relativePath = normalizeArchivePath(indexRecord, marketCode);
+  const payload = await remoteFirst(
+    relativePath,
+    './' + relativePath,
+    false,
+    signal,
+  );
+  return validatePredictionArchive(payload, indexRecord, marketCode);
 }
 
 export function predictionAssetUrl(imagePath, fingerprint = '') {

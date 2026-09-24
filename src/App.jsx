@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   Radio,
   History,
+  Settings,
 } from 'lucide-react';
 import {
   loadCollectorStatus,
@@ -597,6 +598,7 @@ function Navbar() {
     { id: 'livedraw', label: 'LiveDraw', icon: Radio },
     { id: 'analytics', label: 'Statistik', icon: BarChart3 },
     { id: 'dreams', label: 'Tafsir', icon: BookOpen },
+    { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
   return (
@@ -619,6 +621,7 @@ function Navbar() {
               <button
                 key={tab.id}
                 onClick={() => navigateToTab(tab.id)}
+                aria-current={active ? 'page' : undefined}
                 className={
                   'flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition ' +
                   (active
@@ -1262,7 +1265,6 @@ function GeneratorPanel() {
             backendHealth={backendHealth}
             datasetState={datasetState}
           />
-          <NotificationSettingsPanel />
         </div>
 
         <PredictionCard
@@ -1823,6 +1825,20 @@ function DreamBookPanel() {
   );
 }
 
+function SettingsPanel() {
+  return (
+    <div className="space-y-5" data-page="settings">
+      <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-xl sm:p-6">
+        <div className="flex items-start gap-3">
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-emerald-300"><Settings className="h-6 w-6" /></div>
+          <div><h2 className="text-xl font-black text-slate-100">Pengaturan</h2><p className="mt-1 text-xs text-slate-400">Preferensi perangkat disimpan lokal dan tetap tersedia setelah aplikasi dibuka ulang.</p></div>
+        </div>
+      </section>
+      <NotificationSettingsPanel />
+    </div>
+  );
+}
+
 function Footer() {
   const { isRefreshing, collectorStatus } = useApp();
   const health = collectorHealth(collectorStatus);
@@ -1854,10 +1870,11 @@ function MobileNavigation() {
     { id: 'livedraw', label: 'LiveDraw', icon: Radio },
     { id: 'analytics', label: 'Statistik', icon: BarChart3 },
     { id: 'dreams', label: 'Tafsir', icon: BookOpen },
+    { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
   return (
-    <nav className="md:hidden sticky bottom-0 z-40 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 px-1 py-2 flex">
+    <nav className="md:hidden sticky bottom-0 z-40 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 px-0.5 py-2 flex" aria-label="Navigasi utama">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const active = activeTab === tab.id;
@@ -1865,8 +1882,10 @@ function MobileNavigation() {
           <button
             key={tab.id}
             onClick={() => navigateToTab(tab.id)}
+            aria-current={active ? 'page' : undefined}
+            aria-label={tab.label}
             className={
-              'flex-1 min-w-0 flex flex-col items-center gap-1 px-1 py-1.5 rounded-lg text-[9px] ' +
+              'flex-1 min-w-0 flex flex-col items-center gap-1 px-0.5 py-1.5 rounded-lg text-[8px] ' +
               (active ? 'text-emerald-400 font-bold' : 'text-slate-400')
             }
           >
@@ -1893,6 +1912,7 @@ function MainContent() {
     internalPage,
     marketCode,
     setMarketCode,
+    marketData,
     predictionHistory,
     closePredictionHistory,
   } = useApp();
@@ -1906,6 +1926,7 @@ function MainContent() {
             marketCode={marketCode}
             setMarketCode={setMarketCode}
             history={predictionHistory[marketCode]}
+            marketRows={marketData[marketCode]}
             onBack={closePredictionHistory}
           />
         ) : (
@@ -1915,6 +1936,7 @@ function MainContent() {
             {activeTab === 'livedraw' && <LiveDrawPanel />}
             {activeTab === 'analytics' && <AnalyticsPanel />}
             {activeTab === 'dreams' && <DreamBookPanel />}
+            {activeTab === 'settings' && <SettingsPanel />}
           </>
         )}
       </main>

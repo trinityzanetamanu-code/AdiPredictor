@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test:live": "node --test tests/test_live_draw_config.mjs tests/test_live_draw_service.mjs tests/test_runtime_ux.mjs tests/test_runtime_hardening.mjs tests/test_refresh_data_ordering.mjs tests/test_prediction_consensus.mjs",
+    "test:live": "node --test tests/test_live_draw_config.mjs tests/test_live_draw_service.mjs tests/test_runtime_ux.mjs tests/test_runtime_hardening.mjs tests/test_refresh_data_ordering.mjs tests/test_prediction_consensus.mjs tests/test_prediction_archive_ui.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
