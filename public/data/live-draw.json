@@ -1,27 +1,27 @@
 {
   "schema_version": 1,
-  "retrieved_at": "2026-09-25T05:42:03+07:00",
+  "retrieved_at": "2026-09-25T17:30:24+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
       "source": "SydneyPoolsToday Market Source",
       "source_url": "https://www.sydneypoolstoday.com/live.html",
-      "draw_date": "2026-09-24",
-      "first": "304152",
-      "second": "525718",
-      "third": "938680",
+      "draw_date": "2026-09-25",
+      "first": "721559",
+      "second": "918887",
+      "third": "647683",
       "starter": [
-        "273860"
+        "142821"
       ],
       "consolation": [
-        "246347"
+        "694186"
       ],
-      "full_first_prize_6d": "304152",
-      "derived_4d": "4152",
+      "full_first_prize_6d": "721559",
+      "derived_4d": "1559",
       "dataset_4d": "4152",
-      "matches_dataset": true,
-      "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-09-25T05:42:03+07:00"
+      "matches_dataset": null,
+      "verification": "dataset_date_mismatch",
+      "retrieved_at": "2026-09-25T17:30:24+07:00"
     },
     "HK": {
       "market": "HK",
@@ -52,7 +52,7 @@
       "dataset_4d": "0823",
       "matches_dataset": true,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-09-25T05:42:03+07:00"
+      "retrieved_at": "2026-09-25T17:30:24+07:00"
     }
   }
 }
