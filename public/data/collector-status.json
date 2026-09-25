@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-25T17:30:24+07:00",
+  "collected_at": "2026-09-26T02:27:37+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -14,18 +14,24 @@
       ],
       "parsed_counts": {
         "nexipools_hk": 30,
-        "livenomor_hk": 267
+        "livenomor_hk": 268
       },
-      "verified_count": 267,
-      "new_count": 0,
+      "verified_count": 268,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-25",
+          "number": "2771",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20260924,
-        "tanggal": "24 Sep 2026",
-        "periode": "HK-3554",
-        "nomor": "0823",
-        "result_date": "2026-09-24",
+        "id": 20260925,
+        "tanggal": "25 Sep 2026",
+        "periode": "HK-3555",
+        "nomor": "2771",
+        "result_date": "2026-09-25",
         "market": "HK",
         "source_id": "nexipools_hk",
         "source_name": "NexiPools Hongkong Pools",
@@ -34,13 +40,13 @@
           "nexipools_hk",
           "livenomor_hk"
         ],
-        "collected_at": "2026-09-25T02:31:39+07:00",
+        "collected_at": "2026-09-26T02:27:37+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-09-24",
-        "number": "0823",
+        "date": "2026-09-25",
+        "number": "2771",
         "verification": "confirmed_2_sources",
         "source_ids": [
           "nexipools_hk",
@@ -59,11 +65,11 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-09-24",
-          "latest_result": "0823",
-          "source_first_seen_at": "2026-09-25T02:31:39+07:00",
-          "expected_draw_date": "2026-09-24",
-          "latency_minutes": 211,
+          "latest_date": "2026-09-25",
+          "latest_result": "2771",
+          "source_first_seen_at": "2026-09-26T02:27:37+07:00",
+          "expected_draw_date": "2026-09-25",
+          "latency_minutes": 207,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -73,23 +79,23 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-09-24",
-          "latest_result": "0823",
-          "source_first_seen_at": "2026-09-25T02:31:39+07:00",
-          "expected_draw_date": "2026-09-24",
-          "latency_minutes": 211,
+          "latest_date": "2026-09-25",
+          "latest_result": "2771",
+          "source_first_seen_at": "2026-09-26T02:27:37+07:00",
+          "expected_draw_date": "2026-09-25",
+          "latency_minutes": 207,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
         }
       },
-      "last_successful_data_update": "2026-09-25T02:31:39+07:00",
-      "last_source_check": "2026-09-25T17:30:24+07:00",
-      "latest_source_draw_date": "2026-09-24"
+      "last_successful_data_update": "2026-09-26T02:27:37+07:00",
+      "last_source_check": "2026-09-26T02:27:37+07:00",
+      "latest_source_draw_date": "2026-09-25"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -104,20 +110,9 @@
         "livenomor_sdy": 268
       },
       "verified_count": 268,
-      "new_count": 2,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-15",
-          "number": "8463",
-          "verification": "confirmed_3_sources"
-        },
-        {
-          "date": "2026-09-25",
-          "number": "1559",
-          "verification": "confirmed_3_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260925,
         "tanggal": "25 Sep 2026",
@@ -150,7 +145,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-25T17:30:24+07:00",
-      "last_source_check": "2026-09-25T17:30:24+07:00",
+      "last_source_check": "2026-09-26T02:27:37+07:00",
       "latest_source_draw_date": "2026-09-25"
     },
     "SGP": {
@@ -199,7 +194,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-24T18:21:44+07:00",
-      "last_source_check": "2026-09-25T17:30:24+07:00",
+      "last_source_check": "2026-09-26T02:27:37+07:00",
       "latest_source_draw_date": "2026-09-24"
     }
   }
