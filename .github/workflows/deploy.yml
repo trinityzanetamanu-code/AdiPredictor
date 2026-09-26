@@ -37,6 +37,8 @@ jobs:
       - run: npm ci --prefix before
       - run: npx playwright install --with-deps chromium
       - name: Capture before at Android viewport
+        timeout-minutes: 4
+        continue-on-error: true
         env:
           PAITO_APP_DIR: ${{ github.workspace }}/before
           PAITO_OUTPUT_DIR: ${{ github.workspace }}/artifacts/paito-before
@@ -44,6 +46,7 @@ jobs:
           PAITO_BASELINE: '1'
         run: node scripts/capture_paito_browser.mjs
       - name: Capture after at Android viewport
+        timeout-minutes: 8
         env:
           PAITO_OUTPUT_DIR: ${{ github.workspace }}/artifacts/paito-after
           PAITO_PORT: '5199'

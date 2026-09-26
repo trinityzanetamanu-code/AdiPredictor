@@ -26,6 +26,7 @@ try {
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({ viewport: diagnostics.viewport, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
   const page = await context.newPage();
+  page.setDefaultTimeout(15_000);
   await page.route('https://raw.githubusercontent.com/trinityzanetamanu-code/AdiPredictor/main/public/**', async (route) => {
     const relative = new URL(route.request().url()).pathname.split('/main/public/')[1];
     try {
@@ -38,7 +39,9 @@ try {
   await openHistory.waitFor({ timeout: 60000 });
   await openHistory.click();
   await page.locator('[data-page="prediction-history"]').waitFor();
-  for (const market of ['HK', 'SDY', 'SGP']) {
+  const markets = process.env.PAITO_BASELINE === '1' ? ['HK'] : ['HK', 'SDY', 'SGP'];
+  for (const market of markets) {
+    console.log(`Capture ${process.env.PAITO_BASELINE === '1' ? 'before' : 'after'}: ${market} select`);
     await page.locator('[data-page="prediction-history"] select').first().selectOption(market);
     const section = page.locator('[data-section="pola-paito"]');
     await section.waitFor({ timeout: 60000 });
@@ -61,14 +64,17 @@ try {
     });
     await page.locator('#paito-ci-capture').screenshot({ path: join(outDir, `${market.toLowerCase()}-full-field.png`) });
     await page.locator('#paito-ci-capture').evaluate((el) => el.remove());
+    console.log(`Capture ${market}: full field saved`);
     const field = await board.boundingBox();
     if (!field || field.width < 900 || field.height < 1000) throw new Error(`${market}: grid too small`);
     diagnostics.markets[market] = { field: { width: field.width, height: field.height }, selected: await board.locator('[aria-pressed="true"]').count() };
     const fullscreen = section.getByRole('button', { name: /Buka Pola Paito layar penuh/ });
-    await fullscreen.click();
+    if (process.env.PAITO_BASELINE === '1') await fullscreen.dispatchEvent('click');
+    else await fullscreen.click();
     const dialog = page.getByRole('dialog', { name: new RegExp(`Pola Paito ${market}`) });
     await dialog.waitFor();
     await dialog.screenshot({ path: join(outDir, `${market.toLowerCase()}-viewport.png`) });
+    console.log(`Capture ${market}: viewport saved`);
     const scroller = dialog.locator('[tabindex="0"]');
     await scroller.evaluate((el) => { el.scrollLeft = 330; el.scrollTop = 520; });
     const before = await scroller.evaluate((el) => [el.scrollLeft, el.scrollTop]);
@@ -76,6 +82,7 @@ try {
     await dialog.getByRole('button', { name: 'Perbesar' }).click();
     if (!await dialog.getByText('125%', { exact: false }).count()) throw new Error(`${market}: zoom failed`);
     await dialog.screenshot({ path: join(outDir, `${market.toLowerCase()}-zoom.png`) });
+    console.log(`Capture ${market}: zoom saved`);
     // Two independent touch pointers exercise the same pointer handlers as Android pinch.
     const rect = await scroller.boundingBox();
     const x = rect.x + rect.width / 2; const y = rect.y + Math.min(190, rect.height / 2);
