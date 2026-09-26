@@ -1,5 +1,7 @@
 export const PAITO_POSITIONS = ['AS', 'KOP', 'KEPALA', 'EKOR'];
-export const PAITO_LAGS = [4, 3, 2, 1, 0];
+// Eight dated groups keep the field wide while every one of its 32 cells
+// remains traceable to one of the application's own canonical 4D draws.
+export const PAITO_LAGS = [7, 6, 5, 4, 3, 2, 1, 0];
 export const PAITO_GEOMETRY = Object.freeze({ labelWidth: 210, cellWidth: 38, rowHeight: 52, headerHeight: 68 });
 
 /** Each cell is an actual digit from the dated canonical draw at D-lag.
@@ -25,15 +27,19 @@ export function buildPaitoGrid(rows, { count = 60, endDate = null } = {}) {
         sourceCollectedAt: source?.collectedAt || null,
       }));
     });
-    const lastPair = row.number.slice(-2);
     const repeatedPairColumns = new Set();
-    for (let groupIndex = 0; groupIndex < PAITO_LAGS.length - 1; groupIndex += 1) {
+    for (let groupIndex = 1; groupIndex < PAITO_LAGS.length; groupIndex += 1) {
       const candidate = cells.slice(groupIndex * 4 + 2, groupIndex * 4 + 4);
-      if (candidate.every((cell) => cell.digit !== null) && candidate.map((cell) => cell.digit).join('') === lastPair) {
-        repeatedPairColumns.add(groupIndex * 4 + 2);
-        repeatedPairColumns.add(groupIndex * 4 + 3);
-        repeatedPairColumns.add(18);
-        repeatedPairColumns.add(19);
+      if (candidate.some((cell) => cell.digit === null)) continue;
+      const pair = candidate.map((cell) => cell.digit).join('');
+      for (let priorIndex = 0; priorIndex < groupIndex; priorIndex += 1) {
+        const earlier = cells.slice(priorIndex * 4 + 2, priorIndex * 4 + 4);
+        if (earlier.every((cell) => cell.digit !== null) && earlier.map((cell) => cell.digit).join('') === pair) {
+          for (const index of [priorIndex, groupIndex]) {
+            repeatedPairColumns.add(index * 4 + 2);
+            repeatedPairColumns.add(index * 4 + 3);
+          }
+        }
       }
     }
     return { ...row, cells, repeatedPairColumns };

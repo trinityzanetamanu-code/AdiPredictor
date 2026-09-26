@@ -8,19 +8,19 @@ const rows = [
   ['2026-09-23', '4012'], ['2026-09-24', '5094'], ['2026-09-25', '2771'],
 ].map(([result_date, nomor], i) => ({ result_date, nomor, periode: `HK-${3550 + i}`, source_ids: ['independent-a', 'independent-b'], verification: 'confirmed_2_sources' }));
 
-test('wide grid has five dated 4D draw groups and never reads a future draw', () => {
+test('wide grid has eight dated 4D draw groups and never reads a future draw', () => {
   const bounded = buildHistoricalPaitoDataset(rows, { target_date: '2026-09-26', dataset: { last_date: '2026-09-25' } }).rows;
   const grid = buildPaitoGrid(bounded, { count: 3 });
-  assert.equal(PAITO_LAGS.length * 4, 20);
+  assert.equal(PAITO_LAGS.length * 4, 32);
   assert.deepEqual(grid.map((row) => row.date), ['2026-09-23', '2026-09-24', '2026-09-25']);
-  assert.equal(grid[0].cells.length, 20);
-  assert.equal(grid[0].cells[0].sourceDate, null); // D−4 is absent at the start of this archive.
-  assert.deepEqual(grid[1].cells.slice(16).map((cell) => cell.digit).join(''), '5094');
-  assert.equal(grid[2].cells[19].sourceDate, '2026-09-25');
+  assert.equal(grid[0].cells.length, 32);
+  assert.equal(grid[0].cells[0].sourceDate, null); // D−7 is absent at the start of this archive.
+  assert.deepEqual(grid[1].cells.slice(-4).map((cell) => cell.digit).join(''), '5094');
+  assert.equal(grid[2].cells.at(-1).sourceDate, '2026-09-25');
   assert.ok(grid.every((row) => row.cells.every((cell) => !cell.sourceDate || cell.sourceDate <= row.date)));
   assert.equal(grid[2].verification, 'confirmed_2_sources');
-  assert.deepEqual(grid[2].cells[19].sourceSources, ['independent-a', 'independent-b']);
-  assert.equal(grid[2].cells[19].sourceNumber, '2771');
+  assert.deepEqual(grid[2].cells.at(-1).sourceSources, ['independent-a', 'independent-b']);
+  assert.equal(grid[2].cells.at(-1).sourceNumber, '2771');
 });
 
 test('pinch keeps the chosen cell under the same viewport anchor after scaling', () => {
@@ -39,11 +39,11 @@ test('repeated 2D blocks use actual KEPALA+EKOR, preserving zeroes and dates', (
   assert.deepEqual(grid.map((row) => row.date), ['2026-09-23', '2026-09-24']);
   const latest = grid[1];
   assert.equal(latest.number, '5094');
-  assert.equal(latest.cells[18].digit + latest.cells[19].digit, '94');
-  assert.ok(latest.repeatedPairColumns.has(18));
-  assert.ok(latest.repeatedPairColumns.has(2)); // 0094 on 20 September.
-  assert.ok(latest.repeatedPairColumns.has(10)); // 0094 on 22 September.
-  assert.equal(latest.cells[0].sourceDate, '2026-09-20');
+  assert.equal(latest.cells[30].digit + latest.cells[31].digit, '94');
+  assert.ok(latest.repeatedPairColumns.has(30));
+  assert.ok(latest.repeatedPairColumns.has(14)); // 0094 on 20 September.
+  assert.ok(latest.repeatedPairColumns.has(22)); // 0094 on 22 September.
+  assert.equal(latest.cells[12].sourceDate, '2026-09-20');
 });
 
 test('line endpoints share the exact coordinates of their grid cell centers', () => {
@@ -67,8 +67,8 @@ test('a corrected canonical result on the same date replaces cells and pair high
   const before = buildPaitoGrid(buildHistoricalPaitoDataset(rows, prediction).rows);
   const corrected = rows.map((row) => row.result_date === '2026-09-25' ? { ...row, nomor: '2772' } : row);
   const after = buildPaitoGrid(buildHistoricalPaitoDataset(corrected, prediction).rows);
-  assert.equal(before.at(-1).cells.slice(16).map((cell) => cell.digit).join(''), '2771');
-  assert.equal(after.at(-1).cells.slice(16).map((cell) => cell.digit).join(''), '2772');
+  assert.equal(before.at(-1).cells.slice(-4).map((cell) => cell.digit).join(''), '2771');
+  assert.equal(after.at(-1).cells.slice(-4).map((cell) => cell.digit).join(''), '2772');
   assert.equal(after.at(-1).number, '2772');
   assert.ok(after.at(-1).cells.every((cell) => !cell.sourceDate || cell.sourceDate <= '2026-09-25'));
 });

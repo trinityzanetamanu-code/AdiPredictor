@@ -61,6 +61,7 @@ function PaitoBoard({ grid, selected, onSelect }) {
       ))}
       {points.length === 2 && (
         <svg className="pointer-events-none absolute left-0 top-0 z-20" width={BOARD_WIDTH} height={height} viewBox={`0 0 ${BOARD_WIDTH} ${height}`} aria-hidden="true">
+          <rect x={Math.min(points[0].x, points[1].x) - PAITO_GEOMETRY.cellWidth / 2} y={Math.min(points[0].y, points[1].y) - PAITO_GEOMETRY.rowHeight / 2} width={Math.abs(points[0].x - points[1].x) + PAITO_GEOMETRY.cellWidth} height={Math.abs(points[0].y - points[1].y) + PAITO_GEOMETRY.rowHeight} fill="none" stroke="#fbbf24" strokeWidth="2" strokeDasharray="5 4" />
           <line x1={points[0].x} y1={points[0].y} x2={points[1].x} y2={points[1].y} stroke="#f8fafc" strokeWidth="3" strokeDasharray="7 4" />
           {points.map((point, index) => <circle key={index} cx={point.x} cy={point.y} r="5" fill={index ? '#d946ef' : '#0284c7'} stroke="white" strokeWidth="2" />)}
         </svg>
@@ -74,7 +75,7 @@ function SelectionExplanation({ selected }) {
   return (
     <div className="rounded-lg border border-sky-500/20 bg-slate-950/70 p-3 text-[11px] text-slate-300" aria-live="polite">
       {selected.map((cell, index) => <p key={index}>{index + 1}. Baris {cell.rowDate}, D−{cell.lag}: draw {cell.sourceDate} ({cell.sourcePeriod}) bernomor {cell.sourceNumber}; posisi {cell.position} = <strong>{cell.digit}</strong>. Sumber {cell.sourceSources?.join(', ') || 'tidak tercatat'}; {cell.sourceVerification || 'verifikasi tidak tercatat'}; dikoleksi {cell.sourceCollectedAt || 'waktu tidak tersedia'}.</p>)}
-      {selected.length === 2 && <p className="mt-1 text-amber-200">Keduanya {selected[0].digit === selected[1].digit ? 'memiliki digit sama' : 'memiliki digit berbeda'}. Garis adalah pilihan pembaca untuk belajar histori, bukan rumus atau prediksi hasil berikutnya.</p>}
+      {selected.length === 2 && <p className="mt-1 text-amber-200">Keduanya {selected[0].digit === selected[1].digit ? 'memiliki digit sama' : 'memiliki digit berbeda'}. Kotak dan garis adalah pilihan pembaca untuk belajar histori, bukan rumus atau prediksi hasil berikutnya.</p>}
     </div>
   );
 }
@@ -206,9 +207,9 @@ export default function VisualPaitoViewer({ marketRows, prediction, patterns = [
           <input type="date" value={endDate} min={rows[0].date} max={rows.at(-1).date} onChange={(event) => setEndDate(event.target.value)} className="ml-2 rounded border border-slate-700 bg-slate-900 p-2" />
         </label>
       </div>
-      <div className="text-[11px] text-slate-400">Setiap kelompok D−4 hingga D−0 berisi AS, KOP, KEPALA, EKOR dari draw canonical pada tanggal itu atau empat draw sebelumnya. Tidak ada kolom bantu yang nilainya dikarang.</div>
+      <div className="text-[11px] text-slate-400">Setiap baris mempunyai delapan kelompok D−7 hingga D−0, masing-masing AS, KOP, KEPALA, EKOR dari draw canonical pada tanggal itu atau tujuh draw sebelumnya. Kelompok ini adalah pilihan tata letak untuk menelusuri histori, bukan kolom atau rumus yang dibuktikan dari foto contoh.</div>
       <div className="flex flex-wrap gap-3 text-[10px] text-slate-300">
-        <span className="text-amber-200">■ Kuning: pasangan KEPALA+EKOR D−0 berulang dalam empat draw sebelumnya.</span>
+        <span className="text-amber-200">■ Kuning: pasangan KEPALA+EKOR muncul pada dua atau lebih draw di delapan kelompok baris itu.</span>
         <span className="text-sky-300">■ Biru: sel pilihan pertama.</span>
         <span className="text-fuchsia-300">■ Ungu: sel pilihan kedua.</span>
         <span>Garis putih dan kotak pilihan = ILUSTRASI interaktif.</span>

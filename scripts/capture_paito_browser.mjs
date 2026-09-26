@@ -49,16 +49,20 @@ try {
     const second = board.getByRole('button', { name: /Baris/ }).nth(6);
     await first.click();
     await second.click();
-    // Expand the document solely for the full-field evidence capture.
-    await section.locator('[tabindex="0"]').first().evaluate((el) => {
-      el.style.maxHeight = 'none'; el.style.overflow = 'visible';
+    // The original is inside a scroll port; capture a DOM clone at document
+    // origin so a sticky app header cannot cover part of the board screenshot.
+    await board.evaluate((el) => {
+      const clone = el.cloneNode(true);
+      clone.id = 'paito-ci-capture';
+      clone.style.position = 'absolute';
+      clone.style.top = '0'; clone.style.left = '0'; clone.style.zIndex = '2147483647';
+      clone.querySelectorAll('.sticky').forEach((child) => { child.style.position = 'relative'; });
+      document.body.append(clone);
     });
-    await board.screenshot({ path: join(outDir, `${market.toLowerCase()}-full-field.png`) });
+    await page.locator('#paito-ci-capture').screenshot({ path: join(outDir, `${market.toLowerCase()}-full-field.png`) });
+    await page.locator('#paito-ci-capture').evaluate((el) => el.remove());
     const field = await board.boundingBox();
     if (!field || field.width < 900 || field.height < 1000) throw new Error(`${market}: grid too small`);
-    await section.locator('[tabindex="0"]').first().evaluate((el) => {
-      el.style.maxHeight = ''; el.style.overflow = '';
-    });
     diagnostics.markets[market] = { field: { width: field.width, height: field.height }, selected: await board.locator('[aria-pressed="true"]').count() };
     const fullscreen = section.getByRole('button', { name: /Buka Pola Paito layar penuh/ });
     await fullscreen.click();
