@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 from datetime import date
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts import collector, live_board_collector, prediction_engine
 
@@ -75,8 +76,17 @@ def run_fixture(workspace: Path, publish_commit: bool = False) -> dict:
     )
     disagreement = unconfirmed({source_a["id"]: parsed_a, source_b["id"]: conflicting})
     assert not any(item.item.result_date.isoformat() == DRAW_DATE for item in disagreement)
-    # A denied HTTP response and a parser failure likewise cannot supply confirmation.
-    assert not any(item.item.result_date.isoformat() == DRAW_DATE for item in solo)  # 403: no second body
+    # The actual collector transport retries a 403 and rejects it; no
+    # comparator body can be passed to verification in that phase.
+    denied = type("DeniedResponse", (), {"status_code": 403, "text": "Forbidden"})()
+    with patch.object(collector.requests, "get", return_value=denied), patch.object(collector.time, "sleep"):
+        try:
+            collector.fetch_html(source_b["url"])
+        except collector.CollectorError as exc:
+            assert "HTTP 403" in str(exc)
+        else:
+            raise AssertionError("Collector accepted comparator HTTP 403")
+    assert not any(item.item.result_date.isoformat() == DRAW_DATE for item in solo)
     try:
         collector.parse_source("<html>invalid</html>", "SDY", source_b, 2026)
     except collector.CollectorError:
