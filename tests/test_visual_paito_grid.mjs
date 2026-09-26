@@ -48,3 +48,14 @@ test('archive target result cannot leak into its historical paito window', () =>
   assert.equal(grid.at(-1).date, '2026-09-24');
   assert.ok(grid.every((row) => row.cells.every((cell) => cell.sourceDate !== '2026-09-25')));
 });
+
+test('a corrected canonical result on the same date replaces cells and pair highlights', () => {
+  const prediction = { target_date: '2026-09-26', dataset: { last_date: '2026-09-25' } };
+  const before = buildPaitoGrid(buildHistoricalPaitoDataset(rows, prediction).rows);
+  const corrected = rows.map((row) => row.result_date === '2026-09-25' ? { ...row, nomor: '2772' } : row);
+  const after = buildPaitoGrid(buildHistoricalPaitoDataset(corrected, prediction).rows);
+  assert.equal(before.at(-1).cells.slice(16).map((cell) => cell.digit).join(''), '2771');
+  assert.equal(after.at(-1).cells.slice(16).map((cell) => cell.digit).join(''), '2772');
+  assert.equal(after.at(-1).number, '2772');
+  assert.ok(after.at(-1).cells.every((cell) => !cell.sourceDate || cell.sourceDate <= '2026-09-25'));
+});

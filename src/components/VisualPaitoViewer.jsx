@@ -156,7 +156,7 @@ export default function VisualPaitoViewer({ marketRows, prediction, patterns = [
   );
   const { rows, boundary, diagnostics } = dataset;
   const grid = useMemo(() => buildPaitoGrid(rows, { count, endDate }), [rows, count, endDate]);
-  useEffect(() => setSelected([]), [count, endDate, prediction.target_date, prediction.dataset_fingerprint]);
+  useEffect(() => setSelected([]), [count, endDate, prediction.target_date, prediction.dataset_fingerprint, rows]);
   const sourceLabels = [...new Set(rows.flatMap((row) => row.sources))];
   const selectCell = (cell) => {
     const withRow = { ...cell, rowDate: grid[cell.rowIndex]?.date };
