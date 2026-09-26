@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-26T02:27:37+07:00",
+  "collected_at": "2026-09-26T18:02:31+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -17,15 +17,9 @@
         "livenomor_hk": 268
       },
       "verified_count": 268,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-25",
-          "number": "2771",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260925,
         "tanggal": "25 Sep 2026",
@@ -90,12 +84,12 @@
         }
       },
       "last_successful_data_update": "2026-09-26T02:27:37+07:00",
-      "last_source_check": "2026-09-26T02:27:37+07:00",
+      "last_source_check": "2026-09-26T18:02:31+07:00",
       "latest_source_draw_date": "2026-09-25"
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -106,19 +100,30 @@
       "parsed_counts": {
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 238,
-        "datatogel_sdy": 268,
-        "livenomor_sdy": 268
+        "datatogel_sdy": 269,
+        "livenomor_sdy": 269
       },
-      "verified_count": 268,
-      "new_count": 0,
+      "verified_count": 269,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-16",
+          "number": "4293",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-09-26",
+          "number": "0434",
+          "verification": "confirmed_3_sources"
+        }
+      ],
       "latest": {
-        "id": 20260925,
-        "tanggal": "25 Sep 2026",
-        "periode": "SD-3555",
-        "nomor": "1559",
-        "result_date": "2026-09-25",
+        "id": 20260926,
+        "tanggal": "26 Sep 2026",
+        "periode": "SD-3556",
+        "nomor": "0434",
+        "result_date": "2026-09-26",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
@@ -128,13 +133,13 @@
           "datatogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-09-25T17:30:24+07:00",
+        "collected_at": "2026-09-26T18:02:31+07:00",
         "verification": "confirmed_3_sources",
         "confirmations": 3
       },
       "latest_verified": {
-        "date": "2026-09-25",
-        "number": "1559",
+        "date": "2026-09-26",
+        "number": "0434",
         "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
@@ -144,9 +149,9 @@
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-09-25T17:30:24+07:00",
-      "last_source_check": "2026-09-26T02:27:37+07:00",
-      "latest_source_draw_date": "2026-09-25"
+      "last_successful_data_update": "2026-09-26T18:02:31+07:00",
+      "last_source_check": "2026-09-26T18:02:31+07:00",
+      "latest_source_draw_date": "2026-09-26"
     },
     "SGP": {
       "market": "SGP",
@@ -160,7 +165,7 @@
         "paitosgplengkap": 190,
         "nexipools_sgp": 30
       },
-      "verified_count": 30,
+      "verified_count": 29,
       "new_count": 0,
       "replaced_legacy_count": 0,
       "new_results": [],
@@ -194,7 +199,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-24T18:21:44+07:00",
-      "last_source_check": "2026-09-26T02:27:37+07:00",
+      "last_source_check": "2026-09-26T18:02:31+07:00",
       "latest_source_draw_date": "2026-09-24"
     }
   }
