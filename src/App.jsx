@@ -34,6 +34,7 @@ import {
   loadTafsir,
   predictionAssetUrl,
   getDataProvenance,
+  getDataFetchDiagnostics,
 } from './dataClient';
 import LiveDrawPlayer, { LiveDrawPlayerBoundary, openLivePage } from './components/LiveDrawPlayer';
 import LiveDrawResultBoard from './components/LiveDrawResultBoard';
@@ -48,7 +49,7 @@ import { loadLocalHKBoard, storeLocalHKBoard } from './hkVerificationService';
 import { predictionChangeNote, predictionFreshness } from './predictionFreshness';
 import { replaceInternalPage } from './historyNavigation';
 import { collectorHealth, datasetFreshness, datasetFreshnessMessage, DATASET_FRESHNESS } from './collectorHealth';
-import { deliverRuntimeNotifications, registerNotificationActionListener, scheduleLiveDrawReminders } from './notificationService';
+import { deliverRuntimeNotifications, getInstalledVersionCode, registerNotificationActionListener, scheduleLiveDrawReminders } from './notificationService';
 import {
   createRuntimeLatestResult,
   effectiveLatestResult,
@@ -62,9 +63,10 @@ import {
   reconcileRuntimeCandidates,
   shouldProbeNativeRuntimeBoard,
 } from './runtimeResultReconciliation';
-import { LIVE_DRAW_DIAGNOSTIC_EVENTS, recordLiveDrawDiagnostic } from './liveDrawDiagnostics';
+import { getLiveDrawDiagnostics, LIVE_DRAW_DIAGNOSTIC_EVENTS, recordLiveDrawDiagnostic } from './liveDrawDiagnostics';
 import { createLatestRefreshCoordinator } from './refreshDataCoordinator';
-import { analyzeFourDConsensusTie } from './predictionConsensus';
+import { analyzeFourDConsensusTie, previousPublishedMain } from './predictionConsensus';
+import { buildRuntimeDiagnostics } from './runtimeDiagnostics';
 
 const AppContext = createContext();
 
@@ -811,7 +813,7 @@ function CandidateChips({ items = [] }) {
 }
 
 function PredictionCard({ prediction, marketCode, latest, onOpenHistory, datasetState, runtimePredictionState, remotePair }) {
-  const { copyToClipboard, refreshData } = useApp();
+  const { copyToClipboard, refreshData, predictionHistory } = useApp();
   const candidateNumber = (value) =>
     typeof value === 'object' && value !== null ? value.number : value;
 
@@ -848,6 +850,9 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
       rankings: weighted.candidate_rankings?.['4d_top3'] || [],
       models,
     })
+    : null;
+  const priorMain = predictionFresh && marketCode === 'HK'
+    ? previousPublishedMain(predictionHistory?.HK, prediction?.target_date)
     : null;
 
   const fourD =
@@ -908,7 +913,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
             <div className="grid gap-1 sm:grid-cols-3">
               <span className="text-slate-400">Data terbaru: <strong className="text-slate-200">{prediction.prediction_basis_date || prediction.latest_result?.date} · {prediction.prediction_basis_result || prediction.latest_result?.number}</strong></span>
               <span className="text-slate-400">Target: <strong className="text-slate-200">{prediction.target_date} · {prediction.target_period}</strong></span>
-              <span className="font-bold text-emerald-300">✓ DIHITUNG ULANG DARI DATA TERBARU</span>
+              <span className="font-bold text-emerald-300">✓ PREDIKSI SELARAS DENGAN DATASET REMOTE</span>
             </div>
             {predictionChangeNote(prediction) && <div className="mt-2 text-slate-500">{predictionChangeNote(prediction)}</div>}
           </div>
@@ -926,6 +931,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
                 {fourDConsensusTie.candidates.map((candidate) => candidate.number).join(' = ')}
                 {' '}({fourDConsensusTie.score.toFixed(6)}). Posisi kandidat di Top3 model tidak masuk ke skor;
                 label Main mengikuti tie-break angka menaik yang deterministik, bukan probabilitas tembus 4D.
+                {priorMain && <span className="mt-1 block">Arsip target sebelumnya {priorMain.targetDate}: Main {priorMain.number}.</span>}
               </div>
             )}
             <div className="mt-3 flex flex-wrap justify-center gap-2">
@@ -1864,6 +1870,25 @@ function DreamBookPanel() {
 }
 
 function SettingsPanel() {
+  const { marketData, predictions, predictionHistory, runtimeLatestResults, collectorStatus, lastRefresh, dataError } = useApp();
+  const [diagnosticText, setDiagnosticText] = useState('');
+  const [copyResult, setCopyResult] = useState('');
+  const copyDeviceDiagnostics = async () => {
+    const report = buildRuntimeDiagnostics({
+      marketData, predictions, histories: predictionHistory, runtimeResults: runtimeLatestResults,
+      collectorStatus, lastRefresh, dataError,
+      fetchEvents: getDataFetchDiagnostics(), playerEvents: getLiveDrawDiagnostics(),
+      installedVersionCode: await getInstalledVersionCode(),
+    });
+    const result = JSON.stringify(report, null, 2);
+    setDiagnosticText(result);
+    try {
+      await navigator.clipboard.writeText(result);
+      setCopyResult('Tersalin; tempelkan ke pesan');
+    } catch {
+      setCopyResult('Salin manual dari kotak teks di bawah');
+    }
+  };
   return (
     <div className="space-y-5" data-page="settings">
       <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-xl sm:p-6">
@@ -1873,6 +1898,15 @@ function SettingsPanel() {
         </div>
       </section>
       <NotificationSettingsPanel />
+      <section className="rounded-2xl border border-sky-500/25 bg-slate-900/90 p-5 text-xs text-slate-300" data-device-diagnostics>
+        <h3 className="font-bold text-sky-200">Diagnostik pembaruan dan LiveDraw</h3>
+        <p className="mt-2">Salin bukti asal REMOTE/APK_FALLBACK, tanggal dan fingerprint tiap pasar, respons fetch, serta event player. Log ini tidak membuktikan sumber backend terbaru atau pemutaran video tanpa PLAYING.</p>
+        <button type="button" onClick={copyDeviceDiagnostics} className="mt-3 min-h-11 rounded-lg border border-sky-500/30 px-3 font-bold text-sky-200">Salin diagnostik perangkat</button>
+        {copyResult && <p className="mt-2" aria-live="polite">{copyResult}</p>}
+        {diagnosticText && <label className="mt-3 block">Jika salin otomatis gagal, tekan lama lalu pilih semua:
+          <textarea className="mt-2 h-40 w-full rounded-lg border border-slate-700 bg-slate-950 p-2 font-mono text-[10px]" readOnly value={diagnosticText} onFocus={(event) => event.target.select()} />
+        </label>}
+      </section>
     </div>
   );
 }

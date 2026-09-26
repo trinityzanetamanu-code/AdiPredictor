@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildHistoricalPaitoDataset, buildPaitoGrid, PAITO_GEOMETRY, PAITO_LAGS, paitoCellCenter } from '../src/visualPaito.js';
+import { scaledScrollOffset } from '../src/visualViewport.js';
 
 const rows = [
   ['2026-09-20', '0094'], ['2026-09-21', '1234'], ['2026-09-22', '0094'],
@@ -18,6 +19,18 @@ test('wide grid has five dated 4D draw groups and never reads a future draw', ()
   assert.equal(grid[2].cells[19].sourceDate, '2026-09-25');
   assert.ok(grid.every((row) => row.cells.every((cell) => !cell.sourceDate || cell.sourceDate <= row.date)));
   assert.equal(grid[2].verification, 'confirmed_2_sources');
+  assert.deepEqual(grid[2].cells[19].sourceSources, ['independent-a', 'independent-b']);
+  assert.equal(grid[2].cells[19].sourceNumber, '2771');
+});
+
+test('pinch keeps the chosen cell under the same viewport anchor after scaling', () => {
+  const before = { left: 180, top: 300 };
+  const anchor = { x: 126, y: 210 };
+  const after = scaledScrollOffset(before, 1, 2, anchor);
+  assert.deepEqual(after, { left: 486, top: 810 });
+  const cellX = 306;
+  assert.equal(cellX * 2 - after.left, cellX - before.left);
+  assert.deepEqual(scaledScrollOffset(after, 2, 1, anchor), before);
 });
 
 test('repeated 2D blocks use actual KEPALA+EKOR, preserving zeroes and dates', () => {

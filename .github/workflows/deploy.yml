@@ -19,6 +19,41 @@ permissions:
   contents: read
 
 jobs:
+  paito-browser-viewport:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: b821eb7e333050a141a4812b34d258236f404e4f
+          path: before
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm ci --prefix before
+      - run: npx playwright install --with-deps chromium
+      - name: Capture before at Android viewport
+        env:
+          PAITO_APP_DIR: ${{ github.workspace }}/before
+          PAITO_OUTPUT_DIR: ${{ github.workspace }}/artifacts/paito-before
+          PAITO_PORT: '5198'
+        run: node scripts/capture_paito_browser.mjs
+      - name: Capture after at Android viewport
+        env:
+          PAITO_OUTPUT_DIR: ${{ github.workspace }}/artifacts/paito-after
+          PAITO_PORT: '5199'
+        run: node scripts/capture_paito_browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paito-viewport-before-after-${{ github.sha }}
+          path: artifacts/paito-*
+          if-no-files-found: error
+
   build-android-debug:
     runs-on: ubuntu-latest
     timeout-minutes: 35

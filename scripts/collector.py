@@ -672,6 +672,10 @@ def verify_results(market_cfg: dict, source_results: Dict[str, List[ParsedResult
     for d, items in per_date.items():
         counts = Counter(i.number for i in items)
         number, count = counts.most_common(1)[0]
+        # Equal independent quorums on the same date cannot select a winner
+        # by source iteration order. Preserve the previous canonical draw.
+        if sum(frequency == count for frequency in counts.values()) > 1 and count >= min_confirmations:
+            continue
         if count < min_confirmations:
             continue
         agreeing = [i for i in items if i.number == number]

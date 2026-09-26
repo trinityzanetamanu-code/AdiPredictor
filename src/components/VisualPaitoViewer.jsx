@@ -8,7 +8,7 @@ import {
   PAITO_POSITIONS,
   paitoCellCenter,
 } from '../visualPaito';
-import { clampScale, pinchViewport, resetViewport, zoomViewport } from '../visualViewport';
+import { resetViewport, scaledScrollOffset, zoomViewport } from '../visualViewport';
 
 const BOARD_WIDTH = PAITO_GEOMETRY.labelWidth + PAITO_LAGS.length * PAITO_POSITIONS.length * PAITO_GEOMETRY.cellWidth;
 const COLUMNS = `${PAITO_GEOMETRY.labelWidth}px repeat(${PAITO_LAGS.length * PAITO_POSITIONS.length}, ${PAITO_GEOMETRY.cellWidth}px)`;
@@ -20,7 +20,7 @@ function PaitoBoard({ grid, selected, onSelect }) {
   return (
     <div className="relative bg-slate-950 text-slate-200" style={{ width: BOARD_WIDTH, height }} data-pola-paito>
       <div className="grid border-b border-slate-600 bg-slate-900" style={{ gridTemplateColumns: COLUMNS, height: PAITO_GEOMETRY.headerHeight }}>
-        <div className="flex items-center border-r border-slate-600 px-2 text-[11px] font-bold">Tanggal · periode<br />Sumber · verifikasi</div>
+        <div className="sticky left-0 z-30 border-r border-slate-600 bg-slate-900 px-2 py-3 text-[11px] font-bold">Tanggal · periode<div className="mt-1 text-[9px] font-normal">Sumber · verifikasi</div></div>
         {PAITO_LAGS.map((lag) => (
           <div key={lag} className="col-span-4 border-r border-slate-600 text-center">
             <div className="border-b border-slate-700 py-1 text-[11px] font-bold">D−{lag}</div>
@@ -30,9 +30,9 @@ function PaitoBoard({ grid, selected, onSelect }) {
       </div>
       {grid.map((row, rowIndex) => (
         <div key={row.date} className="grid border-b border-slate-800 even:bg-slate-900/55" style={{ gridTemplateColumns: COLUMNS, height: PAITO_GEOMETRY.rowHeight }}>
-          <div className="border-r border-slate-700 px-2 py-1 leading-tight" title={`Dikoleksi: ${row.collectedAt || 'tidak tersedia'} · Sumber: ${row.sources.join(', ') || 'tidak tersedia'}`}>
+          <div className="sticky left-0 z-30 border-r border-slate-700 bg-slate-900 px-2 py-1 leading-tight" title={`Dikoleksi: ${row.collectedAt || 'tidak tersedia'} · Sumber: ${row.sources.join(', ') || 'tidak tersedia'}`}>
             <div className="font-mono text-[11px] font-bold">{row.date} · {row.period}</div>
-            <div className="truncate text-[9px] text-slate-400">{row.verification || 'verifikasi tidak tercatat'} · {row.sources.join(', ') || 'sumber tidak tercatat'}</div>
+            <div className="text-[9px] leading-3 text-slate-400 break-words">{row.verification || 'verifikasi tidak tercatat'} · {row.sources.join(', ') || 'sumber tidak tercatat'}</div>
             <div className="text-[9px] text-emerald-300">Draw {row.number}</div>
           </div>
           {row.cells.map((cell) => {
@@ -73,7 +73,7 @@ function SelectionExplanation({ selected }) {
   if (!selected.length) return <p className="text-[11px] text-slate-400">Pilih dua sel untuk menggambar garis yang menempel pada pusat sel dan membaca asal setiap digit.</p>;
   return (
     <div className="rounded-lg border border-sky-500/20 bg-slate-950/70 p-3 text-[11px] text-slate-300" aria-live="polite">
-      {selected.map((cell, index) => <p key={index}>{index + 1}. Draw {cell.sourceDate} ({cell.sourcePeriod}) · {cell.position} = <strong>{cell.digit}</strong>; ditampilkan pada baris {cell.rowDate} sebagai D−{cell.lag}.</p>)}
+      {selected.map((cell, index) => <p key={index}>{index + 1}. Baris {cell.rowDate}, D−{cell.lag}: draw {cell.sourceDate} ({cell.sourcePeriod}) bernomor {cell.sourceNumber}; posisi {cell.position} = <strong>{cell.digit}</strong>. Sumber {cell.sourceSources?.join(', ') || 'tidak tercatat'}; {cell.sourceVerification || 'verifikasi tidak tercatat'}; dikoleksi {cell.sourceCollectedAt || 'waktu tidak tersedia'}.</p>)}
       {selected.length === 2 && <p className="mt-1 text-amber-200">Keduanya {selected[0].digit === selected[1].digit ? 'memiliki digit sama' : 'memiliki digit berbeda'}. Garis adalah pilihan pembaca untuk belajar histori, bukan rumus atau prediksi hasil berikutnya.</p>}
     </div>
   );
@@ -81,6 +81,7 @@ function SelectionExplanation({ selected }) {
 
 function FullscreenPaito({ grid, selected, onSelect, market, onClose }) {
   const [viewport, setViewport] = useState(resetViewport);
+  const scaleRef = useRef(1);
   const scroller = useRef(null);
   const pointers = useRef(new Map());
   const previousPointers = useRef([]);
@@ -97,9 +98,20 @@ function FullscreenPaito({ grid, selected, onSelect, market, onClose }) {
     };
   }, [onClose]);
 
-  const zoom = (factor) => setViewport((current) => ({ ...current, scale: clampScale(zoomViewport(current, factor).scale) }));
+  const zoom = (factor, anchor) => {
+    const el = scroller.current;
+    if (!el) return;
+    const point = anchor || { x: el.clientWidth / 2, y: el.clientHeight / 2 };
+    const next = zoomViewport({ scale: scaleRef.current }, factor);
+    const scroll = scaledScrollOffset({ left: el.scrollLeft, top: el.scrollTop }, scaleRef.current, next.scale, point);
+    scaleRef.current = next.scale;
+    setViewport({ scale: next.scale, x: 0, y: 0 });
+    window.requestAnimationFrame(() => el.scrollTo(scroll.left, scroll.top));
+  };
   const onPointerDown = (event) => {
-    event.currentTarget.setPointerCapture?.(event.pointerId);
+    // Synthetic browser pointer events may have no active browser pointer to
+    // capture; a real touchscreen event still captures normally.
+    try { event.currentTarget.setPointerCapture?.(event.pointerId); } catch { /* synthetic event */ }
     pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     previousPointers.current = [...pointers.current.values()];
   };
@@ -109,7 +121,15 @@ function FullscreenPaito({ grid, selected, onSelect, market, onClose }) {
     pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     const after = [...pointers.current.values()];
     if (before.length === 2 && after.length === 2) {
-      setViewport((current) => ({ ...current, scale: pinchViewport(current, before, after).scale }));
+      const beforeDistance = Math.hypot(before[0].x - before[1].x, before[0].y - before[1].y);
+      const afterDistance = Math.hypot(after[0].x - after[1].x, after[0].y - after[1].y);
+      if (beforeDistance && afterDistance && scroller.current) {
+        const rect = scroller.current.getBoundingClientRect();
+        zoom(afterDistance / beforeDistance, {
+          x: (after[0].x + after[1].x) / 2 - rect.left,
+          y: (after[0].y + after[1].y) / 2 - rect.top,
+        });
+      }
     } else if (before.length === 1 && after.length === 1 && scroller.current) {
       scroller.current.scrollLeft -= after[0].x - before[0].x;
       scroller.current.scrollTop -= after[0].y - before[0].y;
@@ -121,6 +141,7 @@ function FullscreenPaito({ grid, selected, onSelect, market, onClose }) {
     previousPointers.current = [...pointers.current.values()];
   };
   const reset = () => {
+    scaleRef.current = 1;
     setViewport(resetViewport());
     if (scroller.current) { scroller.current.scrollLeft = 0; scroller.current.scrollTop = 0; }
   };

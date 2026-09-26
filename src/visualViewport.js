@@ -40,3 +40,13 @@ export function pinchViewport(viewport, previousPoints, nextPoints) {
   };
   return zoomViewport(viewport, after / before, midpoint);
 }
+
+/** Keep the draw cell below the user's fingers stationary while scaling a
+ * scrollable, transform-scaled board. The anchor is local to the viewport. */
+export function scaledScrollOffset(scroll, previousScale, nextScale, anchor) {
+  const ratio = clampScale(nextScale) / clampScale(previousScale);
+  return {
+    left: Math.max(0, (scroll.left + anchor.x) * ratio - anchor.x),
+    top: Math.max(0, (scroll.top + anchor.y) * ratio - anchor.y),
+  };
+}

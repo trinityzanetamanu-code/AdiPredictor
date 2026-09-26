@@ -2,6 +2,14 @@ function candidateNumber(candidate) {
   return typeof candidate === 'string' ? candidate : candidate?.number;
 }
 
+export function previousPublishedMain(history, targetDate) {
+  const prior = (history?.records || []).filter((record) => (
+    record?.target_date && record.target_date < targetDate
+    && /^\d{4}$/.test(String(candidateNumber(record?.four_d?.main) || ''))
+  )).sort((a, b) => b.target_date.localeCompare(a.target_date))[0];
+  return prior ? { targetDate: prior.target_date, number: candidateNumber(prior.four_d.main) } : null;
+}
+
 export function analyzeFourDConsensusTie({ rankings = [], models = {} } = {}) {
   const leader = rankings[0];
   if (!leader || typeof leader === 'string') return null;

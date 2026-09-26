@@ -19,6 +19,10 @@ export function buildPaitoGrid(rows, { count = 60, endDate = null } = {}) {
         digit: source?.digits[positionIndex] ?? null,
         sourceDate: source?.date || null,
         sourcePeriod: source?.period || null,
+        sourceNumber: source?.number || null,
+        sourceSources: source?.sources || [],
+        sourceVerification: source?.verification || null,
+        sourceCollectedAt: source?.collectedAt || null,
       }));
     });
     const lastPair = row.number.slice(-2);

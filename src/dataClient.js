@@ -10,8 +10,38 @@ const MARKET_FILES = {
 };
 
 const provenance = new WeakMap();
+const fetchEvents = [];
+const MAX_FETCH_EVENTS = 80;
 export const getDataProvenance = (value) => value && typeof value === 'object'
   ? provenance.get(value) || null : null;
+export const getDataFetchDiagnostics = () => fetchEvents.map((event) => ({ ...event }));
+
+function recordFetchEvent(meta, outcome, reason = null) {
+  // Only the fixed data paths are fetched here. Strip query strings and never
+  // copy response headers, cookies, or arbitrary exception text to diagnostics.
+  let host = 'invalid-url';
+  let path = '';
+  try {
+    const parsed = new URL(meta.url, 'https://apk.local');
+    host = parsed.host;
+    path = parsed.pathname;
+  } catch { /* The URL is already sanitized to these two fields. */ }
+  const item = {
+    host, path, status: meta.status ?? null,
+    started_at: meta.started_at, finished_at: meta.finished_at,
+    origin: outcome, result_date: meta.result_date || null,
+    fingerprint: meta.fingerprint || null, version: meta.version || null,
+    reason,
+  };
+  fetchEvents.push(item);
+  if (fetchEvents.length > MAX_FETCH_EVENTS) fetchEvents.shift();
+}
+
+function safeFailureReason(error, status) {
+  if (status) return `HTTP_${status}`;
+  if (error?.name === 'AbortError') return 'TIMEOUT_OR_ABORT';
+  return 'NETWORK_OR_PARSE_ERROR';
+}
 
 function fingerprint(value) {
   const payload = JSON.stringify(value);
@@ -54,6 +84,8 @@ async function fetchJson(url, timeoutMs = 12000, externalSignal = null) {
     const data = await response.json();
     return { data, meta: { url, status, started_at: startedAt, finished_at: new Date().toISOString(), ...describePayload(data) } };
   } catch (error) {
+    recordFetchEvent({ url, status, started_at: startedAt, finished_at: new Date().toISOString() },
+      'FAILED', safeFailureReason(error, status));
     console.info('AdiPredictor fetch', { url, status, started_at: startedAt,
       finished_at: new Date().toISOString(), outcome: 'FAILED', reason: error?.name === 'AbortError' ? 'TIMEOUT_OR_ABORT' : String(error?.message || error) });
     throw error;
@@ -66,6 +98,9 @@ async function fetchJson(url, timeoutMs = 12000, externalSignal = null) {
 async function remoteFirst(relativePath, localPath, optional = false, signal = null) {
   const select = ({ data, meta }, source, reason = null) => {
     const observation = { ...meta, source, fallback_reason: reason };
+    const remoteHttp = /^HTTP (\d+)/.exec(reason || '');
+    recordFetchEvent(meta, source === 'REMOTE' ? 'REMOTE' : 'APK_FALLBACK',
+      source === 'REMOTE' ? null : remoteHttp ? `REMOTE_HTTP_${remoteHttp[1]}` : 'REMOTE_UNAVAILABLE');
     console.info('AdiPredictor fetch', observation);
     if (data && typeof data === 'object') provenance.set(data, observation);
     return data;
