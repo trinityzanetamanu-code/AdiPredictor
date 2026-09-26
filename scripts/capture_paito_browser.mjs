@@ -56,6 +56,9 @@ try {
     await board.screenshot({ path: join(outDir, `${market.toLowerCase()}-full-field.png`) });
     const field = await board.boundingBox();
     if (!field || field.width < 900 || field.height < 1000) throw new Error(`${market}: grid too small`);
+    await section.locator('[tabindex="0"]').first().evaluate((el) => {
+      el.style.maxHeight = ''; el.style.overflow = '';
+    });
     diagnostics.markets[market] = { field: { width: field.width, height: field.height }, selected: await board.locator('[aria-pressed="true"]').count() };
     const fullscreen = section.getByRole('button', { name: /Buka Pola Paito layar penuh/ });
     await fullscreen.click();
@@ -72,16 +75,20 @@ try {
     // Two independent touch pointers exercise the same pointer handlers as Android pinch.
     const rect = await scroller.boundingBox();
     const x = rect.x + rect.width / 2; const y = rect.y + Math.min(190, rect.height / 2);
-    await scroller.dispatchEvent('pointerdown', { pointerId: 11, clientX: x - 40, clientY: y, pointerType: 'touch' });
-    await scroller.dispatchEvent('pointerdown', { pointerId: 12, clientX: x + 40, clientY: y, pointerType: 'touch' });
-    await scroller.dispatchEvent('pointermove', { pointerId: 12, clientX: x + 90, clientY: y, pointerType: 'touch' });
-    await scroller.dispatchEvent('pointerup', { pointerId: 11, pointerType: 'touch' });
-    await scroller.dispatchEvent('pointerup', { pointerId: 12, pointerType: 'touch' });
+    if (process.env.PAITO_BASELINE !== '1') {
+      await scroller.dispatchEvent('pointerdown', { pointerId: 11, clientX: x - 40, clientY: y, pointerType: 'touch' });
+      await scroller.dispatchEvent('pointerdown', { pointerId: 12, clientX: x + 40, clientY: y, pointerType: 'touch' });
+      await scroller.dispatchEvent('pointermove', { pointerId: 12, clientX: x + 90, clientY: y, pointerType: 'touch' });
+      const zoomLabel = await dialog.locator('div.text-xs.font-bold').first().innerText();
+      if (Number(/(\d+)%/.exec(zoomLabel)?.[1] || 0) <= 125) throw new Error(`${market}: simulated pinch did not zoom`);
+      await scroller.dispatchEvent('pointerup', { pointerId: 11, pointerType: 'touch' });
+      await scroller.dispatchEvent('pointerup', { pointerId: 12, pointerType: 'touch' });
+    }
     await dialog.getByRole('button', { name: /Reset/ }).click();
     const after = await scroller.evaluate((el) => [el.scrollLeft, el.scrollTop]);
     if (after[0] || after[1] || !await dialog.getByText('100%', { exact: false }).count()) throw new Error(`${market}: reset failed`);
     await dialog.getByRole('button', { name: 'Tutup' }).click();
-    diagnostics.actions.push(`${market}: full field, selection, two-axis scroll, fullscreen, zoom, pinch pointer, reset, close`);
+    diagnostics.actions.push(`${market}: full field, selection, two-axis scroll, fullscreen, zoom, ${process.env.PAITO_BASELINE === '1' ? 'baseline (pinch skipped)' : 'pinch pointer'}, reset, close`);
   }
   await writeFile(join(outDir, 'diagnostics.json'), JSON.stringify(diagnostics, null, 2));
   console.log(JSON.stringify(diagnostics));
