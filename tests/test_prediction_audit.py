@@ -54,6 +54,20 @@ def test_trace_exposes_numeric_tie_without_calling_score_probability():
     assert "probability" not in AUDIT.__doc__.lower()
 
 
+def test_audit_tie_hypotheses_consider_only_current_leader_tie_and_subcategories():
+    tied = [{"number": "0094", "supported_by": ["P1", "P4"]},
+            {"number": "9094", "supported_by": ["P1", "P4"]}]
+    summaries = {name: {"4d_top3": ["9094", "0094", "0000"]} for name in MODELS}
+    choices = AUDIT.tie_choices(tied, summaries, previous_main="0094")
+    assert choices == {"published_ascending": "0094", "descending": "9094",
+                       "rank_sensitive": "9094", "avoid_previous_on_tie": "9094"}
+    assert AUDIT.subcategory_hits("0094", "0095") == {
+        "exact_4d": False, "3d_front": True, "3d_back": False,
+        "2d_front": True, "2d_middle": True, "2d_back": False,
+    }
+    assert AUDIT.tie_choices(tied[:1], summaries, previous_main="0094")["avoid_previous_on_tie"] == "0094"
+
+
 def test_published_0094_artifact_keeps_provenance_mismatch_visible():
     import json
     import sys

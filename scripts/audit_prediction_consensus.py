@@ -94,6 +94,30 @@ def model_log_scores(matrix, numbers):
     return {number: rnd(ranked[number]) if number in ranked else None for number in numbers}
 
 
+def tie_choices(tied, summaries, previous_main=None):
+    """Counterfactual choices within an *exact* production leader tie only."""
+    ascending = min(tied, key=lambda item: item["number"])["number"]
+    descending = max(tied, key=lambda item: item["number"])["number"]
+    ranked = min(tied, key=lambda item: (
+        sum(summaries[name]["4d_top3"].index(item["number"]) + 1 for name in item["supported_by"]),
+        item["number"],
+    ))["number"]
+    fresh = min(tied, key=lambda item: (item["number"] == previous_main, item["number"]))["number"]
+    return {"published_ascending": ascending, "descending": descending,
+            "rank_sensitive": ranked, "avoid_previous_on_tie": fresh}
+
+
+def subcategory_hits(candidate, actual):
+    return {
+        "exact_4d": candidate == actual,
+        "3d_front": candidate[:3] == actual[:3],
+        "3d_back": candidate[1:] == actual[1:],
+        "2d_front": candidate[:2] == actual[:2],
+        "2d_middle": candidate[1:3] == actual[1:3],
+        "2d_back": candidate[2:] == actual[2:],
+    }
+
+
 def make_forecast(market, train, weights):
     matrices, summaries = {}, {}
     for name in MODELS:
@@ -112,13 +136,7 @@ def make_forecast(market, train, weights):
         if item["reliability_weighted_score"] == leader["reliability_weighted_score"]
         and item["raw_support_count"] == leader["raw_support_count"]
     ]
-    rank_sensitive = min(
-        tied,
-        key=lambda item: (
-            sum(summaries[name]["4d_top3"].index(item["number"]) + 1 for name in item["supported_by"]),
-            item["number"],
-        ),
-    )
+    choices = tie_choices(tied, summaries)
     return {
         "market": market,
         "training_end": train[-1]["result_date"],
@@ -129,7 +147,7 @@ def make_forecast(market, train, weights):
         "models": summaries,
         "consensus": consensus,
         "main": leader["number"],
-        "rank_sensitive_tie_choice": rank_sensitive["number"],
+        "rank_sensitive_tie_choice": choices["rank_sensitive"],
         "leader_tie": [item["number"] for item in tied],
     }
 
@@ -192,6 +210,9 @@ def replay(market, rows, start_date, end_date, trace_dates):
     stats = {name: empty_walk_forward() for name in MODELS}
     traces, mains, correlations, overlaps, tie_count, p1p4_ties = {}, [], [], [], 0, 0
     exact_hits = rank_sensitive_hits = alternative_changes = 0
+    policy_mains = {name: [] for name in ("published_ascending", "descending", "rank_sensitive", "avoid_previous_on_tie")}
+    policy_hits = {name: Counter() for name in policy_mains}
+    previous_published_main = None
 
     for index in range(MINIMUM_TRAINING_RECORDS, len(rows)):
         train, actual_row = rows[:index], rows[index]
@@ -199,8 +220,14 @@ def replay(market, rows, start_date, end_date, trace_dates):
         _, weights = reliability_from_prior_stats(stats, train)
         forecast = make_forecast(market, train, weights)
         target = actual_row["result_date"]
+        tied = [item for item in forecast["consensus"] if item["number"] in forecast["leader_tie"]]
+        choices = tie_choices(tied, forecast["models"], previous_published_main)
+        previous_published_main = forecast["main"]
 
         if start_date <= target <= end_date:
+            for policy, candidate in choices.items():
+                policy_mains[policy].append(candidate)
+                policy_hits[policy].update({key: int(hit) for key, hit in subcategory_hits(candidate, actual).items()})
             mains.append((target, forecast["main"]))
             tie_count += len(forecast["leader_tie"]) > 1
             p1p4_ties += any(
@@ -246,6 +273,15 @@ def replay(market, rows, start_date, end_date, trace_dates):
     longest_0094 = max((run for run in runs if run[1] == "0094"), default=(0, "0094", None, None))
 
     points = len(mains)
+    policy_comparison = {
+        name: {
+            "changes_from_published": sum(candidate != baseline for candidate, baseline in zip(selected, policy_mains["published_ascending"])),
+            "same_main_transitions": sum(selected[i] == selected[i - 1] for i in range(1, len(selected))),
+            "0094_main_count": selected.count("0094"),
+            "hits": dict(policy_hits[name]),
+        }
+        for name, selected in policy_mains.items()
+    }
     return {
         "out_of_sample": {
             "start_date": start_date,
@@ -263,6 +299,7 @@ def replay(market, rows, start_date, end_date, trace_dates):
             "published_tie_break_exact_hits": exact_hits,
             "rank_sensitive_hypothesis_exact_hits": rank_sensitive_hits,
             "rank_sensitive_hypothesis_changes": alternative_changes,
+            "tie_policy_comparison": policy_comparison,
         },
         "traces": [traces[key] for key in sorted(traces)],
     }

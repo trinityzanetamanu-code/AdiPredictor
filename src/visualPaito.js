@@ -1,4 +1,45 @@
 export const PAITO_POSITIONS = ['AS', 'KOP', 'KEPALA', 'EKOR'];
+export const PAITO_LAGS = [4, 3, 2, 1, 0];
+export const PAITO_GEOMETRY = Object.freeze({ labelWidth: 210, cellWidth: 38, rowHeight: 52, headerHeight: 68 });
+
+/** Each cell is an actual digit from the dated canonical draw at D-lag.
+ * The wide layout is an educational comparison, not a published formula. */
+export function buildPaitoGrid(rows, { count = 60, endDate = null } = {}) {
+  const eligible = (rows || []).filter((row) => !endDate || row.date <= endDate);
+  const start = Math.max(0, eligible.length - count);
+  return eligible.slice(start).map((row, visibleIndex) => {
+    const absoluteIndex = start + visibleIndex;
+    const cells = PAITO_LAGS.flatMap((lag, groupIndex) => {
+      const source = eligible[absoluteIndex - lag] || null;
+      return PAITO_POSITIONS.map((position, positionIndex) => ({
+        rowIndex: visibleIndex,
+        columnIndex: groupIndex * 4 + positionIndex,
+        lag,
+        position,
+        digit: source?.digits[positionIndex] ?? null,
+        sourceDate: source?.date || null,
+        sourcePeriod: source?.period || null,
+      }));
+    });
+    const lastPair = row.number.slice(-2);
+    const repeatedPairColumns = new Set();
+    for (let groupIndex = 0; groupIndex < PAITO_LAGS.length - 1; groupIndex += 1) {
+      const candidate = cells.slice(groupIndex * 4 + 2, groupIndex * 4 + 4);
+      if (candidate.every((cell) => cell.digit !== null) && candidate.map((cell) => cell.digit).join('') === lastPair) {
+        repeatedPairColumns.add(groupIndex * 4 + 2);
+        repeatedPairColumns.add(groupIndex * 4 + 3);
+        repeatedPairColumns.add(18);
+        repeatedPairColumns.add(19);
+      }
+    }
+    return { ...row, cells, repeatedPairColumns };
+  });
+}
+
+export function paitoCellCenter(rowIndex, columnIndex) {
+  const { labelWidth, cellWidth, rowHeight, headerHeight } = PAITO_GEOMETRY;
+  return { x: labelWidth + (columnIndex + 0.5) * cellWidth, y: headerHeight + (rowIndex + 0.5) * rowHeight };
+}
 
 export function normalizePaitoNumber(row) {
   const raw = row?.nomor ?? row?.number;
@@ -35,7 +76,7 @@ export function paitoArchiveBoundary(prediction = {}) {
   };
 }
 
-export function buildHistoricalPaitoDataset(marketRows, prediction = {}, limit = 18) {
+export function buildHistoricalPaitoDataset(marketRows, prediction = {}, limit = 60) {
   const boundary = paitoArchiveBoundary(
     typeof prediction === 'string' ? { target_date: prediction } : prediction,
   );
@@ -107,7 +148,7 @@ export function buildHistoricalPaitoDataset(marketRows, prediction = {}, limit =
   };
 }
 
-export function buildHistoricalPaitoRows(marketRows, prediction, limit = 18) {
+export function buildHistoricalPaitoRows(marketRows, prediction, limit = 60) {
   return buildHistoricalPaitoDataset(marketRows, prediction, limit).rows;
 }
 

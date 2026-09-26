@@ -1079,14 +1079,15 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
               <div>
                 <h4 className="text-sm font-bold text-slate-100">Pola Visual</h4>
                 <p className="mt-1 text-[10px] text-slate-500">Grid memakai draw aktual dari arsip, bukan gambar referensi.</p>
+                <button type="button" onClick={onOpenHistory} className="mt-2 rounded-lg border border-emerald-500/30 px-3 py-2 text-xs font-semibold text-emerald-300">Buka arsip dan bidang Pola Paito {marketCode}</button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {visuals.map((pattern) => (
                   <div key={pattern.image_path} className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/40">
                     <img
                       src={predictionAssetUrl(pattern.image_path, prediction.dataset_fingerprint)}
                       alt={`${pattern.pattern_name} ${marketCode}`}
-                      className="w-full h-auto"
+                      className="mx-auto w-full max-h-[70vh] object-contain"
                       loading="lazy"
                     />
                     <div className="p-3 text-[10px] text-slate-400 space-y-1">
