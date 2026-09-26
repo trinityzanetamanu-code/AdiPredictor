@@ -65,6 +65,21 @@ def test_debug_metadata_is_never_an_update_channel(tmp_path):
     assert payload["update_channel_ready"] is False
 
 
+def test_signed_candidate_is_verified_but_never_published_as_stable(tmp_path):
+    completed, output = run_metadata(tmp_path, channel="release-candidate")
+    assert completed.returncode == 0, completed.stderr
+    payload = json.loads(output.read_text())
+    assert payload["certificate_sha256"] == "aabb"
+    assert payload["release_signing_runtime_verified"] is True
+    assert payload["update_channel_ready"] is False
+    assert payload["one_time_reinstall_required"] is False
+    rejected_dir = tmp_path / "rejected"
+    rejected_dir.mkdir()
+    mismatch, rejected = run_metadata(rejected_dir, channel="release-candidate", actual="ff00")
+    assert mismatch.returncode != 0
+    assert not rejected.exists()
+
+
 def test_version_code_is_greater_than_previous_stable_metadata(tmp_path):
     metadata = tmp_path / "app-release.json"
     metadata.write_text(json.dumps({"version_code": 100250}))

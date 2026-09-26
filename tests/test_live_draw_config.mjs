@@ -2,21 +2,24 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   LIVE_DRAW_SOURCES,
+  MEDIA_STATES,
   PLAYER_MODES,
   PLAYER_STATES,
   SGP_COMPOSITE_SOURCE_LABEL,
   calculateLiveState,
   scheduleBadgeLabel,
   resolveLiveDrawSource,
+  resolveMediaPresentation,
   selectSingaporeMode,
 } from '../src/liveDrawConfig.js';
+import { openLivePage } from '../src/liveDrawExternalNavigation.js';
 
 test('Singapore sources use exact official labels and HTTPS fallbacks', () => {
   for (const key of ['SGP_4D', 'SGP_TOTO']) {
     const source = LIVE_DRAW_SOURCES[key];
     assert.equal(source.official, true);
     assert.equal(source.sourceLabel, 'Official · Singapore Pools');
-    assert.match(source.pageUrl, /^https:\/\/www\.singaporepools\.com\.sg\//);
+    assert.match(source.pageUrl, /^https:\/\/www\.singaporepools\.com\.sg\/en\/product\/pages\//);
     assert.match(source.embedUrl, /^https:\/\/www\.youtube\.com\/embed\/videoseries/);
     assert.match(source.embedUrl, /enablejsapi=1/);
     assert.equal(source.mode, PLAYER_MODES.IFRAME);
@@ -70,4 +73,41 @@ test('draw schedule never claims actual player playback', () => {
 test('Singapore mode chooses official draw for the active day', () => {
   assert.equal(selectSingaporeMode(new Date('2026-09-19T10:20:00Z')), 'SGP_4D');
   assert.equal(selectSingaporeMode(new Date('2026-09-17T10:20:00Z')), 'SGP_TOTO');
+});
+
+test('UPCOMING playlist fallback is labelled as the last completed draw, never live', () => {
+  const presentation = resolveMediaPresentation({
+    scheduleStatus: 'UPCOMING',
+    hasPlaylist: true,
+    verifiedLive: false,
+  });
+  assert.equal(presentation.drawState, MEDIA_STATES.UPCOMING);
+  assert.equal(presentation.mediaState, MEDIA_STATES.LAST_COMPLETED_DRAW);
+  assert.equal(presentation.label, 'Rekaman draw terakhir');
+  assert.doesNotMatch(presentation.playLabel, /siaran live/i);
+});
+
+test('draw window does not promote an unverified playlist to live media', () => {
+  const presentation = resolveMediaPresentation({
+    scheduleStatus: 'LIVE_WINDOW',
+    hasPlaylist: true,
+    verifiedLive: false,
+  });
+  assert.equal(presentation.drawState, MEDIA_STATES.LIVE);
+  assert.equal(presentation.mediaState, MEDIA_STATES.LAST_COMPLETED_DRAW);
+});
+
+test('native Singapore official buttons use Capacitor Browser with the correct mode URL', async () => {
+  const opened = [];
+  const dependencies = {
+    isNativePlatform: () => true,
+    browserOpen: async (options) => { opened.push(options); },
+    windowOpen: () => { throw new Error('native flow must not use window.open'); },
+  };
+  await openLivePage(LIVE_DRAW_SOURCES.SGP_4D.pageUrl, dependencies);
+  await openLivePage(LIVE_DRAW_SOURCES.SGP_TOTO.pageUrl, dependencies);
+  assert.deepEqual(opened, [
+    { url: 'https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx', presentationStyle: 'popover' },
+    { url: 'https://www.singaporepools.com.sg/en/product/pages/toto_results.aspx', presentationStyle: 'popover' },
+  ]);
 });

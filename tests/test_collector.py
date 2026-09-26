@@ -19,6 +19,7 @@ from scripts.collector import (
     expected_hk_draw_date,
     qualify_hk_source,
     merge_records,
+    write_status,
 )
 
 
@@ -140,6 +141,35 @@ def test_hk_duplicate_polling_is_idempotent(tmp_path, monkeypatch):
     rows_again, new_again, _ = merge_records("HK", verified, "2026-09-20T23:15:00+07:00")
     assert len(rows_again) == 1
     assert new_rows and new_again == []
+
+
+def test_no_change_poll_does_not_relabel_old_published_status_as_latest_backend_check(tmp_path, monkeypatch):
+    status_path = tmp_path / "collector-status.json"
+    existing = {
+        "schema_version": 2,
+        "collected_at": "2026-09-22T20:00:00+07:00",
+        "markets": {
+            "HK": {
+                "market": "HK",
+                "status": "updated",
+                "last_source_check": "2026-09-22T20:00:00+07:00",
+                "last_successful_data_update": "2026-09-22T20:00:00+07:00",
+            }
+        },
+    }
+    status_path.write_text(json.dumps(existing), encoding="utf-8")
+    monkeypatch.setattr("scripts.collector.STATUS_PATH", status_path)
+    monkeypatch.setattr("scripts.collector.DATA_DIR", tmp_path)
+    no_change = [{
+        "market": "HK",
+        "status": "no_change",
+        "last_source_check": "2026-09-23T05:00:00+07:00",
+        "last_successful_data_update": "2026-09-22T20:00:00+07:00",
+        "_source_health_changed": False,
+    }]
+
+    assert write_status({"timezone": "Asia/Jakarta"}, no_change, "2026-09-23T05:00:00+07:00", 2026) is False
+    assert json.loads(status_path.read_text(encoding="utf-8")) == existing
 
 
 def test_sgp_official_parser():

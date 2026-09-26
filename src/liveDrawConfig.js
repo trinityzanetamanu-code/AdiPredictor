@@ -19,9 +19,50 @@ export const PLAYER_STATES = Object.freeze({
   OFFLINE: 'PLAYER_UNAVAILABLE',
 });
 
+export const MEDIA_STATES = Object.freeze({
+  UPCOMING: 'UPCOMING',
+  LIVE: 'LIVE',
+  LAST_COMPLETED_DRAW: 'LAST_COMPLETED_DRAW',
+  RESULT_POSTED: 'RESULT_POSTED',
+  UNAVAILABLE: 'UNAVAILABLE',
+});
+
 export function scheduleBadgeLabel(status) {
   if (status === 'LIVE_WINDOW') return 'DRAW WINDOW';
   return String(status || 'OFFLINE').replaceAll('_', ' ');
+}
+
+export function resolveMediaPresentation({ scheduleStatus, hasPlaylist, verifiedLive = false }) {
+  const drawState = scheduleStatus === 'LIVE_WINDOW'
+    ? MEDIA_STATES.LIVE
+    : scheduleStatus === 'RESULT_POSTED'
+      ? MEDIA_STATES.RESULT_POSTED
+      : scheduleStatus === 'UPCOMING'
+        ? MEDIA_STATES.UPCOMING
+        : MEDIA_STATES.UNAVAILABLE;
+
+  if (drawState === MEDIA_STATES.LIVE && verifiedLive) {
+    return {
+      drawState,
+      mediaState: MEDIA_STATES.LIVE,
+      label: 'Siaran live terverifikasi',
+      playLabel: 'Putar siaran live',
+    };
+  }
+  if (hasPlaylist) {
+    return {
+      drawState,
+      mediaState: MEDIA_STATES.LAST_COMPLETED_DRAW,
+      label: 'Rekaman draw terakhir',
+      playLabel: 'Putar rekaman draw terakhir',
+    };
+  }
+  return {
+    drawState,
+    mediaState: MEDIA_STATES.UNAVAILABLE,
+    label: 'Media tidak tersedia',
+    playLabel: 'Buka Halaman Resmi',
+  };
 }
 
 export const SGP_COMPOSITE_SOURCE_LABEL = 'Third-party cross-checked market result';
@@ -44,7 +85,7 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     sourceLabel: 'Official · Singapore Pools',
     official: true,
     mode: PLAYER_MODES.IFRAME,
-    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/4d/index.html#draw-video',
+    pageUrl: 'https://www.singaporepools.com.sg/en/product/pages/4d_results.aspx',
     resultUrl: 'https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html',
     playlistId: 'PLaXhIWKbyl3U-lDz1iRRZ8-rabk_uZbCY',
     currentVideoId: 'SByHDTZjxEI',
@@ -59,7 +100,7 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     sourceLabel: 'Official · Singapore Pools',
     official: true,
     mode: PLAYER_MODES.IFRAME,
-    pageUrl: 'https://www.singaporepools.com.sg/ms/lotteryhomepage/toto/index.html#draw-video',
+    pageUrl: 'https://www.singaporepools.com.sg/en/product/pages/toto_results.aspx',
     resultUrl: 'https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/toto_result_top_draws_en.html',
     playlistId: 'PLaXhIWKbyl3VHtnNcMwG6KOg04q6QQXge',
     currentVideoId: '1xc5gepZWQU',

@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   Radio,
   History,
+  Settings,
 } from 'lucide-react';
 import {
   loadCollectorStatus,
@@ -32,8 +33,10 @@ import {
   loadAppReleaseMetadata,
   loadTafsir,
   predictionAssetUrl,
+  getDataProvenance,
+  getDataFetchDiagnostics,
 } from './dataClient';
-import LiveDrawPlayer, { openLivePage } from './components/LiveDrawPlayer';
+import LiveDrawPlayer, { LiveDrawPlayerBoundary, openLivePage } from './components/LiveDrawPlayer';
 import LiveDrawResultBoard from './components/LiveDrawResultBoard';
 import LiveDrawFourDigitBoard, { TotoBoard } from './components/LiveDrawFourDigitBoard';
 import LiveDrawSixDigitBoard from './components/LiveDrawSixDigitBoard';
@@ -46,7 +49,7 @@ import { loadLocalHKBoard, storeLocalHKBoard } from './hkVerificationService';
 import { predictionChangeNote, predictionFreshness } from './predictionFreshness';
 import { replaceInternalPage } from './historyNavigation';
 import { collectorHealth, datasetFreshness, datasetFreshnessMessage, DATASET_FRESHNESS } from './collectorHealth';
-import { deliverRuntimeNotifications, registerNotificationActionListener, scheduleLiveDrawReminders } from './notificationService';
+import { deliverRuntimeNotifications, getInstalledVersionCode, registerNotificationActionListener, scheduleLiveDrawReminders } from './notificationService';
 import {
   createRuntimeLatestResult,
   effectiveLatestResult,
@@ -54,6 +57,16 @@ import {
   runtimeResultSyncState,
   RUNTIME_SYNC_STATE,
 } from './runtimeResultSync';
+import {
+  createBoundedReconciliationRunner,
+  reconcileRuntimeObservation,
+  reconcileRuntimeCandidates,
+  shouldProbeNativeRuntimeBoard,
+} from './runtimeResultReconciliation';
+import { getLiveDrawDiagnostics, LIVE_DRAW_DIAGNOSTIC_EVENTS, recordLiveDrawDiagnostic } from './liveDrawDiagnostics';
+import { createLatestRefreshCoordinator } from './refreshDataCoordinator';
+import { analyzeFourDConsensusTie, previousPublishedMain } from './predictionConsensus';
+import { buildRuntimeDiagnostics } from './runtimeDiagnostics';
 
 const AppContext = createContext();
 
@@ -196,6 +209,15 @@ export function AppProvider({ children }) {
   const marketDataRef = useRef(marketData);
   const acceleratedRefreshRef = useRef(null);
   const runtimeEventKeyRef = useRef(null);
+  const runtimeLatestResultsRef = useRef(runtimeLatestResults);
+  const refreshCoordinatorRef = useRef(null);
+  const runtimeReconciliationRunnerRef = useRef(null);
+  if (!refreshCoordinatorRef.current) {
+    refreshCoordinatorRef.current = createLatestRefreshCoordinator();
+  }
+  if (!runtimeReconciliationRunnerRef.current) {
+    runtimeReconciliationRunnerRef.current = createBoundedReconciliationRunner({ minIntervalMs: 3000 });
+  }
 
   const showToast = (msg) => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
@@ -213,6 +235,7 @@ export function AppProvider({ children }) {
   };
 
   const refreshData = async (silent = false) => {
+    const requestId = refreshCoordinatorRef.current.begin();
     if (!silent) setIsRefreshing(true);
 
     try {
@@ -246,8 +269,20 @@ export function AppProvider({ children }) {
         ]);
 
       const nextMarketData = { HK: hk, SGP: sgp, SDY: sdy };
+      if (!refreshCoordinatorRef.current.isLatest(requestId)) {
+        return { marketData: marketDataRef.current, discarded: true };
+      }
       marketDataRef.current = nextMarketData;
       setMarketData(nextMarketData);
+      setRuntimeLatestResults((current) => {
+        const reconciled = reconcileRuntimeCandidates({
+          marketData: nextMarketData,
+          snapshot: null,
+          currentRuntimeResults: current,
+        }).runtimeLatestResults;
+        runtimeLatestResultsRef.current = reconciled;
+        return reconciled;
+      });
       setCollectorStatus(status);
       setPredictions({ HK: hkPred, SGP: sgpPred, SDY: sdyPred });
       setPredictionHistory({
@@ -265,18 +300,40 @@ export function AppProvider({ children }) {
         histories: { HK: hkHistory, SGP: sgpHistory, SDY: sdyHistory },
         releaseMetadata: remoteReleaseMetadata,
       };
-      await deliverRuntimeNotifications(notificationSnapshot, notificationSnapshotRef.current).catch((error) => {
+      const previousNotificationSnapshot = notificationSnapshotRef.current;
+      for (const market of ['HK', 'SGP', 'SDY']) {
+        if (getDataProvenance(notificationSnapshot.marketData[market])?.source !== 'REMOTE') {
+          notificationSnapshot.marketData[market] = previousNotificationSnapshot?.marketData?.[market] || [];
+        }
+        if (getDataProvenance(notificationSnapshot.predictions[market])?.source !== 'REMOTE'
+          || getDataProvenance(nextMarketData[market])?.source !== 'REMOTE') {
+          notificationSnapshot.predictions[market] = previousNotificationSnapshot?.predictions?.[market] || null;
+        }
+        if (getDataProvenance(notificationSnapshot.histories[market])?.source !== 'REMOTE') {
+          notificationSnapshot.histories[market] = previousNotificationSnapshot?.histories?.[market] || null;
+        }
+      }
+      if (getDataProvenance(remoteReleaseMetadata)?.source !== 'REMOTE') {
+        notificationSnapshot.releaseMetadata = previousNotificationSnapshot?.releaseMetadata || null;
+      }
+      notificationSnapshotRef.current = notificationSnapshot;
+      await deliverRuntimeNotifications(notificationSnapshot, previousNotificationSnapshot).catch((error) => {
         console.warn('Notifikasi runtime dilewati:', error?.message || error);
       });
-      notificationSnapshotRef.current = notificationSnapshot;
-      setLastRefresh(new Date().toISOString());
-      setDataError('');
-      return { marketData: nextMarketData };
+      if (refreshCoordinatorRef.current.isLatest(requestId)) {
+        setLastRefresh(new Date().toISOString());
+        setDataError('');
+      }
+      return refreshCoordinatorRef.current.isLatest(requestId)
+        ? { marketData: nextMarketData }
+        : { marketData: marketDataRef.current, discarded: true };
     } catch (err) {
       console.error('Gagal sinkronisasi data:', err);
-      setDataError(err?.message || 'Gagal sinkronisasi data');
+      if (refreshCoordinatorRef.current.isLatest(requestId)) {
+        setDataError(err?.message || 'Gagal sinkronisasi data');
+      }
     } finally {
-      setIsRefreshing(false);
+      if (refreshCoordinatorRef.current.isLatest(requestId)) setIsRefreshing(false);
     }
   };
 
@@ -299,18 +356,97 @@ export function AppProvider({ children }) {
     acceleratedRefreshRef.current = window.setInterval(checkPersistentData, 12000);
   };
 
-  const publishRuntimeLatestResult = ({ market, board }) => {
-    const runtimeResult = createRuntimeLatestResult({ market, board });
-    const dataset = marketDataRef.current[runtimeResult.market]?.[0] || null;
-    const sync = runtimeResultSyncState(runtimeResult, dataset);
-    if (sync.conflict) {
-      setRuntimeLatestResults((current) => ({ ...current, [runtimeResult.market]: runtimeResult }));
-      refreshData(true);
-      return sync;
+  const reconcileRuntimeSources = async ({ marketDataOverride, reason }) => {
+    const canonicalData = marketDataOverride || marketDataRef.current;
+    let snapshot;
+    try {
+      snapshot = await loadLiveDrawSnapshot();
+    } catch (error) {
+      console.warn('Runtime snapshot tidak tersedia:', error?.message || error);
+      snapshot = { schema_version: 1, retrieved_at: null, markets: {} };
     }
-    if (sync.state !== RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET) return sync;
+
+    let snapshotRuntime = null;
+    try {
+      if (snapshot?.markets?.HK) snapshotRuntime = createRuntimeLatestResult({ market: 'HK', board: snapshot.markets.HK });
+    } catch {
+      snapshotRuntime = null;
+    }
+
+    const now = new Date();
+    const scheduleState = calculateLiveState(LIVE_DRAW_SOURCES.HK.schedule, now).status;
+    const marketDrawDate = zonedISODate(now, 'Asia/Jakarta');
+    const shouldProbe = shouldProbeNativeRuntimeBoard({
+      market: 'HK',
+      scheduleState,
+      marketDrawDate,
+      dataset: canonicalData?.HK?.[0] || null,
+      snapshotRuntime,
+    });
+
+    if (shouldProbe) {
+      try {
+        const direct = await fetchNativeLiveBoard('HK');
+        if (direct.available && direct.board) {
+          const storedBoard = storeLocalHKBoard(
+            direct.board,
+            `startup_runtime_reconciliation:${reason}`,
+          );
+          snapshot = {
+            ...snapshot,
+            markets: { ...(snapshot?.markets || {}), HK: storedBoard },
+          };
+        }
+      } catch (error) {
+        console.warn('Direct runtime reconciliation dilewati:', error?.message || error);
+      }
+    }
+
+    const reconciled = reconcileRuntimeCandidates({
+      marketData: canonicalData,
+      snapshot,
+      localBoards: { HK: loadLocalHKBoard() },
+      currentRuntimeResults: runtimeLatestResultsRef.current,
+    });
+    runtimeLatestResultsRef.current = reconciled.runtimeLatestResults;
+    setRuntimeLatestResults(reconciled.runtimeLatestResults);
+
+    for (const decision of Object.values(reconciled.decisions)) {
+      if (decision.state === RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET && decision.candidate) {
+        const eventKey = `${decision.candidate.market}:${decision.candidate.result_date}:${decision.candidate.nomor}`;
+        if (runtimeEventKeyRef.current !== eventKey) {
+          runtimeEventKeyRef.current = eventKey;
+          startAcceleratedRefresh(decision.candidate);
+        }
+      }
+    }
+    return reconciled;
+  };
+
+  const runForegroundReconciliation = (reason, { force = false, initial = false } = {}) => (
+    runtimeReconciliationRunnerRef.current(async () => {
+      const refreshed = await refreshData(!initial);
+      return reconcileRuntimeSources({
+        marketDataOverride: refreshed?.marketData || marketDataRef.current,
+        reason,
+      });
+    }, { force })
+  );
+
+  const publishRuntimeLatestResult = ({ market, board }) => {
+    const reconciled = reconcileRuntimeObservation({
+      market,
+      board,
+      marketData: marketDataRef.current,
+      currentRuntimeResults: runtimeLatestResultsRef.current,
+    });
+    const runtimeResult = reconciled.decision?.candidate;
+    const sync = reconciled.decision;
+    runtimeLatestResultsRef.current = reconciled.runtimeLatestResults;
+    setRuntimeLatestResults(reconciled.runtimeLatestResults);
+    if (sync?.conflict) refreshData(true);
+    if (sync?.state !== RUNTIME_SYNC_STATE.LIVE_AHEAD_OF_DATASET || !runtimeResult) return sync;
     const eventKey = `${runtimeResult.market}:${runtimeResult.result_date}:${runtimeResult.nomor}`;
-    setRuntimeLatestResults((current) => ({ ...current, [runtimeResult.market]: runtimeResult }));
     if (runtimeEventKeyRef.current !== eventKey) {
       runtimeEventKeyRef.current = eventKey;
       startAcceleratedRefresh(runtimeResult);
@@ -319,13 +455,18 @@ export function AppProvider({ children }) {
   };
 
   useEffect(() => {
-    refreshData(false);
+    runForegroundReconciliation('COLD_START', { force: true, initial: true });
 
     const interval = setInterval(() => refreshData(true), 60000);
     const onVisible = () => {
-      if (document.visibilityState === 'visible') refreshData(true);
+      const visible = document.visibilityState === 'visible';
+      recordLiveDrawDiagnostic(
+        visible ? LIVE_DRAW_DIAGNOSTIC_EVENTS.TAB_VISIBLE : LIVE_DRAW_DIAGNOSTIC_EVENTS.TAB_HIDDEN,
+        { scope: 'APP' },
+      );
+      if (visible) runForegroundReconciliation('TAB_VISIBLE');
     };
-    const onFocus = () => refreshData(true);
+    const onFocus = () => runForegroundReconciliation('WINDOW_FOCUS');
 
     document.addEventListener('visibilitychange', onVisible);
     window.addEventListener('focus', onFocus);
@@ -336,6 +477,26 @@ export function AppProvider({ children }) {
       window.removeEventListener('focus', onFocus);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       stopAcceleratedRefresh();
+    };
+  }, []);
+
+  useEffect(() => {
+    let listener;
+    let cancelled = false;
+    import('@capacitor/app').then(({ App }) => App.addListener('appStateChange', ({ isActive }) => {
+      if (cancelled) return;
+      recordLiveDrawDiagnostic(
+        isActive ? LIVE_DRAW_DIAGNOSTIC_EVENTS.APP_RESUME : LIVE_DRAW_DIAGNOSTIC_EVENTS.APP_BACKGROUND,
+        { scope: 'APP' },
+      );
+      if (isActive) runForegroundReconciliation('APP_RESUME');
+    })).then((handle) => {
+      if (cancelled) handle?.remove?.();
+      else listener = handle;
+    }).catch(() => {});
+    return () => {
+      cancelled = true;
+      listener?.remove?.();
     };
   }, []);
 
@@ -455,6 +616,7 @@ function Navbar() {
     { id: 'livedraw', label: 'LiveDraw', icon: Radio },
     { id: 'analytics', label: 'Statistik', icon: BarChart3 },
     { id: 'dreams', label: 'Tafsir', icon: BookOpen },
+    { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
   return (
@@ -477,6 +639,7 @@ function Navbar() {
               <button
                 key={tab.id}
                 onClick={() => navigateToTab(tab.id)}
+                aria-current={active ? 'page' : undefined}
                 className={
                   'flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-medium transition ' +
                   (active
@@ -511,7 +674,7 @@ function MarketSelect({ value, onChange }) {
   );
 }
 
-function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt, backendHealth, datasetState }) {
+function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt, backendHealth, datasetState, datasetOrigin, predictionOrigin, statusOrigin }) {
   const latestStatus = status?.latest_verified || status?.latest;
 
   return (
@@ -522,15 +685,19 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
       </div>
 
       <div className="space-y-3 text-xs">
+        <div className="text-amber-200" data-data-origin>
+          Dataset: {datasetOrigin?.source || 'BELUM DIMUAT'} · Prediksi: {predictionOrigin?.source || 'BELUM DIMUAT'} · Status: {statusOrigin?.source || 'BELUM DIMUAT'}
+          {datasetOrigin?.source === 'FALLBACK' && ` · APK berisi hasil ${datasetOrigin.result_date || 'tidak diketahui'}; backend belum berhasil dicek`}
+        </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400">App refresh</span>
           <span className="text-emerald-400 font-semibold">Aktif · 60 detik</span>
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <span className="text-slate-400">Backend collector</span>
-          <span className={`font-semibold text-right ${backendHealth?.state === 'COLLECTOR_HEALTHY' ? 'text-emerald-300' : backendHealth?.state === 'COLLECTOR_DELAYED' ? 'text-amber-300' : 'text-rose-300'}`}>
-            {backendHealth?.label || 'Status belum diketahui'}
+          <span className="text-slate-400">Status publik collector</span>
+          <span className={`font-semibold text-right ${statusOrigin?.source === 'FALLBACK' ? 'text-amber-300' : backendHealth?.state === 'COLLECTOR_HEALTHY' ? 'text-emerald-300' : backendHealth?.state === 'COLLECTOR_DELAYED' ? 'text-amber-300' : 'text-rose-300'}`}>
+            {statusOrigin?.source === 'FALLBACK' ? 'Status dari APK · backend belum dicek' : backendHealth?.label || 'Status belum diketahui'}
           </span>
         </div>
 
@@ -552,9 +719,32 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
         </div>
 
         <div className="flex items-center justify-between gap-4">
-          <span className="text-slate-400">Data dikoleksi</span>
+          <span className="text-slate-400">Hasil terakhir diperbarui</span>
           <span className="text-slate-200 text-right">
-            {formatSyncTime(collectedAt || latestStatus?.collected_at)}
+            {formatSyncTime(status?.last_successful_data_update || latestStatus?.collected_at)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Cek sumber dalam status publik</span>
+          <span className="text-slate-200 text-right">
+            {formatSyncTime(status?.last_source_check)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Pemeriksaan backend terbaru</span>
+          <span className="text-slate-200 text-right">
+            {backendHealth?.backendCheckAvailable
+              ? formatSyncTime(backendHealth.backendLastCheckAt)
+              : 'Tidak tersedia di data publik'}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-slate-400">Status publik diterbitkan</span>
+          <span className="text-slate-200 text-right">
+            {formatSyncTime(collectedAt)}
           </span>
         </div>
 
@@ -576,14 +766,16 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
       <div
         className={
           'rounded-xl border px-3 py-2.5 text-[11px] ' +
-          (dataError
+          (dataError || datasetOrigin?.source !== 'REMOTE' || predictionOrigin?.source !== 'REMOTE'
             ? 'border-rose-500/30 bg-rose-500/10 text-rose-300'
             : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300')
         }
       >
         {dataError
           ? 'Sinkronisasi bermasalah: ' + dataError
-          : 'Data baru masuk otomatis tanpa tombol proses. Setelah APK ini terpasang, update hasil tidak memerlukan install ulang.'}
+          : datasetOrigin?.source !== 'REMOTE' || predictionOrigin?.source !== 'REMOTE'
+            ? 'Data backend belum terkonfirmasi. Hasil tersimpan dapat dibaca sebagai arsip, sementara prediksi final menunggu pasangan data remote.'
+            : 'Dataset dan prediksi berhasil dimuat dari backend. Aplikasi akan memeriksa pembaruan setiap 60 detik.'}
       </div>
     </div>
   );
@@ -620,17 +812,17 @@ function CandidateChips({ items = [] }) {
   );
 }
 
-function PredictionCard({ prediction, marketCode, latest, onOpenHistory, datasetState, runtimePredictionState }) {
-  const { copyToClipboard, refreshData } = useApp();
+function PredictionCard({ prediction, marketCode, latest, onOpenHistory, datasetState, runtimePredictionState, remotePair }) {
+  const { copyToClipboard, refreshData, predictionHistory } = useApp();
   const candidateNumber = (value) =>
     typeof value === 'object' && value !== null ? value.number : value;
 
   const freshness = predictionFreshness(prediction, latest);
-  const predictionFresh = freshness.fresh && runtimePredictionState?.visible !== false;
+  const predictionFresh = freshness.fresh && remotePair && runtimePredictionState?.visible !== false;
 
   useEffect(() => {
     if (!prediction || predictionFresh) return undefined;
-    const timer = window.setTimeout(() => refreshData(true), 5000);
+    const timer = window.setTimeout(() => refreshData(true), remotePair ? 5000 : 60000);
     return () => window.clearTimeout(timer);
   }, [prediction?.dataset_fingerprint, latest?.result_date, latest?.nomor, predictionFresh]);
 
@@ -653,6 +845,15 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
   const counts = predictionFresh
     ? prediction?.candidate_counts || quick?.candidate_counts || {}
     : {};
+  const fourDConsensusTie = predictionFresh
+    ? analyzeFourDConsensusTie({
+      rankings: weighted.candidate_rankings?.['4d_top3'] || [],
+      models,
+    })
+    : null;
+  const priorMain = predictionFresh && marketCode === 'HK'
+    ? previousPublishedMain(predictionHistory?.HK, prediction?.target_date)
+    : null;
 
   const fourD =
     candidateNumber(four?.main) ||
@@ -712,7 +913,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
             <div className="grid gap-1 sm:grid-cols-3">
               <span className="text-slate-400">Data terbaru: <strong className="text-slate-200">{prediction.prediction_basis_date || prediction.latest_result?.date} · {prediction.prediction_basis_result || prediction.latest_result?.number}</strong></span>
               <span className="text-slate-400">Target: <strong className="text-slate-200">{prediction.target_date} · {prediction.target_period}</strong></span>
-              <span className="font-bold text-emerald-300">✓ DIHITUNG ULANG DARI DATA TERBARU</span>
+              <span className="font-bold text-emerald-300">✓ PREDIKSI SELARAS DENGAN DATASET REMOTE</span>
             </div>
             {predictionChangeNote(prediction) && <div className="mt-2 text-slate-500">{predictionChangeNote(prediction)}</div>}
           </div>
@@ -724,6 +925,15 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
             <div className="mt-2 font-mono text-4xl sm:text-5xl font-black text-emerald-400">
               {fourD || '----'}
             </div>
+            {fourDConsensusTie && (
+              <div className="mx-auto mt-3 max-w-xl rounded-lg border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-left text-[10px] leading-relaxed text-amber-100" data-four-d-consensus-tie>
+                <strong>Skor konsensus seri:</strong>{' '}
+                {fourDConsensusTie.candidates.map((candidate) => candidate.number).join(' = ')}
+                {' '}({fourDConsensusTie.score.toFixed(6)}). Posisi kandidat di Top3 model tidak masuk ke skor;
+                label Main mengikuti tie-break angka menaik yang deterministik, bukan probabilitas tembus 4D.
+                {priorMain && <span className="mt-1 block">Arsip target sebelumnya {priorMain.targetDate}: Main {priorMain.number}.</span>}
+              </div>
+            )}
             <div className="mt-3 flex flex-wrap justify-center gap-2">
               {fourD && (
                 <button
@@ -875,14 +1085,15 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
               <div>
                 <h4 className="text-sm font-bold text-slate-100">Pola Visual</h4>
                 <p className="mt-1 text-[10px] text-slate-500">Grid memakai draw aktual dari arsip, bukan gambar referensi.</p>
+                <button type="button" onClick={onOpenHistory} className="mt-2 rounded-lg border border-emerald-500/30 px-3 py-2 text-xs font-semibold text-emerald-300">Buka arsip dan bidang Pola Paito {marketCode}</button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3">
                 {visuals.map((pattern) => (
                   <div key={pattern.image_path} className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/40">
                     <img
                       src={predictionAssetUrl(pattern.image_path, prediction.dataset_fingerprint)}
                       alt={`${pattern.pattern_name} ${marketCode}`}
-                      className="w-full h-auto"
+                      className="mx-auto w-full max-h-[70vh] object-contain"
                       loading="lazy"
                     />
                     <div className="p-3 text-[10px] text-slate-400 space-y-1">
@@ -956,6 +1167,9 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
 
           <div className="rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-3 text-[10px] text-slate-500 leading-relaxed">
             {prediction.disclaimer || confidence.disclaimer || 'Prediksi dibuat otomatis dari histori dan model P1–P8. Nilai confidence adalah ukuran relatif, bukan jaminan hasil.'}
+            <div className="mt-2" data-consensus-score-definition>
+              Skor w adalah jumlah bobot walk-forward model yang memuat kandidat di Top-K. Bintang adalah ambang dukungan dan skor relatif; keduanya bukan estimasi probabilitas 4D.
+            </div>
           </div>
         </div>
       ) : prediction && !predictionFresh ? (
@@ -964,9 +1178,9 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
             <Clock3 className="w-7 h-7 text-amber-300" />
           </div>
           <div>
-            <h4 className="font-bold text-slate-100">Prediksi sedang disinkronkan</h4>
+            <h4 className="font-bold text-slate-100">Menunggu dataset dan prediksi terverifikasi</h4>
             <p className="text-xs text-slate-400 mt-2 max-w-md">
-              Hasil terbaru sudah berubah. Aplikasi menunggu sinkronisasi dataset dan prediksi P1–P8 baru agar prediksi lama tidak ditampilkan. ({runtimePredictionState?.reason || freshness.reason})
+              {remotePair ? 'Sumber live melihat hasil yang lebih baru, tetapi dataset canonical belum mengonfirmasinya. Prediksi menunggu pasangan dataset yang selaras.' : 'Koneksi ke data backend belum terkonfirmasi. Prediksi dari APK disembunyikan sampai dataset dan prediksi remote berhasil dimuat.'} ({runtimePredictionState?.reason || freshness.reason})
             </p>
           </div>
         </div>
@@ -1002,6 +1216,9 @@ function GeneratorPanel() {
     dataError,
   } = useApp();
   const activeData = marketData[marketCode] || [];
+  const datasetOrigin = getDataProvenance(activeData);
+  const predictionOrigin = getDataProvenance(predictions[marketCode]);
+  const remotePair = datasetOrigin?.source === 'REMOTE' && predictionOrigin?.source === 'REMOTE';
   const datasetLatest = activeData[0] || {
     tanggal: '-',
     nomor: '----',
@@ -1027,18 +1244,23 @@ function GeneratorPanel() {
           </div>
           <div>
             <span className="text-[10px] uppercase font-mono text-slate-400">
-              Hasil Keluaran Terakhir ({latest.periode})
+              {effective.source === 'LIVE_DRAW_RUNTIME' ? 'Hasil terlihat di sumber live' : 'Hasil keluaran terakhir'} ({latest.periode})
             </span>
             <h4 className="text-sm font-bold text-slate-200">
               {marketLabel(marketCode)} - {formatResultDate(latest)}
             </h4>
             {effective.source === 'LIVE_DRAW_RUNTIME' ? (
               <div className="mt-1 text-[10px] text-amber-300" data-effective-result-source="LIVE_DRAW_RUNTIME">
-                LiveDraw terbaru · Diperbarui {formatSyncTime(latest.updated_at)} · Dataset analisis sedang sinkron...
+                Terlihat {formatSyncTime(latest.updated_at)} · Belum terverifikasi dataset · Menunggu dataset dan prediksi terverifikasi.
               </div>
             ) : (
-              <div className="mt-1 text-[10px] text-emerald-300" data-effective-result-source="DATASET">
-                Tersinkronisasi · Data dikoleksi {formatSyncTime(datasetLatest.collected_at || collectorStatus?.collected_at)}
+              <div className={`mt-1 text-[10px] ${datasetOrigin?.source === 'REMOTE' ? 'text-emerald-300' : 'text-amber-300'}`} data-effective-result-source="DATASET">
+                {datasetOrigin?.source === 'REMOTE' ? 'Data remote diterima' : 'Arsip APK · Backend belum berhasil dicek'} · Data dikoleksi {formatSyncTime(datasetLatest.collected_at || collectorStatus?.collected_at)}
+              </div>
+            )}
+            {effective.source === 'LIVE_DRAW_RUNTIME' && latest.runtime_conflict && (
+              <div className="mt-1 text-[10px] font-bold text-rose-300" data-runtime-source-conflict>
+                SUMBER LIVE BERUBAH/KONFLIK · Angka terbaru hanya observasi runtime, bukan hasil canonical.
               </div>
             )}
             {effective.sync.conflict && (
@@ -1074,8 +1296,10 @@ function GeneratorPanel() {
             predictionAt={predictions[marketCode]?.generated_at}
             backendHealth={backendHealth}
             datasetState={datasetState}
+            datasetOrigin={datasetOrigin}
+            predictionOrigin={predictionOrigin}
+            statusOrigin={getDataProvenance(collectorStatus)}
           />
-          <NotificationSettingsPanel />
         </div>
 
         <PredictionCard
@@ -1085,6 +1309,7 @@ function GeneratorPanel() {
           onOpenHistory={openPredictionHistory}
           datasetState={datasetState}
           runtimePredictionState={runtimePredictionState}
+          remotePair={remotePair}
         />
       </div>
     </div>
@@ -1092,9 +1317,18 @@ function GeneratorPanel() {
 }
 
 function ResultsPanel() {
-  const { marketData, resultsMarket: selectedMarket, setResultsMarket: setSelectedMarket } = useApp();
+  const {
+    marketData,
+    runtimeLatestResults,
+    resultsMarket: selectedMarket,
+    setResultsMarket: setSelectedMarket,
+  } = useApp();
   const [selectedYear, setSelectedYear] = useState('2026');
   const sourceData = marketData[selectedMarket] || [];
+  const datasetOrigin = getDataProvenance(sourceData);
+  const datasetLatest = sourceData[0] || null;
+  const effective = effectiveLatestResult(datasetLatest, runtimeLatestResults[selectedMarket]);
+  const latest = effective.result || datasetLatest;
 
   const years = Array.from(
     new Set(
@@ -1146,7 +1380,52 @@ function ResultsPanel() {
         </div>
       </div>
 
-      <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/50 max-h-[72vh] overflow-y-auto">
+      {latest && (
+        <section
+          className="rounded-2xl border border-slate-700 bg-slate-950/60 p-4"
+          data-results-latest-source={effective.source}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Keluaran terbaru</p>
+              <p className="mt-1 text-sm font-bold text-slate-100">{formatResultDate(latest)} · {latest.periode}</p>
+              {effective.source === 'LIVE_DRAW_RUNTIME' && (
+                <span className="mt-2 inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-[9px] font-black text-amber-200" data-runtime-result-awaiting-sync>
+                  SUMBER LIVE · BELUM TERVERIFIKASI DATASET
+                </span>
+              )}
+              {effective.source === 'LIVE_DRAW_RUNTIME' && latest.runtime_conflict && (
+                <span className="ml-2 mt-2 inline-flex rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[9px] font-black text-rose-200" data-runtime-source-conflict>
+                  SUMBER BERUBAH / KONFLIK
+                </span>
+              )}
+              {effective.source === 'DATASET' && datasetOrigin?.source === 'FALLBACK' && (
+                <span className="mt-2 inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-[9px] font-black text-amber-200" data-results-apk-fallback>
+                  ARSIP APK · HASIL {datasetOrigin.result_date || 'BELUM DIKETAHUI'} · BACKEND BELUM TERVERIFIKASI
+                </span>
+              )}
+              {effective.source === 'DATASET' && datasetOrigin?.source === 'REMOTE' && !effective.sync.conflict && (
+                <span className="mt-2 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[9px] font-black text-emerald-200">
+                  DATASET TERVERIFIKASI
+                </span>
+              )}
+              {effective.sync.conflict && (
+                <span className="mt-2 inline-flex rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-1 text-[9px] font-black text-rose-200" data-results-runtime-conflict>
+                  KONFLIK RUNTIME · DATASET TETAP ACUAN
+                </span>
+              )}
+            </div>
+            <span className="font-mono text-2xl font-black tracking-wider text-emerald-400">{latest.nomor}</span>
+          </div>
+          {effective.source === 'LIVE_DRAW_RUNTIME' && (
+            <p className="mt-3 text-[10px] text-slate-400">
+              Angka ini hanya terlihat pada sumber live dan belum dimasukkan ke arsip. Daftar historis di bawah tetap berasal dari dataset canonical terverifikasi.
+            </p>
+          )}
+        </section>
+      )}
+
+      <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950/50 max-h-[72vh] overflow-y-auto" data-canonical-history-list>
         {listData.map((row, index) => (
           <div
             key={(row.result_date || row.tanggal) + '-' + row.nomor + '-' + index}
@@ -1207,6 +1486,10 @@ function LiveDrawPanel() {
     checkedAt: null,
   });
   const [boardRefreshNonce, setBoardRefreshNonce] = useState(0);
+  const boardRequestCoordinatorRef = useRef(null);
+  if (!boardRequestCoordinatorRef.current) {
+    boardRequestCoordinatorRef.current = createLatestRefreshCoordinator();
+  }
 
   useEffect(() => {
     if (liveMarket !== 'SGP') return undefined;
@@ -1245,6 +1528,7 @@ function LiveDrawPanel() {
     let timer;
 
     const refreshBoard = async () => {
+      const requestId = boardRequestCoordinatorRef.current.begin();
       const source = LIVE_DRAW_SOURCES[liveMarket];
       const scheduleState = calculateLiveState(source.schedule).status;
       if (liveMarket === 'HK' && scheduleState === 'LIVE_WINDOW') refreshData(true);
@@ -1267,17 +1551,22 @@ function LiveDrawPanel() {
       const localVerified = liveMarket === 'HK' ? loadLocalHKBoard() : null;
       const datasetRow = marketData[liveMarket]?.[0] || null;
       let selectedBoard = localVerified ? attachDatasetValidation(localVerified, datasetRow) : cached ? attachDatasetValidation(cached, datasetRow) : null;
-      let fetchMode = localVerified ? 'device_local_verified_board' : cached ? 'github_cached_snapshot' : 'no_snapshot';
+      let fetchMode = localVerified ? 'device_local_verified_board' : cached
+        ? getDataProvenance(cachedSnapshot)?.source === 'FALLBACK' ? 'apk_bundled_snapshot' : 'github_cached_snapshot'
+        : 'no_snapshot';
       let errorMessage = null;
       let status = cached ? 'cached' : 'unavailable';
 
       try {
         const direct = await fetchNativeLiveBoard(liveMarket);
+        if (!mounted || !boardRequestCoordinatorRef.current.isLatest(requestId)) return;
         if (direct.available && direct.board) {
-          selectedBoard = attachDatasetValidation(direct.board, datasetRow);
+          const runtimeBoard = liveMarket === 'HK'
+            ? storeLocalHKBoard(direct.board, 'public_mirror_structural_validation')
+            : direct.board;
+          selectedBoard = attachDatasetValidation(runtimeBoard, datasetRow);
           fetchMode = direct.reason;
           status = 'ready';
-          if (liveMarket === 'HK') storeLocalHKBoard(direct.board, 'public_mirror_structural_validation');
         } else if (direct.reason === 'web_platform') {
           fetchMode = cached ? 'web_cached_snapshot' : 'web_snapshot_unavailable';
         }
@@ -1286,9 +1575,10 @@ function LiveDrawPanel() {
         status = selectedBoard ? 'cached' : 'unavailable';
       }
 
-      if (liveMarket === 'HK' && selectedBoard) {
+      if (!mounted || !boardRequestCoordinatorRef.current.isLatest(requestId)) return;
+      if (['HK', 'SDY'].includes(liveMarket) && selectedBoard) {
         try {
-          publishRuntimeLatestResult({ market: 'HK', board: selectedBoard });
+          publishRuntimeLatestResult({ market: liveMarket, board: selectedBoard });
         } catch (error) {
           errorMessage = error?.code || error?.message || 'BOARD_VALIDATION_FAILED';
         }
@@ -1409,7 +1699,6 @@ function LiveDrawPanel() {
 
       {liveMarket === 'SGP' ? (
         <>
-          <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
           {singaporeMode === 'SGP_4D'
             ? <LiveDrawFourDigitBoard result={sgpOfficialResult} />
             : <TotoBoard result={sgpOfficialResult} />}
@@ -1419,6 +1708,12 @@ function LiveDrawPanel() {
             result={sgpRow}
             note="Composite 4-digit ini adalah basis dataset prediction SGP dan bukan official Singapore Pools 4D/TOTO result."
           />
+          <LiveDrawPlayerBoundary
+            resetKey={sgpSource.id}
+            onOpenOfficial={() => openLivePage(sgpSource.pageUrl)}
+          >
+            <LiveDrawPlayer source={sgpSource} lastChecked={checkedLabel} lastResultRefresh={formatSyncTime(officialResultCheckedAt)} />
+          </LiveDrawPlayerBoundary>
         </>
       ) : (
         <LiveDrawSixDigitBoard
@@ -1574,6 +1869,48 @@ function DreamBookPanel() {
   );
 }
 
+function SettingsPanel() {
+  const { marketData, predictions, predictionHistory, runtimeLatestResults, collectorStatus, lastRefresh, dataError } = useApp();
+  const [diagnosticText, setDiagnosticText] = useState('');
+  const [copyResult, setCopyResult] = useState('');
+  const copyDeviceDiagnostics = async () => {
+    const report = buildRuntimeDiagnostics({
+      marketData, predictions, histories: predictionHistory, runtimeResults: runtimeLatestResults,
+      collectorStatus, lastRefresh, dataError,
+      fetchEvents: getDataFetchDiagnostics(), playerEvents: getLiveDrawDiagnostics(),
+      installedVersionCode: await getInstalledVersionCode(),
+    });
+    const result = JSON.stringify(report, null, 2);
+    setDiagnosticText(result);
+    try {
+      await navigator.clipboard.writeText(result);
+      setCopyResult('Tersalin; tempelkan ke pesan');
+    } catch {
+      setCopyResult('Salin manual dari kotak teks di bawah');
+    }
+  };
+  return (
+    <div className="space-y-5" data-page="settings">
+      <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-xl sm:p-6">
+        <div className="flex items-start gap-3">
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-emerald-300"><Settings className="h-6 w-6" /></div>
+          <div><h2 className="text-xl font-black text-slate-100">Pengaturan</h2><p className="mt-1 text-xs text-slate-400">Preferensi perangkat disimpan lokal dan tetap tersedia setelah aplikasi dibuka ulang.</p></div>
+        </div>
+      </section>
+      <NotificationSettingsPanel />
+      <section className="rounded-2xl border border-sky-500/25 bg-slate-900/90 p-5 text-xs text-slate-300" data-device-diagnostics>
+        <h3 className="font-bold text-sky-200">Diagnostik pembaruan dan LiveDraw</h3>
+        <p className="mt-2">Salin bukti asal REMOTE/APK_FALLBACK, tanggal dan fingerprint tiap pasar, respons fetch, serta event player. Log ini tidak membuktikan sumber backend terbaru atau pemutaran video tanpa PLAYING.</p>
+        <button type="button" onClick={copyDeviceDiagnostics} className="mt-3 min-h-11 rounded-lg border border-sky-500/30 px-3 font-bold text-sky-200">Salin diagnostik perangkat</button>
+        {copyResult && <p className="mt-2" aria-live="polite">{copyResult}</p>}
+        {diagnosticText && <label className="mt-3 block">Jika salin otomatis gagal, tekan lama lalu pilih semua:
+          <textarea className="mt-2 h-40 w-full rounded-lg border border-slate-700 bg-slate-950 p-2 font-mono text-[10px]" readOnly value={diagnosticText} onFocus={(event) => event.target.select()} />
+        </label>}
+      </section>
+    </div>
+  );
+}
+
 function Footer() {
   const { isRefreshing, collectorStatus } = useApp();
   const health = collectorHealth(collectorStatus);
@@ -1605,10 +1942,11 @@ function MobileNavigation() {
     { id: 'livedraw', label: 'LiveDraw', icon: Radio },
     { id: 'analytics', label: 'Statistik', icon: BarChart3 },
     { id: 'dreams', label: 'Tafsir', icon: BookOpen },
+    { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
   return (
-    <nav className="md:hidden sticky bottom-0 z-40 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 px-1 py-2 flex">
+    <nav className="md:hidden sticky bottom-0 z-40 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 px-0.5 py-2 flex" aria-label="Navigasi utama">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const active = activeTab === tab.id;
@@ -1616,8 +1954,10 @@ function MobileNavigation() {
           <button
             key={tab.id}
             onClick={() => navigateToTab(tab.id)}
+            aria-current={active ? 'page' : undefined}
+            aria-label={tab.label}
             className={
-              'flex-1 min-w-0 flex flex-col items-center gap-1 px-1 py-1.5 rounded-lg text-[9px] ' +
+              'flex-1 min-w-0 flex flex-col items-center gap-1 px-0.5 py-1.5 rounded-lg text-[8px] ' +
               (active ? 'text-emerald-400 font-bold' : 'text-slate-400')
             }
           >
@@ -1644,6 +1984,7 @@ function MainContent() {
     internalPage,
     marketCode,
     setMarketCode,
+    marketData,
     predictionHistory,
     closePredictionHistory,
   } = useApp();
@@ -1657,6 +1998,7 @@ function MainContent() {
             marketCode={marketCode}
             setMarketCode={setMarketCode}
             history={predictionHistory[marketCode]}
+            marketRows={marketData[marketCode]}
             onBack={closePredictionHistory}
           />
         ) : (
@@ -1666,6 +2008,7 @@ function MainContent() {
             {activeTab === 'livedraw' && <LiveDrawPanel />}
             {activeTab === 'analytics' && <AnalyticsPanel />}
             {activeTab === 'dreams' && <DreamBookPanel />}
+            {activeTab === 'settings' && <SettingsPanel />}
           </>
         )}
       </main>
