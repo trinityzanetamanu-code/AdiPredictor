@@ -33,6 +33,7 @@ import {
   loadAppReleaseMetadata,
   loadTafsir,
   predictionAssetUrl,
+  getDataProvenance,
 } from './dataClient';
 import LiveDrawPlayer, { LiveDrawPlayerBoundary, openLivePage } from './components/LiveDrawPlayer';
 import LiveDrawResultBoard from './components/LiveDrawResultBoard';
@@ -298,6 +299,21 @@ export function AppProvider({ children }) {
         releaseMetadata: remoteReleaseMetadata,
       };
       const previousNotificationSnapshot = notificationSnapshotRef.current;
+      for (const market of ['HK', 'SGP', 'SDY']) {
+        if (getDataProvenance(notificationSnapshot.marketData[market])?.source !== 'REMOTE') {
+          notificationSnapshot.marketData[market] = previousNotificationSnapshot?.marketData?.[market] || [];
+        }
+        if (getDataProvenance(notificationSnapshot.predictions[market])?.source !== 'REMOTE'
+          || getDataProvenance(nextMarketData[market])?.source !== 'REMOTE') {
+          notificationSnapshot.predictions[market] = previousNotificationSnapshot?.predictions?.[market] || null;
+        }
+        if (getDataProvenance(notificationSnapshot.histories[market])?.source !== 'REMOTE') {
+          notificationSnapshot.histories[market] = previousNotificationSnapshot?.histories?.[market] || null;
+        }
+      }
+      if (getDataProvenance(remoteReleaseMetadata)?.source !== 'REMOTE') {
+        notificationSnapshot.releaseMetadata = previousNotificationSnapshot?.releaseMetadata || null;
+      }
       notificationSnapshotRef.current = notificationSnapshot;
       await deliverRuntimeNotifications(notificationSnapshot, previousNotificationSnapshot).catch((error) => {
         console.warn('Notifikasi runtime dilewati:', error?.message || error);
@@ -656,7 +672,7 @@ function MarketSelect({ value, onChange }) {
   );
 }
 
-function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt, backendHealth, datasetState }) {
+function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt, backendHealth, datasetState, datasetOrigin, predictionOrigin, statusOrigin }) {
   const latestStatus = status?.latest_verified || status?.latest;
 
   return (
@@ -667,6 +683,10 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
       </div>
 
       <div className="space-y-3 text-xs">
+        <div className="text-amber-200" data-data-origin>
+          Dataset: {datasetOrigin?.source || 'BELUM DIMUAT'} · Prediksi: {predictionOrigin?.source || 'BELUM DIMUAT'} · Status: {statusOrigin?.source || 'BELUM DIMUAT'}
+          {datasetOrigin?.source === 'FALLBACK' && ` · APK berisi hasil ${datasetOrigin.result_date || 'tidak diketahui'}; backend belum berhasil dicek`}
+        </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400">App refresh</span>
           <span className="text-emerald-400 font-semibold">Aktif · 60 detik</span>
@@ -788,17 +808,17 @@ function CandidateChips({ items = [] }) {
   );
 }
 
-function PredictionCard({ prediction, marketCode, latest, onOpenHistory, datasetState, runtimePredictionState }) {
+function PredictionCard({ prediction, marketCode, latest, onOpenHistory, datasetState, runtimePredictionState, remotePair }) {
   const { copyToClipboard, refreshData } = useApp();
   const candidateNumber = (value) =>
     typeof value === 'object' && value !== null ? value.number : value;
 
   const freshness = predictionFreshness(prediction, latest);
-  const predictionFresh = freshness.fresh && runtimePredictionState?.visible !== false;
+  const predictionFresh = freshness.fresh && remotePair && runtimePredictionState?.visible !== false;
 
   useEffect(() => {
     if (!prediction || predictionFresh) return undefined;
-    const timer = window.setTimeout(() => refreshData(true), 5000);
+    const timer = window.setTimeout(() => refreshData(true), remotePair ? 5000 : 60000);
     return () => window.clearTimeout(timer);
   }, [prediction?.dataset_fingerprint, latest?.result_date, latest?.nomor, predictionFresh]);
 
@@ -1151,7 +1171,7 @@ function PredictionCard({ prediction, marketCode, latest, onOpenHistory, dataset
           <div>
             <h4 className="font-bold text-slate-100">Menunggu dataset dan prediksi terverifikasi</h4>
             <p className="text-xs text-slate-400 mt-2 max-w-md">
-              Sumber live melihat hasil yang lebih baru, tetapi dataset canonical belum mengonfirmasinya. Prediksi lama disembunyikan sampai dataset dan prediksi P1–P8 baru tersedia. ({runtimePredictionState?.reason || freshness.reason})
+              {remotePair ? 'Sumber live melihat hasil yang lebih baru, tetapi dataset canonical belum mengonfirmasinya. Prediksi menunggu pasangan dataset yang selaras.' : 'Koneksi ke data backend belum terkonfirmasi. Prediksi dari APK disembunyikan sampai dataset dan prediksi remote berhasil dimuat.'} ({runtimePredictionState?.reason || freshness.reason})
             </p>
           </div>
         </div>
@@ -1187,6 +1207,9 @@ function GeneratorPanel() {
     dataError,
   } = useApp();
   const activeData = marketData[marketCode] || [];
+  const datasetOrigin = getDataProvenance(activeData);
+  const predictionOrigin = getDataProvenance(predictions[marketCode]);
+  const remotePair = datasetOrigin?.source === 'REMOTE' && predictionOrigin?.source === 'REMOTE';
   const datasetLatest = activeData[0] || {
     tanggal: '-',
     nomor: '----',
@@ -1222,8 +1245,8 @@ function GeneratorPanel() {
                 Terlihat {formatSyncTime(latest.updated_at)} · Belum terverifikasi dataset · Menunggu dataset dan prediksi terverifikasi.
               </div>
             ) : (
-              <div className="mt-1 text-[10px] text-emerald-300" data-effective-result-source="DATASET">
-                Tersinkronisasi · Data dikoleksi {formatSyncTime(datasetLatest.collected_at || collectorStatus?.collected_at)}
+              <div className={`mt-1 text-[10px] ${datasetOrigin?.source === 'REMOTE' ? 'text-emerald-300' : 'text-amber-300'}`} data-effective-result-source="DATASET">
+                {datasetOrigin?.source === 'REMOTE' ? 'Data remote diterima' : 'Arsip APK · Backend belum berhasil dicek'} · Data dikoleksi {formatSyncTime(datasetLatest.collected_at || collectorStatus?.collected_at)}
               </div>
             )}
             {effective.source === 'LIVE_DRAW_RUNTIME' && latest.runtime_conflict && (
@@ -1264,6 +1287,9 @@ function GeneratorPanel() {
             predictionAt={predictions[marketCode]?.generated_at}
             backendHealth={backendHealth}
             datasetState={datasetState}
+            datasetOrigin={datasetOrigin}
+            predictionOrigin={predictionOrigin}
+            statusOrigin={getDataProvenance(collectorStatus)}
           />
         </div>
 
@@ -1274,6 +1300,7 @@ function GeneratorPanel() {
           onOpenHistory={openPredictionHistory}
           datasetState={datasetState}
           runtimePredictionState={runtimePredictionState}
+          remotePair={remotePair}
         />
       </div>
     </div>
@@ -1289,6 +1316,7 @@ function ResultsPanel() {
   } = useApp();
   const [selectedYear, setSelectedYear] = useState('2026');
   const sourceData = marketData[selectedMarket] || [];
+  const datasetOrigin = getDataProvenance(sourceData);
   const datasetLatest = sourceData[0] || null;
   const effective = effectiveLatestResult(datasetLatest, runtimeLatestResults[selectedMarket]);
   const latest = effective.result || datasetLatest;
@@ -1362,7 +1390,12 @@ function ResultsPanel() {
                   SUMBER BERUBAH / KONFLIK
                 </span>
               )}
-              {effective.source === 'DATASET' && !effective.sync.conflict && (
+              {effective.source === 'DATASET' && datasetOrigin?.source === 'FALLBACK' && (
+                <span className="mt-2 inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-[9px] font-black text-amber-200" data-results-apk-fallback>
+                  ARSIP APK · HASIL {datasetOrigin.result_date || 'BELUM DIKETAHUI'} · BACKEND BELUM TERVERIFIKASI
+                </span>
+              )}
+              {effective.source === 'DATASET' && datasetOrigin?.source === 'REMOTE' && !effective.sync.conflict && (
                 <span className="mt-2 inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[9px] font-black text-emerald-200">
                   DATASET TERVERIFIKASI
                 </span>
@@ -1509,7 +1542,9 @@ function LiveDrawPanel() {
       const localVerified = liveMarket === 'HK' ? loadLocalHKBoard() : null;
       const datasetRow = marketData[liveMarket]?.[0] || null;
       let selectedBoard = localVerified ? attachDatasetValidation(localVerified, datasetRow) : cached ? attachDatasetValidation(cached, datasetRow) : null;
-      let fetchMode = localVerified ? 'device_local_verified_board' : cached ? 'github_cached_snapshot' : 'no_snapshot';
+      let fetchMode = localVerified ? 'device_local_verified_board' : cached
+        ? getDataProvenance(cachedSnapshot)?.source === 'FALLBACK' ? 'apk_bundled_snapshot' : 'github_cached_snapshot'
+        : 'no_snapshot';
       let errorMessage = null;
       let status = cached ? 'cached' : 'unavailable';
 
@@ -1532,9 +1567,9 @@ function LiveDrawPanel() {
       }
 
       if (!mounted || !boardRequestCoordinatorRef.current.isLatest(requestId)) return;
-      if (liveMarket === 'HK' && selectedBoard) {
+      if (['HK', 'SDY'].includes(liveMarket) && selectedBoard) {
         try {
-          publishRuntimeLatestResult({ market: 'HK', board: selectedBoard });
+          publishRuntimeLatestResult({ market: liveMarket, board: selectedBoard });
         } catch (error) {
           errorMessage = error?.code || error?.message || 'BOARD_VALIDATION_FAILED';
         }

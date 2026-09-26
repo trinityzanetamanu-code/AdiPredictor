@@ -1,4 +1,4 @@
-import { normalizeArchivePath, validatePredictionArchive } from './predictionArchive';
+import { normalizeArchivePath, validatePredictionArchive } from './predictionArchive.js';
 
 const REMOTE_ROOT =
   'https://raw.githubusercontent.com/trinityzanetamanu-code/AdiPredictor/main/public';
@@ -9,7 +9,29 @@ const MARKET_FILES = {
   SDY: 'sdy',
 };
 
+const provenance = new WeakMap();
+export const getDataProvenance = (value) => value && typeof value === 'object'
+  ? provenance.get(value) || null : null;
+
+function fingerprint(value) {
+  const payload = JSON.stringify(value);
+  let hash = 2166136261;
+  for (let i = 0; i < payload.length; i += 1) hash = Math.imul(hash ^ payload.charCodeAt(i), 16777619);
+  return (hash >>> 0).toString(16).padStart(8, '0');
+}
+
+function describePayload(value) {
+  const latest = Array.isArray(value) ? value[0] : value;
+  return {
+    result_date: latest?.result_date || latest?.prediction_basis_date || latest?.latest_result?.date || null,
+    version: latest?.dataset_fingerprint || latest?.generated_at || latest?.retrieved_at || null,
+    fingerprint: fingerprint(value),
+  };
+}
+
 async function fetchJson(url, timeoutMs = 12000, externalSignal = null) {
+  const startedAt = new Date().toISOString();
+  let status = null;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const abortFromCaller = () => controller.abort();
@@ -23,12 +45,18 @@ async function fetchJson(url, timeoutMs = 12000, externalSignal = null) {
       signal: controller.signal,
       headers: { Accept: 'application/json' },
     });
+    status = response.status;
 
     if (!response.ok) {
       throw new Error('HTTP ' + response.status + ' for ' + url);
     }
 
-    return await response.json();
+    const data = await response.json();
+    return { data, meta: { url, status, started_at: startedAt, finished_at: new Date().toISOString(), ...describePayload(data) } };
+  } catch (error) {
+    console.info('AdiPredictor fetch', { url, status, started_at: startedAt,
+      finished_at: new Date().toISOString(), outcome: 'FAILED', reason: error?.name === 'AbortError' ? 'TIMEOUT_OR_ABORT' : String(error?.message || error) });
+    throw error;
   } finally {
     clearTimeout(timer);
     externalSignal?.removeEventListener?.('abort', abortFromCaller);
@@ -36,8 +64,14 @@ async function fetchJson(url, timeoutMs = 12000, externalSignal = null) {
 }
 
 async function remoteFirst(relativePath, localPath, optional = false, signal = null) {
+  const select = ({ data, meta }, source, reason = null) => {
+    const observation = { ...meta, source, fallback_reason: reason };
+    console.info('AdiPredictor fetch', observation);
+    if (data && typeof data === 'object') provenance.set(data, observation);
+    return data;
+  };
   try {
-    return await fetchJson(REMOTE_ROOT + '/' + relativePath, 12000, signal);
+    return select(await fetchJson(REMOTE_ROOT + '/' + relativePath, 12000, signal), 'REMOTE');
   } catch (remoteError) {
     if (signal?.aborted) throw remoteError;
     if (!localPath) {
@@ -46,7 +80,7 @@ async function remoteFirst(relativePath, localPath, optional = false, signal = n
     }
 
     try {
-      return await fetchJson(localPath, 12000, signal);
+      return select(await fetchJson(localPath, 12000, signal), 'FALLBACK', remoteError?.message || 'REMOTE_FAILED');
     } catch (localError) {
       if (optional) return null;
       throw new Error(

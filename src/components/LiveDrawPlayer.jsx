@@ -15,7 +15,7 @@ import {
   recordLiveDrawDiagnostic,
   subscribeLiveDrawDiagnostics,
 } from '../liveDrawDiagnostics';
-import { loadYouTubeIframeAPI, watchdogPlayerState, youtubeStateToPlayerState } from '../youtubePlayerService';
+import { createPlaybackWatchdog, loadYouTubeIframeAPI, watchdogPlayerState, youtubeStateToPlayerState } from '../youtubePlayerService';
 import { openLivePage } from '../liveDrawExternalNavigation';
 
 export { openLivePage } from '../liveDrawExternalNavigation';
@@ -100,6 +100,7 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
   const mountRef = useRef(null);
   const playbackObservedRef = useRef(false);
   const apiReadyRef = useRef(false);
+  const playbackWatchdogRef = useRef(null);
   const scheduleState = useMemo(() => calculateLiveState(source.schedule), [source, reloadKey, lastChecked]);
   const nativeSgpContainment = Capacitor.isNativePlatform() && source.market === 'SGP';
   const mediaPresentation = resolveMediaPresentation({
@@ -138,7 +139,17 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
 
   useEffect(() => {
     let cancelled = false;
-    let watchdog;
+    const watchdog = createPlaybackWatchdog({
+      setTimer: window.setTimeout.bind(window), clearTimer: window.clearTimeout.bind(window),
+      onTimeout: () => {
+        if (cancelled || playbackObservedRef.current) return;
+        const state = watchdogPlayerState({ playbackObserved: false, apiReady: apiReadyRef.current, error: false });
+        setErrorState(state === PLAYER_STATES.TIMEOUT ? 'PLAYBACK_EVIDENCE_TIMEOUT' : 'YOUTUBE_API_BLOCKED');
+        setPlayerState(state);
+        recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.WATCHDOG_TIMEOUT, { source: source.id, apiReady: apiReadyRef.current });
+      },
+    });
+    playbackWatchdogRef.current = watchdog;
     playbackObservedRef.current = false;
     apiReadyRef.current = false;
     setErrorState(null);
@@ -167,21 +178,24 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
           onReady: (event) => {
             if (cancelled) return;
             apiReadyRef.current = true;
-            setPlayerState(PLAYER_STATES.READY);
+            if (watchdog.ready()) setPlayerState(PLAYER_STATES.READY);
             recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.PLAYER_READY, { source: source.id });
             event.target.cuePlaylist?.({ listType: 'playlist', list: source.playlistId });
           },
           onStateChange: (event) => {
             if (cancelled) return;
+            if (!watchdog.ready()) return;
             const mapped = youtubeStateToPlayerState(event.data);
             if (mapped === PLAYER_STATES.PLAYING) playbackObservedRef.current = true;
             const diagnosticEvent = playerDiagnosticEvent(event.data);
             if (diagnosticEvent) recordLiveDrawDiagnostic(diagnosticEvent, { source: source.id });
-            setPlayerState(mapped);
+            if (mapped === PLAYER_STATES.PLAYING) watchdog.playing();
+            if (watchdog.ready()) setPlayerState(mapped);
           },
           onError: (event) => {
             if (cancelled) return;
             setErrorState(`YOUTUBE_PLAYER_ERROR_${event.data}`);
+            watchdog.error();
             setPlayerState(PLAYER_STATES.ERROR);
             recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.PLAYER_ERROR, {
               source: source.id,
@@ -193,6 +207,7 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
     }).catch((error) => {
       if (cancelled) return;
       setErrorState(error?.message || 'YOUTUBE_API_BLOCKED');
+      watchdog.error();
       setPlayerState(PLAYER_STATES.BLOCKED);
       recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.PLAYER_ERROR, {
         source: source.id,
@@ -201,20 +216,10 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
       });
     });
 
-    watchdog = window.setTimeout(() => {
-      if (cancelled || playbackObservedRef.current) return;
-      const state = watchdogPlayerState({ playbackObserved: false, apiReady: apiReadyRef.current, error: false });
-      setErrorState(state === PLAYER_STATES.TIMEOUT ? 'PLAYBACK_EVIDENCE_TIMEOUT' : 'YOUTUBE_API_BLOCKED');
-      setPlayerState(state);
-      recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.WATCHDOG_TIMEOUT, {
-        source: source.id,
-        apiReady: apiReadyRef.current,
-      });
-    }, 12_000);
-
     return () => {
       cancelled = true;
-      window.clearTimeout(watchdog);
+      watchdog.cancel();
+      if (playbackWatchdogRef.current === watchdog) playbackWatchdogRef.current = null;
       try { playerRef.current?.destroy?.(); } catch { /* best-effort cleanup */ }
       playerRef.current = null;
       recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.PLAYER_DESTROYED, { source: source.id });
@@ -229,10 +234,13 @@ export default function LiveDrawPlayer({ source, lastChecked, lastResultRefresh 
   };
 
   const requestPlayback = () => {
+    if (!playerRef.current?.playVideo) return;
+    playbackWatchdogRef.current?.request();
     setPlayerState(PLAYER_STATES.LOADING);
     recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.PLAY_REQUESTED, { source: source.id });
     try { playerRef.current?.playVideo?.(); }
     catch {
+      playbackWatchdogRef.current?.error();
       setErrorState('PLAYBACK_REQUEST_FAILED');
       setPlayerState(PLAYER_STATES.ERROR);
       recordLiveDrawDiagnostic(LIVE_DRAW_DIAGNOSTIC_EVENTS.PLAYER_ERROR, {

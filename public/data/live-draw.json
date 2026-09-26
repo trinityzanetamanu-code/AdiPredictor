@@ -1,58 +1,58 @@
 {
   "schema_version": 1,
-  "retrieved_at": "2026-09-23T03:28:13+07:00",
+  "retrieved_at": "2026-09-26T05:41:40+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
       "source": "SydneyPoolsToday Market Source",
       "source_url": "https://www.sydneypoolstoday.com/live.html",
-      "draw_date": "2026-09-22",
-      "first": "917364",
-      "second": "733566",
-      "third": "958445",
+      "draw_date": "2026-09-25",
+      "first": "721559",
+      "second": "918887",
+      "third": "647683",
       "starter": [
-        "201174"
+        "142821"
       ],
       "consolation": [
-        "544293"
+        "694186"
       ],
-      "full_first_prize_6d": "917364",
-      "derived_4d": "7364",
-      "dataset_4d": "7364",
+      "full_first_prize_6d": "721559",
+      "derived_4d": "1559",
+      "dataset_4d": "1559",
       "matches_dataset": true,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-09-23T03:28:13+07:00"
+      "retrieved_at": "2026-09-26T05:41:40+07:00"
     },
     "HK": {
       "market": "HK",
       "source": "KocokHK Mirror",
       "source_url": "https://rankcrack.com/hk.php",
-      "draw_date": "2026-09-22",
-      "first": "394659",
-      "second": "626462",
-      "third": "382671",
+      "draw_date": "2026-09-25",
+      "first": "612771",
+      "second": "035273",
+      "third": "696727",
       "starter": [
-        "840151",
-        "630795",
-        "389015",
-        "698321"
+        "269081",
+        "070378",
+        "496758",
+        "027209"
       ],
       "consolation": [
-        "763573",
-        "897486",
-        "047118",
-        "460354",
-        "596908",
-        "080319",
-        "256001",
-        "800496"
+        "720920",
+        "309976",
+        "105049",
+        "262442",
+        "731843",
+        "296397",
+        "923936",
+        "493726"
       ],
-      "full_first_prize_6d": "394659",
-      "derived_4d": "4659",
-      "dataset_4d": "4659",
+      "full_first_prize_6d": "612771",
+      "derived_4d": "2771",
+      "dataset_4d": "2771",
       "matches_dataset": true,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-09-23T03:28:13+07:00"
+      "retrieved_at": "2026-09-26T05:41:40+07:00"
     }
   }
 }
