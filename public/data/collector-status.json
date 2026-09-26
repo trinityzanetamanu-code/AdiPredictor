@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-26T18:02:31+07:00",
+  "collected_at": "2026-09-26T21:57:12+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -84,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-09-26T02:27:37+07:00",
-      "last_source_check": "2026-09-26T18:02:31+07:00",
+      "last_source_check": "2026-09-26T21:57:12+07:00",
       "latest_source_draw_date": "2026-09-25"
     },
     "SDY": {
@@ -99,7 +99,7 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 238,
+        "waroengtogel_sdy": 240,
         "datatogel_sdy": 269,
         "livenomor_sdy": 269
       },
@@ -108,14 +108,14 @@
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-09-16",
-          "number": "4293",
-          "verification": "confirmed_3_sources"
+          "date": "2026-09-25",
+          "number": "1559",
+          "verification": "confirmed_4_sources"
         },
         {
           "date": "2026-09-26",
           "number": "0434",
-          "verification": "confirmed_3_sources"
+          "verification": "confirmed_4_sources"
         }
       ],
       "latest": {
@@ -130,27 +130,29 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-09-26T18:02:31+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-09-26T21:57:12+07:00",
+        "verification": "confirmed_4_sources",
+        "confirmations": 4
       },
       "latest_verified": {
         "date": "2026-09-26",
         "number": "0434",
-        "verification": "confirmed_3_sources",
+        "verification": "confirmed_4_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-09-26T18:02:31+07:00",
-      "last_source_check": "2026-09-26T18:02:31+07:00",
+      "last_successful_data_update": "2026-09-26T21:57:12+07:00",
+      "last_source_check": "2026-09-26T21:57:12+07:00",
       "latest_source_draw_date": "2026-09-26"
     },
     "SGP": {
@@ -199,7 +201,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-24T18:21:44+07:00",
-      "last_source_check": "2026-09-26T18:02:31+07:00",
+      "last_source_check": "2026-09-26T21:57:12+07:00",
       "latest_source_draw_date": "2026-09-24"
     }
   }
