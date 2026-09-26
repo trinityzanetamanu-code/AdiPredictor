@@ -694,8 +694,8 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
 
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400">Status publik collector</span>
-          <span className={`font-semibold text-right ${backendHealth?.state === 'COLLECTOR_HEALTHY' ? 'text-emerald-300' : backendHealth?.state === 'COLLECTOR_DELAYED' ? 'text-amber-300' : 'text-rose-300'}`}>
-            {backendHealth?.label || 'Status belum diketahui'}
+          <span className={`font-semibold text-right ${statusOrigin?.source === 'FALLBACK' ? 'text-amber-300' : backendHealth?.state === 'COLLECTOR_HEALTHY' ? 'text-emerald-300' : backendHealth?.state === 'COLLECTOR_DELAYED' ? 'text-amber-300' : 'text-rose-300'}`}>
+            {statusOrigin?.source === 'FALLBACK' ? 'Status dari APK · backend belum dicek' : backendHealth?.label || 'Status belum diketahui'}
           </span>
         </div>
 
@@ -764,14 +764,16 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
       <div
         className={
           'rounded-xl border px-3 py-2.5 text-[11px] ' +
-          (dataError
+          (dataError || datasetOrigin?.source !== 'REMOTE' || predictionOrigin?.source !== 'REMOTE'
             ? 'border-rose-500/30 bg-rose-500/10 text-rose-300'
             : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300')
         }
       >
         {dataError
           ? 'Sinkronisasi bermasalah: ' + dataError
-          : 'Data baru masuk otomatis tanpa tombol proses. Setelah APK ini terpasang, update hasil tidak memerlukan install ulang.'}
+          : datasetOrigin?.source !== 'REMOTE' || predictionOrigin?.source !== 'REMOTE'
+            ? 'Data backend belum terkonfirmasi. Hasil tersimpan dapat dibaca sebagai arsip, sementara prediksi final menunggu pasangan data remote.'
+            : 'Dataset dan prediksi berhasil dimuat dari backend. Aplikasi akan memeriksa pembaruan setiap 60 detik.'}
       </div>
     </div>
   );
