@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { chromium } from 'playwright';
+import { LIVE_DRAW_SOURCES } from '../src/liveDrawConfig.js';
 
 const appDir = resolve(process.env.PAITO_APP_DIR || '.');
 const outDir = resolve(process.env.PAITO_OUTPUT_DIR || 'artifacts/paito-browser');
@@ -120,6 +121,30 @@ try {
     if (after[0] || after[1] || !await dialog.getByText('100%', { exact: false }).count()) throw new Error(`${market}: reset failed`);
     await dialog.getByRole('button', { name: 'Tutup' }).click();
     diagnostics.actions.push(`${market}: full field, selection, two-axis scroll, fullscreen, zoom, ${process.env.PAITO_BASELINE === '1' ? 'baseline (pinch skipped)' : 'pinch pointer'}, reset, close`);
+  }
+  if (process.env.PAITO_BASELINE !== '1') {
+    await page.locator('[data-page="prediction-history"]').getByRole('button', { name: 'Kembali' }).click();
+    await page.getByRole('button', { name: 'LiveDraw', exact: true }).last().click();
+    await page.getByRole('button', { name: 'SGP', exact: true }).click();
+    await page.evaluate(() => {
+      window.__officialOpened = [];
+      window.open = (url) => { window.__officialOpened.push(url); return null; };
+    });
+    for (const mode of ['SGP_4D', 'SGP_TOTO', 'SGP_4D', 'SGP_TOTO']) {
+      const label = mode === 'SGP_4D' ? 'Singapore 4D' : 'Singapore TOTO';
+      await page.getByRole('button', { name: label, exact: true }).click();
+      const board = page.getByText('SGP Composite Market Result');
+      await board.waitFor();
+      if (!await board.isVisible() || await page.locator('[data-sgp-player-state]').count() !== 1) {
+        throw new Error(`${mode}: result board or fallback player disappeared during navigation`);
+      }
+      await page.getByRole('button', { name: 'Buka Halaman Resmi' }).last().click();
+      const opened = await page.evaluate(() => window.__officialOpened.at(-1));
+      if (opened !== LIVE_DRAW_SOURCES[mode].pageUrl) throw new Error(`${mode}: incorrect official destination: ${opened}`);
+      await board.scrollIntoViewIfNeeded();
+      await page.screenshot({ path: join(outDir, `${mode.toLowerCase()}-browser-return.png`) });
+      diagnostics.actions.push(`${mode}: official URL requested in browser, return state and composite board visible`);
+    }
   }
   await writeFile(join(outDir, 'diagnostics.json'), JSON.stringify(diagnostics, null, 2));
   console.log(JSON.stringify(diagnostics));
