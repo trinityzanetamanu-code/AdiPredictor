@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test:live": "node --test tests/test_live_draw_config.mjs tests/test_live_draw_service.mjs tests/test_runtime_ux.mjs tests/test_runtime_hardening.mjs",
+    "test:live": "node --test tests/test_live_draw_config.mjs tests/test_live_draw_service.mjs tests/test_runtime_ux.mjs tests/test_runtime_hardening.mjs tests/test_refresh_data_ordering.mjs tests/test_prediction_consensus.mjs tests/test_prediction_archive_ui.mjs tests/test_data_provenance.mjs tests/test_runtime_diagnostics.mjs tests/test_visual_paito_grid.mjs tests/test_live_transition_fixture.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
+    "playwright": "^1.59.0",
     "tailwindcss": "^4.0.0",
     "vite": "^5.1.4"
   }

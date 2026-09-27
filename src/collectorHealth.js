@@ -30,27 +30,65 @@ function validDate(value) {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
-function latestCheckTimestamp(status) {
-  const values = [status?.collected_at];
+function latestMarketTimestamp(status, field) {
+  const values = [];
   for (const market of Object.values(status?.markets || {})) {
-    values.push(market?.last_source_check);
+    values.push(market?.[field]);
   }
   return values.map(validDate).filter(Boolean).sort((a, b) => b - a)[0] || null;
 }
 
+export function collectorTimestampEvidence(status) {
+  const publishedStatus = validDate(status?.collected_at)
+    || latestMarketTimestamp(status, 'last_source_check');
+  const publishedSourceCheck = latestMarketTimestamp(status, 'last_source_check');
+  const resultUpdate = latestMarketTimestamp(status, 'last_successful_data_update');
+  // Never infer a backend check from a workflow schedule or a no-change data
+  // file. It is available to the app only if a future public payload publishes
+  // that explicit evidence.
+  const backendCheck = validDate(status?.backend_last_check);
+  return {
+    publishedStatusAt: publishedStatus?.toISOString() || null,
+    publishedSourceCheckAt: publishedSourceCheck?.toISOString() || null,
+    latestResultUpdateAt: resultUpdate?.toISOString() || null,
+    backendLastCheckAt: backendCheck?.toISOString() || null,
+    backendCheckAvailable: Boolean(backendCheck),
+  };
+}
+
+function ageText(ageMinutes) {
+  return ageMinutes < 60
+    ? `${ageMinutes} menit lalu`
+    : `${Math.floor(ageMinutes / 60)} jam lalu`;
+}
+
 export function collectorHealth(status, now = new Date(), cadenceMinutes = 10) {
-  const lastCheck = latestCheckTimestamp(status);
-  if (!lastCheck) {
-    return { state: COLLECTOR_HEALTH.UNKNOWN, ageMinutes: null, lastCheck: null, label: 'Status collector belum diketahui' };
+  const evidence = collectorTimestampEvidence(status);
+  const publishedAt = validDate(evidence.publishedStatusAt);
+  if (!publishedAt) {
+    return {
+      ...evidence,
+      state: COLLECTOR_HEALTH.UNKNOWN,
+      ageMinutes: null,
+      lastCheck: null,
+      label: 'Status publik collector belum tersedia',
+    };
   }
-  const ageMinutes = Math.max(0, Math.floor((now.getTime() - lastCheck.getTime()) / MINUTE_MS));
+  const ageMinutes = Math.max(0, Math.floor((now.getTime() - publishedAt.getTime()) / MINUTE_MS));
+  const common = {
+    ...evidence,
+    ageMinutes,
+    // Compatibility alias. This is the timestamp represented by the public
+    // status document, not proof of the latest backend workflow execution.
+    lastCheck: evidence.publishedSourceCheckAt || evidence.publishedStatusAt,
+  };
   if (ageMinutes <= cadenceMinutes * 2.5) {
-    return { state: COLLECTOR_HEALTH.HEALTHY, ageMinutes, lastCheck: lastCheck.toISOString(), label: `Collector normal · cek publik ${ageMinutes} menit lalu` };
+    return { ...common, state: COLLECTOR_HEALTH.HEALTHY, label: `Status publik baru · diterbitkan ${ageText(ageMinutes)}` };
   }
   if (ageMinutes <= cadenceMinutes * 9) {
-    return { state: COLLECTOR_HEALTH.DELAYED, ageMinutes, lastCheck: lastCheck.toISOString(), label: `Collector terlambat · cek publik ${ageMinutes} menit lalu` };
+    return { ...common, state: COLLECTOR_HEALTH.DELAYED, label: `Status publik tertunda · diterbitkan ${ageText(ageMinutes)}` };
   }
-  return { state: COLLECTOR_HEALTH.STALE, ageMinutes, lastCheck: lastCheck.toISOString(), label: `Collector stale · cek publik ${Math.floor(ageMinutes / 60)} jam lalu` };
+  return { ...common, state: COLLECTOR_HEALTH.STALE, label: `Status publik lama · diterbitkan ${ageText(ageMinutes)}` };
 }
 
 function zonedParts(now, timezone) {
@@ -124,7 +162,7 @@ export function datasetFreshness({ market, latest, collectorStatus, now = new Da
     return { state: DATASET_FRESHNESS.STALE, expectedDrawDate: expected, latestDate, scheduleVerified: true, collectorHealth: health.state, minutesAfterDraw };
   }
   if ([COLLECTOR_HEALTH.DELAYED, COLLECTOR_HEALTH.STALE, COLLECTOR_HEALTH.UNKNOWN].includes(health.state)) {
-    return { state: DATASET_FRESHNESS.COLLECTOR_DELAYED, expectedDrawDate: expected, latestDate, scheduleVerified: true, collectorHealth: health.state, minutesAfterDraw };
+    return { state: DATASET_FRESHNESS.WAITING_FOR_SOURCE, expectedDrawDate: expected, latestDate, scheduleVerified: true, collectorHealth: health.state, minutesAfterDraw, reason: 'PUBLIC_STATUS_NOT_RECENT' };
   }
   return { state: DATASET_FRESHNESS.WAITING_FOR_SOURCE, expectedDrawDate: expected, latestDate, scheduleVerified: true, collectorHealth: health.state, minutesAfterDraw };
 }
@@ -134,6 +172,6 @@ export function datasetFreshnessMessage(result) {
   if (result.state === DATASET_FRESHNESS.CURRENT) return 'Dataset sesuai jadwal hasil terakhir.';
   if (result.state === DATASET_FRESHNESS.WAITING_FOR_DRAW) return 'Menunggu jadwal draw berikutnya.';
   if (result.state === DATASET_FRESHNESS.WAITING_FOR_SOURCE) return 'Prediksi sesuai dataset terakhir, tetapi hasil terbaru masih menunggu sumber.';
-  if (result.state === DATASET_FRESHNESS.COLLECTOR_DELAYED) return 'Prediksi sesuai dataset terakhir, tetapi pemeriksaan backend collector terlambat.';
+  if (result.state === DATASET_FRESHNESS.COLLECTOR_DELAYED) return 'Status publik collector belum diperbarui; pemeriksaan backend terbaru tidak tersedia di aplikasi.';
   return 'Dataset melewati tanggal hasil yang diharapkan. Prediksi terakhir tidak boleh disebut current.';
 }

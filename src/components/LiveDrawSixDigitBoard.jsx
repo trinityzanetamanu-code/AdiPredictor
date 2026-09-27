@@ -143,6 +143,16 @@ export default function LiveDrawSixDigitBoard({
           </div>
           <div className="grid gap-1 rounded-lg border border-slate-800 bg-slate-950/35 p-2 text-[9px] text-slate-500 sm:grid-cols-3"><span>SOURCE_DRAW_DATE: {board.draw_date || '-'}</span><span>DATASET_LATEST_DATE: {board.dataset_latest_date || '-'}</span><span>FETCHED_AT: {board.retrieved_at || lastRefresh || '-'}</span></div>
           {board.dataset_latest_date && board.draw_date < board.dataset_latest_date && <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 p-2 text-center text-[10px] font-black text-amber-300">DATA LAMA / MENUNGGU UPDATE</div>}
+          {board.verification === 'dataset_date_mismatch' && (
+            <div className="rounded-lg border border-amber-500/25 bg-amber-500/10 p-3 text-center text-[10px] font-black text-amber-200" data-live-source-unverified>
+              TERLIHAT DI SUMBER LIVE · BELUM TERVERIFIKASI DATASET
+            </div>
+          )}
+          {board.runtime_conflict && (
+            <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-center text-[10px] font-black text-rose-200" data-live-source-conflict>
+              SUMBER BERUBAH / KONFLIK · Menampilkan observasi terbaru, bukan hasil canonical.
+            </div>
+          )}
           <PrizeRow label="Hadiah 1" number={board.first} featured />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <PrizeRow label="Hadiah 2" number={board.second} />
@@ -184,6 +194,8 @@ export default function LiveDrawSixDigitBoard({
           <dt>Dataset latest date</dt><dd className="text-slate-200">{board?.dataset_latest_date || '-'}</dd>
           <dt>Dataset 4D</dt><dd className="text-slate-200">{board?.dataset_4d || '-'}</dd>
           <dt>Sync state</dt><dd className="text-slate-200">{board?.verification || 'not_compared'}</dd>
+          <dt>Runtime conflict</dt><dd className="text-slate-200">{board?.runtime_conflict ? 'SOURCE_CHANGED_UNVERIFIED' : 'none'}</dd>
+          <dt>Runtime observations</dt><dd className="text-slate-200">{board?.runtime_observations?.map((item) => `${item.result}@${item.observed_at || '-'}`).join(' · ') || '-'}</dd>
           <dt>Error</dt><dd className="text-slate-200">{error || '-'}</dd>
         </dl>
       </details>

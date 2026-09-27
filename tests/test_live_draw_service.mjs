@@ -84,7 +84,8 @@ test('history is a dedicated internal page and not inline under GeneratorPanel',
   assert.match(historyPage, /data-page="prediction-history"/);
   assert.match(historyPage, /onClick=\{onBack\}/);
   assert.match(historyPage, /Kembali/);
-  assert.match(historyPage, /resolvedHistoryRecords/);
+  assert.match(historyPage, /publishedHistoryRecords/);
+  assert.match(historyPage, /Menunggu hasil/);
 });
 
 test('Cloudflare challenge is detected and never parsed as a result board', () => {
