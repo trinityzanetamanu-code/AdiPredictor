@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 import { buildHistoricalPaitoDataset, buildPaitoGrid, PAITO_GEOMETRY, PAITO_LAGS, paitoCellCenter } from '../src/visualPaito.js';
 import { scaledScrollOffset } from '../src/visualViewport.js';
 
@@ -71,4 +72,33 @@ test('a corrected canonical result on the same date replaces cells and pair high
   assert.equal(after.at(-1).cells.slice(-4).map((cell) => cell.digit).join(''), '2772');
   assert.equal(after.at(-1).number, '2772');
   assert.ok(after.at(-1).cells.every((cell) => !cell.sourceDate || cell.sourceDate <= '2026-09-25'));
+});
+
+test('a later metadata refresh cannot hide the exact basis recorded in a frozen prediction', () => {
+  const prediction = {
+    target_date: '2026-09-27', generated_at: '2026-09-26T18:04:15+07:00',
+    prediction_basis_date: '2026-09-26', prediction_basis_result: '0434',
+    latest_result: { date: '2026-09-26', number: '0434', period: 'SD-3556' },
+    dataset: { last_date: '2026-09-26' },
+  };
+  const refreshed = [
+    { result_date: '2026-09-24', nomor: '4152', periode: 'SD-3554', collected_at: '2026-09-24T18:20:00+07:00' },
+    { result_date: '2026-09-25', nomor: '1559', periode: 'SD-3555', collected_at: '2026-09-26T21:57:12+07:00' },
+    { result_date: '2026-09-26', nomor: '0434', periode: 'SD-3556', collected_at: '2026-09-26T21:57:12+07:00' },
+  ];
+  const result = buildHistoricalPaitoDataset(refreshed, prediction);
+  assert.deepEqual(result.rows.map((row) => row.date), ['2026-09-24', '2026-09-26']);
+  assert.equal(result.rows.at(-1).number, '0434');
+  assert.equal(result.diagnostics.collectedAfterPredictionRows, 1);
+  assert.equal(result.diagnostics.basisMetadataRefreshedRows, 1);
+  const correction = refreshed.map((row) => row.result_date === '2026-09-26' ? { ...row, nomor: '0435' } : row);
+  assert.equal(buildHistoricalPaitoDataset(correction, prediction).rows.at(-1).number, '4152');
+});
+
+test('published SDY basis remains visible despite later collection metadata', () => {
+  const actualRows = JSON.parse(readFileSync(new URL('../public/data/sdy.json', import.meta.url)));
+  const published = JSON.parse(readFileSync(new URL('../public/predictions/sdy/latest.json', import.meta.url)));
+  const visible = buildHistoricalPaitoDataset(actualRows, published);
+  assert.equal(visible.rows.at(-1).date, published.prediction_basis_date);
+  assert.equal(visible.rows.at(-1).number, published.prediction_basis_result);
 });

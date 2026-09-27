@@ -94,9 +94,17 @@ export function buildHistoricalPaitoDataset(marketRows, prediction = {}, limit =
     invalidNumberRows: 0,
     outsideArchiveBoundaryRows: 0,
     collectedAfterPredictionRows: 0,
+    basisMetadataRefreshedRows: 0,
     conflictDates: [],
   };
   const bounded = [];
+  // A collector may refresh collected_at after the engine has already used
+  // this draw. The frozen prediction records its exact basis identity, so a
+  // later metadata timestamp alone cannot erase that one known input. Other
+  // late rows still lack archive evidence and must be excluded.
+  const basisDate = prediction.prediction_basis_date || prediction.latest_result?.date;
+  const basisNumber = normalizePaitoNumber({ nomor: prediction.prediction_basis_result ?? prediction.latest_result?.number });
+  const basisPeriod = prediction.latest_result?.period;
 
   for (const row of marketRows || []) {
     const date = row?.result_date;
@@ -112,7 +120,12 @@ export function buildHistoricalPaitoDataset(marketRows, prediction = {}, limit =
       diagnostics.outsideArchiveBoundaryRows += 1;
       continue;
     }
-    if (collectedAfter(row, boundary.generatedAt)) {
+    const recordedBasis = date === basisDate && number === basisNumber
+      && (!basisPeriod || (row.periode || row.period) === basisPeriod);
+    if (collectedAfter(row, boundary.generatedAt) && recordedBasis) {
+      diagnostics.basisMetadataRefreshedRows += 1;
+    }
+    if (collectedAfter(row, boundary.generatedAt) && !recordedBasis) {
       diagnostics.collectedAfterPredictionRows += 1;
       continue;
     }

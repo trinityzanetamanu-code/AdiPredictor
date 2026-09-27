@@ -195,6 +195,7 @@ export default function VisualPaitoViewer({ marketRows, prediction, patterns = [
         <div><strong>Sumber baris:</strong> {sourceLabels.join(', ') || 'metadata tidak tersedia'}</div>
         <div className="mt-2 text-amber-200">Arsip lama menyimpan fingerprint dan batas tanggal, bukan snapshot setiap baris. Koreksi yang diketahui setelah arsip dibuat tidak dapat dibuktikan sebagai input prediksi lama.</div>
         {diagnostics.collectedAfterPredictionRows > 0 && <div>{diagnostics.collectedAfterPredictionRows} baris dengan waktu koleksi sesudah prediksi dikecualikan.</div>}
+        {diagnostics.basisMetadataRefreshedRows > 0 && <div>Sumber, verifikasi, dan waktu koleksi basis adalah metadata terkini yang diperbarui sesudah prediksi; hanya tanggal, periode, dan angka basis yang tercatat pada arsip prediksi.</div>}
         {diagnostics.conflictDates.length > 0 && <div>Konflik tanggal dikecualikan: {diagnostics.conflictDates.join(', ')}.</div>}
       </div>
       <div className="flex flex-wrap gap-2 text-xs">
