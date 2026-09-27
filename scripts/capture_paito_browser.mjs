@@ -56,7 +56,7 @@ try {
     await board.evaluate((el) => {
       const clone = el.cloneNode(true);
       clone.id = 'paito-ci-capture';
-      clone.style.position = 'absolute';
+      clone.style.position = 'fixed';
       clone.style.top = '0'; clone.style.left = '0'; clone.style.zIndex = '2147483647';
       clone.querySelectorAll('.sticky').forEach((child) => { child.style.position = 'relative'; });
       document.body.append(clone);
@@ -72,6 +72,8 @@ try {
     // viewport, so leave a margin beyond both edges of the measured board.
     await page.setViewportSize({ width: imageWidth + 32, height: imageHeight + 32 });
     await page.evaluate(() => window.scrollTo(0, 0));
+    const cloneTop = await page.locator('#paito-ci-capture').evaluate((el) => el.getBoundingClientRect().top);
+    if (cloneTop !== 0) throw new Error(`${market}: evidence board started outside screenshot at ${cloneTop}px`);
     const fieldPath = join(outDir, `${market.toLowerCase()}-full-field.png`);
     await page.screenshot({ path: fieldPath });
     const png = await readFile(fieldPath);
