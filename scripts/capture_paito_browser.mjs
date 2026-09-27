@@ -62,12 +62,23 @@ try {
       document.body.append(clone);
     });
     const captureRect = await page.locator('#paito-ci-capture').boundingBox();
+    const imageWidth = Math.ceil(captureRect.width);
+    const imageHeight = Math.ceil(captureRect.height);
+    // A mobile screenshot is clipped to its 393×852 viewport even when a
+    // larger clip/captureBeyondViewport is requested. Expand the viewport for
+    // this one evidence frame, then restore the real Android-sized viewport.
+    await page.locator('#paito-ci-capture').evaluate((el, width) => { el.style.width = `${width}px`; }, imageWidth);
+    await page.setViewportSize({ width: imageWidth, height: imageHeight });
     await page.evaluate(() => window.scrollTo(0, 0));
-    await page.screenshot({
-      path: join(outDir, `${market.toLowerCase()}-full-field.png`),
-      clip: { x: 0, y: 0, width: Math.ceil(captureRect.width), height: Math.ceil(captureRect.height) },
-      captureBeyondViewport: true,
-    });
+    const fieldPath = join(outDir, `${market.toLowerCase()}-full-field.png`);
+    await page.screenshot({ path: fieldPath });
+    const png = await readFile(fieldPath);
+    const actualWidth = png.readUInt32BE(16);
+    const actualHeight = png.readUInt32BE(20);
+    if (actualWidth !== imageWidth || actualHeight !== imageHeight) {
+      throw new Error(`${market}: full-field screenshot clipped to ${actualWidth}×${actualHeight}, expected ${imageWidth}×${imageHeight}`);
+    }
+    await page.setViewportSize(diagnostics.viewport);
     await page.locator('#paito-ci-capture').evaluate((el) => el.remove());
     console.log(`Capture ${market}: full field saved`);
     const field = await board.boundingBox();

@@ -2,6 +2,8 @@
 
 Dokumen ini merekam fakta yang bisa direproduksi pada checkout sebelum perubahan: `main` `69542242f6ccfa69f738d66c5ebd849d00cfffc3`, Draft PR #7 `600dc50b01ca693e8ffbbed3d9f7c96c4048b1cd`. SHA final perubahan, run CI, dan uji perangkat dilaporkan setelah CI. Jangan membaca isi ini sebagai persetujuan rilis.
 
+**Pembaruan 27 September, sebelum merge PR:** main sudah menjadi `a5b3e667d7add2dbd2f6004a13a18a8e47d4ab60` (commit `2026-09-26T21:24:41Z`), terintegrasi ke Draft PR. HK 26 September adalah `6807` (HK-3556, `confirmed_2_sources`, prediksi target 27 September berbasis `6807`, fingerprint `197519240d56554a4c887489976b5b9b01a2f7fc9baf3d6ad9788348242ea9bb`); SDY 26 September `0434` (SD-3556, `confirmed_4_sources`, prediksi target 27 September berbasis `0434`, fingerprint `a555a0501413b36779147f98992c688f4c95b1800744b78adadc39e1533ccb63`); SGP composite masih 24 September `2958` (SGP-2483, prediksi target 26 September, fingerprint `7dc680297c21a17890e0e976229c3952261dc7a1dd6751ab85029df971405594`). Angka `0052` dalam fixture pengujian adalah **sintetis** dan pengujian dikunci pada snapshot sebelum publikasi `0434`; bukan koreksi hasil SDY nyata. Hash respons endpoint serta baris “pending” di bawah ini menggambarkan snapshot audit 26 September, **bukan keadaan terbaru**.
+
 ## Bahan visual: tiap berkas dipisahkan
 
 | Berkas | Fakta sel/tata letak yang terlihat | Penjelasan sumber yang terbukti | Interpretasi dan batas |
@@ -80,4 +82,4 @@ Bobot walk-forward dan kontribusi dari setiap kandidat pada lima target di atas 
 
 - Perubahan pada PR tetap Draft; metode konsensus dan arsip hasil tidak diubah. Dataset SGP composite tetap terpisah dari Singapore Pools 4D resmi dan Singapore TOTO.
 - UI paito dari hasil canonical adalah ilustrasi, tidak menambah suara P5/P1–P8; SVG arsip dan metadata tetap tersedia.
-- Tanpa perangkat fisik/logcat, screenshot akhir Android, event PLAYING, cold start/resume jaringan, dan upgrade dari stable `versionCode=100010` belum dapat dibuktikan. Signed candidate memerlukan keystore lingkungan `android-release` terlindungi, dan workflow saat ini sekaligus memublikasikan stable dari main; tidak dipicu pada Draft. Status gerbang: **BELUM SIAP RILIS**.
+- Tanpa perangkat fisik/logcat, screenshot akhir Android, event PLAYING, cold start/resume jaringan, dan upgrade dari stable `versionCode=100010` belum dapat dibuktikan. Job `release-candidate` sudah dipisah dalam workflow yang ada di default branch: hanya dispatch pada branch PR dengan `confirm_release=false`, tanpa publikasi metadata stable. Keystore tetap di lingkungan terlindungi `android-release`; job ini belum dipicu tanpa persetujuan pemilik. Status gerbang: **BELUM SIAP RILIS**.
