@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-27T14:47:45+07:00",
+  "collected_at": "2026-09-27T20:22:17+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -84,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-09-27T01:25:20+07:00",
-      "last_source_check": "2026-09-27T14:47:45+07:00",
+      "last_source_check": "2026-09-27T20:22:17+07:00",
       "latest_source_draw_date": "2026-09-26"
     },
     "SDY": {
@@ -99,23 +99,18 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 240,
+        "waroengtogel_sdy": 241,
         "datatogel_sdy": 270,
         "livenomor_sdy": 270
       },
       "verified_count": 270,
-      "new_count": 2,
+      "new_count": 1,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-09-17",
-          "number": "5159",
-          "verification": "confirmed_3_sources"
-        },
-        {
           "date": "2026-09-27",
           "number": "5241",
-          "verification": "confirmed_3_sources"
+          "verification": "confirmed_4_sources"
         }
       ],
       "latest": {
@@ -130,51 +125,64 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-09-27T14:47:45+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-09-27T20:22:17+07:00",
+        "verification": "confirmed_4_sources",
+        "confirmations": 4
       },
       "latest_verified": {
         "date": "2026-09-27",
         "number": "5241",
-        "verification": "confirmed_3_sources",
+        "verification": "confirmed_4_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-09-27T14:47:45+07:00",
-      "last_source_check": "2026-09-27T14:47:45+07:00",
+      "last_successful_data_update": "2026-09-27T20:22:17+07:00",
+      "last_source_check": "2026-09-27T20:22:17+07:00",
       "latest_source_draw_date": "2026-09-27"
     },
     "SGP": {
       "market": "SGP",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
         "nexipools_sgp"
       ],
       "parsed_counts": {
-        "paitosgplengkap": 190,
+        "paitosgplengkap": 192,
         "nexipools_sgp": 30
       },
-      "verified_count": 29,
-      "new_count": 0,
+      "verified_count": 30,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-26",
+          "number": "6999",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-27",
+          "number": "8791",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20260924,
-        "tanggal": "24 Sep 2026",
-        "periode": "SGP-2483",
-        "nomor": "2958",
-        "result_date": "2026-09-24",
+        "id": 20260927,
+        "tanggal": "27 Sep 2026",
+        "periode": "SGP-2485",
+        "nomor": "8791",
+        "result_date": "2026-09-27",
         "market": "SGP",
         "source_id": "paitosgplengkap",
         "source_name": "Paito SGP Lengkap",
@@ -183,13 +191,13 @@
           "paitosgplengkap",
           "nexipools_sgp"
         ],
-        "collected_at": "2026-09-24T18:21:44+07:00",
+        "collected_at": "2026-09-27T20:22:17+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-09-24",
-        "number": "2958",
+        "date": "2026-09-27",
+        "number": "8791",
         "verification": "confirmed_2_sources",
         "source_ids": [
           "paitosgplengkap",
@@ -198,9 +206,9 @@
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-09-24T18:21:44+07:00",
-      "last_source_check": "2026-09-27T14:47:45+07:00",
-      "latest_source_draw_date": "2026-09-24"
+      "last_successful_data_update": "2026-09-27T20:22:17+07:00",
+      "last_source_check": "2026-09-27T20:22:17+07:00",
+      "latest_source_draw_date": "2026-09-27"
     }
   }
 }

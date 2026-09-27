@@ -1,5 +1,41 @@
 [
   {
+    "id": 20260927,
+    "tanggal": "27 Sep 2026",
+    "periode": "SGP-2485",
+    "nomor": "8791",
+    "result_date": "2026-09-27",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-27T20:22:17+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20260926,
+    "tanggal": "26 Sep 2026",
+    "periode": "SGP-2484",
+    "nomor": "6999",
+    "result_date": "2026-09-26",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-09-27T20:22:17+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20260924,
     "tanggal": "24 Sep 2026",
     "periode": "SGP-2483",
