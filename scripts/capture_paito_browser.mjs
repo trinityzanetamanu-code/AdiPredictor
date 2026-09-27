@@ -11,16 +11,15 @@ const port = Number(process.env.PAITO_PORT || 5197);
 const baseURL = `http://127.0.0.1:${port}`;
 await mkdir(outDir, { recursive: true });
 const server = spawn('npm', ['run', 'dev', '--', '--host', '127.0.0.1', '--port', String(port), '--strictPort'], {
-  cwd: appDir, stdio: ['ignore', 'pipe', 'pipe'],
+  cwd: appDir, detached: true, stdio: 'ignore',
 });
-let serverLog = '';
-for (const stream of [server.stdout, server.stderr]) stream.on('data', (chunk) => { serverLog += chunk.toString().slice(0, 500); });
+server.unref();
 let browser;
 const diagnostics = { viewport: { width: 393, height: 852 }, markets: {}, actions: [] };
 try {
   for (let attempt = 0; attempt < 80; attempt += 1) {
     try { if ((await fetch(baseURL)).ok) break; } catch { /* wait for Vite */ }
-    if (attempt === 79) throw new Error(`Vite did not start: ${serverLog.slice(-800)}`);
+    if (attempt === 79) throw new Error(`Vite did not start at ${baseURL}`);
     await new Promise((done) => setTimeout(done, 350));
   }
   browser = await chromium.launch({ headless: true });
@@ -62,7 +61,13 @@ try {
       clone.querySelectorAll('.sticky').forEach((child) => { child.style.position = 'relative'; });
       document.body.append(clone);
     });
-    await page.locator('#paito-ci-capture').screenshot({ path: join(outDir, `${market.toLowerCase()}-full-field.png`) });
+    const captureRect = await page.locator('#paito-ci-capture').boundingBox();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({
+      path: join(outDir, `${market.toLowerCase()}-full-field.png`),
+      clip: { x: 0, y: 0, width: Math.ceil(captureRect.width), height: Math.ceil(captureRect.height) },
+      captureBeyondViewport: true,
+    });
     await page.locator('#paito-ci-capture').evaluate((el) => el.remove());
     console.log(`Capture ${market}: full field saved`);
     const field = await board.boundingBox();
@@ -105,5 +110,7 @@ try {
   console.log(JSON.stringify(diagnostics));
 } finally {
   if (browser) await browser.close();
-  server.kill('SIGTERM');
+  if (server.pid) {
+    try { process.kill(-server.pid, 'SIGTERM'); } catch { server.kill('SIGTERM'); }
+  }
 }

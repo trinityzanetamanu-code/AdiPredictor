@@ -26,8 +26,14 @@ def run_fixture(workspace: Path, publish_commit: bool = False) -> dict:
     config = collector.load_config()
     cfg = config["markets"]["SDY"]
     sources = {source["id"]: source for source in cfg["sources"]}
-    old_rows = json.loads((ROOT / "public/data/sdy.json").read_text())
-    old_prediction = json.loads((ROOT / "public/predictions/sdy/latest.json").read_text())
+    # Freeze the rehearsal at the 25 September basis even after main publishes
+    # the real 26 September result (0434). The synthetic 0052 must never be
+    # mistaken for a correction to that canonical draw.
+    old_rows = [row for row in json.loads((ROOT / "public/data/sdy.json").read_text())
+                if row.get("result_date", "") <= "2026-09-25"]
+    old_prediction = json.loads(
+        (ROOT / "public/predictions/sdy/archive/2026-09-26.json").read_text()
+    )
     assert old_rows[0]["result_date"] == "2026-09-25"
     assert old_rows[0]["nomor"] == "1559"
 
