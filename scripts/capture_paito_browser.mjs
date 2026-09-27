@@ -58,7 +58,9 @@ try {
       const clone = el.cloneNode(true);
       clone.id = 'paito-ci-capture';
       clone.style.position = 'fixed';
-      clone.style.top = '0'; clone.style.left = '0'; clone.style.zIndex = '2147483647';
+      // Leave room for the mobile visual-viewport offset: Chromium may start
+      // its PNG a few pixels inside a fixed element after a viewport resize.
+      clone.style.top = '96px'; clone.style.left = '16px'; clone.style.zIndex = '2147483647';
       clone.querySelectorAll('.sticky').forEach((child) => { child.style.position = 'relative'; });
       document.body.append(clone);
     });
@@ -71,16 +73,16 @@ try {
     await page.locator('#paito-ci-capture').evaluate((el, width) => { el.style.width = `${width}px`; }, imageWidth);
     // Mobile emulation can reserve a couple of CSS pixels for its visual
     // viewport, so leave a margin beyond both edges of the measured board.
-    await page.setViewportSize({ width: imageWidth + 32, height: imageHeight + 32 });
+    await page.setViewportSize({ width: imageWidth + 64, height: imageHeight + 160 });
     await page.evaluate(() => window.scrollTo(0, 0));
     const cloneTop = await page.locator('#paito-ci-capture').evaluate((el) => el.getBoundingClientRect().top);
-    if (cloneTop !== 0) throw new Error(`${market}: evidence board started outside screenshot at ${cloneTop}px`);
+    if (cloneTop !== 96) throw new Error(`${market}: evidence board shifted to ${cloneTop}px`);
     const fieldPath = join(outDir, `${market.toLowerCase()}-full-field.png`);
     await page.screenshot({ path: fieldPath });
     const png = await readFile(fieldPath);
     const actualWidth = png.readUInt32BE(16);
     const actualHeight = png.readUInt32BE(20);
-    if (actualWidth < imageWidth || actualHeight < imageHeight) {
+    if (actualWidth < imageWidth + 16 || actualHeight < imageHeight + 96) {
       throw new Error(`${market}: full-field screenshot clipped to ${actualWidth}×${actualHeight}, board is ${imageWidth}×${imageHeight}`);
     }
     await page.setViewportSize(diagnostics.viewport);
