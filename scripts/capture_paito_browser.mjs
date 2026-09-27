@@ -96,7 +96,8 @@ try {
     else await fullscreen.click();
     const dialog = page.getByRole('dialog', { name: new RegExp(`Pola Paito ${market}`) });
     await dialog.waitFor();
-    await dialog.screenshot({ path: join(outDir, `${market.toLowerCase()}-viewport.png`) });
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: join(outDir, `${market.toLowerCase()}-viewport.png`) });
     console.log(`Capture ${market}: viewport saved`);
     const scroller = dialog.locator('[tabindex="0"]');
     await scroller.evaluate((el) => { el.scrollLeft = 330; el.scrollTop = 520; });
@@ -104,7 +105,7 @@ try {
     if (before[0] < 200 || before[1] < 400) throw new Error(`${market}: two-axis scroll failed`);
     await dialog.getByRole('button', { name: 'Perbesar' }).click();
     if (!await dialog.getByText('125%', { exact: false }).count()) throw new Error(`${market}: zoom failed`);
-    await dialog.screenshot({ path: join(outDir, `${market.toLowerCase()}-zoom.png`) });
+    await page.screenshot({ path: join(outDir, `${market.toLowerCase()}-zoom.png`) });
     console.log(`Capture ${market}: zoom saved`);
     // Two independent touch pointers exercise the same pointer handlers as Android pinch.
     const rect = await scroller.boundingBox();
