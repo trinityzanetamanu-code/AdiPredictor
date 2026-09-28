@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-28T23:06:30+07:00",
+  "collected_at": "2026-09-29T04:58:52+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -14,7 +14,7 @@
       ],
       "parsed_counts": {
         "nexipools_hk": 30,
-        "livenomor_hk": 270
+        "livenomor_hk": 271
       },
       "verified_count": 271,
       "new_count": 1,
@@ -23,7 +23,7 @@
         {
           "date": "2026-09-28",
           "number": "3159",
-          "verification": "provisional_primary"
+          "verification": "confirmed_2_sources"
         }
       ],
       "latest": {
@@ -37,18 +37,20 @@
         "source_name": "NexiPools Hongkong Pools",
         "source_url": "https://www.nexipools.com/id/hongkong/paito/",
         "source_ids": [
-          "nexipools_hk"
+          "nexipools_hk",
+          "livenomor_hk"
         ],
-        "collected_at": "2026-09-28T23:06:30+07:00",
-        "verification": "provisional_primary",
-        "confirmations": 1
+        "collected_at": "2026-09-29T04:58:52+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "latest_verified": {
         "date": "2026-09-28",
         "number": "3159",
-        "verification": "provisional_primary",
+        "verification": "confirmed_2_sources",
         "source_ids": [
-          "nexipools_hk"
+          "nexipools_hk",
+          "livenomor_hk"
         ]
       },
       "source_errors": [
@@ -65,9 +67,9 @@
           "historical_conflicts": {},
           "latest_date": "2026-09-28",
           "latest_result": "3159",
-          "source_first_seen_at": "2026-09-28T23:06:30+07:00",
+          "source_first_seen_at": "2026-09-29T04:58:52+07:00",
           "expected_draw_date": "2026-09-28",
-          "latency_minutes": 6,
+          "latency_minutes": 358,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -77,18 +79,18 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-09-27",
-          "latest_result": "5872",
-          "source_first_seen_at": "2026-09-28T00:50:38+07:00",
+          "latest_date": "2026-09-28",
+          "latest_result": "3159",
+          "source_first_seen_at": "2026-09-29T04:58:52+07:00",
           "expected_draw_date": "2026-09-28",
-          "latency_minutes": 110,
-          "source_stale": true,
-          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
-          "health": "STALE"
+          "latency_minutes": 358,
+          "source_stale": false,
+          "reason": "FRESH",
+          "health": "HEALTHY"
         }
       },
-      "last_successful_data_update": "2026-09-28T23:06:30+07:00",
-      "last_source_check": "2026-09-28T23:06:30+07:00",
+      "last_successful_data_update": "2026-09-29T04:58:52+07:00",
+      "last_source_check": "2026-09-29T04:58:52+07:00",
       "latest_source_draw_date": "2026-09-28"
     },
     "SDY": {
@@ -143,12 +145,12 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-28T14:46:54+07:00",
-      "last_source_check": "2026-09-28T23:06:30+07:00",
+      "last_source_check": "2026-09-29T04:58:52+07:00",
       "latest_source_draw_date": "2026-09-28"
     },
     "SGP": {
       "market": "SGP",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
@@ -159,15 +161,9 @@
         "nexipools_sgp": 30
       },
       "verified_count": 30,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-28",
-          "number": "7185",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260928,
         "tanggal": "28 Sep 2026",
@@ -198,7 +194,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-28T23:06:30+07:00",
-      "last_source_check": "2026-09-28T23:06:30+07:00",
+      "last_source_check": "2026-09-29T04:58:52+07:00",
       "latest_source_draw_date": "2026-09-28"
     }
   }
