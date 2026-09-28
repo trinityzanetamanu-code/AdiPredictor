@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-09-28T00:50:38+07:00",
+  "collected_at": "2026-09-28T14:46:54+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -17,15 +17,9 @@
         "livenomor_hk": 270
       },
       "verified_count": 270,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-27",
-          "number": "5872",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20260927,
         "tanggal": "27 Sep 2026",
@@ -90,12 +84,12 @@
         }
       },
       "last_successful_data_update": "2026-09-28T00:50:38+07:00",
-      "last_source_check": "2026-09-28T00:50:38+07:00",
+      "last_source_check": "2026-09-28T14:46:54+07:00",
       "latest_source_draw_date": "2026-09-27"
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -106,49 +100,58 @@
       "parsed_counts": {
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 241,
-        "datatogel_sdy": 270,
-        "livenomor_sdy": 270
+        "datatogel_sdy": 271,
+        "livenomor_sdy": 271
       },
-      "verified_count": 270,
-      "new_count": 0,
+      "verified_count": 271,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-18",
+          "number": "3877",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-09-28",
+          "number": "9267",
+          "verification": "confirmed_3_sources"
+        }
+      ],
       "latest": {
-        "id": 20260927,
-        "tanggal": "27 Sep 2026",
-        "periode": "SD-3557",
-        "nomor": "5241",
-        "result_date": "2026-09-27",
+        "id": 20260928,
+        "tanggal": "28 Sep 2026",
+        "periode": "SD-3558",
+        "nomor": "9267",
+        "result_date": "2026-09-28",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-09-27T20:22:17+07:00",
-        "verification": "confirmed_4_sources",
-        "confirmations": 4
+        "collected_at": "2026-09-28T14:46:54+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "latest_verified": {
-        "date": "2026-09-27",
-        "number": "5241",
-        "verification": "confirmed_4_sources",
+        "date": "2026-09-28",
+        "number": "9267",
+        "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-09-27T20:22:17+07:00",
-      "last_source_check": "2026-09-28T00:50:38+07:00",
-      "latest_source_draw_date": "2026-09-27"
+      "last_successful_data_update": "2026-09-28T14:46:54+07:00",
+      "last_source_check": "2026-09-28T14:46:54+07:00",
+      "latest_source_draw_date": "2026-09-28"
     },
     "SGP": {
       "market": "SGP",
@@ -196,7 +199,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-09-27T20:22:17+07:00",
-      "last_source_check": "2026-09-28T00:50:38+07:00",
+      "last_source_check": "2026-09-28T14:46:54+07:00",
       "latest_source_draw_date": "2026-09-27"
     }
   }
