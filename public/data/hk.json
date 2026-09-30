@@ -6,15 +6,16 @@
     "nomor": "5232",
     "result_date": "2026-09-29",
     "market": "HK",
-    "source_id": "livenomor_hk",
-    "source_name": "LiveNomor Hongkong",
-    "source_url": "https://livenomor.com/",
+    "source_id": "nexipools_hk",
+    "source_name": "NexiPools Hongkong Pools",
+    "source_url": "https://www.nexipools.com/id/hongkong/paito/",
     "source_ids": [
+      "nexipools_hk",
       "livenomor_hk"
     ],
-    "collected_at": "2026-09-30T02:30:02+07:00",
-    "verification": "provisional_primary",
-    "confirmations": 1
+    "collected_at": "2026-09-30T15:29:55+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260928,
