@@ -1,5 +1,23 @@
 [
   {
+    "id": 20261002,
+    "tanggal": "02 Okt 2026",
+    "periode": "SD-3562",
+    "nomor": "5392",
+    "result_date": "2026-10-02",
+    "market": "SDY",
+    "source_id": "lomba4d_sdy",
+    "source_name": "Lomba4D Sydney Results",
+    "source_url": "https://www.lomba4dqueen.com/hasil/SY",
+    "source_ids": [
+      "lomba4d_sdy",
+      "datatogel_sdy"
+    ],
+    "collected_at": "2026-10-02T20:16:50+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20261001,
     "tanggal": "01 Okt 2026",
     "periode": "SD-3561",
@@ -183,18 +201,17 @@
     "nomor": "7364",
     "result_date": "2026-09-22",
     "market": "SDY",
-    "source_id": "lomba4d_sdy",
-    "source_name": "Lomba4D Sydney Results",
-    "source_url": "https://www.lomba4dqueen.com/hasil/SY",
+    "source_id": "waroengtogel_sdy",
+    "source_name": "WaroengTogel SDY",
+    "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
-      "lomba4d_sdy",
       "waroengtogel_sdy",
       "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-22T20:13:08+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-10-02T20:16:50+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20260921,
