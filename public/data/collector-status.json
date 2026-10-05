@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-05T00:02:56+07:00",
+  "collected_at": "2026-10-05T15:39:59+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -17,15 +17,9 @@
         "livenomor_hk": 277
       },
       "verified_count": 277,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-04",
-          "number": "7176",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261004,
         "tanggal": "04 Okt 2026",
@@ -56,7 +50,7 @@
       "source_errors": [
         {
           "source": "livedrawhk_crosscheck",
-          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5651 bytes"
+          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5672 bytes"
         }
       ],
       "source_health": {
@@ -90,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-10-05T00:02:56+07:00",
-      "last_source_check": "2026-10-05T00:02:56+07:00",
+      "last_source_check": "2026-10-05T15:39:59+07:00",
       "latest_source_draw_date": "2026-10-04"
     },
     "SDY": {
@@ -106,53 +100,56 @@
       "parsed_counts": {
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 248,
-        "datatogel_sdy": 277,
-        "livenomor_sdy": 276
+        "datatogel_sdy": 278,
+        "livenomor_sdy": 277
       },
-      "verified_count": 277,
-      "new_count": 1,
+      "verified_count": 278,
+      "new_count": 2,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-10-04",
-          "number": "7933",
+          "date": "2026-09-25",
+          "number": "1559",
           "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-05",
+          "number": "9383",
+          "verification": "confirmed_2_sources"
         }
       ],
       "latest": {
-        "id": 20261004,
-        "tanggal": "04 Okt 2026",
-        "periode": "SD-3564",
-        "nomor": "7933",
-        "result_date": "2026-10-04",
+        "id": 20261005,
+        "tanggal": "05 Okt 2026",
+        "periode": "SD-3565",
+        "nomor": "9383",
+        "result_date": "2026-10-05",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-05T00:02:56+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-10-05T15:39:59+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-04",
-        "number": "7933",
-        "verification": "confirmed_3_sources",
+        "date": "2026-10-05",
+        "number": "9383",
+        "verification": "confirmed_2_sources",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-05T00:02:56+07:00",
-      "last_source_check": "2026-10-05T00:02:56+07:00",
-      "latest_source_draw_date": "2026-10-04"
+      "last_successful_data_update": "2026-10-05T15:39:59+07:00",
+      "last_source_check": "2026-10-05T15:39:59+07:00",
+      "latest_source_draw_date": "2026-10-05"
     },
     "SGP": {
       "market": "SGP",
@@ -200,7 +197,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-04T19:35:20+07:00",
-      "last_source_check": "2026-10-05T00:02:56+07:00",
+      "last_source_check": "2026-10-05T15:39:59+07:00",
       "latest_source_draw_date": "2026-10-04"
     }
   }
