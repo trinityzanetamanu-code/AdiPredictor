@@ -1,5 +1,23 @@
 [
   {
+    "id": 20261006,
+    "tanggal": "06 Okt 2026",
+    "periode": "HK-3566",
+    "nomor": "3268",
+    "result_date": "2026-10-06",
+    "market": "HK",
+    "source_id": "nexipools_hk",
+    "source_name": "NexiPools Hongkong Pools",
+    "source_url": "https://www.nexipools.com/id/hongkong/paito/",
+    "source_ids": [
+      "nexipools_hk",
+      "livenomor_hk"
+    ],
+    "collected_at": "2026-10-06T23:50:33+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20261005,
     "tanggal": "05 Okt 2026",
     "periode": "HK-3565",
