@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-07T20:55:43+07:00",
+  "collected_at": "2026-10-08T02:49:14+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -14,18 +14,24 @@
       ],
       "parsed_counts": {
         "nexipools_hk": 29,
-        "livenomor_hk": 279
+        "livenomor_hk": 280
       },
-      "verified_count": 279,
-      "new_count": 0,
+      "verified_count": 280,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-07",
+          "number": "6196",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20261006,
-        "tanggal": "06 Okt 2026",
-        "periode": "HK-3566",
-        "nomor": "3268",
-        "result_date": "2026-10-06",
+        "id": 20261007,
+        "tanggal": "07 Okt 2026",
+        "periode": "HK-3567",
+        "nomor": "6196",
+        "result_date": "2026-10-07",
         "market": "HK",
         "source_id": "nexipools_hk",
         "source_name": "NexiPools Hongkong Pools",
@@ -34,13 +40,13 @@
           "nexipools_hk",
           "livenomor_hk"
         ],
-        "collected_at": "2026-10-06T23:50:33+07:00",
+        "collected_at": "2026-10-08T02:49:14+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-06",
-        "number": "3268",
+        "date": "2026-10-07",
+        "number": "6196",
         "verification": "confirmed_2_sources",
         "source_ids": [
           "nexipools_hk",
@@ -59,11 +65,11 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-10-06",
-          "latest_result": "3268",
-          "source_first_seen_at": "2026-10-06T23:50:33+07:00",
-          "expected_draw_date": "2026-10-06",
-          "latency_minutes": 50,
+          "latest_date": "2026-10-07",
+          "latest_result": "6196",
+          "source_first_seen_at": "2026-10-08T02:49:14+07:00",
+          "expected_draw_date": "2026-10-07",
+          "latency_minutes": 229,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -73,23 +79,23 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-10-06",
-          "latest_result": "3268",
-          "source_first_seen_at": "2026-10-06T23:50:33+07:00",
-          "expected_draw_date": "2026-10-06",
-          "latency_minutes": 50,
+          "latest_date": "2026-10-07",
+          "latest_result": "6196",
+          "source_first_seen_at": "2026-10-08T02:49:14+07:00",
+          "expected_draw_date": "2026-10-07",
+          "latency_minutes": 229,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
         }
       },
-      "last_successful_data_update": "2026-10-06T23:50:33+07:00",
-      "last_source_check": "2026-10-07T20:55:43+07:00",
-      "latest_source_draw_date": "2026-10-06"
+      "last_successful_data_update": "2026-10-08T02:49:14+07:00",
+      "last_source_check": "2026-10-08T02:49:14+07:00",
+      "latest_source_draw_date": "2026-10-07"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -104,25 +110,9 @@
         "livenomor_sdy": 279
       },
       "verified_count": 280,
-      "new_count": 3,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-27",
-          "number": "5241",
-          "verification": "confirmed_3_sources"
-        },
-        {
-          "date": "2026-10-06",
-          "number": "3398",
-          "verification": "confirmed_3_sources"
-        },
-        {
-          "date": "2026-10-07",
-          "number": "0569",
-          "verification": "confirmed_3_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261007,
         "tanggal": "07 Okt 2026",
@@ -155,7 +145,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-07T20:55:43+07:00",
-      "last_source_check": "2026-10-07T20:55:43+07:00",
+      "last_source_check": "2026-10-08T02:49:14+07:00",
       "latest_source_draw_date": "2026-10-07"
     },
     "SGP": {
@@ -170,7 +160,7 @@
         "paitosgplengkap": 198,
         "nexipools_sgp": 30
       },
-      "verified_count": 30,
+      "verified_count": 29,
       "new_count": 0,
       "replaced_legacy_count": 0,
       "new_results": [],
@@ -204,7 +194,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-06T23:50:33+07:00",
-      "last_source_check": "2026-10-07T20:55:43+07:00",
+      "last_source_check": "2026-10-08T02:49:14+07:00",
       "latest_source_draw_date": "2026-10-05"
     }
   }
