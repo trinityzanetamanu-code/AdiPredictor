@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-06T23:50:33+07:00",
+  "collected_at": "2026-10-07T20:55:43+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -17,15 +17,9 @@
         "livenomor_hk": 279
       },
       "verified_count": 279,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-06",
-          "number": "3268",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261006,
         "tanggal": "06 Okt 2026",
@@ -90,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-10-06T23:50:33+07:00",
-      "last_source_check": "2026-10-06T23:50:33+07:00",
+      "last_source_check": "2026-10-07T20:55:43+07:00",
       "latest_source_draw_date": "2026-10-06"
     },
     "SDY": {
@@ -105,56 +99,68 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 250,
-        "datatogel_sdy": 279,
-        "livenomor_sdy": 278
+        "waroengtogel_sdy": 251,
+        "datatogel_sdy": 280,
+        "livenomor_sdy": 279
       },
-      "verified_count": 279,
-      "new_count": 1,
+      "verified_count": 280,
+      "new_count": 3,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-10-05",
-          "number": "9383",
+          "date": "2026-09-27",
+          "number": "5241",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-06",
+          "number": "3398",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-07",
+          "number": "0569",
           "verification": "confirmed_3_sources"
         }
       ],
       "latest": {
-        "id": 20261006,
-        "tanggal": "06 Okt 2026",
-        "periode": "SD-3566",
-        "nomor": "3398",
-        "result_date": "2026-10-06",
+        "id": 20261007,
+        "tanggal": "07 Okt 2026",
+        "periode": "SD-3567",
+        "nomor": "0569",
+        "result_date": "2026-10-07",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-06T17:13:00+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-10-07T20:55:43+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "latest_verified": {
-        "date": "2026-10-06",
-        "number": "3398",
-        "verification": "confirmed_2_sources",
+        "date": "2026-10-07",
+        "number": "0569",
+        "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-06T17:13:00+07:00",
-      "last_source_check": "2026-10-06T23:50:33+07:00",
-      "latest_source_draw_date": "2026-10-06"
+      "last_successful_data_update": "2026-10-07T20:55:43+07:00",
+      "last_source_check": "2026-10-07T20:55:43+07:00",
+      "latest_source_draw_date": "2026-10-07"
     },
     "SGP": {
       "market": "SGP",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
@@ -165,15 +171,9 @@
         "nexipools_sgp": 30
       },
       "verified_count": 30,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-05",
-          "number": "3897",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261005,
         "tanggal": "05 Okt 2026",
@@ -204,7 +204,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-06T23:50:33+07:00",
-      "last_source_check": "2026-10-06T23:50:33+07:00",
+      "last_source_check": "2026-10-07T20:55:43+07:00",
       "latest_source_draw_date": "2026-10-05"
     }
   }
