@@ -1,5 +1,41 @@
 [
   {
+    "id": 20261008,
+    "tanggal": "08 Okt 2026",
+    "periode": "SGP-2493",
+    "nomor": "2855",
+    "result_date": "2026-10-08",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-10-09T00:38:21+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
+    "id": 20261007,
+    "tanggal": "07 Okt 2026",
+    "periode": "SGP-2492",
+    "nomor": "9838",
+    "result_date": "2026-10-07",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-10-09T00:38:21+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20261005,
     "tanggal": "05 Okt 2026",
     "periode": "SGP-2491",

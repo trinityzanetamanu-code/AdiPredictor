@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-08T17:53:48+07:00",
+  "collected_at": "2026-10-09T00:38:21+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -14,18 +14,24 @@
       ],
       "parsed_counts": {
         "nexipools_hk": 29,
-        "livenomor_hk": 280
+        "livenomor_hk": 281
       },
-      "verified_count": 280,
-      "new_count": 0,
+      "verified_count": 281,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-08",
+          "number": "8270",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20261007,
-        "tanggal": "07 Okt 2026",
-        "periode": "HK-3567",
-        "nomor": "6196",
-        "result_date": "2026-10-07",
+        "id": 20261008,
+        "tanggal": "08 Okt 2026",
+        "periode": "HK-3568",
+        "nomor": "8270",
+        "result_date": "2026-10-08",
         "market": "HK",
         "source_id": "nexipools_hk",
         "source_name": "NexiPools Hongkong Pools",
@@ -34,13 +40,13 @@
           "nexipools_hk",
           "livenomor_hk"
         ],
-        "collected_at": "2026-10-08T02:49:14+07:00",
+        "collected_at": "2026-10-09T00:38:21+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-07",
-        "number": "6196",
+        "date": "2026-10-08",
+        "number": "8270",
         "verification": "confirmed_2_sources",
         "source_ids": [
           "nexipools_hk",
@@ -50,7 +56,7 @@
       "source_errors": [
         {
           "source": "livedrawhk_crosscheck",
-          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5651 bytes"
+          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5672 bytes"
         }
       ],
       "source_health": {
@@ -59,11 +65,11 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-10-07",
-          "latest_result": "6196",
-          "source_first_seen_at": "2026-10-08T02:49:14+07:00",
-          "expected_draw_date": "2026-10-07",
-          "latency_minutes": 229,
+          "latest_date": "2026-10-08",
+          "latest_result": "8270",
+          "source_first_seen_at": "2026-10-09T00:38:21+07:00",
+          "expected_draw_date": "2026-10-08",
+          "latency_minutes": 98,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -73,23 +79,23 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-10-07",
-          "latest_result": "6196",
-          "source_first_seen_at": "2026-10-08T02:49:14+07:00",
-          "expected_draw_date": "2026-10-07",
-          "latency_minutes": 229,
+          "latest_date": "2026-10-08",
+          "latest_result": "8270",
+          "source_first_seen_at": "2026-10-09T00:38:21+07:00",
+          "expected_draw_date": "2026-10-08",
+          "latency_minutes": 98,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
         }
       },
-      "last_successful_data_update": "2026-10-08T02:49:14+07:00",
-      "last_source_check": "2026-10-08T17:53:48+07:00",
-      "latest_source_draw_date": "2026-10-07"
+      "last_successful_data_update": "2026-10-09T00:38:21+07:00",
+      "last_source_check": "2026-10-09T00:38:21+07:00",
+      "latest_source_draw_date": "2026-10-08"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -104,20 +110,9 @@
         "livenomor_sdy": 280
       },
       "verified_count": 281,
-      "new_count": 2,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-09-28",
-          "number": "9267",
-          "verification": "confirmed_3_sources"
-        },
-        {
-          "date": "2026-10-08",
-          "number": "5814",
-          "verification": "confirmed_3_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261008,
         "tanggal": "08 Okt 2026",
@@ -150,31 +145,42 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-08T17:53:48+07:00",
-      "last_source_check": "2026-10-08T17:53:48+07:00",
+      "last_source_check": "2026-10-09T00:38:21+07:00",
       "latest_source_draw_date": "2026-10-08"
     },
     "SGP": {
       "market": "SGP",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
         "nexipools_sgp"
       ],
       "parsed_counts": {
-        "paitosgplengkap": 198,
+        "paitosgplengkap": 200,
         "nexipools_sgp": 30
       },
-      "verified_count": 29,
-      "new_count": 0,
+      "verified_count": 30,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-07",
+          "number": "9838",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-10-08",
+          "number": "2855",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20261005,
-        "tanggal": "05 Okt 2026",
-        "periode": "SGP-2491",
-        "nomor": "3897",
-        "result_date": "2026-10-05",
+        "id": 20261008,
+        "tanggal": "08 Okt 2026",
+        "periode": "SGP-2493",
+        "nomor": "2855",
+        "result_date": "2026-10-08",
         "market": "SGP",
         "source_id": "paitosgplengkap",
         "source_name": "Paito SGP Lengkap",
@@ -183,13 +189,13 @@
           "paitosgplengkap",
           "nexipools_sgp"
         ],
-        "collected_at": "2026-10-06T23:50:33+07:00",
+        "collected_at": "2026-10-09T00:38:21+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-05",
-        "number": "3897",
+        "date": "2026-10-08",
+        "number": "2855",
         "verification": "confirmed_2_sources",
         "source_ids": [
           "paitosgplengkap",
@@ -198,9 +204,9 @@
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-06T23:50:33+07:00",
-      "last_source_check": "2026-10-08T17:53:48+07:00",
-      "latest_source_draw_date": "2026-10-05"
+      "last_successful_data_update": "2026-10-09T00:38:21+07:00",
+      "last_source_check": "2026-10-09T00:38:21+07:00",
+      "latest_source_draw_date": "2026-10-08"
     }
   }
 }
