@@ -222,20 +222,24 @@ export function shouldProbeNativeRuntimeBoard({
   return Boolean(marketDrawDate) && newestKnownDate < marketDrawDate;
 }
 
-export function createBoundedReconciliationRunner({ minIntervalMs = 3000, now = Date.now } = {}) {
+export function createBoundedReconciliationRunner({ minIntervalMs = 3000, maxBackoffMs = 300000, now = Date.now } = {}) {
   let inFlight = null;
   let lastStartedAt = Number.NEGATIVE_INFINITY;
+  let failures = 0;
 
   return async function run(task, { force = false } = {}) {
     if (inFlight) return inFlight;
     const startedAt = now();
-    if (!force && startedAt - lastStartedAt < minIntervalMs) {
+    if (!force && startedAt - lastStartedAt < Math.min(maxBackoffMs, minIntervalMs * (2 ** failures))) {
       return { skipped: true, reason: 'RECONCILIATION_THROTTLED' };
     }
     lastStartedAt = startedAt;
     inFlight = Promise.resolve()
       .then(task)
+      .then((result) => { failures = result?.failed ? Math.min(failures + 1, 7) : 0; return result; })
+      .catch((error) => { failures = Math.min(failures + 1, 7); throw error; })
       .finally(() => { inFlight = null; });
     return inFlight;
   };
 }
+

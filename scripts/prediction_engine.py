@@ -23,6 +23,8 @@ MARKETS = ("HK", "SDY", "SGP")
 MODELS = tuple(f"P{i}" for i in range(1, 8))
 ENGINE_VERSION = "AdiPredictor-P1-P8-v2"
 SCHEMA_VERSION = 2
+# Metadata-only regeneration; engine math/fingerprint and archive readers stay v2.
+METADATA_REVISION = 3
 MINIMUM_TRAINING_RECORDS = 365
 P7_NO_EDGE_MULTIPLIER = 0.85
 POSITIONS = ("AS", "KOP", "KEPALA", "EKOR")
@@ -94,6 +96,11 @@ def increment_period(period):
 def dataset_fingerprint(market, history):
     rows = "|".join(f"{r['result_date']}:{number_of(r)}" for r in history)
     return hashlib.sha256(f"{ENGINE_VERSION}|{market}|{rows}".encode()).hexdigest()
+
+
+def dataset_revision(market, history):
+    rows = "|".join(f"{r['result_date']}:{number_of(r)}" for r in history)
+    return hashlib.sha256(f"{market}|{rows}".encode()).hexdigest()
 
 
 def validate_dataset(market, history, config=None):
@@ -439,6 +446,10 @@ def model_p5(history, details=False):
         "P5_MODE": p5_mode,
         "p5_mode": p5_mode,
         "visual_contribution_enabled": edge_confirmed,
+        "model_visual_gate": {"enabled": edge_confirmed, "mode": p5_mode,
+                             "vote_weight": tests["visual_vote_weight"],
+                             "evaluation": "visual_only_backtest",
+                             "backtest": tests["visual_only_backtest"]},
         "visual_only": tests["visual_only_backtest"],
         "fallback": tests["fallback_backtest"],
         "hybrid": tests["hybrid_backtest"],
@@ -1251,8 +1262,12 @@ def generate_visual_patterns(market, history, target_date, p5):
         }
         (directory / filename).write_text(render_svg(market, history, name, occurrence, metadata), encoding="utf-8")
         output.append(metadata)
-    p5["visual_predictive_edge_confirmed"] = any(item["visual_predictive_edge_confirmed"] for item in output)
-    p5["visual_vote_weight"] = 1.0 if p5["visual_predictive_edge_confirmed"] else 0.0
+    # SVG-specific evidence is distinct from the gate used to build P5.
+    p5["visual_pattern_evaluation"] = {
+        "any_svg_edge_confirmed": any(item["visual_predictive_edge_confirmed"] for item in output),
+        "pattern_count": len(output),
+        "evaluation": "per_pattern_svg_backtest",
+    }
     return output
 
 
@@ -1326,6 +1341,8 @@ def build_prediction(market, history, config=None, previous_prediction=None):
         "schema_version": SCHEMA_VERSION, "engine": ENGINE_VERSION, "engine_version": ENGINE_VERSION,
         "market": market, "generated_at": datetime.now(JAKARTA).isoformat(timespec="seconds"),
         "dataset_fingerprint": dataset_fingerprint(market, history),
+        "dataset_revision": dataset_revision(market, history),
+        "metadata_revision": METADATA_REVISION,
         "prediction_basis_date": latest["result_date"],
         "prediction_basis_result": number_of(latest),
         "latest_result": {"date": latest["result_date"], "period": latest.get("periode"), "number": number_of(latest), "collected_at": latest.get("collected_at")},
@@ -1363,7 +1380,7 @@ def write_prediction(market, payload, force=False):
     latest_path, archive_path = market_dir / "latest.json", archive_dir / f"{payload['target_date']}.json"
     try: existing = json.loads(latest_path.read_text(encoding="utf-8")) if latest_path.exists() else None
     except json.JSONDecodeError: existing = None
-    if not force and existing and existing.get("dataset_fingerprint") == payload["dataset_fingerprint"] and existing.get("engine_version", existing.get("engine")) == ENGINE_VERSION and existing.get("latest_result", {}).get("date") == payload["latest_result"]["date"] and str(existing.get("latest_result", {}).get("number", "")).zfill(4) == payload["latest_result"]["number"]:
+    if not force and existing and existing.get("metadata_revision") == METADATA_REVISION and existing.get("dataset_fingerprint") == payload["dataset_fingerprint"] and existing.get("engine_version", existing.get("engine")) == ENGINE_VERSION and existing.get("latest_result", {}).get("date") == payload["latest_result"]["date"] and str(existing.get("latest_result", {}).get("number", "")).zfill(4) == payload["latest_result"]["number"]:
         return False, "unchanged"
     text = json.dumps(payload, ensure_ascii=False, allow_nan=False, separators=(",", ":")) + "\n"; latest_path.write_text(text, encoding="utf-8")
     if not archive_path.exists(): archive_path.write_text(text, encoding="utf-8")
@@ -1493,7 +1510,7 @@ def run(markets, force=False):
             try: existing = json.loads(latest_path.read_text(encoding="utf-8"))
             except json.JSONDecodeError: existing = {}
         if not force and existing is not None:
-            if existing.get("dataset_fingerprint") == fingerprint and existing.get("engine_version", existing.get("engine")) == ENGINE_VERSION:
+            if existing.get("metadata_revision") == METADATA_REVISION and existing.get("dataset_fingerprint") == fingerprint and existing.get("engine_version", existing.get("engine")) == ENGINE_VERSION:
                 print(f"[{market}] unchanged fingerprint={fingerprint[:12]}; skipped")
                 changed_any |= update_history_index(market, history)
                 summary[market] = {"status": "unchanged", "latest": existing.get("latest_result"), "target_date": existing.get("target_date"), "dataset_fingerprint": fingerprint}
@@ -1537,3 +1554,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

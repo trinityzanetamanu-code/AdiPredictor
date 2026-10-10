@@ -19,8 +19,9 @@ for attempt in $(seq 1 "$max_attempts"); do
   git fetch --no-tags origin main
   git reset --hard origin/main
 
+  collector_exit=0
   if [[ "$include_collector" == "1" ]]; then
-    python scripts/collector.py --market "$market"
+    python scripts/collector.py --market "$market" || collector_exit=$?
   fi
 
   if [[ "$prediction_force" == "1" ]]; then
@@ -31,18 +32,19 @@ for attempt in $(seq 1 "$max_attempts"); do
 
   git add public/data/hk.json public/data/sgp.json public/data/sdy.json
   git add public/data/singapore-official.json
+  if [[ -f public/data/hk-conflicts.json ]]; then git add public/data/hk-conflicts.json; fi
   git add public/data/live-draw.json
   git add public/data/collector-status.json public/predictions
 
   if git diff --cached --quiet; then
     echo "No generated data changes to publish."
-    exit 0
+    exit "$collector_exit"
   fi
 
   git commit -m "data: refresh verified results and P1-P8 v2 [skip ci]"
   if git push origin HEAD:main; then
     echo "Generated data published safely on attempt ${attempt}."
-    exit 0
+    exit "$collector_exit"
   fi
 
   echo "origin/main moved during generation; discarding stale output and retrying."
@@ -50,3 +52,4 @@ done
 
 echo "Remote main kept moving; no force push was attempted." >&2
 exit 1
+

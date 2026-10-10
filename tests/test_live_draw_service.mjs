@@ -63,7 +63,7 @@ test('dataset comparison reports match and mismatch without overwriting either v
 
 test('source URLs are exact HTTPS market pages with no ad endpoints', () => {
   assert.equal(LIVE_BOARD_URLS.HK.publicMirrorUrl, 'https://rankcrack.com/hk.php');
-  assert.equal(LIVE_BOARD_URLS.HK.pageUrl, 'https://www.hongkongpools.com/live');
+  assert.equal(LIVE_BOARD_URLS.HK.pageUrl, 'https://www.hongkongpools.com/live.html');
   assert.equal(LIVE_BOARD_URLS.SDY.pageUrl, 'https://www.sydneypoolstoday.com/live.html');
   assert.equal(LIVE_BOARD_URLS.SDY.dataUrl, 'https://www.sydneypoolstoday.com/getLiveContent');
 });
@@ -130,3 +130,4 @@ test('native six-digit board never injects or executes source HTML', async () =>
   assert.doesNotMatch(boardComponent, /<iframe/);
   assert.doesNotMatch(boardComponent, /<script/);
 });
+

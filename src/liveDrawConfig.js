@@ -117,8 +117,8 @@ export const LIVE_DRAW_SOURCES = Object.freeze({
     publicMirrorUrl: 'https://rankcrack.com/hk.php',
     official: false,
     mode: PLAYER_MODES.NATIVE_BOARD,
-    pageUrl: 'https://www.hongkongpools.com/live',
-    fallbackUrl: 'https://www.hongkongpools.com/live.html',
+    pageUrl: 'https://www.hongkongpools.com/live.html',
+    fallbackUrl: 'https://www.hongkongpools.com/live',
     schedule: {
       timezone: 'Asia/Jakarta',
       utcOffsetMinutes: 420,
@@ -197,3 +197,4 @@ export function selectSingaporeMode(now = new Date()) {
   if (toto.status === 'LIVE_WINDOW' || toto.status === 'RESULT_POSTED') return 'SGP_TOTO';
   return (fourD.minutesUntil ?? Infinity) <= (toto.minutesUntil ?? Infinity) ? 'SGP_4D' : 'SGP_TOTO';
 }
+

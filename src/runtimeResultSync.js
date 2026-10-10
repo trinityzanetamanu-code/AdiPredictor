@@ -76,7 +76,8 @@ export function predictionMayDisplay({ prediction, dataset, runtime }) {
   const basisDate = prediction?.prediction_basis_date || prediction?.latest_result?.date;
   const basisResult = String(prediction?.prediction_basis_result || prediction?.latest_result?.number || '');
   return {
-    visible: Boolean(dataset && basisDate === dataset.result_date && basisResult === String(dataset.nomor || '')),
+    visible: Boolean((!prediction?.dataset_alignment || prediction.dataset_alignment === 'MATCH') && dataset && basisDate === dataset.result_date && basisResult === String(dataset.nomor || '')),
     reason: 'PERSISTENT_DATASET_GUARD',
   };
 }
+

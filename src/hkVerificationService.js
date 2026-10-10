@@ -50,7 +50,12 @@ export function mergeHKRuntimeBoardCache({
     draw_date: incoming.draw_date, first: incoming.first, second: incoming.second, third: incoming.third,
     starter: incoming.starter, consolation: incoming.consolation,
     full_first_prize_6d: incoming.first, derived_4d: incoming.derived_4d,
-    retrieved_at: incoming.retrieved_at || observedAt,
+    retrieved_at: current?.draw_date === incoming.draw_date && current?.first === incoming.first
+      ? current.retrieved_at || incoming.retrieved_at || observedAt : incoming.retrieved_at || observedAt,
+    result_status: incoming.result_status || 'unknown',
+    finality_evidence: null,
+    source_timezone: incoming.source_timezone || 'Asia/Hong_Kong',
+    market_timezone: incoming.market_timezone || 'Asia/Hong_Kong',
     verification: provenance,
   };
   const currentValid = current?.first && /^\d{6}$/.test(String(current.first));
@@ -137,3 +142,4 @@ export async function openHKManualVerification() {
     return { state: HK_VERIFICATION_STATES.VERIFICATION_FAILED, error: code };
   }
 }
+

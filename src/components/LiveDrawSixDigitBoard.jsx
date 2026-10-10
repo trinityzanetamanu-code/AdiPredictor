@@ -187,6 +187,9 @@ export default function LiveDrawSixDigitBoard({
         <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 break-all">
           <dt>Source URL</dt><dd className="text-slate-200">{sourceUrl}</dd>
           <dt>Fetch mode</dt><dd className="text-slate-200">{fetchMode || 'cached_snapshot'}</dd>
+          <dt>Source result status</dt><dd className="text-slate-200">{board?.result_status || 'unknown'}</dd>
+          <dt>Source timezone</dt><dd className="text-slate-200">{board?.source_timezone || 'unknown'}</dd>
+          <dt>Finality evidence</dt><dd className="text-slate-200">{board?.finality_evidence?.contract_id || 'unverified'}</dd>
           <dt>Board status</dt><dd className="text-slate-200">{status}</dd>
           <dt>Last refresh</dt><dd className="text-slate-200">{lastRefresh || '-'}</dd>
           <dt>Source draw date</dt><dd className="text-slate-200">{board?.draw_date || '-'}</dd>
@@ -202,3 +205,4 @@ export default function LiveDrawSixDigitBoard({
     </section>
   );
 }
+

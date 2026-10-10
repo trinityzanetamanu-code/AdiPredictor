@@ -7,6 +7,9 @@ export function predictionFreshness(prediction, latest) {
   if (!prediction || !latest) {
     return { fresh: false, stale: Boolean(prediction), reason: 'PREDICTION_OR_DATASET_MISSING' };
   }
+  if (prediction.dataset_alignment && prediction.dataset_alignment !== 'MATCH') {
+    return { fresh: false, stale: true, reason: prediction.dataset_alignment };
+  }
   const basis = prediction.latest_result || {};
   const basisDate = prediction.prediction_basis_date || basis.date;
   const basisResult = fourDigits(prediction.prediction_basis_result || basis.number);
@@ -29,3 +32,4 @@ export function predictionChangeNote(prediction) {
     ? 'Kandidat diperbarui sesuai perhitungan data terbaru.'
     : 'Beberapa kandidat tetap sama setelah perhitungan ulang.';
 }
+

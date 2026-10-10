@@ -36,6 +36,8 @@ jobs:
       - run: npm ci
       - run: npm ci --prefix before
       - run: npx playwright install --with-deps chromium
+      - name: Verify foreground dataset and LiveDraw synchronization
+        run: node scripts/check_foreground_sync.mjs
       - name: Capture before at Android viewport
         timeout-minutes: 4
         continue-on-error: true
@@ -158,3 +160,4 @@ jobs:
             artifacts/${{ steps.artifact.outputs.name }}
             ${{ steps.artifact.outputs.metadata }}
           if-no-files-found: error
+

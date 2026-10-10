@@ -1,3 +1,4 @@
+import { alignPredictionWithDataset } from './datasetRevision.js';
 import { normalizeArchivePath, validatePredictionArchive } from './predictionArchive.js';
 
 const REMOTE_ROOT =
@@ -10,6 +11,38 @@ const MARKET_FILES = {
 };
 
 const provenance = new WeakMap();
+const retainedPayloads = new Map();
+const cacheablePath = (path) => /^(data\/(hk|sgp|sdy)\.json|predictions\/(hk|sgp|sdy)\/latest\.json)$/.test(path);
+export function clearDataMemoryCache() { retainedPayloads.clear(); }
+function readRetained(path) {
+  if (retainedPayloads.has(path)) return retainedPayloads.get(path);
+  if (!cacheablePath(path)) return null;
+  try {
+    const item = JSON.parse(globalThis.localStorage?.getItem(`CANONICAL_CACHE_V1:${path}`) || 'null');
+    if (item?.data && item?.meta?.source === 'REMOTE') { retainedPayloads.set(path, item); return item; }
+  } catch { /* Missing storage is harmless. */ }
+  return null;
+}
+function remember(path, data, meta) {
+  if (!cacheablePath(path)) return;
+  const item = { data, meta };
+  retainedPayloads.set(path, item);
+  try { globalThis.localStorage?.setItem(`CANONICAL_CACHE_V1:${path}`, JSON.stringify(item)); } catch { /* Storage quota does not affect the in-memory guard. */ }
+}
+function regresses(incoming, current) {
+  const a = Array.isArray(incoming) ? incoming[0] : incoming?.latest_result;
+  const b = Array.isArray(current) ? current[0] : current?.latest_result;
+  const ad = a?.result_date || a?.date;
+  const bd = b?.result_date || b?.date;
+  if (!bd) return false;
+  if (!ad || ad < bd) return true;
+  if (ad !== bd) return false;
+  const an = a?.nomor || a?.number;
+  const bn = b?.nomor || b?.number;
+  if (String(an) !== String(bn)) return true; // same draw is a conflict, not a silent correction
+  if (!Array.isArray(incoming) && Number(incoming?.metadata_revision || 0) < Number(current?.metadata_revision || 0)) return true;
+  return false;
+}
 const fetchEvents = [];
 const MAX_FETCH_EVENTS = 80;
 export const getDataProvenance = (value) => value && typeof value === 'object'
@@ -99,16 +132,25 @@ async function remoteFirst(relativePath, localPath, optional = false, signal = n
   const select = ({ data, meta }, source, reason = null) => {
     const observation = { ...meta, source, fallback_reason: reason };
     const remoteHttp = /^HTTP (\d+)/.exec(reason || '');
-    recordFetchEvent(meta, source === 'REMOTE' ? 'REMOTE' : 'APK_FALLBACK',
-      source === 'REMOTE' ? null : remoteHttp ? `REMOTE_HTTP_${remoteHttp[1]}` : 'REMOTE_UNAVAILABLE');
+    recordFetchEvent(meta, source === 'REMOTE' ? 'REMOTE' : source === 'REMOTE_CACHE' ? 'REMOTE_CACHE' : 'APK_FALLBACK',
+      source === 'REMOTE' ? null : source === 'REMOTE_CACHE' ? reason : remoteHttp ? `REMOTE_HTTP_${remoteHttp[1]}` : 'REMOTE_UNAVAILABLE');
     console.info('AdiPredictor fetch', observation);
     if (data && typeof data === 'object') provenance.set(data, observation);
     return data;
   };
   try {
-    return select(await fetchJson(REMOTE_ROOT + '/' + relativePath, 12000, signal), 'REMOTE');
+    const fetched = await fetchJson(REMOTE_ROOT + '/' + relativePath, 12000, signal);
+    const retained = readRetained(relativePath);
+    if (retained && regresses(fetched.data, retained.data)) {
+      return select(retained, 'REMOTE_CACHE', 'REMOTE_REGRESSION_OR_DRAW_CONFLICT');
+    }
+    const data = select(fetched, 'REMOTE');
+    remember(relativePath, data, getDataProvenance(data));
+    return data;
   } catch (remoteError) {
     if (signal?.aborted) throw remoteError;
+    const retained = readRetained(relativePath);
+    if (retained) return select(retained, 'REMOTE_CACHE', safeFailureReason(remoteError));
     if (!localPath) {
       if (optional) return null;
       throw remoteError;
@@ -138,6 +180,13 @@ export async function loadMarketData(marketCode) {
   );
 
   return Array.isArray(data) ? data : [];
+}
+
+export async function loadMarketBundle(marketCode) {
+  const [dataset, rawPrediction] = await Promise.all([loadMarketData(marketCode), loadPrediction(marketCode)]);
+  const prediction = await alignPredictionWithDataset(marketCode, dataset, rawPrediction);
+  if (prediction && getDataProvenance(rawPrediction)) provenance.set(prediction, getDataProvenance(rawPrediction));
+  return { dataset, prediction };
 }
 
 export async function loadCollectorStatus() {
@@ -240,3 +289,4 @@ export async function loadTafsir() {
   if (Array.isArray(data?.items)) return data.items;
   return [];
 }
+

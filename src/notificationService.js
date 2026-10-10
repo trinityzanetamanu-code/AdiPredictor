@@ -98,7 +98,7 @@ export function buildRuntimeNotificationEvents({ previous, current, installedVer
 
     const currentPrediction = current?.predictions?.[market];
     const previousPrediction = previous?.predictions?.[market];
-    if (previous && preferences.prediction && currentPrediction?.dataset_fingerprint
+    if (previous && preferences.prediction && (!currentPrediction?.dataset_alignment || currentPrediction.dataset_alignment === 'MATCH') && currentPrediction?.dataset_fingerprint
       && currentPrediction.dataset_fingerprint !== previousPrediction?.dataset_fingerprint
       && currentPrediction.prediction_basis_date === currentRow?.result_date
       && String(currentPrediction.prediction_basis_result).padStart(4, '0') === String(currentRow?.nomor).padStart(4, '0')) {
@@ -261,3 +261,4 @@ export async function registerNotificationActionListener(callback) {
     return LocalNotifications.addListener('localNotificationActionPerformed', (action) => callback(notificationNavigation(action.notification?.extra)));
   } catch { return null; }
 }
+

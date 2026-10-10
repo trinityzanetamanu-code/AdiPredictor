@@ -31,7 +31,7 @@ test('HK native board is never labelled official Hong Kong lottery', () => {
   assert.equal(source.official, false);
   assert.equal(source.sourceLabel, 'HongkongPools Market Source');
   assert.doesNotMatch(source.sourceLabel, /official hong kong lottery/i);
-  assert.equal(source.pageUrl, 'https://www.hongkongpools.com/live');
+  assert.equal(source.pageUrl, 'https://www.hongkongpools.com/live.html');
   assert.equal(source.mode, PLAYER_MODES.NATIVE_BOARD);
 });
 
@@ -111,3 +111,4 @@ test('native Singapore official buttons use Capacitor Browser with the correct m
     { url: 'https://www.singaporepools.com.sg/en/product/pages/toto_results.aspx', presentationStyle: 'popover' },
   ]);
 });
+

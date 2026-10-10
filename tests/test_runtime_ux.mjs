@@ -53,7 +53,7 @@ test('HK live state waits with spinners and resolves independently at 4D/full-6D
     liveState: verified.state,
   }), current);
   const fullBoard = { draw_date: '2026-09-21', first: '789912', second: '123456', third: '654321', starter: ['111111'], consolation: ['222222'] };
-  assert.equal(deriveHKLiveState({ scheduleState: 'RESULT_POSTED', datasetRow: current, fullBoard }).state, 'RESULT_FINAL');
+  assert.equal(deriveHKLiveState({ scheduleState: 'RESULT_POSTED', datasetRow: current, fullBoard }).state, 'FULL_6D_AVAILABLE');
   assert.equal(deriveHKLiveState({ scheduleState: 'RESULT_POSTED', datasetRow: current, fullBoard: { ...fullBoard, draw_date: '2026-09-20', first: '782036' } }).state, 'FULL_6D_AVAILABLE');
   assert.equal(deriveHKLiveState({ scheduleState: 'LIVE_WINDOW', datasetRow: current, fullBoard: { first: '789912', second: '' } }).state, 'PARTIAL_RESULT');
 });
@@ -112,3 +112,4 @@ test('manual bridge reports explicit extraction diagnostics', async () => {
   assert.match(service, /FIRST_PRIZE_INVALID|error\?\.code/);
   assert.doesNotMatch(activity, /cf_clearance|captcha solver|challenge token/i);
 });
+

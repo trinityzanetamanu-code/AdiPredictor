@@ -1,0 +1,11 @@
+{
+  "type": "ACTUAL_HTTP_RESPONSE_SANITIZED",
+  "checked_at": "2026-10-10T20:04:07.636214+00:00",
+  "requested_url": "https://www.hongkongpools.com/live.html",
+  "final_url": "https://www.hongkongpools.com/live.html",
+  "http_status": 403,
+  "challenge": true,
+  "raw_response_sha256": "bb98201917704cd51ac5ddbe0e6638f5c8cb6661548fa4f647695c8a17b8a0f6",
+  "redaction": "Scripts, challenge URLs, tokens and session attributes removed; visible title retained. No result HTML obtained.",
+  "redirect_count": 0
+}

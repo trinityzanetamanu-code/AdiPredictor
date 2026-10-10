@@ -24,8 +24,7 @@ import {
 } from 'lucide-react';
 import {
   loadCollectorStatus,
-  loadMarketData,
-  loadPrediction,
+  loadMarketBundle,
   loadPredictionHistory,
   loadOfficial4DResult,
   loadOfficialTotoResult,
@@ -164,6 +163,7 @@ function verificationLabel(value) {
   if (!value) return 'Menunggu status';
   if (value === 'official_primary') return 'Sumber resmi';
   if (value === 'primary_source') return 'Sumber utama';
+  if (value === 'validated_final_hongkongpools') return 'HongkongPools · hasil final tervalidasi';
   if (value.startsWith('confirmed_')) return 'Cross-check terkonfirmasi';
   return value;
 }
@@ -201,6 +201,9 @@ export function AppProvider({ children }) {
   const [lastRefresh, setLastRefresh] = useState(null);
   const [dataError, setDataError] = useState('');
   const [releaseMetadata, setReleaseMetadata] = useState(null);
+  const [liveSnapshot, setLiveSnapshot] = useState({ markets: {}, status: {} });
+  const liveSnapshotRef = useRef({ markets: {}, status: {} });
+  const nativeHKProbeRef = useRef({ failures: 0, nextAt: 0 });
   const [runtimeLatestResults, setRuntimeLatestResults] = useState({ HK: null, SGP: null, SDY: null });
 
   const toastTimerRef = useRef(null);
@@ -216,7 +219,7 @@ export function AppProvider({ children }) {
     refreshCoordinatorRef.current = createLatestRefreshCoordinator();
   }
   if (!runtimeReconciliationRunnerRef.current) {
-    runtimeReconciliationRunnerRef.current = createBoundedReconciliationRunner({ minIntervalMs: 3000 });
+    runtimeReconciliationRunnerRef.current = createBoundedReconciliationRunner({ minIntervalMs: 10000 });
   }
 
   const showToast = (msg) => {
@@ -234,39 +237,20 @@ export function AppProvider({ children }) {
     }
   };
 
-  const refreshData = async (silent = false) => {
+  const refreshPersistentData = async (silent = false) => {
     const requestId = refreshCoordinatorRef.current.begin();
     if (!silent) setIsRefreshing(true);
 
     try {
-      const [
-        hk,
-        sgp,
-        sdy,
-        status,
-        hkPred,
-        sgpPred,
-        sdyPred,
-        hkHistory,
-        sgpHistory,
-        sdyHistory,
-        remoteTafsir,
-        remoteReleaseMetadata,
-      ] =
+      const [hkBundle, sgpBundle, sdyBundle, status, hkHistory, sgpHistory, sdyHistory, remoteTafsir, remoteReleaseMetadata] =
         await Promise.all([
-          loadMarketData('HK'),
-          loadMarketData('SGP'),
-          loadMarketData('SDY'),
-          loadCollectorStatus(),
-          loadPrediction('HK'),
-          loadPrediction('SGP'),
-          loadPrediction('SDY'),
-          loadPredictionHistory('HK'),
-          loadPredictionHistory('SGP'),
-          loadPredictionHistory('SDY'),
-          loadTafsir(),
-          loadAppReleaseMetadata(),
+          loadMarketBundle('HK'), loadMarketBundle('SGP'), loadMarketBundle('SDY'),
+          loadCollectorStatus(), loadPredictionHistory('HK'), loadPredictionHistory('SGP'), loadPredictionHistory('SDY'),
+          loadTafsir(), loadAppReleaseMetadata(),
         ]);
+      const { dataset: hk, prediction: hkPred } = hkBundle;
+      const { dataset: sgp, prediction: sgpPred } = sgpBundle;
+      const { dataset: sdy, prediction: sdyPred } = sdyBundle;
 
       const nextMarketData = { HK: hk, SGP: sgp, SDY: sdy };
       if (!refreshCoordinatorRef.current.isLatest(requestId)) {
@@ -331,6 +315,7 @@ export function AppProvider({ children }) {
       console.error('Gagal sinkronisasi data:', err);
       if (refreshCoordinatorRef.current.isLatest(requestId)) {
         setDataError(err?.message || 'Gagal sinkronisasi data');
+        return { marketData: marketDataRef.current, failed: true };
       }
     } finally {
       if (refreshCoordinatorRef.current.isLatest(requestId)) setIsRefreshing(false);
@@ -361,9 +346,25 @@ export function AppProvider({ children }) {
     let snapshot;
     try {
       snapshot = await loadLiveDrawSnapshot();
+      const origin = getDataProvenance(snapshot)?.source;
+      if (origin === 'FALLBACK') {
+        snapshot = { ...snapshot, status: Object.fromEntries(['HK', 'SDY'].map((market) => [market, {
+          ...(snapshot?.status?.[market] || {}), cache_status: 'apk_fallback', health: 'CACHED',
+        }])) };
+      }
+      // Retain a newer in-memory board if publication/cache rolls backwards.
+      const boards = { ...(snapshot?.markets || {}) };
+      for (const market of ['HK', 'SDY']) {
+        const retained = liveSnapshotRef.current?.markets?.[market];
+        if (retained && (!boards[market] || retained.draw_date > boards[market].draw_date)) {
+          boards[market] = retained;
+          snapshot.status = { ...snapshot.status, [market]: { ...snapshot.status?.[market], cache_status: 'retained_newer_observation' } };
+        }
+      }
+      snapshot = { ...snapshot, markets: boards };
     } catch (error) {
       console.warn('Runtime snapshot tidak tersedia:', error?.message || error);
-      snapshot = { schema_version: 1, retrieved_at: null, markets: {} };
+      snapshot = { ...liveSnapshotRef.current, status: { ...liveSnapshotRef.current.status, HK: { health: 'FAILED', cache_status: 'cache', last_checked_at: new Date().toISOString(), fetch_errors: [{ error: error?.message || 'SNAPSHOT_FAILED' }] } } };
     }
 
     let snapshotRuntime = null;
@@ -384,26 +385,42 @@ export function AppProvider({ children }) {
       snapshotRuntime,
     });
 
-    if (shouldProbe) {
+    if (shouldProbe && Date.now() >= nativeHKProbeRef.current.nextAt) {
       try {
-        const direct = await fetchNativeLiveBoard('HK');
+        const direct = await fetchNativeLiveBoard('HK', { datasetDate: canonicalData?.HK?.[0]?.result_date });
         if (direct.available && direct.board) {
+          const failedPrimary = direct.board.fetch_errors?.some((e) => e.source_url === 'https://www.hongkongpools.com/live.html');
+          const failures = failedPrimary ? Math.min(nativeHKProbeRef.current.failures + 1, 3) : 0;
+          nativeHKProbeRef.current = { failures, nextAt: Date.now() + Math.min(300000, 60000 * (2 ** failures)) };
           const storedBoard = storeLocalHKBoard(
             direct.board,
-            `startup_runtime_reconciliation:${reason}`,
+            'structurally_valid_single_source',
           );
           snapshot = {
             ...snapshot,
             markets: { ...(snapshot?.markets || {}), HK: storedBoard },
+            status: { ...(snapshot?.status || {}), HK: {
+              ...(snapshot?.status?.HK || {}), last_checked_at: new Date().toISOString(),
+              selected_source: direct.board.source_url, source_draw_date: direct.board.draw_date,
+              result_status: direct.board.result_status || 'unknown',
+              fetch_errors: direct.board.fetch_errors || [], conflicts: direct.board.source_conflicts || [],
+              health: direct.board.fetch_errors?.length ? 'DEGRADED' : 'OBSERVED', cache_status: 'device_observation',
+            } },
           };
         }
       } catch (error) {
+        const failures = Math.min(nativeHKProbeRef.current.failures + 1, 3);
+        nativeHKProbeRef.current = { failures, nextAt: Date.now() + Math.min(300000, 60000 * (2 ** failures)) };
         console.warn('Direct runtime reconciliation dilewati:', error?.message || error);
+        snapshot = { ...snapshot, status: { ...(snapshot?.status || {}), HK: { ...(snapshot?.status?.HK || {}), health: 'FAILED', cache_status: 'cache', last_checked_at: new Date().toISOString(), fetch_errors: [{ error: error?.message || 'HK_FETCH_FAILED' }] } } };
       }
     }
 
+    // Shared foreground observations are available while Analisis stays open.
+    liveSnapshotRef.current = snapshot;
+    setLiveSnapshot(snapshot);
     const reconciled = reconcileRuntimeCandidates({
-      marketData: canonicalData,
+      marketData: marketDataRef.current,
       snapshot,
       localBoards: { HK: loadLocalHKBoard() },
       currentRuntimeResults: runtimeLatestResultsRef.current,
@@ -425,13 +442,16 @@ export function AppProvider({ children }) {
 
   const runForegroundReconciliation = (reason, { force = false, initial = false } = {}) => (
     runtimeReconciliationRunnerRef.current(async () => {
-      const refreshed = await refreshData(!initial);
-      return reconcileRuntimeSources({
+      const refreshed = await refreshPersistentData(!initial);
+      const reconciled = await reconcileRuntimeSources({
         marketDataOverride: refreshed?.marketData || marketDataRef.current,
         reason,
       });
+      return { ...reconciled, marketData: marketDataRef.current, failed: Boolean(refreshed?.failed) };
     }, { force })
   );
+
+  const refreshData = (silent = false) => runForegroundReconciliation(silent ? 'AUTO_REFRESH' : 'MANUAL_REFRESH', { initial: !silent });
 
   const publishRuntimeLatestResult = ({ market, board }) => {
     const reconciled = reconcileRuntimeObservation({
@@ -457,7 +477,9 @@ export function AppProvider({ children }) {
   useEffect(() => {
     runForegroundReconciliation('COLD_START', { force: true, initial: true });
 
-    const interval = setInterval(() => refreshData(true), 60000);
+    const interval = setInterval(() => {
+      if (document.visibilityState !== 'hidden') runForegroundReconciliation('FOREGROUND_POLL');
+    }, 60000);
     const onVisible = () => {
       const visible = document.visibilityState === 'visible';
       recordLiveDrawDiagnostic(
@@ -583,6 +605,7 @@ export function AppProvider({ children }) {
         dataError,
         releaseMetadata,
         runtimeLatestResults,
+        liveSnapshot,
         publishRuntimeLatestResult,
         refreshData,
         copyToClipboard,
@@ -674,7 +697,7 @@ function MarketSelect({ value, onChange }) {
   );
 }
 
-function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt, backendHealth, datasetState, datasetOrigin, predictionOrigin, statusOrigin }) {
+function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, predictionAt, backendHealth, datasetState, datasetOrigin, predictionOrigin, statusOrigin, liveStatus }) {
   const latestStatus = status?.latest_verified || status?.latest;
 
   return (
@@ -691,7 +714,7 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
         </div>
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400">App refresh</span>
-          <span className="text-emerald-400 font-semibold">Aktif · 60 detik</span>
+          <span className="text-emerald-400 font-semibold">Foreground · 60 detik</span>
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -701,6 +724,13 @@ function AutoStatusCard({ status, count, lastRefresh, dataError, collectedAt, pr
           </span>
         </div>
 
+        {liveStatus && <div className="rounded-lg border border-amber-500/25 p-3 text-amber-200" data-market-live-health>
+          <div>Sumber LiveDraw: {liveStatus.health || 'UNKNOWN'} · {liveStatus.cache_status || 'unknown'}</div>
+          <div>Undian sumber: {liveStatus.source_draw_date || '-'} · status {liveStatus.result_status || 'unknown'}</div>
+          <div>Dicek: {formatSyncTime(liveStatus.last_checked_at)}</div>
+          {liveStatus.fetch_errors?.length > 0 && <div className="mt-1 break-words">{liveStatus.fetch_errors.map((e) => e.error).join('; ')}</div>}
+          {liveStatus.canonical_acceptance && <div>Canonical HK: {liveStatus.canonical_acceptance.status} · {liveStatus.canonical_acceptance.reason || liveStatus.canonical_acceptance.draw_id}</div>}
+        </div>}
         <div className="flex items-center justify-between gap-4">
           <span className="text-slate-400">Freshness dataset</span>
           <span className="font-semibold text-right text-slate-200">{datasetState?.state || 'UNKNOWN'}</span>
@@ -1208,6 +1238,7 @@ function GeneratorPanel() {
     marketCode,
     setMarketCode,
     marketData,
+    liveSnapshot,
     collectorStatus,
     predictions,
     runtimeLatestResults,
@@ -1237,7 +1268,7 @@ function GeneratorPanel() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+      <div data-analysis-latest-number={latest.nomor} data-analysis-latest-date={latest.result_date} className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl">
             <Calendar className="w-6 h-6" />
@@ -1299,6 +1330,7 @@ function GeneratorPanel() {
             datasetOrigin={datasetOrigin}
             predictionOrigin={predictionOrigin}
             statusOrigin={getDataProvenance(collectorStatus)}
+            liveStatus={liveSnapshot?.status?.[marketCode]}
           />
         </div>
 
@@ -1474,7 +1506,7 @@ function liveDrawState({ isRefreshing, dataError, status, latest, prediction }) 
 }
 
 function LiveDrawPanel() {
-  const { marketData, collectorStatus, predictions, isRefreshing, lastRefresh, dataError, refreshData, publishRuntimeLatestResult, liveDrawMarket: liveMarket, setLiveDrawMarket: setLiveMarket } = useApp();
+  const { marketData, liveSnapshot, collectorStatus, predictions, isRefreshing, lastRefresh, dataError, refreshData, publishRuntimeLatestResult, liveDrawMarket: liveMarket, setLiveDrawMarket: setLiveMarket } = useApp();
   const [singaporeMode, setSingaporeMode] = useState(() => selectSingaporeMode());
   const [officialResults, setOfficialResults] = useState({ fourD: null, toto: null });
   const [officialResultCheckedAt, setOfficialResultCheckedAt] = useState(null);
@@ -1485,11 +1517,6 @@ function LiveDrawPanel() {
     error: null,
     checkedAt: null,
   });
-  const [boardRefreshNonce, setBoardRefreshNonce] = useState(0);
-  const boardRequestCoordinatorRef = useRef(null);
-  if (!boardRequestCoordinatorRef.current) {
-    boardRequestCoordinatorRef.current = createLatestRefreshCoordinator();
-  }
 
   useEffect(() => {
     if (liveMarket !== 'SGP') return undefined;
@@ -1523,100 +1550,19 @@ function LiveDrawPanel() {
   }, [singaporeMode, liveMarket]);
 
   useEffect(() => {
-    if (!['HK', 'SDY'].includes(liveMarket)) return undefined;
-    let mounted = true;
-    let timer;
-
-    const refreshBoard = async () => {
-      const requestId = boardRequestCoordinatorRef.current.begin();
-      const source = LIVE_DRAW_SOURCES[liveMarket];
-      const scheduleState = calculateLiveState(source.schedule).status;
-      if (liveMarket === 'HK' && scheduleState === 'LIVE_WINDOW') refreshData(true);
-      if (mounted) {
-        setBoardState((current) => ({
-          ...current,
-          status: 'checking',
-          fetchMode: 'checking_source',
-          error: null,
-        }));
-      }
-      let cachedSnapshot = null;
-      try {
-        cachedSnapshot = await loadLiveDrawSnapshot();
-      } catch (error) {
-        console.warn('Cached live board unavailable:', error);
-      }
-
-      const cached = cachedSnapshot?.markets?.[liveMarket] || null;
-      const localVerified = liveMarket === 'HK' ? loadLocalHKBoard() : null;
-      const datasetRow = marketData[liveMarket]?.[0] || null;
-      let selectedBoard = localVerified ? attachDatasetValidation(localVerified, datasetRow) : cached ? attachDatasetValidation(cached, datasetRow) : null;
-      let fetchMode = localVerified ? 'device_local_verified_board' : cached
-        ? getDataProvenance(cachedSnapshot)?.source === 'FALLBACK' ? 'apk_bundled_snapshot' : 'github_cached_snapshot'
-        : 'no_snapshot';
-      let errorMessage = null;
-      let status = cached ? 'cached' : 'unavailable';
-
-      try {
-        const direct = await fetchNativeLiveBoard(liveMarket);
-        if (!mounted || !boardRequestCoordinatorRef.current.isLatest(requestId)) return;
-        if (direct.available && direct.board) {
-          const runtimeBoard = liveMarket === 'HK'
-            ? storeLocalHKBoard(direct.board, 'public_mirror_structural_validation')
-            : direct.board;
-          selectedBoard = attachDatasetValidation(runtimeBoard, datasetRow);
-          fetchMode = direct.reason;
-          status = 'ready';
-        } else if (direct.reason === 'web_platform') {
-          fetchMode = cached ? 'web_cached_snapshot' : 'web_snapshot_unavailable';
-        }
-      } catch (error) {
-        errorMessage = error?.message || 'Direct native source gagal';
-        status = selectedBoard ? 'cached' : 'unavailable';
-      }
-
-      if (!mounted || !boardRequestCoordinatorRef.current.isLatest(requestId)) return;
-      if (['HK', 'SDY'].includes(liveMarket) && selectedBoard) {
-        try {
-          publishRuntimeLatestResult({ market: liveMarket, board: selectedBoard });
-        } catch (error) {
-          errorMessage = error?.code || error?.message || 'BOARD_VALIDATION_FAILED';
-        }
-      }
-
-      if (mounted) {
-        setBoardState({
-          board: selectedBoard,
-          status,
-          fetchMode,
-          error: errorMessage,
-          checkedAt: new Date().toISOString(),
-        });
-      }
-    };
-
-    const scheduleNext = () => {
-      const source = LIVE_DRAW_SOURCES[liveMarket];
-      const scheduleState = calculateLiveState(source.schedule).status;
-      timer = window.setTimeout(async () => {
-        await refreshBoard();
-        if (mounted) scheduleNext();
-      }, liveBoardRefreshMs({ ...source, scheduleState }));
-    };
-    refreshBoard();
-    scheduleNext();
-    return () => {
-      mounted = false;
-      window.clearTimeout(timer);
-    };
-  }, [
-    liveMarket,
-    boardRefreshNonce,
-    marketData.HK?.[0]?.result_date,
-    marketData.HK?.[0]?.nomor,
-    marketData.SDY?.[0]?.result_date,
-    marketData.SDY?.[0]?.nomor,
-  ]);
+    if (!['HK', 'SDY'].includes(liveMarket)) return;
+    const cached = liveSnapshot?.markets?.[liveMarket] || null;
+    const local = liveMarket === 'HK' ? loadLocalHKBoard() : null;
+    const selected = local && (!cached || local.draw_date > cached.draw_date) ? local : cached;
+    const health = liveSnapshot?.status?.[liveMarket];
+    setBoardState({
+      board: selected ? attachDatasetValidation(selected, marketData[liveMarket]?.[0]) : null,
+      status: health?.health === 'FAILED' || ['cache', 'apk_fallback', 'retained_newer_observation'].includes(health?.cache_status) ? 'cached' : selected ? 'ready' : 'unavailable',
+      fetchMode: health?.cache_status || 'shared_foreground_snapshot',
+      error: health?.fetch_errors?.map((e) => e.error).join('; ') || null,
+      checkedAt: health?.last_checked_at || liveSnapshot?.retrieved_at,
+    });
+  }, [liveMarket, liveSnapshot, marketData]);
 
   const sgpSource = LIVE_DRAW_SOURCES[singaporeMode];
   const sgpOfficialResult = singaporeMode === 'SGP_4D' ? officialResults.fourD : officialResults.toto;
@@ -1725,7 +1671,7 @@ function LiveDrawPanel() {
           status={boardState.status}
           error={boardState.error}
           lastRefresh={formatSyncTime(boardState.checkedAt)}
-          onRefresh={() => setBoardRefreshNonce((value) => value + 1)}
+          onRefresh={() => refreshData(false)}
           onOpenSource={() => openLivePage(boardState.board?.source_url || selectedSource.pageUrl)}
           liveState={liveMarket === 'HK' ? hkLive?.state : selectedScheduleState}
           fastResult={hkFastResult}
@@ -2018,3 +1964,4 @@ function MainContent() {
     </div>
   );
 }
+

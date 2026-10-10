@@ -1,8 +1,8 @@
 export const LIVE_BOARD_URLS = Object.freeze({
   HK: {
     publicMirrorUrl: 'https://rankcrack.com/hk.php',
-    pageUrl: 'https://www.hongkongpools.com/live',
-    fallbackUrl: 'https://www.hongkongpools.com/live.html',
+    pageUrl: 'https://www.hongkongpools.com/live.html',
+    fallbackUrl: 'https://www.hongkongpools.com/live',
     source: 'HongkongPools Market Source',
   },
   SDY: {
@@ -111,9 +111,12 @@ function extractPrizeRows(html) {
   // Some simple source pages do not use table rows. Keep a bounded fallback
   // around each label while still accepting only exact six-digit values.
   for (const [key, pattern] of Object.entries(LABELS)) {
-    if (buckets[key].length) continue;
+    if (rows.length || buckets[key].length) continue;
     const match = String(html || '').match(new RegExp(`${pattern.source}([\\s\\S]{0,1200})`, 'i'));
-    if (match) buckets[key].push(...numbersFromHtml(match[1]));
+    if (match) {
+      const nextLabel = new RegExp(Object.entries(LABELS).filter(([name]) => name !== key).map(([, label]) => label.source).join('|'), 'i');
+      buckets[key].push(...numbersFromHtml(match[1].split(nextLabel)[0]));
+    }
   }
   return Object.fromEntries(Object.entries(buckets).map(([key, values]) => [key, [...new Set(values)]]));
 }
@@ -147,7 +150,7 @@ export function isSecurityChallengeHtml(html) {
   return /cf-mitigated|challenge-platform|<title>\s*Just a moment|melakukan verifikasi keamanan/i.test(String(html || ''));
 }
 
-export function parseSixDigitBoard(html, market, sourceUrl = LIVE_BOARD_URLS[market]?.pageUrl) {
+export function parseSixDigitBoard(html, market, sourceUrl = LIVE_BOARD_URLS[market]?.pageUrl, { allowPartial = false } = {}) {
   if (!String(html || '').trim()) throw boardError('TABLE_NOT_FOUND', 'HTML live board kosong');
   if (isSecurityChallengeHtml(html)) {
     throw boardError('CHALLENGE_REQUIRED', 'Source dilindungi challenge; tidak mencoba bypass');
@@ -168,7 +171,16 @@ export function parseSixDigitBoard(html, market, sourceUrl = LIVE_BOARD_URLS[mar
     consolation: rows.consolation,
     full_first_prize_6d: first,
     derived_4d: first.slice(-4),
+    result_status: 'unknown',
+    finality_evidence: null,
+    verification: 'structurally_valid_single_source',
+    source_timezone: market === 'HK' ? 'Asia/Hong_Kong' : 'Australia/Sydney',
+    market_timezone: market === 'HK' ? 'Asia/Hong_Kong' : 'Australia/Sydney',
   };
+  if (allowPartial && !['first', 'second', 'third', 'starter', 'consolation'].every((key) => Array.isArray(board[key]) ? board[key].length : board[key])) {
+    if (!board.draw_date) throw boardError('DATE_NOT_FOUND', 'Draw date tidak valid');
+    return { ...board, result_status: 'partial' };
+  }
   return validateSixDigitBoard(board);
 }
 
@@ -200,7 +212,7 @@ export function deriveHKLiveState({ scheduleState, datasetRow, prediction, fullB
   const basis = prediction?.latest_result || {};
   const predictionReady = has4d && basis.date === datasetRow?.result_date &&
     String(basis.number || '').padStart(4, '0') === dataset4d && prediction?.target_date > basis.date;
-  if (hasFull && fullBoard.draw_date === datasetRow?.result_date && fullBoard.first.slice(-4) === dataset4d) {
+  if (hasFull && fullBoard.result_status === 'final' && datasetRow?.verification === 'validated_final_hongkongpools' && fullBoard.draw_date === datasetRow?.result_date && fullBoard.first.slice(-4) === dataset4d) {
     return { state: 'RESULT_FINAL', has4d, hasFull: true, predictionReady };
   }
   if (hasFull) return { state: 'FULL_6D_AVAILABLE', has4d, hasFull: true, predictionReady };
@@ -242,6 +254,7 @@ export function attachDatasetValidation(board, datasetRow) {
     ...board,
     dataset_4d: /^\d{4}$/.test(dataset4d) ? dataset4d : null,
     dataset_latest_date: datasetDate,
+    source_verification: board.source_verification || board.verification || 'structurally_valid_single_source',
     matches_dataset: comparable ? board.derived_4d === dataset4d : null,
     verification: !sameDate
       ? 'dataset_date_mismatch'
@@ -275,22 +288,33 @@ async function nativeGet(CapacitorHttp, url, headers = {}) {
   return responseText(response);
 }
 
-export async function fetchNativeLiveBoard(market) {
+export async function fetchHKBoardFromSources(get, { datasetDate = null } = {}) {
+  const boards = [];
+  const errors = [];
+  for (const url of [LIVE_BOARD_URLS.HK.pageUrl, LIVE_BOARD_URLS.HK.fallbackUrl, LIVE_BOARD_URLS.HK.publicMirrorUrl]) {
+    try {
+      const board = parseSixDigitBoard(await get(url), 'HK', url, { allowPartial: true });
+      if (datasetDate && board.draw_date < datasetDate) throw boardError('SOURCE_STALE', `Source stale: ${board.draw_date} < ${datasetDate}`);
+      boards.push(board);
+    } catch (error) {
+      errors.push({ source_url: url, error: error?.code || error?.message || 'FETCH_FAILED' });
+    }
+  }
+  if (!boards.length) throw boardError('HK_FETCH_FAILED', JSON.stringify(errors));
+  boards.sort((a, b) => b.draw_date.localeCompare(a.draw_date));
+  const selected = boards[0];
+  return { ...selected, fetch_errors: errors, source_conflicts: boards.filter((b) => b.draw_date === selected.draw_date && b.first !== selected.first)
+    .map((b) => ({ source_url: b.source_url, draw_date: b.draw_date, first: b.first })) };
+}
+
+export async function fetchNativeLiveBoard(market, { datasetDate } = {}) {
   if (!['HK', 'SDY'].includes(market)) throw new Error(`Native live board tidak tersedia untuk ${market}`);
   const { Capacitor, CapacitorHttp } = await import('@capacitor/core');
   if (!Capacitor.isNativePlatform()) return { available: false, reason: 'web_platform', board: null };
 
   if (market === 'HK') {
-    let lastError;
-    for (const url of [LIVE_BOARD_URLS.HK.publicMirrorUrl, LIVE_BOARD_URLS.HK.pageUrl, LIVE_BOARD_URLS.HK.fallbackUrl]) {
-      try {
-        const html = await nativeGet(CapacitorHttp, url);
-        return { available: true, reason: 'native_http', board: parseSixDigitBoard(html, 'HK', url) };
-      } catch (error) {
-        lastError = error;
-      }
-    }
-    throw lastError || new Error('HK source tidak tersedia');
+    const board = await fetchHKBoardFromSources((url) => nativeGet(CapacitorHttp, url), { datasetDate });
+    return { available: true, reason: 'native_http', board };
   }
 
   await nativeGet(CapacitorHttp, LIVE_BOARD_URLS.SDY.pageUrl);
@@ -309,3 +333,4 @@ export function liveBoardRefreshMs(source) {
   if (!source?.schedule) return 60000;
   return source.scheduleState === 'LIVE_WINDOW' ? 10000 : 75000;
 }
+

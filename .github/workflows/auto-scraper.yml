@@ -12,6 +12,7 @@ on:
     paths:
       - 'scripts/collector.py'
       - 'scripts/live_board_collector.py'
+      - 'scripts/hk_canonical.py'
       - 'scripts/prediction_engine.py'
       - 'scripts/publish_generated_data.sh'
       - 'config/collector_sources.json'
@@ -23,6 +24,7 @@ on:
     paths:
       - 'scripts/collector.py'
       - 'scripts/live_board_collector.py'
+      - 'scripts/hk_canonical.py'
       - 'scripts/prediction_engine.py'
       - 'scripts/publish_generated_data.sh'
       - 'config/collector_sources.json'
@@ -81,3 +83,4 @@ jobs:
           PREDICTION_FORCE: '0'
           MAX_PUSH_ATTEMPTS: '3'
         run: bash scripts/publish_generated_data.sh
+

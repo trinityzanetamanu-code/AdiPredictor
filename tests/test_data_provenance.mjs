@@ -1,3 +1,6 @@
+import { beforeEach } from 'node:test';
+import { clearDataMemoryCache } from '../src/dataClient.js';
+beforeEach(() => clearDataMemoryCache());
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getDataProvenance, loadMarketData, loadPrediction, loadPredictionHistory, loadLiveDrawSnapshot } from '../src/dataClient.js';
@@ -129,3 +132,4 @@ test('YouTube API script failure allows a fresh script retry', async () => {
   windowLike.onYouTubeIframeAPIReady();
   assert.equal(await second, windowLike.YT);
 });
+

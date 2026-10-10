@@ -1,3 +1,6 @@
+import { beforeEach } from 'node:test';
+import { clearDataMemoryCache } from '../src/dataClient.js';
+beforeEach(() => clearDataMemoryCache());
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
@@ -108,3 +111,4 @@ test('old APK pair, network loss and reversed completion never claim a new canon
     assert.equal(predictionFreshness(newPrediction, { ...newRow, nomor: '0053' }).fresh, false);
   } finally { globalThis.fetch = original; }
 });
+

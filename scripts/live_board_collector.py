@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Collect normalized HK/SDY six-digit boards without executing source scripts.
 
-The live board is auxiliary UI data. It never writes the prediction datasets.
+Only a validated final HongkongPools observation may enter the HK dataset.
+Collection, canonical acceptance, and dataset reconciliation are separate steps.
 """
 
 from __future__ import annotations
@@ -21,9 +22,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "public" / "data"
 SNAPSHOT_PATH = DATA_DIR / "live-draw.json"
 HK_SOURCES = (
-    ("https://rankcrack.com/hk.php", "KocokHK Mirror"),
-    ("https://www.hongkongpools.com/live", "HongkongPools Market Source"),
     ("https://www.hongkongpools.com/live.html", "HongkongPools Market Source"),
+    ("https://www.hongkongpools.com/live", "HongkongPools Market Source"),
+    ("https://rankcrack.com/hk.php", "KocokHK Mirror"),
 )
 SDY_PAGE_URL = "https://www.sydneypoolstoday.com/live.html"
 SDY_DATA_URL = "https://www.sydneypoolstoday.com/getLiveContent"
@@ -88,6 +89,8 @@ def _numbers_from_container(container: Tag) -> list[str]:
     output = re.findall(r"(?<!\d)\d{6}(?!\d)", container.get_text(" ", strip=True))
     digits = [digit for image in container.find_all("img") if (digit := _image_digit(image))]
     output.extend("".join(digits[index:index + 6]) for index in range(0, len(digits) - 5, 6))
+    text_digits = [value for value in container.get_text(" ", strip=True).split() if re.fullmatch(r"[0-9]", value)]
+    output.extend("".join(text_digits[index:index + 6]) for index in range(0, len(text_digits) - 5, 6))
     return list(dict.fromkeys(number for number in output if re.fullmatch(r"\d{6}", number)))
 
 
@@ -114,6 +117,8 @@ def _draw_date(soup: BeautifulSoup) -> str:
 
 
 def validate_board(board: dict) -> dict:
+    if board.get("market") not in {"HK", "SDY"}:
+        raise LiveBoardError("Market identity invalid")
     for field in ("first", "second", "third"):
         if not re.fullmatch(r"\d{6}", str(board.get(field, ""))):
             raise LiveBoardError(f"{field} harus exact 6 digit")
@@ -130,7 +135,7 @@ def validate_board(board: dict) -> dict:
     return board
 
 
-def parse_six_digit_board(html: str, market: str, source: str, source_url: str) -> dict:
+def parse_six_digit_board(html: str, market: str, source: str, source_url: str, allow_partial: bool = False) -> dict:
     if re.search(r"cf-mitigated|challenge-platform|<title>\s*Just a moment", html or "", re.I):
         raise LiveBoardError("Source dilindungi challenge; bypass tidak dicoba")
     soup = BeautifulSoup(html or "", "html.parser")
@@ -160,7 +165,15 @@ def parse_six_digit_board(html: str, market: str, source: str, source_url: str) 
         "consolation": buckets["consolation"],
         "full_first_prize_6d": first,
         "derived_4d": first[-4:],
+        "source_timezone": "Asia/Hong_Kong" if market == "HK" else "Australia/Sydney",
+        "market_timezone": "Asia/Hong_Kong" if market == "HK" else "Australia/Sydney",
+        "result_status": "unknown",
+        "finality_evidence": None,
+        "verification": "structurally_valid_single_source",
     }
+    if allow_partial and not all(board[k] for k in ("first", "second", "third", "starter", "consolation")):
+        board["result_status"] = "partial"
+        return board
     return validate_board(board)
 
 
@@ -182,6 +195,8 @@ def attach_dataset_validation(board: dict, dataset_row: Optional[dict]) -> dict:
         **board,
         "dataset_4d": dataset_number if re.fullmatch(r"\d{4}", dataset_number) else None,
         "matches_dataset": matches,
+        "dataset_latest_date": dataset_date,
+        "source_verification": board.get("source_verification", board.get("verification", "structurally_valid_single_source")),
         "verification": (
             "dataset_date_mismatch" if not same_date else
             "dataset_unavailable" if not comparable else
@@ -192,19 +207,28 @@ def attach_dataset_validation(board: dict, dataset_row: Optional[dict]) -> dict:
 
 
 def collect_hk(session: requests.Session) -> dict:
-    errors = []
+    errors, candidates = [], []
     dataset_date = (_dataset_row("HK") or {}).get("result_date")
     for url, source_name in HK_SOURCES:
         try:
-            response = session.get(url, headers=_headers(), timeout=25)
+            response = session.get(url, headers=_headers(), timeout=(10, 15))
             html = _valid_response(response, url)
-            board = parse_six_digit_board(html, "HK", source_name, url)
+            board = parse_six_digit_board(html, "HK", source_name, url, allow_partial=True)
+            board["response_url"] = response.url or url
             if dataset_date and board["draw_date"] < dataset_date:
                 raise LiveBoardError(f"Source stale: {board['draw_date']} < dataset {dataset_date}")
-            return board
-        except Exception as exc:  # preserve the last verified snapshot on any source failure
-            errors.append(str(exc))
-    raise LiveBoardError("; ".join(errors))
+            candidates.append(board)
+        except Exception as exc:
+            errors.append({"source_url": url, "error": str(exc)})
+    if not candidates:
+        raise LiveBoardError(json.dumps(errors, ensure_ascii=False))
+    # A stale first board must not stop discovery of a fresher alternate.
+    selected = max(candidates, key=lambda b: (b["draw_date"], b["source_url"] == HK_SOURCES[0][0]))
+    selected["canonical_candidate"] = next((dict(b) for b in candidates if b["source_url"] == HK_SOURCES[0][0]), None)
+    selected["fetch_errors"] = errors
+    selected["source_observations"] = [{"draw_date": b["draw_date"], "first": b["first"], "source_url": b["source_url"]} for b in candidates]
+    selected["source_conflicts"] = [b for b in selected["source_observations"] if b["draw_date"] == selected["draw_date"] and b["first"] != selected["first"]]
+    return selected
 
 
 def collect_sdy(session: requests.Session) -> dict:
@@ -241,22 +265,75 @@ def update_snapshot(path: Path, boards: dict[str, dict], retrieved_at: str) -> b
     return True
 
 
-def collect_live_boards(markets: Iterable[str], retrieved_at: str, path: Path = SNAPSHOT_PATH) -> dict:
+def publish_live_boards(result: dict, retrieved_at: str, path: Path = SNAPSHOT_PATH) -> bool:
+    existing = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    markets = dict(existing.get("markets") or {})
+    statuses = dict(existing.get("status") or {})
+    for market in result["requested"]:
+        board = result["boards"].get(market)
+        cached = markets.get(market)
+        if board:
+            board = {key: value for key, value in board.items() if key != "canonical_candidate"}
+            if cached and cached.get("draw_date") == board.get("draw_date") and cached.get("first") != board.get("first"):
+                evidence = {"draw_id": f"{market}:{board['draw_date']}", "old_first": cached.get("first"),
+                            "new_first": board.get("first"), "old_source": cached.get("source_url"),
+                            "new_source": board.get("source_url"), "detected_at": retrieved_at,
+                            "resolution": "OBSERVATION_CONFLICT_NOT_CANONICAL_CORRECTION"}
+                board["runtime_conflict"] = True
+                board["runtime_conflicts"] = (cached.get("runtime_conflicts", []) + [evidence])[-8:]
+                board["source_conflicts"] = board.get("source_conflicts", []) + [evidence]
+            # Repeated reads do not change the actual result observation time.
+            same = cached and all(cached.get(k) == board.get(k) for k in ("draw_date", "first", "second", "third", "starter", "consolation"))
+            if not cached or board["draw_date"] >= cached.get("draw_date", ""):
+                markets[market] = {**board, "retrieved_at": cached.get("retrieved_at") if same else retrieved_at}
+        if markets.get(market):
+            markets[market] = attach_dataset_validation(markets[market], _dataset_row(market))
+        selected = markets.get(market)
+        errors = [e for e in result["errors"] if e["market"] == market]
+        fetch_errors = (board or {}).get("fetch_errors", [])
+        conflicts = (board or {}).get("source_conflicts", [])
+        statuses[market] = {
+            "last_checked_at": retrieved_at,
+            "last_valid_result": _dataset_row(market),
+            "selected_source": (selected or {}).get("source_url"),
+            "source_draw_date": (selected or {}).get("draw_date"),
+            "result_status": (selected or {}).get("result_status", "unknown"),
+            "fetch_errors": errors + fetch_errors,
+            "conflicts": conflicts,
+            "dataset_conflict": (selected or {}).get("matches_dataset") is False,
+            "cache_status": "cache" if errors or not board else "source_observation",
+            "canonical_acceptance": result.get("canonical_acceptance", {}).get(market),
+            "health": "FAILED" if errors else "DEGRADED" if fetch_errors or conflicts else "OBSERVED",
+        }
+    payload = {"schema_version": 2, "retrieved_at": retrieved_at, "markets": markets, "status": statuses}
+    text = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() and path.read_text(encoding="utf-8") == text:
+        return False
+    path.write_text(text, encoding="utf-8")
+    return True
+
+
+def collect_live_boards(markets: Iterable[str], retrieved_at: str, path: Path = SNAPSHOT_PATH, publish: bool = True) -> dict:
     requested = [market for market in markets if market in {"HK", "SDY"}]
     session = requests.Session()
-    boards: dict[str, dict] = {}
-    errors: list[dict] = []
+    boards, errors = {}, []
     collectors = {"HK": collect_hk, "SDY": collect_sdy}
-    for market in requested:
-        try:
-            board = collectors[market](session)
-            boards[market] = attach_dataset_validation(board, _dataset_row(market))
-            print(f"[{market}-LIVE] {board['draw_date']} first={board['first']} derived={board['derived_4d']}")
-        except Exception as exc:
-            errors.append({"market": market, "error": str(exc)})
-            print(f"[{market}-LIVE] WARNING: {exc}")
-    changed = update_snapshot(path, boards, retrieved_at) if boards else False
-    return {"status": "updated" if changed else "no_change", "markets": sorted(boards), "errors": errors}
+    try:
+        for market in requested:
+            try:
+                boards[market] = collectors[market](session)
+                print(f"[{market}-LIVE] {boards[market]['draw_date']} first={boards[market]['first']}")
+            except Exception as exc:
+                errors.append({"market": market, "error": str(exc)})
+                print(f"[{market}-LIVE] FAILED: {exc}")
+    finally:
+        session.close()
+    result = {"status": "partial_failure" if errors else "observed", "markets": sorted(boards),
+              "requested": requested, "boards": boards, "errors": errors}
+    if publish:
+        result["changed"] = publish_live_boards(result, retrieved_at, path)
+    return result
 
 
 def main() -> int:
@@ -268,8 +345,9 @@ def main() -> int:
     now = datetime.now(ZoneInfo("Asia/Jakarta")).isoformat(timespec="seconds")
     result = collect_live_boards(requested, now, args.output)
     print(f"[LIVE-BOARD] {result['status']} markets={','.join(result['markets']) or '-'} warnings={len(result['errors'])}")
-    return 0 if result["markets"] or args.output.exists() else 1
+    return 1 if result["errors"] else 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

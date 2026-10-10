@@ -15,9 +15,14 @@ import requests
 from bs4 import BeautifulSoup
 
 try:
-    from scripts.live_board_collector import collect_live_boards
+    from scripts.live_board_collector import collect_live_boards, publish_live_boards
 except ImportError:  # direct execution: python scripts/collector.py
-    from live_board_collector import collect_live_boards
+    from live_board_collector import collect_live_boards, publish_live_boards
+
+try:
+    from scripts.hk_canonical import validate_hk_canonical
+except ImportError:
+    from hk_canonical import validate_hk_canonical
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config" / "collector_sources.json"
@@ -1059,6 +1064,47 @@ def write_status(config: dict, results: List[dict], collected_at: str, year: int
     return True
 
 
+def accept_hk_canonical(board: dict, config: dict, collected_at: str) -> dict:
+    try:
+        proof = validate_hk_canonical(board, collected_at)
+    except (ValueError, KeyError, TypeError) as exc:
+        return {"status": "rejected", "reason": str(exc)}
+    item = ParsedResult("HK", date.fromisoformat(proof["result_date"]), proof["nomor"],
+                        "hongkongpools_live", "HongkongPools Market Source", board["source_url"])
+    resolve_period_from_rule(item, config["markets"]["HK"])
+    verified = VerifiedResult(item, proof["verification"], 1, [item.source_id])
+    old = next((r for r in read_existing("HK") if r.get("result_date") == proof["result_date"]), None)
+    if old and (str(old.get("nomor")) != proof["nomor"] or (old.get("source_draw_6d") and old["source_draw_6d"] != proof["source_draw_6d"])):
+        conflict = {"draw_id": proof["draw_id"], "old": old, "new": {**canonical_record(verified, collected_at), **proof},
+                    "first_seen_at": collected_at, "resolution": "OWNER_REVIEW_REQUIRED"}
+        path = DATA_DIR / "hk-conflicts.json"
+        records = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+        key = (proof["draw_id"], str(old.get("nomor")), proof["nomor"], proof["source_draw_6d"])
+        if not any((r["draw_id"], str(r["old"].get("nomor")), r["new"]["nomor"], r["new"]["source_draw_6d"]) == key for r in records):
+            records.append(conflict)
+            path.write_text(json.dumps(records, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        return {"status": "conflict", "draw_id": proof["draw_id"], "old_number": old["nomor"], "new_number": proof["nomor"]}
+    if old:
+        # Attach primary provenance once, without moving result timestamps or
+        # changing the date/number fingerprint (no new prediction/event).
+        if old.get("source_draw_6d") == proof["source_draw_6d"] and old.get("verification") == proof["verification"]:
+            return {"status": "identical", "draw_id": proof["draw_id"], "new_count": 0}
+        rows = read_existing("HK")
+        for row in rows:
+            if row.get("result_date") == proof["result_date"]:
+                row.update({**proof, "source_id": item.source_id, "source_name": item.source_name,
+                            "source_url": item.source_url, "source_ids": sorted(set(old.get("source_ids", []) + [item.source_id])), "confirmations": 1,
+                            "prior_source_evidence": {key: old.get(key) for key in ("source_id", "source_name", "source_url", "source_ids", "verification", "confirmations", "collected_at")}})
+        write_market("HK", rows)
+        return {"status": "metadata_updated", "draw_id": proof["draw_id"], "new_count": 0}
+    rows, new_rows, _ = merge_records("HK", [verified], collected_at)
+    for row in rows:
+        if row.get("result_date") == proof["result_date"]:
+            row.update(proof)
+    write_market("HK", rows)
+    return {"status": "accepted", "draw_id": proof["draw_id"], "new_count": len(new_rows)}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="AdiPredictor automatic result collector")
     parser.add_argument("--market", choices=["HK", "SGP", "SDY", "ALL"], default="ALL")
@@ -1075,7 +1121,12 @@ def main() -> int:
 
     results = []
     failures = []
-    live_board = collect_live_boards(markets, collected_at)
+    live_board = collect_live_boards(markets, collected_at, publish=False)
+    hk_board = live_board["boards"].get("HK")
+    if "HK" in markets:
+        primary = (hk_board or {}).get("canonical_candidate")
+        acceptance = accept_hk_canonical(primary, cfg, collected_at) if primary else {"status": "blocked", "reason": "HK_PRIMARY_UNAVAILABLE"}
+        live_board["canonical_acceptance"] = {"HK": acceptance}
     print(
         f"[LIVE-BOARD] {live_board['status']} "
         f"markets={','.join(live_board['markets']) or '-'} "
@@ -1101,11 +1152,17 @@ def main() -> int:
             failures.append({"market": market, "error": str(exc)})
             print(f"[{market}] ERROR: {exc}", file=sys.stderr)
 
+    # All metadata comparisons use the dataset from THIS collection cycle.
+    publish_live_boards(live_board, collected_at)
     write_status(cfg, results + [
         {"market": f["market"], "status": "error", "error": f["error"]}
         for f in failures
     ], collected_at, year)
 
+    if live_board["errors"] and (args.strict or any(e["market"] == "HK" for e in live_board["errors"])):
+        return 1
+    if "HK" in markets and live_board.get("canonical_acceptance", {}).get("HK", {}).get("status") in {"blocked", "conflict", "rejected"}:
+        return 1
     if failures and (args.strict or not results):
         return 1
     return 0
@@ -1113,3 +1170,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
