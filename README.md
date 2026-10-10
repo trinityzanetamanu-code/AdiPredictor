@@ -64,11 +64,10 @@ The engine hashes the market, ordered date/result pairs, and engine version. An 
 
 ## Android identity, versioning, and signing
 
-The Android application ID is permanently `com.adipredictor.app`. The CI workflow generates the Capacitor Android project and applies:
+The Android application ID is permanently `com.adipredictor.app`. The protected release workflow generates the Capacitor Android project and applies:
 
 - `versionName`: package version plus CI build code, for example `2.0.0+build.100123`.
 - `versionCode`: the greatest of `100000 + github.run_number` and the last stable release code plus one. `ANDROID_LAST_RELEASE_VERSION_CODE` can pin the last distributed code if workflow history is migrated.
-- CI artifact: `AdiPredictor-v<package-version>-build<versionCode>-ci-debug.apk`;
 - verified stable artifact: `AdiPredictor-v<package-version>-build<versionCode>-stable.apk`.
 
 Stable release signing uses only GitHub Actions secrets:
@@ -78,13 +77,13 @@ Stable release signing uses only GitHub Actions secrets:
 - `ANDROID_KEY_ALIAS`
 - `ANDROID_KEY_PASSWORD`
 
-Pull requests and ordinary CI use `.github/workflows/deploy.yml`, which is deliberately debug-only and has read-only repository permissions. It contains no signing-secret references, never decodes a keystore, never runs `assembleRelease`, and never publishes stable metadata.
+Pull requests and main code changes use `.github/workflows/validation.yml`: full Python tests, JavaScript tests, web build, controlled foreground synchronization, diagnostic capture checks and the existing paito viewport audit. It has read-only permissions, no signing secrets and no APK compilation or release publication. The former `Build Android Debug APK` workflow (`deploy.yml`) was removed in Stage 1B; historical runs/artifacts are retained.
 
 Stable releases use the separate `.github/workflows/android-release.yml`. It is triggered only by `workflow_dispatch`, requires `confirm_release`, is restricted to `main`, and runs through the protected GitHub Environment `android-release`. The four keystore values are Environment secrets. `ANDROID_EXPECTED_CERT_SHA256` and `ANDROID_LAST_RELEASE_VERSION_CODE` are Environment variables.
 
 The expected certificate fingerprint is mandatory for a stable build. The workflow normalizes case and colon formatting, verifies the signed APK with `apksigner`, and fails before publication if the actual signer differs. The version resolver uses the workflow run number, `public/app-release.json`, and `ANDROID_LAST_RELEASE_VERSION_CODE`, then requires the new stable versionCode to be strictly greater than every recorded previous stable code.
 
-The keystore is decoded into the runner temporary directory only inside the protected release job, never committed, and removed after the build. CI debug metadata always has `UPDATE_CHANNEL_READY=false` and `RELEASE_SIGNING_RUNTIME_VERIFIED=false`. Only a certificate-verified stable artifact has both values set to `true`; only that workflow can publish non-secret metadata to `public/app-release.json`.
+The keystore is decoded into the runner temporary directory only inside the protected release job, never committed, and removed after the build. Historical CI debug metadata has `UPDATE_CHANNEL_READY=false` and `RELEASE_SIGNING_RUNTIME_VERIFIED=false`; no workflow produces new debug APKs. Only a certificate-verified stable artifact has both values set to `true`; only that workflow can publish non-secret metadata to `public/app-release.json`.
 
 Android can update an installed app in place only when the application ID and signing certificate match and the new version code is higher. Historical workflow builds used a runner-generated debug key and this repository contains neither that private key nor an old APK certificate. If that legacy key cannot be recovered outside the repository, one uninstall/reinstall is required to migrate to the stable release certificate. After that migration, retaining the same GitHub release keystore enables future in-place updates and preserves app data.
 
@@ -104,11 +103,17 @@ npm install
 npm run test:live
 npm run build
 
-# Local Android compilation check; release signing remains a CI-secret operation.
-npx cap add android
-npx cap copy android
-ANDROID_VERSION_CODE=100001 ANDROID_VERSION_NAME=2.0.0+build.100001 node scripts/configure_android_release.mjs
-cd android && ./gradlew assembleDebug
+# Controlled browser validation (no APK).
+npx playwright install chromium
+node scripts/check_foreground_sync.mjs
+node scripts/check_hk_diagnostic.mjs
 ```
 
 The prediction JSON includes dataset validation, prior-prediction audit, P1-P7 Top-K and walk-forward results, frozen P8 with fingerprint, raw and reliability-weighted consensus, visual metadata, final candidates, confidence, candidate counts, and a UI-aligned Quick View.
+
+## Stage 1B HK evidence capture
+
+Cloud source access and canonical acceptance remain separate gates. No production
+finality rule is enabled without actual result evidence. The Android-only capture
+kit and complete instructions are in [`docs/hk-android-diagnostic.md`](docs/hk-android-diagnostic.md).
+Owner DOM captures are diagnostic evidence only; they never update canonical data.

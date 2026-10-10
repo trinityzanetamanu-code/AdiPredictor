@@ -11,3 +11,5 @@
 7. Jika bersedia menyaksikan satu draw berikutnya, rekam jam saat papan live berubah dan status **BELUM TERVERIFIKASI**, kemudian jam saat data canonical diterbitkan dan prediksi berbasis hasil baru muncul di Analisis/Data/LiveDraw/histori/notifikasi. Ambil diagnostik **sebelum dan sesudah**; tampilkan tanggal dan angka sumber pembanding. Tanpa draw nyata, transisi produksi masih **BELUM TERBUKTI**.
 
 Yang perlu dikirim: screenshot versi stable sebelum dan versi kandidat sesudah pembaruan; screenshot pengaturan yang tetap tersimpan; JSON diagnostik awal/resume/offline/online; enam screenshot paito, rekaman perpindahan pasar dan SGP eksternal kembali; jika ada, rekaman transisi draw nyata. Hindari data pribadi pada rekaman; diagnostik aplikasi tidak menyalin token atau cookie.
+
+> Stage 1B: workflow lama `deploy.yml` / Build Android Debug APK sudah dihapus. Run dan artefak lama tetap merupakan catatan historis; audit viewport berikutnya tersedia melalui `validation.yml` tanpa build APK.

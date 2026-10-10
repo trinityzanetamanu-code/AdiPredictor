@@ -126,17 +126,26 @@ def test_version_code_honours_environment_last_release_guard(tmp_path):
     assert resolved["version_code"] == 100401
 
 
-def test_pr_android_workflow_is_debug_only_and_secret_free():
-    workflow = (ROOT / ".github" / "workflows" / "deploy.yml").read_text()
+def test_debug_workflow_removed_and_validation_is_secret_free():
+    workflows = ROOT / ".github" / "workflows"
+    assert not (workflows / "deploy.yml").exists()
+    for path in [*workflows.glob("*.yml"), *workflows.glob("*.yaml")]:
+        text = path.read_text()
+        assert "Build Android Debug APK" not in text
+        assert "assembleDebug" not in text
+        assert "app-debug.apk" not in text
+    workflow = (workflows / "validation.yml").read_text()
+    assert "branches: [main]" in workflow
     assert "pull_request:" in workflow
-    assert "assembleDebug" in workflow
-    assert "ci-debug" in workflow
-    assert "UPDATE_CHANNEL_READY=false" in workflow
-    assert "RELEASE_SIGNING_RUNTIME_VERIFIED=false" in workflow
-    assert "assembleRelease" not in workflow
-    assert "ANDROID_KEYSTORE_BASE64" not in workflow
-    assert "secrets." not in workflow
-    assert "Publish Verified Stable Release Metadata" not in workflow
+    assert "contents: read" in workflow
+    for command in ("python -m pytest -q", "npm run test:live", "npm run build",
+                    "node scripts/check_foreground_sync.mjs", "node scripts/check_hk_diagnostic.mjs",
+                    "node scripts/capture_paito_browser.mjs"):
+        assert command in workflow
+    for forbidden in ("assembleRelease", "ANDROID_KEYSTORE_BASE64", "secrets.",
+                      "write_android_build_metadata", "publish_release_metadata",
+                      "npx cap add", "setup-java", "*.apk"):
+        assert forbidden not in workflow
 
 
 def test_stable_release_workflow_is_manual_and_environment_protected():

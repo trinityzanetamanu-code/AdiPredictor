@@ -1,0 +1,11 @@
+{
+  "type": "ACTUAL_HTTP_ACCESS_CHECK",
+  "checked_at": "2026-10-10T21:02:01.753850+00:00",
+  "requested_url": "https://www.hongkongpools.com/live.html",
+  "final_url": "https://www.hongkongpools.com/live.html",
+  "http_status": 403,
+  "response_sha256": "d66913e69b3baf37cf1e91e9737e84e7ef6eda32706cfe30b7722cc836aa66b1",
+  "title": "Just a moment...",
+  "visible_text": "Just a moment... Enable JavaScript and cookies to continue",
+  "redirect_count": 0
+}

@@ -116,11 +116,11 @@ scripts/check_foreground_sync.mjs runs a controlled Playwright browser rehearsal
 cold start, remaining on Analisis while data advances, repeated snapshot polling,
 stale prediction suppression, prediction catch-up, focus/resume, reload, and the same canonical number/date across Analisis, Data
 and LiveDraw despite a stale 6D board. It
-never contacts a real draw source. The debug workflow runs this rehearsal.
+never contacts a real draw source. Stage 1B moved this rehearsal to validation.yml and removed deploy.yml.
 
 Physical Android device testing has not occurred. Local web build succeeds;
 local Gradle execution is blocked by unavailable Gradle download networking.
-Android Debug APK verification uses the existing CI workflow. No signed release
+Historical Android Debug APK verification used deploy.yml; that workflow was removed in Stage 1B. Validation now runs without compiling an APK. No signed release
 workflow, release, Kotlin migration, paito removal, signing/applicationId change,
 branch cleanup or new PR is part of this stage.
 
