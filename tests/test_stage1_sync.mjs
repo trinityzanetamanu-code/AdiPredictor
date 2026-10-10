@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { beforeEach, test } from 'node:test';
 import { readFile } from 'node:fs/promises';
-import { datasetRevision, alignPredictionWithDataset } from '../src/datasetRevision.js';
+import { datasetRevision, legacyDatasetFingerprint, alignPredictionWithDataset } from '../src/datasetRevision.js';
 import { clearDataMemoryCache, getDataProvenance, loadMarketBundle, loadMarketData } from '../src/dataClient.js';
 import { createBoundedReconciliationRunner } from '../src/runtimeResultReconciliation.js';
 import { fetchHKBoardFromSources, parseSixDigitBoard, zonedISODate, deriveHKLiveState } from '../src/liveDrawService.js';
@@ -132,4 +132,12 @@ test('Analisis, cold start and resume use the same global cycle while LiveDraw h
   assert.match(source,/runForegroundReconciliation\('APP_RESUME'/);
   assert.match(source,/setLiveSnapshot\(snapshot\)/);
   assert.doesNotMatch(panel,/fetchNativeLiveBoard|loadLiveDrawSnapshot|refreshBoard =/);
+});
+
+
+test('legacy current v2 verifies its original whole-dataset fingerprint without weakening the guard', async () => {
+  const legacy={...prediction,engine_version:'AdiPredictor-P1-P8-v2',dataset_fingerprint:await legacyDatasetFingerprint('HK',rows,'AdiPredictor-P1-P8-v2')};
+  assert.equal((await alignPredictionWithDataset('HK',rows,legacy)).dataset_alignment,'MATCH');
+  assert.equal((await alignPredictionWithDataset('HK',[rows[0],{...rows[1],nomor:'0002'}],legacy)).dataset_alignment,'DATASET_VERSION_MISMATCH');
+  assert.equal((await alignPredictionWithDataset('HK',rows,{...legacy,engine_version:'unknown'})).dataset_alignment,'DATASET_VERSION_UNAVAILABLE');
 });

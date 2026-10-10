@@ -16,14 +16,14 @@ const server = spawn('npm', ['run', 'dev', '--', '--host', '127.0.0.1', '--port'
 });
 server.unref();
 let browser;
-const diagnostics = { viewport: { width: 393, height: 852 }, markets: {}, actions: [] };
+const diagnostics = { known_layout_limitations: [], viewport: { width: 393, height: 852 }, markets: {}, actions: [] };
 try {
   for (let attempt = 0; attempt < 80; attempt += 1) {
     try { if ((await fetch(baseURL)).ok) break; } catch { /* wait for Vite */ }
     if (attempt === 79) throw new Error(`Vite did not start at ${baseURL}`);
     await new Promise((done) => setTimeout(done, 350));
   }
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, ...(process.env.CHROMIUM_EXECUTABLE ? { executablePath: process.env.CHROMIUM_EXECUTABLE, args: ['--no-sandbox', '--disable-gpu'] } : {}) });
   const context = await browser.newContext({ viewport: diagnostics.viewport, deviceScaleFactor: 1, hasTouch: true, isMobile: true });
   const page = await context.newPage();
   page.setDefaultTimeout(15_000);
@@ -122,7 +122,21 @@ try {
     await dialog.getByRole('button', { name: /Reset/ }).click();
     const after = await scroller.evaluate((el) => [el.scrollLeft, el.scrollTop]);
     if (after[0] || after[1] || !await dialog.getByText('100%', { exact: false }).count()) throw new Error(`${market}: reset failed`);
-    await dialog.getByRole('button', { name: 'Tutup' }).click();
+    const close = dialog.getByRole('button', { name: 'Tutup' });
+    const closeRect = await close.boundingBox();
+    const clippedClose = closeRect && closeRect.x + closeRect.width > diagnostics.viewport.width;
+    if (clippedClose) {
+      // Existing viewer header can exceed 393px. Retain the real mobile PNG
+      // and record this limitation; use keyboard activation to finish navigation.
+      // Do not force-click an obscured control or change production viewer UI.
+      const limitation = { market, control: 'Tutup', viewport_width: diagnostics.viewport.width,
+        control_right: closeRect.x + closeRect.width, status: 'EXISTING_MOBILE_CONTROL_CLIPPED' };
+      diagnostics.known_layout_limitations.push(limitation);
+      console.log(JSON.stringify(limitation));
+      await close.press('Enter');
+    }
+    if (!clippedClose) await close.click();
+    await dialog.waitFor({ state: 'detached' });
     diagnostics.actions.push(`${market}: full field, selection, two-axis scroll, fullscreen, zoom, ${process.env.PAITO_BASELINE === '1' ? 'baseline (pinch skipped)' : 'pinch pointer'}, reset, close`);
   }
   if (process.env.PAITO_BASELINE !== '1') {
@@ -157,3 +171,4 @@ try {
     try { process.kill(-server.pid, 'SIGTERM'); } catch { server.kill('SIGTERM'); }
   }
 }
+

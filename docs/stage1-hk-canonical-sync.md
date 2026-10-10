@@ -78,9 +78,10 @@ cache and labels it REMOTE_CACHE, instead of replacing it with an older APK.
 Current predictions carry dataset_revision = SHA256("MARKET|date:4D|...") in
 ascending date order. The UI hashes the whole fetched dataset, so concurrent
 publication, corrections to older rows, or mismatched versions cannot claim a
-matching prediction merely because the latest draw matches. Legacy current
-payloads without that evidence stay readable but cannot claim full alignment.
-Archive readers keep their existing compatibility behavior.
+matching prediction merely because the latest draw matches. Legacy current v2 payloads are verified against the existing known engine-version
+whole-dataset fingerprint contract. Payloads lacking either recognized identity
+stay readable but cannot claim full alignment. Archive readers keep their existing
+compatibility behavior.
 
 ## P5 metadata
 
@@ -120,3 +121,10 @@ local Gradle execution is blocked by unavailable Gradle download networking.
 Android Debug APK verification uses the existing CI workflow. No signed release
 workflow, release, Kotlin migration, paito removal, signing/applicationId change,
 branch cleanup or new PR is part of this stage.
+
+
+The existing paito viewport harness also revealed a clipped fullscreen Close
+control at 393px. VisualPaitoViewer is unchanged in Stage 1. The harness retains
+its actual mobile PNG, records EXISTING_MOBILE_CONTROL_CLIPPED, and uses keyboard
+activation for closing/navigation to finish the other checks. This is not a mobile-layout
+PASS or a device PASS; paito layout is outside this stage's implementation scope.
