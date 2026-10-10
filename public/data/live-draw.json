@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "retrieved_at": "2026-10-11T00:43:02+07:00",
+  "schema_version": 2,
+  "retrieved_at": "2026-10-11T03:12:04+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -18,10 +18,16 @@
       ],
       "full_first_prize_6d": "892331",
       "derived_4d": "2331",
+      "source_timezone": "Australia/Sydney",
+      "market_timezone": "Australia/Sydney",
+      "result_status": "unknown",
+      "finality_evidence": null,
+      "verification": "matches_prediction_dataset",
+      "retrieved_at": "2026-10-11T00:43:02+07:00",
       "dataset_4d": "2331",
       "matches_dataset": true,
-      "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-10-11T00:43:02+07:00"
+      "dataset_latest_date": "2026-10-10",
+      "source_verification": "structurally_valid_single_source"
     },
     "HK": {
       "market": "HK",
@@ -49,10 +55,83 @@
       ],
       "full_first_prize_6d": "536987",
       "derived_4d": "6987",
-      "dataset_4d": "6987",
-      "matches_dataset": true,
-      "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-10-01T23:33:43+07:00"
+      "dataset_4d": "3534",
+      "matches_dataset": null,
+      "verification": "dataset_date_mismatch",
+      "retrieved_at": "2026-10-01T23:33:43+07:00",
+      "dataset_latest_date": "2026-10-10",
+      "source_verification": "matches_prediction_dataset"
+    }
+  },
+  "status": {
+    "HK": {
+      "last_checked_at": "2026-10-11T03:12:04+07:00",
+      "last_valid_result": {
+        "id": 20261010,
+        "tanggal": "10 Okt 2026",
+        "periode": "HK-3570",
+        "nomor": "3534",
+        "result_date": "2026-10-10",
+        "market": "HK",
+        "source_id": "nexipools_hk",
+        "source_name": "NexiPools Hongkong Pools",
+        "source_url": "https://www.nexipools.com/id/hongkong/paito/",
+        "source_ids": [
+          "nexipools_hk",
+          "livenomor_hk"
+        ],
+        "collected_at": "2026-10-11T00:43:02+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
+      },
+      "selected_source": "https://rankcrack.com/hk.php",
+      "source_draw_date": "2026-09-30",
+      "result_status": "unknown",
+      "fetch_errors": [
+        {
+          "market": "HK",
+          "error": "[{\"source_url\": \"https://www.hongkongpools.com/live.html\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live.html\"}, {\"source_url\": \"https://www.hongkongpools.com/live\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live\"}, {\"source_url\": \"https://rankcrack.com/hk.php\", \"error\": \"Draw date tidak ditemukan\"}]"
+        }
+      ],
+      "conflicts": [],
+      "dataset_conflict": false,
+      "cache_status": "cache",
+      "canonical_acceptance": {
+        "status": "blocked",
+        "reason": "HK_PRIMARY_UNAVAILABLE"
+      },
+      "health": "FAILED"
+    },
+    "SDY": {
+      "last_checked_at": "2026-10-11T03:12:04+07:00",
+      "last_valid_result": {
+        "id": 20261010,
+        "tanggal": "10 Okt 2026",
+        "periode": "SD-3570",
+        "nomor": "2331",
+        "result_date": "2026-10-10",
+        "market": "SDY",
+        "source_id": "lomba4d_sdy",
+        "source_name": "Lomba4D Sydney Results",
+        "source_url": "https://www.lomba4dqueen.com/hasil/SY",
+        "source_ids": [
+          "lomba4d_sdy",
+          "waroengtogel_sdy",
+          "datatogel_sdy"
+        ],
+        "collected_at": "2026-10-10T19:56:14+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
+      },
+      "selected_source": "https://www.sydneypoolstoday.com/live.html",
+      "source_draw_date": "2026-10-10",
+      "result_status": "unknown",
+      "fetch_errors": [],
+      "conflicts": [],
+      "dataset_conflict": false,
+      "cache_status": "source_observation",
+      "canonical_acceptance": null,
+      "health": "OBSERVED"
     }
   }
 }
