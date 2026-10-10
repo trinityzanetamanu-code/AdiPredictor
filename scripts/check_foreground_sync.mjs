@@ -43,7 +43,7 @@ try {
     if (path.endsWith('history.json')) value = { records: [] };
     if (path === 'data/live-draw.json') {
       snapshotChecks += 1;
-      value = { schema_version: 2, markets: {}, status: { HK: { health: 'FAILED', cache_status: 'cache', source_draw_date: '2026-10-10', result_status: 'unknown', fetch_errors: [{ error: 'CONTROLLED_HTTP_403' }] } } };
+      value = { schema_version: 2, markets: { HK: { market: 'HK', draw_date: '2026-09-30', first: '123456', second: '111111', third: '222222', starter: ['333333'], consolation: ['444444'], derived_4d: '3456' } }, status: { HK: { health: 'FAILED', cache_status: 'cache', source_draw_date: '2026-10-10', result_status: 'unknown', fetch_errors: [{ error: 'CONTROLLED_HTTP_403' }] } } };
     }
     if (path === 'data/collector-status.json') value = { markets: {}, collected_at: '2026-10-10T19:00:00Z' };
     if (path.endsWith('.svg')) return route.fulfill({ status: 200, contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>' });
@@ -75,7 +75,13 @@ try {
   await page.reload();
   await page.waitForFunction(() => document.querySelector('[data-analysis-latest-number]')?.getAttribute('data-analysis-latest-number') === '0052');
   assert.deepEqual(failures, []);
-  console.log(JSON.stringify({ type: 'CONTROLLED_BROWSER_FIXTURE_NOT_DEVICE_TEST', cold_start: 'PASS', foreground_analisis: 'PASS', torn_pair_hidden: 'PASS', prediction_catchup: 'PASS', focus_resume: 'PASS', reload: 'PASS', page_errors: failures, snapshot_checks: snapshotChecks }));
+  await page.getByRole('button', { name: 'Data', exact: true }).last().click();
+  await page.waitForFunction(() => document.querySelector('[data-results-latest-source]')?.textContent.includes('0052'));
+  await page.getByRole('button', { name: 'LiveDraw', exact: true }).last().click();
+  await page.waitForFunction(() => document.querySelector('[data-live-canonical-result]')?.textContent.includes('0052'));
+  assert.match(await page.locator('[data-live-canonical-result]').innerText(), /2026-10-11/);
+  assert.deepEqual(failures, []);
+  console.log(JSON.stringify({ canonical_analysis_data_livedraw: 'PASS', type: 'CONTROLLED_BROWSER_FIXTURE_NOT_DEVICE_TEST', cold_start: 'PASS', foreground_analisis: 'PASS', torn_pair_hidden: 'PASS', prediction_catchup: 'PASS', focus_resume: 'PASS', reload: 'PASS', page_errors: failures, snapshot_checks: snapshotChecks }));
 } finally {
   await browser?.close();
   server.kill('SIGTERM');

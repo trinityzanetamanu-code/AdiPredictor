@@ -1675,6 +1675,7 @@ function LiveDrawPanel() {
           onOpenSource={() => openLivePage(boardState.board?.source_url || selectedSource.pageUrl)}
           liveState={liveMarket === 'HK' ? hkLive?.state : selectedScheduleState}
           fastResult={hkFastResult}
+          canonicalResult={marketData[liveMarket]?.[0]}
           predictionReady={liveMarket === 'HK' ? hkLive?.predictionReady : false}
         />
       )}

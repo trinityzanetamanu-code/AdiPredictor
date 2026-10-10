@@ -68,7 +68,8 @@ have a separate bounded cooldown within that coordinated operation.
 
 The LiveDraw panel reads the shared observations. The existing Singapore official
 4D/TOTO result path is retained. Per-market live health/errors are visible in
-Analisis as well as LiveDraw. No closed-app polling guarantee is made; scheduled
+Analisis as well as LiveDraw. LiveDraw also displays the last canonical 4D/date
+independently of any older or unverified 6D source board. No closed-app polling guarantee is made; scheduled
 GitHub collection remains independent of the device.
 
 Remote canonical datasets/current predictions are retained in memory and, when
@@ -113,7 +114,8 @@ foreground lifecycle bindings, alongside existing compatibility tests.
 
 scripts/check_foreground_sync.mjs runs a controlled Playwright browser rehearsal:
 cold start, remaining on Analisis while data advances, repeated snapshot polling,
-stale prediction suppression, prediction catch-up, focus/resume and reload. It
+stale prediction suppression, prediction catch-up, focus/resume, reload, and the same canonical number/date across Analisis, Data
+and LiveDraw despite a stale 6D board. It
 never contacts a real draw source. The debug workflow runs this rehearsal.
 
 Physical Android device testing has not occurred. Local web build succeeds;

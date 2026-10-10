@@ -82,6 +82,7 @@ export default function LiveDrawSixDigitBoard({
   onOpenSource,
   liveState,
   fastResult,
+  canonicalResult,
   predictionReady,
 }) {
   const title = market === 'HK' ? 'HONGKONG POOLS MARKET LIVE' : 'SYDNEY MARKET LIVE';
@@ -106,7 +107,17 @@ export default function LiveDrawSixDigitBoard({
         </div>
       </div>
 
-      {market === 'HK' && fastResult && (
+      {canonicalResult && /^\d{4}$/.test(String(canonicalResult.nomor || '')) && (
+        <div className="border-b border-slate-800 p-4 sm:p-5" data-live-canonical-result>
+          <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4 text-center">
+            <div className="text-[10px] font-black uppercase tracking-wider text-emerald-300">Hasil canonical terakhir</div>
+            <div className="mt-2 font-mono text-4xl font-black text-emerald-400">{canonicalResult.nomor}</div>
+            <div className="mt-1 text-[10px] text-slate-400">{canonicalResult.result_date} · {canonicalResult.periode || '-'}</div>
+            <div className="mt-1 text-[10px] text-slate-500">{canonicalResult.source_name || '-'}</div>
+          </div>
+        </div>
+      )}
+      {market === 'HK' && fastResult && !canonicalResult && (
         <div className="border-b border-slate-800 p-4 sm:p-5" data-hk-fast-result="true">
           <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4 text-center">
             <div className="text-[10px] font-black uppercase tracking-wider text-emerald-300">Hasil HK terbaru</div>
