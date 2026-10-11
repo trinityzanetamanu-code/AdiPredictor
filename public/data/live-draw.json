@@ -1,32 +1,32 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-10-11T09:18:39+07:00",
+  "retrieved_at": "2026-10-11T16:03:50+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
       "source": "SydneyPoolsToday Market Source",
       "source_url": "https://www.sydneypoolstoday.com/live.html",
-      "draw_date": "2026-10-10",
-      "first": "892331",
-      "second": "457867",
-      "third": "629297",
+      "draw_date": "2026-10-11",
+      "first": "622895",
+      "second": "689258",
+      "third": "627840",
       "starter": [
-        "292532"
+        "453519"
       ],
       "consolation": [
-        "476088"
+        "831653"
       ],
-      "full_first_prize_6d": "892331",
-      "derived_4d": "2331",
+      "full_first_prize_6d": "622895",
+      "derived_4d": "2895",
       "source_timezone": "Australia/Sydney",
       "market_timezone": "Australia/Sydney",
       "result_status": "unknown",
       "finality_evidence": null,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-10-11T00:43:02+07:00",
-      "dataset_4d": "2331",
+      "retrieved_at": "2026-10-11T16:03:50+07:00",
+      "dataset_4d": "2895",
       "matches_dataset": true,
-      "dataset_latest_date": "2026-10-10",
+      "dataset_latest_date": "2026-10-11",
       "source_verification": "structurally_valid_single_source"
     },
     "HK": {
@@ -65,7 +65,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-10-11T09:18:39+07:00",
+      "last_checked_at": "2026-10-11T16:03:50+07:00",
       "last_valid_result": {
         "id": 20261010,
         "tanggal": "10 Okt 2026",
@@ -103,28 +103,27 @@
       "health": "FAILED"
     },
     "SDY": {
-      "last_checked_at": "2026-10-11T09:18:39+07:00",
+      "last_checked_at": "2026-10-11T16:03:50+07:00",
       "last_valid_result": {
-        "id": 20261010,
-        "tanggal": "10 Okt 2026",
-        "periode": "SD-3570",
-        "nomor": "2331",
-        "result_date": "2026-10-10",
+        "id": 20261011,
+        "tanggal": "11 Okt 2026",
+        "periode": "SD-3571",
+        "nomor": "2895",
+        "result_date": "2026-10-11",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-10T19:56:14+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-10-11T16:03:50+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
-      "source_draw_date": "2026-10-10",
+      "source_draw_date": "2026-10-11",
       "result_status": "unknown",
       "fetch_errors": [],
       "conflicts": [],
