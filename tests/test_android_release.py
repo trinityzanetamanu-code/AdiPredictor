@@ -140,11 +140,12 @@ def test_debug_workflow_removed_and_validation_is_secret_free():
     assert "contents: read" in workflow
     for command in ("python -m pytest -q", "npm run test:live", "npm run build",
                     "node scripts/check_foreground_sync.mjs", "node scripts/check_hk_diagnostic.mjs",
-                    "node scripts/capture_paito_browser.mjs"):
+                    "node scripts/check_history_visuals.mjs"):
         assert command in workflow
     for forbidden in ("assembleRelease", "ANDROID_KEYSTORE_BASE64", "secrets.",
                       "write_android_build_metadata", "publish_release_metadata",
-                      "npx cap add", "setup-java", "*.apk"):
+                      "npx cap add", "setup-java", "*.apk", "paito-browser-viewport",
+                      "PAITO_", "path: before", "capture_paito_browser"):
         assert forbidden not in workflow
 
 

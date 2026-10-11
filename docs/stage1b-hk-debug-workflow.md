@@ -1,5 +1,7 @@
 # Stage 1B: source access evidence and validation without APKs
 
+> Historical report: Stage 2 removed the Pola Paito viewer and its capture/viewport CI job. Descriptions below record behavior at this report's original stage, not current UI instructions. Pola Visual, archived SVGs, visual audits, P5 and collector history sources remain.
+
 MAIN_BEFORE: `0ebd14ce545dee7c5ce8471e0d6dd5d2e6defd38`.
 Checked out main with a clean working tree in a separate checkout; prior local
 work in another workspace was retained. No AGENTS.md exists in this repository.

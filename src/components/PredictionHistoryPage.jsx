@@ -4,7 +4,6 @@ import { loadPredictionArchive, predictionAssetUrl } from '../dataClient';
 import { archiveResultState, createArchiveRequestCoordinator, publishedHistoryRecords } from '../predictionArchive';
 import { analyzeFourDConsensusTie } from '../predictionConsensus';
 import PredictionOutcomeAudit from './PredictionOutcomeAudit';
-import VisualPaitoViewer from './VisualPaitoViewer';
 
 const MARKET_OPTIONS = [['HK', 'HK'], ['SDY', 'SDY'], ['SGP', 'SGP']];
 const unavailable = 'tidak tersedia pada arsip asli';
@@ -166,21 +165,7 @@ function VisualPatterns({ archive, outcomeAudit }) {
   );
 }
 
-function PaitoPatterns({ archive, marketRows }) {
-  return (
-    <details className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-4" data-section="pola-paito">
-      <summary className="cursor-pointer text-xs font-bold text-emerald-200">Pola Paito — tabel historis untuk belajar</summary>
-      <div className="mt-3 space-y-3">
-        <div className="rounded-lg border border-slate-700 bg-slate-950/40 p-3 text-[10px] leading-relaxed text-slate-300">
-          Ini visualisasi turunan dari hasil canonical yang tersedia pada aplikasi dan dibatasi metadata arsip. Pola Paito terpisah dari Pola Visual, tidak mengganti SVG historis, bukan rumus terverifikasi, dan tidak masuk voting, skor, atau Main P1–P8.
-        </div>
-        <VisualPaitoViewer marketRows={marketRows} prediction={archive} patterns={archive.visual_patterns || []} />
-      </div>
-    </details>
-  );
-}
-
-function ArchiveDetails({ archive, record, marketRows }) {
+function ArchiveDetails({ archive, record }) {
   const actual = record.actual_result;
   return (
     <section className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/90 p-4 shadow-lg sm:p-5" data-loaded-prediction-archive>
@@ -188,12 +173,12 @@ function ArchiveDetails({ archive, record, marketRows }) {
       {actual && record.outcome_audit ? <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4"><summary className="cursor-pointer text-xs font-bold">Audit prediksi tanggal ini</summary><div className="mt-3"><PredictionOutcomeAudit audit={record.outcome_audit} /></div></details> : null}
       {!actual && <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 p-3 text-xs text-amber-300">Menunggu hasil. Audit tembus belum dibuat.</div>}
       {archive.prior_prediction_audit && <details className="rounded-xl border border-slate-800 bg-slate-950/40 p-4"><summary className="cursor-pointer text-xs font-bold">Audit prediksi sebelumnya yang tersimpan</summary><div className="mt-3"><PredictionOutcomeAudit audit={archive.prior_prediction_audit} /></div></details>}
-      <QuickView archive={archive} /><ConsensusDetails archive={archive} /><ModelDetails archive={archive} /><VisualPatterns archive={archive} outcomeAudit={record.outcome_audit} /><PaitoPatterns archive={archive} marketRows={marketRows} />
+      <QuickView archive={archive} /><ConsensusDetails archive={archive} /><ModelDetails archive={archive} /><VisualPatterns archive={archive} outcomeAudit={record.outcome_audit} />
     </section>
   );
 }
 
-export default function PredictionHistoryPage({ marketCode, setMarketCode, history, marketRows, onBack }) {
+export default function PredictionHistoryPage({ marketCode, setMarketCode, history, onBack }) {
   const records = useMemo(() => publishedHistoryRecords(history), [history]);
   const [selectedKey, setSelectedKey] = useState('');
   const [archive, setArchive] = useState(null);
@@ -228,7 +213,7 @@ export default function PredictionHistoryPage({ marketCode, setMarketCode, histo
       </section>
       {loading && <div className="flex items-center justify-center gap-2 rounded-2xl border border-slate-800 bg-slate-900/90 p-10 text-sm text-slate-400"><Loader2 className="h-5 w-5 animate-spin" /> Memuat satu arsip terpilih…</div>}
       {error && <div className="rounded-2xl border border-rose-500/25 bg-rose-500/5 p-5 text-sm text-rose-200"><div className="flex items-center gap-2"><AlertTriangle className="h-5 w-5" /> {error}</div><button type="button" onClick={() => setRetry((value) => value + 1)} className="mt-3 inline-flex items-center gap-2 rounded-lg border border-rose-500/30 px-3 py-2 text-xs font-bold"><RotateCcw className="h-4 w-4" /> Coba lagi</button></div>}
-      {archive && selectedRecord && <ArchiveDetails archive={archive} record={selectedRecord} marketRows={marketRows || []} />}
+      {archive && selectedRecord && <ArchiveDetails archive={archive} record={selectedRecord} />}
       {!records.length && !loading && <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-10 text-center text-sm text-slate-500">Belum ada arsip prediksi yang pernah diterbitkan untuk pasaran ini.</div>}
     </div>
   );

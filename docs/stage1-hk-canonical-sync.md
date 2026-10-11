@@ -1,5 +1,7 @@
 # Stage 1: HK acceptance, automatic reconciliation, P5 metadata
 
+> Historical report: Stage 2 removed the Pola Paito viewer and its capture/viewport CI job. Descriptions below record behavior at this report's original stage, not current UI instructions. Pola Visual, archived SVGs, visual audits, P5 and collector history sources remain.
+
 Baseline remote main: `1fa79a8455884fb0f49b5e6851d214e2f6037881`.
 No AGENTS.md exists in that tree. Direct git clone was blocked by the environment;
 the GitHub connector supplied the exact source/data snapshot. There was no local

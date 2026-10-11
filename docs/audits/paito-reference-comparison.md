@@ -1,5 +1,7 @@
 # Pola Paito: delapan contoh versus bidang aplikasi
 
+> Historical report: Stage 2 removed the Pola Paito viewer and its capture/viewport CI job. Descriptions below record behavior at this report's original stage, not current UI instructions. Pola Visual, archived SVGs, visual audits, P5 and collector history sources remain.
+
 Tanggal audit 26 September 2026. **Cocok** hanya menyatakan unsur tata letak atau interaksi yang benar-benar didukung; **berbeda** menyatakan bentuk berbeda; **tidak dapat dibuktikan** menyatakan gambar tidak menyimpan pemetaan canonical/rumus. Acuan `4435xx.jpg` diperiksa satu per satu; gambar pihak ketiga tidak ditanam dalam APK. Foto aplikasi dihasilkan oleh job `paito-browser-viewport` dan harus dilihat dari artefak `paito-viewport-before-after-<SHA>` pada [PR #7 Actions](https://github.com/trinityzanetamanu-code/AdiPredictor/actions/workflows/validation.yml). Sampai job itu benar-benar berhasil dan gambarnya diperiksa, **pemeriksaan visual Android masih BLOCKED**.
 
 | Contoh | Kolom dan pengelompokan | Urutan baris | Blok pasangan berwarna | Kotak pembatas | Garis | Layar ponsel | Asal angka |

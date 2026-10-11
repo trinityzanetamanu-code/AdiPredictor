@@ -77,7 +77,7 @@ Stable release signing uses only GitHub Actions secrets:
 - `ANDROID_KEY_ALIAS`
 - `ANDROID_KEY_PASSWORD`
 
-Pull requests and main code changes use `.github/workflows/validation.yml`: full Python tests, JavaScript tests, web build, controlled foreground synchronization, diagnostic capture checks and the existing paito viewport audit. It has read-only permissions, no signing secrets and no APK compilation or release publication. The former `Build Android Debug APK` workflow (`deploy.yml`) was removed in Stage 1B; historical runs/artifacts are retained.
+Pull requests and main code changes use `.github/workflows/validation.yml`: full Python tests, JavaScript tests, web build, controlled foreground synchronization, diagnostic capture checks and Android viewport checks for prediction history/archived visual SVGs. It has read-only permissions, no signing secrets and no APK compilation or release publication. The former `Build Android Debug APK` workflow (`deploy.yml`) was removed in Stage 1B; historical runs/artifacts are retained.
 
 Stable releases use the separate `.github/workflows/android-release.yml`. It is triggered only by `workflow_dispatch`, requires `confirm_release`, is restricted to `main`, and runs through the protected GitHub Environment `android-release`. The four keystore values are Environment secrets. `ANDROID_EXPECTED_CERT_SHA256` and `ANDROID_LAST_RELEASE_VERSION_CODE` are Environment variables.
 
@@ -107,6 +107,7 @@ npm run build
 npx playwright install chromium
 node scripts/check_foreground_sync.mjs
 node scripts/check_hk_diagnostic.mjs
+node scripts/check_history_visuals.mjs
 ```
 
 The prediction JSON includes dataset validation, prior-prediction audit, P1-P7 Top-K and walk-forward results, frozen P8 with fingerprint, raw and reliability-weighted consensus, visual metadata, final candidates, confidence, candidate counts, and a UI-aligned Quick View.
@@ -117,3 +118,10 @@ Cloud source access and canonical acceptance remain separate gates. No productio
 finality rule is enabled without actual result evidence. The Android-only capture
 kit and complete instructions are in [`docs/hk-android-diagnostic.md`](docs/hk-android-diagnostic.md).
 Owner DOM captures are diagnostic evidence only; they never update canonical data.
+
+Stage 2 removes the former Pola Paito viewer, grid/selection/zoom logic and its
+CI capture job. Histori Prediksi, Pola Visual, original archived SVGs, outcome
+audits and P5 remain available. Collector sources whose name or URL contains
+`paito` remain because they supply historical draw data, independently of the viewer.
+
+Rincian penghapusan, validasi dan referensi historis yang dipertahankan: [laporan Tahap 2](docs/stage2-paito-removal.md).
