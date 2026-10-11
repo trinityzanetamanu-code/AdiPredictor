@@ -28,7 +28,10 @@ prediction_engine.py, hk_canonical.py, predictionConsensus.js, datasetRevision.j
 dataClient.js dan PredictionOutcomeAudit.jsx identik dengan baseline integrasi.
 Tidak ada regenerasi angka atau fingerprint prediksi. Rumus/bobot/ranking P1–P8,
 generate_visual_patterns, visual_occurrences, model_visual_gate dan
-visual_pattern_evaluation tidak diubah. Semua 360 SVG tersimpan dipertahankan.
+visual_pattern_evaluation tidak diubah. Semua 360 SVG pada baseline implementasi dipertahankan. Setelah commit pertama,
+collector menerbitkan `4c0f6d079d0fd0d81f9e8126f95ce125eeba9cb6`: hanya
+13 file data/arsip/aset publik, termasuk enam SVG HK tambahan (total 366).
+Pembaruan angka berasal dari collector, bukan penghapusan viewer.
 
 ## Validasi
 
@@ -40,7 +43,9 @@ visual_pattern_evaluation tidak diubah. Semua 360 SVG tersimpan dipertahankan.
 - Build web: PASS (peringatan bundler Capacitor tentang import campuran tetap ada).
 - Controlled foreground synchronization: PASS untuk cold start, polling saat
   tetap di Analisis, resume, reload, Data/LiveDraw, dan penolakan pasangan data
-  serta prediksi yang tidak selaras.
+  serta prediksi yang tidak selaras. Fixture tanggal/nomor/periode kini diambil
+  dari baseline dataset aktif, bukan angka HK tetap, agar pembaruan collector
+  tidak menimbulkan kegagalan palsu. Perubahan hanya pada harness tes.
 - Controlled HK diagnostic: PASS untuk download bookmarklet, nol di depan,
   sanitasi dan penolakan challenge/halaman salah/tabel kosong. Tidak mengakses
   sumber HK nyata dan bukan bukti finalitas.

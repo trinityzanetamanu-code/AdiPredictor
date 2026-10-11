@@ -28,11 +28,17 @@ try {
   let phase = 'baseline';
   let snapshotChecks = 0;
   const previousHK = data.hk;
-  const newer = { ...previousHK[0], result_date: '2026-10-11', tanggal: '11 Okt 2026', nomor: '0052', periode: 'HK-3571', verification: 'CONTROLLED_BROWSER_FIXTURE' };
+  const baselineNumber = previousHK[0].nomor;
+  const nextDay = (date) => new Date(Date.parse(`${date}T00:00:00Z`) + 86400000).toISOString().slice(0, 10);
+  const nextDate = nextDay(previousHK[0].result_date);
+  const nextNumber = baselineNumber === '0052' ? '0053' : '0052';
+  const periodNumber = Number(previousHK[0].periode.match(/\d+$/)?.[0]);
+  assert.ok(Number.isFinite(periodNumber), 'fixture requires a numeric HK period');
+  const newer = { ...previousHK[0], result_date: nextDate, tanggal: nextDate, nomor: nextNumber, periode: `HK-${periodNumber + 1}`, verification: 'CONTROLLED_BROWSER_FIXTURE' };
   const advanced = [newer, ...previousHK];
   const advancedPrediction = { ...predictions.hk, prediction_basis_date: newer.result_date, prediction_basis_result: newer.nomor,
     latest_result: { date: newer.result_date, number: newer.nomor }, dataset_revision: await datasetRevision('HK', advanced),
-    target_date: '2026-10-12', target_period: 'HK-3572' };
+    target_date: nextDay(nextDate), target_period: `HK-${periodNumber + 2}` };
   await context.route('https://raw.githubusercontent.com/**', async (route) => {
     const path = new URL(route.request().url()).pathname.split('/public/')[1] || '';
     let value = {};
@@ -51,15 +57,15 @@ try {
   });
   const page = await context.newPage();
   page.on('pageerror', (error) => failures.push(error.message));
-  await page.clock.install({ time: new Date('2026-10-10T19:00:00Z') });
+  await page.clock.install({ time: new Date(`${previousHK[0].result_date}T19:00:00Z`) });
   await page.goto(origin);
-  await page.waitForFunction(() => document.querySelector('[data-analysis-latest-number]')?.getAttribute('data-analysis-latest-number') === '3534');
+  await page.waitForFunction((number) => document.querySelector('[data-analysis-latest-number]')?.getAttribute('data-analysis-latest-number') === number, baselineNumber);
   await page.waitForFunction(() => document.body.textContent.includes('PREDIKSI SELARAS DENGAN DATASET REMOTE'));
   const coldStartChecks = snapshotChecks;
   assert.ok(coldStartChecks > 0);
   phase = 'dataset_advanced';
   await page.clock.fastForward(61000);
-  await page.waitForFunction(() => document.querySelector('[data-analysis-latest-number]')?.getAttribute('data-analysis-latest-number') === '0052');
+  await page.waitForFunction((number) => document.querySelector('[data-analysis-latest-number]')?.getAttribute('data-analysis-latest-number') === number, nextNumber);
   assert.ok(snapshotChecks > coldStartChecks, 'foreground Analisis polling must fetch LiveDraw snapshot');
   assert.equal(await page.getByText('PREDIKSI SELARAS DENGAN DATASET REMOTE', { exact: false }).count(), 0, 'torn dataset/prediction pair cannot display aligned');
   phase = 'predicted';
@@ -73,13 +79,13 @@ try {
   assert.ok(snapshotChecks > beforeResume, 'window focus must reconcile');
   assert.deepEqual(failures, []);
   await page.reload();
-  await page.waitForFunction(() => document.querySelector('[data-analysis-latest-number]')?.getAttribute('data-analysis-latest-number') === '0052');
+  await page.waitForFunction((number) => document.querySelector('[data-analysis-latest-number]')?.getAttribute('data-analysis-latest-number') === number, nextNumber);
   assert.deepEqual(failures, []);
   await page.getByRole('button', { name: 'Data', exact: true }).last().click();
-  await page.waitForFunction(() => document.querySelector('[data-results-latest-source]')?.textContent.includes('0052'));
+  await page.waitForFunction((number) => document.querySelector('[data-results-latest-source]')?.textContent.includes(number), nextNumber);
   await page.getByRole('button', { name: 'LiveDraw', exact: true }).last().click();
-  await page.waitForFunction(() => document.querySelector('[data-live-canonical-result]')?.textContent.includes('0052'));
-  assert.match(await page.locator('[data-live-canonical-result]').innerText(), /2026-10-11/);
+  await page.waitForFunction((number) => document.querySelector('[data-live-canonical-result]')?.textContent.includes(number), nextNumber);
+  assert.ok((await page.locator('[data-live-canonical-result]').innerText()).includes(nextDate));
   assert.deepEqual(failures, []);
   console.log(JSON.stringify({ canonical_analysis_data_livedraw: 'PASS', type: 'CONTROLLED_BROWSER_FIXTURE_NOT_DEVICE_TEST', cold_start: 'PASS', foreground_analisis: 'PASS', torn_pair_hidden: 'PASS', prediction_catchup: 'PASS', focus_resume: 'PASS', reload: 'PASS', page_errors: failures, snapshot_checks: snapshotChecks }));
 } finally {
