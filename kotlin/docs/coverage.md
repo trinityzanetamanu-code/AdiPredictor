@@ -2,7 +2,7 @@
 
 Source: `d22097ffc4772d0436b4deb9bb647a82c77ffed1`, `scripts/prediction_engine.py`.
 
-All prediction, backtest, audit, visual and history calculations are independent Kotlin. Files, archives and the clock enter through the CLI adapter; the core only returns values/SVG text. Production orchestration remains Python.
+All prediction, backtest, audit, visual and history calculations are independent Kotlin. Files, archives and the clock enter through the CLI adapter; the core only returns values/SVG text. Stage 3B production file lifecycle is Kotlin; Git orchestration is shell and collector/backfill remain Python.
 
 | Python function | Kotlin implementation | Location / boundary |
 |---|---|---|
@@ -83,9 +83,9 @@ All prediction, backtest, audit, visual and history calculations are independent
 | `_candidate_number` | `extractNumber` | core / CLI boundary |
 | `prediction_sections` | `predictionSections` | Prediction.kt |
 | `build_prediction` | `buildPrediction` | Prediction.kt |
-| `write_prediction` | `CLI writeNew + compute (shadow only)` | CLI writes fresh output only; production skip/overwrite policy remains unchanged Python |
+| `write_prediction` | `ProductionAdapter.writePrediction` / shadow `writeNew` | production preserves native skip/archive policy; shadow remains fresh output only |
 | `history_hit_summary` | `historyHitSummary` | Audits.kt |
 | `history_record` | `historyRecord` | Audits.kt |
-| `update_history_index` | `historyIndex + CLI archive reader` | core / CLI boundary |
-| `run` | `CLI shadow / batch (no publisher)` | CLI adapter; production collector/status/publisher deliberately not migrated |
-| `main` | `CLI main` | CLI adapter; production collector/status/publisher deliberately not migrated |
+| `update_history_index` | `historyIndex + ProductionAdapter.index` / shadow archive reader | core computation; adapter writes only changed history bytes |
+| `run` | `ProductionAdapter.run` / shadow batch | isolated staging, previous selection, skip/status, validation and transaction; shell publisher |
+| `main` | `production.MainKt` / shadow `MainKt` | separate bounded production and guarded shadow entry points |

@@ -6,9 +6,19 @@ on:
     paths:
       - 'scripts/prediction_engine.py'
       - 'scripts/publish_generated_data.sh'
+      - 'scripts/run_prediction_engine.sh'
+      - 'scripts/build_prediction_engine.sh'
+      - 'scripts/python_prediction_production.py'
+      - 'config/prediction_backend.txt'
+      - 'kotlin/**'
       - 'tests/test_prediction_engine.py'
       - '.github/workflows/prediction-engine.yml'
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'Explicit force regeneration (default false)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -32,6 +42,12 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup JVM for prediction adapter
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17.0.16+8'
+
       - name: Install Test Dependencies
         run: pip install pytest requests beautifulsoup4
 
@@ -41,6 +57,14 @@ jobs:
       - name: Regenerate and Publish Against Latest Main
         env:
           INCLUDE_COLLECTOR: '0'
-          PREDICTION_FORCE: '1'
+          PREDICTION_FORCE: ${{ github.event.inputs.force == 'true' && '1' || '0' }}
           MAX_PUSH_ATTEMPTS: '3'
         run: bash scripts/publish_generated_data.sh
+
+      - name: Upload executor evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-executor-${{ github.run_id }}
+          if-no-files-found: warn
+          path: prediction-run-reports/

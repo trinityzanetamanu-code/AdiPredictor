@@ -25,23 +25,32 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      - name: Setup JVM for prediction adapter
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17.0.16+8'
+
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
 
-      - name: Build and Verify Historical Archive
-        working-directory: scripts
-        run: python historical_backfill.py
-
-      - name: Generate P1-P8 Predictions
-        run: python scripts/prediction_engine.py
+      - name: Backfill and Publish With Safe Retry
+        env:
+          INCLUDE_COLLECTOR: '0'
+          INCLUDE_BACKFILL: '1'
+          PREDICTION_FORCE: '0'
+          MAX_PUSH_ATTEMPTS: '3'
+        run: bash scripts/publish_generated_data.sh
 
       - name: Show Archive Summary
         run: |
@@ -54,15 +63,10 @@ jobs:
           print(Path('public/data/historical-verification.json').read_text())
           PY
 
-      - name: Commit Verified Historical Data
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add public/data/hk.json public/data/sgp.json public/data/sdy.json public/data/historical-verification.json
-          git add public/predictions
-          if git diff --cached --quiet; then
-            echo "Tidak ada perubahan arsip."
-            exit 0
-          fi
-          git commit -m "data: backfill verified 2023-2026 archives [skip ci]"
-          git push
+      - name: Upload executor evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-executor-${{ github.run_id }}
+          if-no-files-found: warn
+          path: prediction-run-reports/

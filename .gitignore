@@ -159,3 +159,4 @@ kotlin/.gradle/
 kotlin/.kotlin/
 kotlin/**/build/
 kotlin/parity-runs/
+prediction-run-reports/

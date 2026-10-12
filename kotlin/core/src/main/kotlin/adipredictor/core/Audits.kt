@@ -394,11 +394,12 @@ fun historyRecord(
     val basis = prediction["latest_result"].map()
     val audit = actual?.let { auditPredictionPayload(prediction, it.number) }
     val out = obj("market" to market)
+    for (key in listOf("target_date", "target_period", "generated_at")) out[key] = prediction[key]
+    // Match Python's insertion order too: unchanged history files must remain byte-identical.
+    out["engine_version"] = prediction.getOrDefault("engine_version", prediction["engine"])
+    out["schema_version"] = prediction.getOrDefault("schema_version", 1)
     for (key in
         listOf(
-            "target_date",
-            "target_period",
-            "generated_at",
             "dataset_fingerprint",
             "previous_dataset_fingerprint",
             "recalculated_after_new_result",
@@ -406,8 +407,6 @@ fun historyRecord(
         )) out[key] = prediction[key]
     out.putAll(
         obj(
-            "engine_version" to prediction.getOrDefault("engine_version", prediction["engine"]),
-            "schema_version" to prediction.getOrDefault("schema_version", 1),
             "basis_latest_date" to basis["date"],
             "basis_latest_result" to basis["number"],
             "bbfs6" to quick["bbfs"].map()["main6"],

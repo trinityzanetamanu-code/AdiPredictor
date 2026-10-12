@@ -1,15 +1,17 @@
 # Tahap 3A — independent Kotlin shadow engine
 
-The production engine is **Python, unchanged**. This project is an isolated JVM
-comparison implementation; it does not connect to collectors, publish predictions,
-send notifications, build Android/APKs or change signing. Stop here for owner review.
+This document describes the Stage 3A shadow/calculation engine. Stage 3B adds a
+separate production adapter with gated activation; see [production.md](docs/production.md)
+for the active backend, lifecycle, simulation, publisher and explicit rollback.
+The shadow executor retains its isolated output guards. Neither executor sends
+notifications, builds Android/APKs or changes signing.
 
 ## Reproduce from the repository root
 
 Prerequisites: a complete JDK 17 (CI: Temurin 17.0.16+8), CPython 3.11, Git, and
 network access for the first Gradle dependency download. No Python dependencies are
 needed for parity. Kotlin 2.1.20, Gradle 8.10.2 (wrapper ZIP checksum), Gson 2.11.0
-(CLI/test only) and JUnit 5.11.4 use explicit versions. The core uses only the Kotlin
+(file adapters/test only) and JUnit 5.11.4 use explicit versions. The core uses only the Kotlin
 standard library and JDK APIs, with no JSON codec, filesystem, network or platform
 context dependency.
 
@@ -81,10 +83,10 @@ rounding, star thresholds, P8 determinism and legacy archive audit behavior.
 
 See [coverage.md](docs/coverage.md) for every Python function's Kotlin mapping.
 Prediction/backtest/audit/history/visual calculations are in `core`; clock and
-archive reads and fresh output writes are in `cli`. Production-only overwrite,
-skip, collector, status and publisher policies remain in Python and are not
-activated in the adapter. Existing schema, engine version and metadata revision
-are retained as compatibility contracts, not as claims that Kotlin is production.
+archive reads and fresh output writes are in `cli`. Stage 3B implements production overwrite, skip and status in a separate Kotlin
+adapter, with shell publisher orchestration. Collector/backfill remain Python.
+Existing schema, engine version and metadata revision remain compatibility contracts.
+The Stage 3A comparison itself never invokes production publication.
 
 ## Numeric and visual contracts
 

@@ -15,6 +15,11 @@ on:
       - 'scripts/hk_canonical.py'
       - 'scripts/prediction_engine.py'
       - 'scripts/publish_generated_data.sh'
+      - 'scripts/run_prediction_engine.sh'
+      - 'scripts/build_prediction_engine.sh'
+      - 'scripts/python_prediction_production.py'
+      - 'config/prediction_backend.txt'
+      - 'kotlin/**'
       - 'config/collector_sources.json'
       - 'tests/**'
       - '.github/workflows/auto-scraper.yml'
@@ -27,6 +32,11 @@ on:
       - 'scripts/hk_canonical.py'
       - 'scripts/prediction_engine.py'
       - 'scripts/publish_generated_data.sh'
+      - 'scripts/run_prediction_engine.sh'
+      - 'scripts/build_prediction_engine.sh'
+      - 'scripts/python_prediction_production.py'
+      - 'config/prediction_backend.txt'
+      - 'kotlin/**'
       - 'config/collector_sources.json'
       - 'tests/**'
       - '.github/workflows/auto-scraper.yml'
@@ -61,6 +71,12 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup JVM for prediction adapter
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17.0.16+8'
+
       - name: Install Dependencies
         run: pip install requests beautifulsoup4 pytest
 
@@ -73,7 +89,7 @@ jobs:
           MARKET: ${{ github.event.inputs.market || 'ALL' }}
         run: |
           python scripts/collector.py --market "$MARKET" --strict
-          python scripts/prediction_engine.py --market ALL
+          bash scripts/run_prediction_engine.sh --market ALL --simulate
 
       - name: Publish Fresh Result and Prediction With Safe Retry
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
@@ -84,3 +100,11 @@ jobs:
           MAX_PUSH_ATTEMPTS: '3'
         run: bash scripts/publish_generated_data.sh
 
+
+      - name: Upload executor evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-executor-${{ github.run_id }}
+          if-no-files-found: warn
+          path: prediction-run-reports/

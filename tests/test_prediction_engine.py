@@ -75,7 +75,7 @@ def test_recalculation_proof_tracks_new_dataset_without_requiring_every_candidat
 def test_atomic_publish_pipeline_orders_collector_engine_and_single_commit():
     source = (pe.ROOT / "scripts" / "publish_generated_data.sh").read_text(encoding="utf-8")
     collector = source.index("collector.py")
-    engine = source.index("prediction_engine.py")
+    engine = source.index("run_prediction_engine.sh")
     git_add = source.index("git add")
     git_commit = source.index("git commit")
     assert collector < engine < git_add < git_commit

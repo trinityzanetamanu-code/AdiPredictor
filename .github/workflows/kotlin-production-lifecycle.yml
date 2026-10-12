@@ -1,0 +1,51 @@
+name: Kotlin Production Lifecycle
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'public/data/**'
+      - 'public/predictions/**'
+      - 'public/patterns/**'
+      - 'public/app-release.json'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-lifecycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17.0.16+8'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile and test core, shadow, production and transactional failures
+        run: ./kotlin/gradlew -p kotlin --no-daemon test :production:installDist :cli:installDist
+      - name: Compare live original Python and Kotlin publication lifecycle
+        run: python kotlin/lifecycle/compare_lifecycle.py --output kotlin/parity-runs/lifecycle
+      - name: Exercise real publisher retry, source rebuild, failure and no-change on isolated Git remotes
+        run: python kotlin/lifecycle/publisher_retry.py --output kotlin/parity-runs/publisher
+      - name: Upload lifecycle, rollback and publisher evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-lifecycle-${{ github.sha }}
+          if-no-files-found: warn
+          path: |
+            kotlin/parity-runs/lifecycle/report.*
+            kotlin/parity-runs/lifecycle/logs/
+            kotlin/parity-runs/publisher/report.json
+            kotlin/parity-runs/publisher/*.log
+            kotlin/core/build/test-results/test/
+            kotlin/production/build/test-results/test/

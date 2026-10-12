@@ -1,0 +1,55 @@
+{
+  "backend": "KOTLIN",
+  "source_id": "390d4addcf54a5e435dd5f7041c2029e8e3f351e",
+  "build_identity": "2a8b3ac0ff4636ec0aceab3be4de469365b8f0a697b7fe37b7b50a716e266fea",
+  "input_sha256": {
+    "HK": "6ade57891adb20c1ef84ad06ca3ecdf418fdbc4c6398f6e04f6befc851d31706",
+    "SDY": "3af8ae58d72b8af29f7e2655a56cee53ea0679c0bb61d9bd71f776a2250a6933",
+    "SGP": "bfedfc84b24aa0ad26651cdb75901e6d873ccf0550577df909b53d8e4271c175",
+    "config": "be9a99ad5cad9ca97ba64025f2f7860e89deaf8c8cd54562a255d73424946806"
+  },
+  "markets": {
+    "HK": {
+      "status": "unchanged",
+      "latest": {
+        "date": "2026-10-11",
+        "period": "HK-3571",
+        "number": "2615",
+        "collected_at": "2026-10-12T00:30:09+07:00"
+      },
+      "target_date": "2026-10-12",
+      "dataset_fingerprint": "d6e3cd41406fe271778552b9dfcbaabf42b7421e93dce517c531b7fb0c24bb26"
+    },
+    "SDY": {
+      "status": "unchanged",
+      "latest": {
+        "date": "2026-10-12",
+        "period": "SD-3572",
+        "number": "0157",
+        "collected_at": "2026-10-12T16:38:57+07:00"
+      },
+      "target_date": "2026-10-13",
+      "dataset_fingerprint": "6ac55c030b44d83662afe25e8bb31a0d63e34d5c45929ff835be6a25f4e95091"
+    },
+    "SGP": {
+      "status": "unchanged",
+      "latest": {
+        "date": "2026-10-11",
+        "period": "SGP-2495",
+        "number": "2588",
+        "collected_at": "2026-10-11T22:36:28+07:00"
+      },
+      "target_date": "2026-10-12",
+      "dataset_fingerprint": "0a66c23c826fc44c10047cb634eb3a19263b30618619bea37c7ef5bbe0d30174"
+    }
+  },
+  "changed_files": [],
+  "simulate": true,
+  "applied": false,
+  "owner_public_modified": false,
+  "proof": "adapter simulate=true; zero changed files; full calculation/lifecycle harness verifies all owner public hashes independently",
+  "before_output_manifest_sha256": "d532dd402b368eee6573f83205d0227d6b11d2f999fada932cd665c3ea2f678c",
+  "before_output_file_count": 442,
+  "after_output_manifest_sha256": "d532dd402b368eee6573f83205d0227d6b11d2f999fada932cd665c3ea2f678c",
+  "after_output_file_count": 442
+}
