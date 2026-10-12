@@ -153,3 +153,9 @@ android/
 !scripts/android/*.java
 *.jks
 *.keystore
+
+# Isolated JVM shadow build and parity outputs (fixtures/reports are tracked).
+kotlin/.gradle/
+kotlin/.kotlin/
+kotlin/**/build/
+kotlin/parity-runs/
