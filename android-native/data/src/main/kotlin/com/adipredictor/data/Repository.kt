@@ -26,6 +26,10 @@ class Repository(private val remote: Transport, private val store: Store, privat
         paths().forEach { path -> runCatching { store.read("canonical:$path")?.let { wireJson.parseToJsonElement(it) } }.getOrNull()?.let {
             if (valid(path, it)) { retained[path] = it; files[path] = it; observations[path] = Observation("CACHE") }
         } }
+        markets.forEach { market ->
+            val raw = store.read("runtime:board:$market") ?: if (market == "HK") store.read("legacy:runtime:HK") else null
+            runCatching { raw?.let { wireJson.parseToJsonElement(it) } }.getOrNull()?.let { files["runtime/board/$market"] = it }
+        }
         _state.value = assemble(files, observations)
     }
     private fun paths(): List<String> = markets.flatMap { listOf("data/${it.lowercase()}.json", "predictions/${it.lowercase()}/latest.json", "predictions/${it.lowercase()}/history.json") } +
@@ -44,7 +48,8 @@ class Repository(private val remote: Transport, private val store: Store, privat
             val code = market.lowercase()
             val rows = files["data/$code.json"]?.let { runCatching { dataset(it) }.getOrNull() } ?: emptyList()
             val prediction = files["predictions/$code/latest.json"]
-            Bundle(rows, prediction, alignment(market, rows, prediction), files["predictions/$code/history.json"])
+            val guard = runtimeGuard(rows, files["runtime/board/$market"]) ?: runtimeGuard(rows, files["data/live-draw.json"].field("markets").field(market))
+            Bundle(rows, prediction, guard ?: alignment(market, rows, prediction), files["predictions/$code/history.json"])
         }
         return Snapshot(bundles, files.toMap(), observations.toMap(), refreshing, clock())
     }
@@ -59,8 +64,32 @@ class Repository(private val remote: Transport, private val store: Store, privat
             return true
         } finally { _state.value = _state.value.copy(refreshing = false); mutex.unlock() }
     }
+    suspend fun observe(market: String, board: JsonElement?, reason: String = "") = mutex.withLock {
+        require(market in markets)
+        val files = _state.value.files.toMutableMap(); val observations = _state.value.observations.toMutableMap()
+        val key = "runtime/board/$market"; val old = files[key]
+        if (board != null) {
+            val incomingDate = board.string("draw_date")
+            java.time.LocalDate.parse(incomingDate)
+            var selected = board
+            if (old != null && incomingDate < old.string("draw_date")) selected = old
+            else if (old != null && incomingDate == old.string("draw_date") && board.string("first") != old.string("first")) {
+                val conflict = JsonObject(mapOf("draw_date" to JsonPrimitive(incomingDate), "retained_first" to JsonPrimitive(old.string("first")), "incoming_first" to JsonPrimitive(board.string("first")), "status" to JsonPrimitive("RUNTIME_CONFLICT_UNVERIFIED")))
+                selected = JsonObject(old.obj() + ("runtime_conflicts" to JsonArray((old.field("runtime_conflicts").arr() + conflict).distinct().takeLast(8))))
+            }
+            files[key] = selected; store.write("runtime:board:$market", selected.toString())
+        }
+        observations[key] = Observation(if (board == null) "RUNTIME_SOURCE_FAILED" else "RUNTIME_HTTP_UNVERIFIED", reason, clock())
+        _state.value = assemble(files, observations, _state.value.refreshing)
+    }
+    suspend fun reloadCacheAfterMigration() = mutex.withLock {
+        val files = _state.value.files.toMutableMap()
+        paths().forEach { path -> store.read("canonical:$path")?.let { raw -> runCatching { wireJson.parseToJsonElement(raw) }.getOrNull()?.takeIf { valid(path, it) }?.let { files[path] = it; retained[path] = it } } }
+        store.read("legacy:runtime:HK")?.let { files["runtime/board/HK"] = wireJson.parseToJsonElement(it) }
+        _state.value = assemble(files, _state.value.observations)
+    }
     private suspend fun fetch(path: String): Pair<JsonElement?, Observation> {
-        val old = retained[path]
+        val old = retained[path] ?: runCatching { store.read("canonical:$path")?.let { wireJson.parseToJsonElement(it) }?.takeIf { valid(path, it) } }.getOrNull()
         try {
             val value = wireJson.parseToJsonElement(withTimeout(12000) { remote.get(path) })
             require(valid(path, value)) { "INVALID_WIRE_PAYLOAD" }
@@ -73,6 +102,10 @@ class Repository(private val remote: Transport, private val store: Store, privat
                     val prior = boards[market]
                     if (prior == null || board.string("draw_date") > prior.string("draw_date") ||
                         board.string("draw_date") == prior.string("draw_date") && board.string("first") == prior.string("first")) boards[market] = board
+                    else if (board.string("draw_date") == prior.string("draw_date") && board.string("first") != prior.string("first")) {
+                        val conflict = JsonObject(mapOf("draw_date" to JsonPrimitive(board.string("draw_date")), "retained_first" to JsonPrimitive(prior.string("first")), "incoming_first" to JsonPrimitive(board.string("first")), "status" to JsonPrimitive("RUNTIME_CONFLICT_UNVERIFIED")))
+                        boards[market] = JsonObject(prior.obj() + ("runtime_conflicts" to JsonArray((prior.field("runtime_conflicts").arr() + conflict).distinct().takeLast(8))))
+                    }
                 }
                 val merged = JsonObject(value.obj() + ("markets" to JsonObject(boards)))
                 retain(path, merged)
@@ -93,9 +126,20 @@ class Repository(private val remote: Transport, private val store: Store, privat
     private fun retain(path: String, value: JsonElement) { retained[path] = value; store.write("canonical:$path", value.toString()) }
     suspend fun archive(market: String, record: JsonElement): JsonElement = mutex.withLock {
         val path = archivePath(market, record)
-        val value = fetch(path).first ?: error("ARCHIVE_UNAVAILABLE")
+        try {
+            val value = wireJson.parseToJsonElement(withTimeout(12000) { remote.get(path) })
+            validateArchive(market, record, value)
+            retain(path, value); value
+        } catch (e: CancellationException) {
+            if (e !is TimeoutCancellationException) throw e
+            cachedArchive(market, record, path)
+        } catch (e: Exception) { cachedArchive(market, record, path) }
+    }
+    private suspend fun cachedArchive(market: String, record: JsonElement, path: String): JsonElement {
+        val value = retained[path] ?: store.read("canonical:$path")?.let { wireJson.parseToJsonElement(it) }
+            ?: fallback?.get(path)?.let { wireJson.parseToJsonElement(it) } ?: error("ARCHIVE_UNAVAILABLE")
         validateArchive(market, record, value)
-        value
+        return value
     }
     suspend fun svg(market: String, date: String, path: String): String {
         val safe = svgPath(market, date, path)

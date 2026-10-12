@@ -1,4 +1,9 @@
 plugins { id("com.android.application"); kotlin("android"); id("org.jetbrains.kotlin.plugin.compose") }
+val robolectricSdk by configurations.creating
+val robolectricCompileSdk by configurations.creating
+val prepareRobolectricSdk by tasks.registering(Copy::class) {
+    from(robolectricSdk, robolectricCompileSdk); into(layout.buildDirectory.dir("robolectric-sdk"))
+}
 android {
     namespace = "com.adipredictor.app"
     compileSdk = 35
@@ -9,9 +14,16 @@ android {
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true; buildConfig = true }
     lint { abortOnError = true; warningsAsErrors = false }
-    testOptions { unitTests.isIncludeAndroidResources = true }
+    testOptions { unitTests.isIncludeAndroidResources = true; unitTests.all {
+        it.dependsOn(prepareRobolectricSdk)
+        it.systemProperty("repo.root", rootProject.projectDir.parentFile.absolutePath)
+        it.systemProperty("robolectric.offline", "true")
+        it.systemProperty("robolectric.dependency.dir", layout.buildDirectory.dir("robolectric-sdk").get().asFile.absolutePath)
+    } }
 }
 dependencies {
+    robolectricSdk("org.robolectric:android-all-instrumented:14-robolectric-10818077-i7") { isTransitive = false }
+    robolectricCompileSdk("org.robolectric:android-all-instrumented:15-robolectric-12650502-i7") { isTransitive = false }
     implementation(project(":data"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")

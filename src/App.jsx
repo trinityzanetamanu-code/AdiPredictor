@@ -5,6 +5,7 @@ import React, {
   createContext,
   useContext,
 } from 'react';
+import { exportLegacyStorage } from './legacyNativeMigration';
 import {
   Sparkles,
   BarChart3,
@@ -1845,6 +1846,14 @@ function SettingsPanel() {
         </div>
       </section>
       <NotificationSettingsPanel />
+      <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 text-xs text-slate-300">
+        <h3 className="font-bold text-emerald-200">Ekspor data untuk aplikasi native</h3>
+        <p className="mt-2">Salin JSON preferensi dan cache untuk diimpor lewat Pengaturan native. Data lama tetap tersimpan.</p>
+        <button type="button" className="mt-3 min-h-11 rounded-lg border border-emerald-500/30 px-3" onClick={() => {
+          setDiagnosticText(JSON.stringify(exportLegacyStorage(window.localStorage), null, 2));
+          setCopyResult('Simpan JSON ini sebagai adipredictor-legacy.json, lalu impor di aplikasi native.');
+        }}>Tampilkan ekspor data lama</button>
+      </section>
       <section className="rounded-2xl border border-sky-500/25 bg-slate-900/90 p-5 text-xs text-slate-300" data-device-diagnostics>
         <h3 className="font-bold text-sky-200">Diagnostik pembaruan dan LiveDraw</h3>
         <p className="mt-2">Salin bukti asal REMOTE/APK_FALLBACK, tanggal dan fingerprint tiap pasar, respons fetch, serta event player. Log ini tidak membuktikan sumber backend terbaru atau pemutaran video tanpa PLAYING.</p>

@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         acceptIntent(intent)
         setContent { NativeApp(model, route.value) { route.value = null } }
     }
-    override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); setIntent(intent); acceptIntent(intent) }
+    public override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); setIntent(intent); acceptIntent(intent) }
     private fun acceptIntent(intent: Intent?) {
         val uri = intent?.data ?: return
         if (uri.scheme == "adipredictor" && uri.host == "open") {

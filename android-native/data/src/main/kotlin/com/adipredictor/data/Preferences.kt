@@ -79,6 +79,15 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
                     val prior = store.read("canonical:$path")?.let { wireJson.parseToJsonElement(it) }
                     if (prior == null || !regression(data, prior)) { store.write("canonical:$path", data.toString()); imported += key } else skipped += key
                 }
+                key == "HK_LAST_VERIFIED_BOARD" -> {
+                    val board = wireJson.parseToJsonElement(raw)
+                    require(board.string("first").matches(Regex("[0-9]{6}")))
+                    java.time.LocalDate.parse(board.string("draw_date"))
+                    val prior = store.read("legacy:runtime:HK")?.let { wireJson.parseToJsonElement(it) }
+                    if (prior == null || board.string("draw_date") > prior.string("draw_date")) {
+                        store.write("legacy:runtime:HK", raw); imported += key
+                    } else skipped += key
+                }
                 else -> skipped += key // Runtime boards remain separate and are not canonicalized.
             }
         } catch (e: Exception) { errors += "$key:${e.message}" }

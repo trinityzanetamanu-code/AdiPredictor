@@ -1,0 +1,139 @@
+{
+  "source_sha": "c97961a908a912e6662c41050b0734343f930d1c",
+  "cases": [
+    {
+      "file": "hk-live-board.html",
+      "market": "HK",
+      "hash": "dd4ee06b07f6d10f064d4a3bf856a2b5be85999c6c086ca3b2ce5151fafe0b26",
+      "result": {
+        "market": "HK",
+        "source": "HongkongPools Market Source",
+        "source_url": "fixture",
+        "draw_date": "2026-09-19",
+        "first": "510860",
+        "second": "431651",
+        "third": "338178",
+        "starter": [
+          "104235",
+          "665901"
+        ],
+        "consolation": [
+          "990124",
+          "226780"
+        ],
+        "full_first_prize_6d": "510860",
+        "derived_4d": "0860",
+        "result_status": "unknown",
+        "finality_evidence": null,
+        "verification": "structurally_valid_single_source",
+        "source_timezone": "Asia/Hong_Kong",
+        "market_timezone": "Asia/Hong_Kong"
+      }
+    },
+    {
+      "file": "hk-live-board-rowspan.html",
+      "market": "HK",
+      "hash": "c6be0de372e2a52371d3463001240f402450bb11d1492dbe23ec19adc97c4935",
+      "result": {
+        "market": "HK",
+        "source": "HongkongPools Market Source",
+        "source_url": "fixture",
+        "draw_date": "2026-09-20",
+        "first": "782036",
+        "second": "245764",
+        "third": "335601",
+        "starter": [
+          "723774",
+          "690434",
+          "862686",
+          "926244"
+        ],
+        "consolation": [
+          "157877",
+          "375609",
+          "471066",
+          "998450"
+        ],
+        "full_first_prize_6d": "782036",
+        "derived_4d": "2036",
+        "result_status": "unknown",
+        "finality_evidence": null,
+        "verification": "structurally_valid_single_source",
+        "source_timezone": "Asia/Hong_Kong",
+        "market_timezone": "Asia/Hong_Kong"
+      }
+    },
+    {
+      "file": "sdy-live-board-image.html",
+      "market": "SDY",
+      "hash": "6b6c237c73c96f50eaca60687d61be69d81b0b7d45161b0e8d3acbad32f34941",
+      "result": {
+        "market": "SDY",
+        "source": "SydneyPoolsToday Market Source",
+        "source_url": "fixture",
+        "draw_date": "2026-09-19",
+        "first": "708748",
+        "second": "123456",
+        "third": "654321",
+        "starter": [
+          "901234"
+        ],
+        "consolation": [
+          "432109"
+        ],
+        "full_first_prize_6d": "708748",
+        "derived_4d": "8748",
+        "result_status": "unknown",
+        "finality_evidence": null,
+        "verification": "structurally_valid_single_source",
+        "source_timezone": "Australia/Sydney",
+        "market_timezone": "Australia/Sydney"
+      }
+    },
+    {
+      "file": "kocokhk-public-board.html",
+      "market": "HK",
+      "hash": "6992805251fd27d21c6840154607b4aa38ea87b77ff01ade6fd799a681915d52",
+      "result": {
+        "market": "HK",
+        "source": "HongkongPools Market Source",
+        "source_url": "fixture",
+        "draw_date": "2026-09-21",
+        "first": "219608",
+        "second": "341526",
+        "third": "740005",
+        "starter": [
+          "337753",
+          "024355",
+          "318386",
+          "835920"
+        ],
+        "consolation": [
+          "504891",
+          "141515",
+          "169517",
+          "037967",
+          "548933",
+          "301967",
+          "961249",
+          "697967"
+        ],
+        "full_first_prize_6d": "219608",
+        "derived_4d": "9608",
+        "result_status": "unknown",
+        "finality_evidence": null,
+        "verification": "structurally_valid_single_source",
+        "source_timezone": "Asia/Hong_Kong",
+        "market_timezone": "Asia/Hong_Kong"
+      }
+    },
+    {
+      "file": "hk-live-403-sanitized.html",
+      "market": "HK",
+      "hash": "3d233133d2108a2a9c1a01eea53cb41b53dfceed77cc29c521fd9b26167ad906",
+      "result": {
+        "error": "CHALLENGE_REQUIRED"
+      }
+    }
+  ]
+}

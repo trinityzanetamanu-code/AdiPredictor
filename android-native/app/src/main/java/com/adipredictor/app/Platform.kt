@@ -13,6 +13,11 @@ import java.net.URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+internal object NativeServices {
+    var transport: (Context) -> Transport = { RemoteTransport() }
+    var boards: () -> DirectBoardSource = { DirectBoards() }
+}
+
 class DiskStore(context: Context) : Store {
     private val prefs = context.getSharedPreferences("adipredictor.native.v1", Context.MODE_PRIVATE)
     override fun read(key: String) = prefs.getString(key, null)

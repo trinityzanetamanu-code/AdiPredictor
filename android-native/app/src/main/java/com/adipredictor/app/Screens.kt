@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -118,11 +119,12 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
 }
 @Composable private fun Analysis(market: String, bundle: Bundle, snapshot: Snapshot, history: () -> Unit) {
     val p = bundle.prediction
-    LazyColumn(Modifier.padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
+    LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
         item { CardSection("Hasil terakhir $market") {
             bundle.rows.firstOrNull()?.let { row -> Text(row.number, style = MaterialTheme.typography.headlineLarge); Text("${row.date} · ${row.period}"); Text("${row.wire.string("source_name")} · ${row.wire.string("verification")}"); CopyText(row.number) } ?: Text("Belum ada dataset")
             Text("Data: ${snapshot.observations["data/${market.lowercase()}.json"]?.origin ?: "UNAVAILABLE"}")
             Text("Prediksi: ${bundle.alignment}")
+            snapshot.files["runtime/board/$market"]?.let { Text("Observasi runtime: ${it.string("draw_date")} · ${it.string("derived_4d")} · belum canonical") }
             snapshot.observations["predictions/${market.lowercase()}/latest.json"]?.let { Text("${it.origin} · ${it.reason}") }
             Text("Diperiksa: ${snapshot.checkedAt}")
             Button(onClick = history) { Text("Buka Histori") }
@@ -135,6 +137,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
                 item { Details("P8 · deterministik, di luar voting", p.field("p8_ai_instinct")) }
                 item { Details("Konsensus raw", p.field("raw_consensus")) }
                 item { Details("Konsensus weighted", p.field("weighted_consensus")) }
+                item { Details("Konsensus seri · tie-break nomor naik", consensusTie(p)) }
                 item { Details("Confidence dan jumlah kandidat", JsonObject(mapOf("confidence" to (p.field("confidence") ?: JsonNull), "candidate_counts" to (p.field("candidate_counts") ?: JsonNull)))) }
             }
             item { Details("Audit hasil sebelumnya", p.field("prior_prediction_audit")) }
@@ -161,7 +164,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
 @Composable private fun DataScreen(bundle: Bundle) {
     var query by rememberSaveable { mutableStateOf("") }; var from by rememberSaveable { mutableStateOf("") }; var to by rememberSaveable { mutableStateOf("") }
     val rows = remember(bundle.rows, query, from, to) { searchRows(bundle.rows, query, from, to) }
-    LazyColumn(Modifier.padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
+    LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
         item { OutlinedTextField(query, { query = it }, label = { Text("Cari nomor, tanggal atau periode") }, modifier = Modifier.fillMaxWidth()) }
         item { OutlinedTextField(from, { from = it }, label = { Text("Dari tanggal YYYY-MM-DD") }, modifier = Modifier.fillMaxWidth()) }
         item { OutlinedTextField(to, { to = it }, label = { Text("Sampai tanggal YYYY-MM-DD") }, modifier = Modifier.fillMaxWidth()) }
@@ -171,14 +174,14 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
 }
 @Composable private fun StatisticsScreen(bundle: Bundle) {
     val counts = remember(bundle.rows) { digitCounts(bundle.rows) }; val maximum = counts.maxOrNull()?.coerceAtLeast(1) ?: 1
-    LazyColumn(Modifier.padding(horizontal = 12.dp)) {
+    LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp)) {
         item { CardSection("Matriks Frekuensi Digit (0–9)") { Text("${bundle.rows.size} hasil · ${bundle.rows.size * 4} digit") } }
         items((0..9).toList()) { digit -> CardSection("Digit $digit") { Text("${counts[digit]}x"); LinearProgressIndicator(progress = { counts[digit].toFloat() / maximum }, modifier = Modifier.fillMaxWidth()) } }
     }
 }
 @Composable private fun TafsirScreen(data: JsonElement?) {
     var query by rememberSaveable { mutableStateOf("") }; val found = remember(data, query) { searchTafsir(data, query) }
-    LazyColumn(Modifier.padding(horizontal = 12.dp)) {
+    LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp)) {
         item { Text("Tafsir tradisional untuk hiburan", Modifier.padding(12.dp)); OutlinedTextField(query, { query = it }, label = { Text("Cari tafsir") }, modifier = Modifier.fillMaxWidth()); Text("${found.size} tafsir", Modifier.padding(12.dp)) }
         items(found) { item -> CardSection(item.string("kataKunci")) { Text(item.string("angka"), style = MaterialTheme.typography.titleLarge); Text(item.string("deskripsi")); CopyText(item.string("angka")) } }
     }
@@ -186,14 +189,18 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
 @Composable private fun LiveScreen(market: String, bundle: Bundle, snapshot: Snapshot) {
     var mode by rememberSaveable { mutableStateOf("4D") }
     val live = snapshot.files["data/live-draw.json"]
-    val board = live.field("markets").field(market)
+    val runtime = snapshot.files["runtime/board/$market"]
+    val shared = live.field("markets").field(market)
+    val board = if (runtime != null && runtime.string("draw_date") >= shared.string("draw_date")) runtime else shared
     val health = live.field("status").field(market)
     val official = snapshot.files["data/singapore-official.json"].field(if (mode == "TOTO") "official_toto" else "official_4d")
-    LazyColumn(Modifier.padding(horizontal = 12.dp)) {
+    LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp)) {
         item { CardSection("LiveDraw $market · sumber dan cache") {
             Text("${snapshot.observations["data/live-draw.json"]?.origin} · ${snapshot.observations["data/live-draw.json"]?.reason}")
+            snapshot.observations["runtime/board/$market"]?.let { Text("${it.origin} · ${it.reason}") }
             Text("Canonical: ${bundle.rows.firstOrNull()?.date ?: "—"} · ${bundle.rows.firstOrNull()?.number ?: "—"}")
             Text("Papan runtime tidak mengganti dataset canonical.")
+            Text("Jadwal: ${drawWindow(if (market == "SGP") "SGP_$mode" else market, java.time.Instant.now())}")
             if (market == "SGP") Row { listOf("4D", "TOTO").forEach { label -> FilterChip(mode == label, { mode = label }, label = { Text(label) }, modifier = Modifier.padding(end = 8.dp)) } }
         } }
         item { CardSection("Papan angka") {
@@ -214,7 +221,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
 @Composable private fun HistoryScreen(bundle: Bundle, archive: JsonElement?, svgs: Map<String, String>, date: String, onSelect: (JsonElement) -> Unit, onBack: () -> Unit) {
     var query by rememberSaveable { mutableStateOf("") }
     val records = bundle.history.field("records").arr().filter { query.isBlank() || "${it.string("target_date")} ${it.string("target_period")}".contains(query, true) }
-    LazyColumn(Modifier.padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
+    LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
         item { Text("Histori · ${bundle.history.string("schema_version").ifEmpty { "v1" }}", style = MaterialTheme.typography.titleLarge) }
         if (date.isEmpty()) {
             item { OutlinedTextField(query, { query = it }, label = { Text("Cari arsip") }, modifier = Modifier.fillMaxWidth()) }
@@ -246,7 +253,8 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
 }
 @Composable private fun OriginalSvg(xml: String) {
     var zoom by rememberSaveable { mutableFloatStateOf(1f) }
-    val picture by produceState<Picture?>(null, xml) { value = withContext(Dispatchers.Default) { runCatching { SVG.getFromString(xml).renderToPicture() }.getOrNull() } }
+    var picture by remember(xml) { mutableStateOf<Picture?>(null) }
+    LaunchedEffect(xml) { picture = withContext(Dispatchers.Default) { runCatching { SVG.getFromString(xml).renderToPicture() }.getOrNull() } }
     if (picture == null) Text("Memuat SVG…")
     else {
         Text("SVG asli · zoom ${"%.1f".format(zoom)}×")
@@ -262,19 +270,22 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
 @Composable private fun SettingsScreen(model: AppViewModel, snapshot: Snapshot) {
     val context = LocalContext.current
     var notifications by remember { mutableStateOf(model.preferences.notifications()) }
+    val migrationMessage by model.message.collectAsStateWithLifecycle()
+    LaunchedEffect(migrationMessage) { notifications = model.preferences.notifications() }
+    val clipboard = LocalClipboardManager.current
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        notifications = notifications + ("master" to granted); model.preferences.notifications(notifications)
+        notifications = notifications + ("master" to granted); model.preferences.notifications(notifications); scheduleReminders(context)
     }
     val import = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { runCatching { context.contentResolver.openInputStream(it)?.bufferedReader(Charsets.UTF_8)?.use { reader -> reader.readText() } }.getOrNull()?.let(model::importLegacy) }
     }
-    LazyColumn(Modifier.padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
+    LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
         item { CardSection("Notifikasi") {
             notificationDefaults.keys.forEach { key -> Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(key, Modifier.weight(1f).padding(top = 12.dp))
                 Switch(notifications[key] == true, onCheckedChange = { enabled ->
                     if (key == "master" && enabled && Build.VERSION.SDK_INT >= 33) permission.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    else { notifications = notifications + (key to enabled); model.preferences.notifications(notifications) }
+                    else { notifications = notifications + (key to enabled); model.preferences.notifications(notifications); scheduleReminders(context) }
                 })
             } }
             Text("Preferensi dan deduplikasi tersimpan setelah restart.")
@@ -282,6 +293,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
         item { CardSection("Data pengguna lama") {
             Text("Penyimpanan Capacitor terpisah. Impor ekspor localStorage JSON; cache native yang lebih baru dipertahankan.")
             Button(onClick = { import.launch(arrayOf("application/json", "text/plain")) }) { Text("Impor preferensi/cache lama") }
+            TextButton(onClick = { clipboard.getText()?.text?.let(model::importLegacy) }) { Text("Impor JSON dari clipboard") }
         } }
         item { CardSection("Versi") { Text("${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) · Android native preview"); Text("Backend produksi Kotlin · stable React/Capacitor tetap tersedia"); Fields(snapshot.files["app-release.json"]) } }
         item { Details("Diagnostic collector", snapshot.files["data/collector-status.json"]) }

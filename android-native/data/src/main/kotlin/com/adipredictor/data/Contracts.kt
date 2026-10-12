@@ -39,6 +39,9 @@ fun alignment(market: String, rows: List<Draw>, p: JsonElement?): String {
     else if (p.string("engine_version").ifEmpty { p.string("engine") } == "AdiPredictor-P1-P8-v2")
         p.string("dataset_fingerprint") == revision(market, rows, "AdiPredictor-P1-P8-v2") else false
     if (!aligned) return "DATASET_VERSION_MISMATCH"
+    val fingerprint = p.string("dataset_fingerprint")
+    val engine = p.string("engine_version").ifEmpty { p.string("engine") }
+    if (fingerprint.isNotEmpty() && (engine != "AdiPredictor-P1-P8-v2" || fingerprint != revision(market, rows, engine))) return "DATASET_FINGERPRINT_MISMATCH"
     if (p.string("prediction_basis_date") != rows.first().date || p.string("prediction_basis_result") != rows.first().number)
         return "BASIS_MISMATCH"
     if (p.string("target_date") <= rows.first().date) return "TARGET_NOT_AFTER_BASIS"

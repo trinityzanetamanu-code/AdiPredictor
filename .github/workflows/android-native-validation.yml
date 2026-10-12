@@ -15,11 +15,15 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Freeze protected production input hashes
+        run: python3 android-native/scripts/verify_protected_inputs.py --capture android-native/data/build/reports/protected-before.json
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
       - uses: gradle/actions/setup-gradle@v4
       - name: Install explicit SDK
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
@@ -33,6 +37,9 @@ jobs:
             echo 'Unexpected signing on native preview' >&2
             exit 1
           fi
+      - name: Verify production inputs unchanged
+        if: always()
+        run: python3 android-native/scripts/verify_protected_inputs.py --compare android-native/data/build/reports/protected-before.json --report android-native/data/build/reports/protected-inputs.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

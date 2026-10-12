@@ -17,6 +17,8 @@ Recovery baseline: c97961a908a912e6662c41050b0734343f930d1c. Available scratch c
 
 Checkpoint A: data module and Compose application compile. Screens are implemented but their behavior/UI verification remains in progress. Do not interpret checkpoint A as Stage 4A completion.
 
+Checkpoint B: all pages/actions, direct runtime boards, selected-target audit/SVG, reminder scheduling and explicit legacy export/import are implemented. Release compilation and 23 data/contract tests pass. Controlled Android UI tests are being debugged; lint/release/CI need final re-verification. This checkpoint is not Stage 4A completion.
+
 Architecture: `data` is a pure JVM wire/cache/identity/migration/notification-policy module; `app` supplies HTTP, persistent SharedPreferences, lifecycle/ViewModel, notification delivery, and native Compose screens. SVG is parsed from the selected archive's original markup on a worker and drawn natively with AndroidSVG. Only canonical whole-dataset validation may authorize latest prediction display. Runtime boards remain separate observations.
 
 Legacy storage migration is explicit JSON import, not assumed automatic. Original Capacitor preferences/cache stay intact; native does not read LevelDB or delete app data. Recovery and verification details will be recorded in `docs/` as checks complete.
