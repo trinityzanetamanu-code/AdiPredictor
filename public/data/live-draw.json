@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-10-12T16:38:57+07:00",
+  "retrieved_at": "2026-10-12T23:30:24+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -55,23 +55,23 @@
       ],
       "full_first_prize_6d": "536987",
       "derived_4d": "6987",
-      "dataset_4d": "2615",
+      "dataset_4d": "6754",
       "matches_dataset": null,
       "verification": "dataset_date_mismatch",
       "retrieved_at": "2026-10-01T23:33:43+07:00",
-      "dataset_latest_date": "2026-10-11",
+      "dataset_latest_date": "2026-10-12",
       "source_verification": "matches_prediction_dataset"
     }
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-10-12T16:38:57+07:00",
+      "last_checked_at": "2026-10-12T23:30:24+07:00",
       "last_valid_result": {
-        "id": 20261011,
-        "tanggal": "11 Okt 2026",
-        "periode": "HK-3571",
-        "nomor": "2615",
-        "result_date": "2026-10-11",
+        "id": 20261012,
+        "tanggal": "12 Okt 2026",
+        "periode": "HK-3572",
+        "nomor": "6754",
+        "result_date": "2026-10-12",
         "market": "HK",
         "source_id": "nexipools_hk",
         "source_name": "NexiPools Hongkong Pools",
@@ -80,7 +80,7 @@
           "nexipools_hk",
           "livenomor_hk"
         ],
-        "collected_at": "2026-10-12T00:30:09+07:00",
+        "collected_at": "2026-10-12T23:30:24+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
@@ -103,7 +103,7 @@
       "health": "FAILED"
     },
     "SDY": {
-      "last_checked_at": "2026-10-12T16:38:57+07:00",
+      "last_checked_at": "2026-10-12T23:30:24+07:00",
       "last_valid_result": {
         "id": 20261012,
         "tanggal": "12 Okt 2026",
@@ -116,11 +116,12 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-12T16:38:57+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-10-12T23:30:24+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
       "source_draw_date": "2026-10-12",
