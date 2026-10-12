@@ -37,6 +37,13 @@ def dump(path, value):
     )
 
 
+def production_engine_label():
+    """Report repository configuration; this harness never publishes predictions."""
+    path = REPO / "config/prediction_backend.txt"
+    backend = path.read_text().strip() if path.exists() else "python"
+    return f"{backend.upper()}_UNCHANGED"
+
+
 def public_hashes():
     return {
         str(p.relative_to(REPO)): sha(p.read_bytes())
@@ -814,7 +821,7 @@ def main():
             if p.is_file()
         },
         runtimes=timings,
-        production_engine="PYTHON_UNCHANGED",
+        production_engine=production_engine_label(),
         public_data_modified_by_shadow_run=before != after,
         production_manifest_sha256=sha(
             json.dumps(before, sort_keys=True, separators=(",", ":")).encode()
@@ -882,7 +889,7 @@ if __name__ == "__main__":
                         full_engine_parity="FAIL",
                         blocker=str(error),
                         mismatches=[dict(case="harness", path="$", reason=str(error))],
-                        production_engine="PYTHON_UNCHANGED",
+                        production_engine=production_engine_label(),
                         public_data_modified_by_shadow_run=before != after,
                     ),
                 )

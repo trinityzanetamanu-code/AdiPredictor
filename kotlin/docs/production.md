@@ -132,3 +132,18 @@ artifacts include report JSON, all input hashes, scenario timings, per-market lo
 retry/build evidence and JUnit results. Kotlin Engine Parity has a 30-minute timeout;
 Kotlin Production Lifecycle has a separate 30-minute timeout based on measured
 local runs. Code Validation and frontend/browser/signed-release guards remain.
+
+## Activation gates
+
+All gates succeeded on `4edf6bb186169ed2148693c2f5c71de5a2b27697` before the
+backend switch. Only collector public data advanced afterward; those updates are retained.
+
+- [Code Validation](https://github.com/trinityzanetamanu-code/AdiPredictor/actions/runs/38278972868): SUCCESS.
+- [Kotlin Engine Parity](https://github.com/trinityzanetamanu-code/AdiPredictor/actions/runs/38278972833): SUCCESS.
+- [Kotlin Production Lifecycle](https://github.com/trinityzanetamanu-code/AdiPredictor/actions/runs/38278972837): SUCCESS.
+
+The repository default is now Kotlin. A normal production run after this commit
+provides executor/source/build/fingerprint and publication/no-change evidence in
+GitHub Actions logs. Force remains false by default. Parity report `production_engine`
+records the configured repository backend and that shadow left it unchanged;
+it is not a claim of production execution. Production logs provide that proof.

@@ -1,6 +1,6 @@
 # AdiPredictor
 
-AdiPredictor is a mobile-first React/Vite application with a Capacitor Android shell and a Python data pipeline for HK, SDY, and SGP. It stores verified results in `public/data/*.json` and publishes reproducible prediction payloads to `public/predictions/<market>/latest.json` plus immutable target archives.
+AdiPredictor is a mobile-first React/Vite application with a Capacitor Android shell, Python collectors, and an independent Kotlin/JVM prediction pipeline for HK, SDY, and SGP. It stores verified results in `public/data/*.json` and publishes reproducible prediction payloads to `public/predictions/<market>/latest.json` plus immutable target archives.
 
 Historical analysis does not guarantee a future result. Confidence and stars are relative model/backtest measures, not win probabilities.
 
@@ -8,7 +8,9 @@ Historical analysis does not guarantee a future result. Confidence and stars are
 
 - `scripts/collector.py` collects and validates new results from the configured sources.
 - `scripts/historical_backfill.py` maintains cross-checked historical archives.
-- `scripts/prediction_engine.py` validates each dataset and generates schema-v2 P1-P8 output.
+- `kotlin/core` independently computes unchanged P1–P8; `kotlin/production` stages and validates schema-v2 predictions, archives, history, SVG and status.
+- `scripts/run_prediction_engine.sh` selects the controlled backend (repository default Kotlin); `scripts/prediction_engine.py` remains the unchanged Python oracle and explicit rollback.
+- `scripts/publish_generated_data.sh` owns disposable-Actions synchronization, source/binary identity checks, collector failure propagation and ordinary push retry.
 - `src/` is the React/Vite UI; it loads fresh public JSON and SVG assets remotely with cache busting, so data updates do not require reinstalling the APK.
 - `public/predictions/<market>/history.json` is a generated newest-first index of immutable target archives for the in-app Prediction History view.
 - `.github/workflows/auto-scraper.yml` performs the atomic result-to-prediction update.
@@ -95,9 +97,10 @@ Exact Termux keystore-generation commands, GitHub Environment setup, and the req
 python -m pip install pytest requests beautifulsoup4
 python -m pytest -q
 
-python scripts/prediction_engine.py --market HK
-python scripts/prediction_engine.py --market ALL
-python scripts/prediction_engine.py --force --market ALL
+./kotlin/gradlew -p kotlin --no-daemon test :cli:installDist :production:installDist
+bash scripts/run_prediction_engine.sh --market ALL --simulate
+# Deliberate generation; no automatic commit/push/notification.
+bash scripts/run_prediction_engine.sh --market ALL
 
 npm install
 npm run test:live
@@ -125,3 +128,7 @@ audits and P5 remain available. Collector sources whose name or URL contains
 `paito` remain because they supply historical draw data, independently of the viewer.
 
 Rincian penghapusan, validasi dan referensi historis yang dipertahankan: [laporan Tahap 2](docs/stage2-paito-removal.md).
+
+Stage 3B production/simulation/rollback commands and lifecycle safety evidence:
+[kotlin/docs/production.md](kotlin/docs/production.md). Python collectors/backfill
+and the React/Capacitor UI remain; no Android UI migration or debug APK workflow is introduced.

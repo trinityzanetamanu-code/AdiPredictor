@@ -1,0 +1,75 @@
+{
+  "phase": "3B pre-activation gate evidence",
+  "main_before": "390d4addcf54a5e435dd5f7041c2029e8e3f351e",
+  "validated_source_sha": "4edf6bb186169ed2148693c2f5c71de5a2b27697",
+  "activation_parent_sha": "fc05ac4e70c98f6dd92b725f4a0df56fa9afb209",
+  "gates": [
+    {
+      "name": "Code Validation",
+      "id": 38278972868,
+      "url": "https://github.com/trinityzanetamanu-code/AdiPredictor/actions/runs/38278972868",
+      "head_sha": "4edf6bb186169ed2148693c2f5c71de5a2b27697",
+      "conclusion": "success",
+      "attempt": 1
+    },
+    {
+      "name": "Kotlin Engine Parity",
+      "id": 38278972833,
+      "url": "https://github.com/trinityzanetamanu-code/AdiPredictor/actions/runs/38278972833",
+      "head_sha": "4edf6bb186169ed2148693c2f5c71de5a2b27697",
+      "conclusion": "success",
+      "attempt": 1
+    },
+    {
+      "name": "Kotlin Production Lifecycle",
+      "id": 38278972837,
+      "url": "https://github.com/trinityzanetamanu-code/AdiPredictor/actions/runs/38278972837",
+      "head_sha": "4edf6bb186169ed2148693c2f5c71de5a2b27697",
+      "conclusion": "success",
+      "attempt": 1
+    }
+  ],
+  "kotlin_tests": {
+    "core": 12,
+    "production": 10,
+    "failures": 0
+  },
+  "calculation": {
+    "result": "PASS",
+    "frozen_input_sha": "d22097ffc4772d0436b4deb9bb647a82c77ffed1",
+    "cases": 12,
+    "checks": 120,
+    "mismatches": 0,
+    "svg_byte_identical": 72,
+    "artifact_id": 11761720393
+  },
+  "lifecycle": {
+    "result": "PASS",
+    "scenarios": 16,
+    "unallowed_mismatches": 0,
+    "old_svg_inputs_preserved": 366,
+    "artifact_id": 11760238704,
+    "publisher_retry": "PASS",
+    "frontend_readers": "PASS",
+    "explicit_rollback": "PASS",
+    "owner_public_unchanged_by_harness": true,
+    "safety_differences": "Kotlin validates malformed matching cache and discards staged partial-market failures; native Python gaps reported separately"
+  },
+  "local_full_calculation_measurement": {
+    "python_seconds": 1481.4327373160022,
+    "kotlin_seconds": 114.949495487,
+    "note": "same 12 frozen inputs; single run under concurrent host load; no general speed or accuracy claim"
+  },
+  "existing_validation": {
+    "python_tests": 110,
+    "javascript_tests": 93,
+    "web_build": "PASS",
+    "foreground_sync": "PASS",
+    "hk_diagnostic": "PASS",
+    "history_svg_browser": "PASS",
+    "signed_release_guards": "PASS"
+  },
+  "intervening_generated_commit": "fc05ac4e70c98f6dd92b725f4a0df56fa9afb209",
+  "local_executor": "disconnected after verification; activation and remaining CI/production checks use GitHub connector",
+  "production_verification": "normal non-force Prediction Engine workflow on activation commit"
+}
