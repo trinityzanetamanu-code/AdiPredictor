@@ -160,3 +160,7 @@ kotlin/.kotlin/
 kotlin/**/build/
 kotlin/parity-runs/
 prediction-run-reports/
+android-native/.gradle/
+android-native/.kotlin/
+android-native/**/build/
+android-native/local.properties

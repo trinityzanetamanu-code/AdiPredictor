@@ -1,0 +1,43 @@
+name: Android Native Validation
+on:
+  push:
+    branches: [main]
+    paths: ['android-native/**', '.github/workflows/android-native-validation.yml', 'public/data/**', 'public/predictions/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android-native-validation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install explicit SDK
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Unit tests, lint, unsigned release compile
+        working-directory: android-native
+        run: ./gradlew :data:test :app:testReleaseUnitTest :app:lintRelease :app:assembleRelease --no-daemon --console=plain
+      - name: Verify release is unsigned
+        run: |
+          test -f android-native/app/build/outputs/apk/release/app-release-unsigned.apk
+          if "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify android-native/app/build/outputs/apk/release/app-release-unsigned.apk; then
+            echo 'Unexpected signing on native preview' >&2
+            exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-validation-${{ github.sha }}
+          path: |
+            android-native/**/build/reports/
+            android-native/**/build/test-results/
+          if-no-files-found: error
