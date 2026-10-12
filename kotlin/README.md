@@ -126,8 +126,10 @@ Any unexpected mismatch or production change gives a nonzero exit status.
 JVM cold start / warmup and host load affect timings; these are single-run compute
 wall times on identical inputs, not an accuracy claim or general benchmark.
 
-Code Validation adds an independent `kotlin-parity` job with a 30-minute timeout,
-compiles/tests and performs the full live comparison. Its artifact contains
+The separate **Kotlin Engine Parity** workflow runs `kotlin-parity` with a
+30-minute timeout, compiles/tests and performs the full live comparison. Its artifact contains
 reports, manifest, runtime measurements, production hashes and JUnit results.
-Existing Python/JavaScript/web/foreground/HK diagnostic/history/SVG/signed-release
-guards are retained. No APK or signed-release task is introduced.
+Code Validation and its Python/JavaScript/web/foreground/HK diagnostic/history/SVG/
+signed-release guards are unchanged. Its Java/Android exclusion remains intact;
+the JVM workflow has no Android, signing or secret steps. No APK or signed-release
+task is introduced.

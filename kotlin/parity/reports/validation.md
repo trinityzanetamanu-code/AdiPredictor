@@ -24,6 +24,8 @@ Baseline / frozen parity inputs:
 Commands, runtime measurements, hashes, JSON paths and Python→Kotlin coverage are
 in `kotlin/README.md`, `report.json`, `report.md`, and `kotlin/docs/coverage.md`.
 The documented root Gradle `:cli:run` shadow command was executed successfully.
+JVM CI is isolated in `.github/workflows/kotlin-parity.yml`; the existing Code
+Validation workflow and its Java/Android exclusion guard remain unchanged.
 
 The real HK 30 September tie is `0094` / `9094`, both score `1.707421`, ordered
 exactly by the existing rules. The SGP 10 October P5 model gate is enabled
