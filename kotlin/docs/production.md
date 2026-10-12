@@ -15,7 +15,7 @@ rollback, Git, Bash and first-build dependency access. All commands below are re
 entry points; use fresh staging/report destinations.
 
 ```sh
-# Compile and test core, shadow and production adapter (20 Kotlin tests).
+# Compile and test core, shadow and production adapter (22 Kotlin tests).
 ./kotlin/gradlew -p kotlin --no-daemon test :cli:installDist :production:installDist
 
 # Full calculation parity, with the Stage 3A frozen SHA and hashed inputs.
@@ -23,6 +23,9 @@ python3.11 kotlin/parity/compare.py --output kotlin/parity-runs/calculation-01
 
 # Live original Python lifecycle versus Kotlin on isolated identical copies.
 python3.11 kotlin/lifecycle/compare_lifecycle.py --output kotlin/parity-runs/lifecycle-01
+
+# Read generated Kotlin output through unchanged frontend wire readers.
+node kotlin/lifecycle/check_frontend.mjs --root kotlin/parity-runs/lifecycle-01/kotlin
 
 # Real shell publisher against isolated LOCAL Git remotes, including source/data retry.
 python3.11 kotlin/lifecycle/publisher_retry.py --output kotlin/parity-runs/publisher-01
@@ -91,7 +94,8 @@ publisher. All three production writers retain `adipredictor-data-writer-main`.
 
 `kotlin/lifecycle/compare_lifecycle.py` reads the original Python and every fixture
 input using Git at `d22097ffc4772d0436b4deb9bb647a82c77ffed1`, verifies the same
-70 SHA-256 manifest entries as Stage 3A, and invokes original Python `run()` live.
+70 calculation SHA-256 manifest entries as Stage 3A, also freezes every original
+archived SVG at that SHA, and invokes original Python `run()` live.
 Current Python must still match that frozen oracle. Both copies receive identical
 config/datasets/archives and an identical injected clock for each phase. Synthetic
 `0000` additions exist only in isolated copies. Owner public hashes are verified
@@ -124,7 +128,7 @@ filesystem behavior. Python's original unsafe behavior remains available to the
 oracle; explicit rollback wraps it with staging and basic payload validation.
 
 Local reports are under [lifecycle/reports](../lifecycle/reports/); authoritative CI
-artifacts include report JSON, all input hashes, scenario timings, per-market logs,
+artifacts include report JSON, all input hashes, scenario timings, per-market logs, archived asset hashes, unchanged frontend reader checks,
 retry/build evidence and JUnit results. Kotlin Engine Parity has a 30-minute timeout;
 Kotlin Production Lifecycle has a separate 30-minute timeout based on measured
 local runs. Code Validation and frontend/browser/signed-release guards remain.

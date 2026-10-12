@@ -4,10 +4,12 @@
 import argparse
 import copy
 import importlib.util
+import io
 import json
 import shutil
 import subprocess
 import sys
+import tarfile
 import time
 from datetime import datetime
 from pathlib import Path
@@ -42,6 +44,24 @@ def main():
     out.mkdir(parents=True)
     owner_before = public_hashes()
     manifest, frozen = freeze(out)
+    # SVGs are not calculation inputs in Stage 3A. Lifecycle must also preserve
+    # original archived assets, so freeze their actual bytes at the same SHA.
+    asset_hashes = {}
+    archive_bytes = subprocess.check_output(
+        ["git", "archive", manifest["source_sha"], "public/predictions"], cwd=REPO
+    )
+    with tarfile.open(fileobj=io.BytesIO(archive_bytes)) as package:
+        for member in package.getmembers():
+            if member.isfile() and member.name.endswith(".svg"):
+                data = package.extractfile(member).read()
+                path = frozen / member.name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(data)
+                asset_hashes[member.name] = sha(data)
+    dump(
+        out / "asset-manifest.json",
+        dict(source_sha=manifest["source_sha"], sha256=asset_hashes),
+    )
     spec = importlib.util.spec_from_file_location(
         "lifecycle_original", frozen / "scripts/prediction_engine.py"
     )
@@ -421,6 +441,7 @@ def main():
         lifecycle_parity="PASS" if not mismatches else "FAIL",
         source_sha=manifest["source_sha"],
         input_sha256=manifest["sha256"],
+        archived_svg_sha256=asset_hashes,
         scenarios=scenarios,
         mismatches=mismatches,
         owner_public_unchanged=owner_before == after_owner,

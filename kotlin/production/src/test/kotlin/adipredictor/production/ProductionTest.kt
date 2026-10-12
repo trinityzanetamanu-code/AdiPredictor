@@ -38,6 +38,30 @@ class ProductionTest {
     }
 
     @Test
+    fun malformedCachedQuickViewCannotPassFingerprintSkip() {
+        val options = prepare()
+        val cached = LinkedHashMap(fixture["prediction"].map())
+        cached.remove("quick_view")
+        Json.write(options.output.resolve("hk/latest.json"), cached)
+        val before = treeHashes(options.output)
+        assertFails { ProductionAdapter(now = { fixture["clock"] as String }).run(options) }
+        assertEquals(before, treeHashes(options.output))
+    }
+
+    @Test
+    fun malformedGeneratedHistoryIsRejectedBeforeApplyingPackage() {
+        val options = prepare()
+        val before = treeHashes(options.output)
+        val adapter =
+            ProductionAdapter(
+                now = { fixture["clock"] as String },
+                beforeValidation = { working -> working.resolve("hk/history.json").writeText("{}") },
+            )
+        assertFails { adapter.run(options) }
+        assertEquals(before, treeHashes(options.output))
+    }
+
+    @Test
     fun malformedGeneratedOutputIsRejectedBeforeAnyRealWrite() {
         val options = prepare()
         val before = treeHashes(options.output)

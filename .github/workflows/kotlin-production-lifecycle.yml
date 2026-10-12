@@ -30,10 +30,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Compile and test core, shadow, production and transactional failures
         run: ./kotlin/gradlew -p kotlin --no-daemon test :production:installDist :cli:installDist
       - name: Compare live original Python and Kotlin publication lifecycle
         run: python kotlin/lifecycle/compare_lifecycle.py --output kotlin/parity-runs/lifecycle
+      - name: Verify generated Kotlin output with unchanged frontend readers
+        run: node kotlin/lifecycle/check_frontend.mjs --root kotlin/parity-runs/lifecycle/kotlin | tee kotlin/parity-runs/lifecycle/frontend.json
       - name: Exercise real publisher retry, source rebuild, failure and no-change on isolated Git remotes
         run: python kotlin/lifecycle/publisher_retry.py --output kotlin/parity-runs/publisher
       - name: Upload lifecycle, rollback and publisher evidence
@@ -44,6 +49,8 @@ jobs:
           if-no-files-found: warn
           path: |
             kotlin/parity-runs/lifecycle/report.*
+            kotlin/parity-runs/lifecycle/asset-manifest.json
+            kotlin/parity-runs/lifecycle/frontend.json
             kotlin/parity-runs/lifecycle/logs/
             kotlin/parity-runs/publisher/report.json
             kotlin/parity-runs/publisher/*.log

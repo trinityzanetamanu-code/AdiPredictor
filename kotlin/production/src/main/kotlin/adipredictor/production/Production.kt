@@ -135,7 +135,12 @@ class ProductionAdapter(
         )
         for (name in MODELS) {
             val model = payload["models"].map()[name].map()
-            for (size in listOf(5, 6)) require((model["bbfs$size"] as String).length == size)
+            for (size in listOf(5, 6)) {
+                val bbfs = model["bbfs$size"] as String
+                require(
+                    bbfs.length == size && bbfs.all { it in '0'..'9' } && bbfs.toSet().size == size
+                )
+            }
             require(
                 model["4d_top3"].strings().size == 3 &&
                     model["4d_top3"].strings().all { it.length == 4 && it.all(Char::isDigit) }
@@ -147,9 +152,53 @@ class ProductionAdapter(
                     "2d_front_top5",
                     "2d_middle_top5",
                     "2d_back_top5",
-                )) require(model[field].strings().size == 5)
+                )) {
+                val size = if (field.startsWith("3d")) 3 else 2
+                require(
+                    model[field].strings().size == 5 &&
+                        model[field].strings().all { n ->
+                            n.length == size && n.all { it in '0'..'9' }
+                        }
+                )
+            }
         }
         require(payload["candidate_counts"].map()["total_direct_number_candidates"].int() == 38)
+        val quick = payload["quick_view"].map()
+        require(
+            quick.keys.containsAll(
+                listOf(
+                    "bbfs",
+                    "four_d",
+                    "three_d",
+                    "two_d",
+                    "repeat_signal",
+                    "p8_ai_instinct",
+                    "model_comparison",
+                    "candidate_counts",
+                )
+            )
+        )
+        require(quick["candidate_counts"] == payload["candidate_counts"])
+        for (slot in listOf("main", "alternative", "reserve", "single_pair")) {
+            val number = quick["four_d"].map()[slot].map()["number"] as String
+            require(number.length == 4 && number.all { it in '0'..'9' })
+        }
+        for ((section, slots, size) in
+            listOf(
+                Triple("three_d", listOf("front", "back"), 3),
+                Triple("two_d", listOf("front", "middle", "back"), 2),
+            )) {
+            for (slot in slots) {
+                val candidates = quick[section].map()[slot].list()
+                require(
+                    candidates.size == 5 &&
+                        candidates.all { candidate ->
+                            val number = candidate.map()["number"] as? String
+                            number != null && number.length == size && number.all { it in '0'..'9' }
+                        }
+                )
+            }
+        }
         val p8 = payload["p8_ai_instinct"].map()
         require(p8["fingerprint"] == sha256(pythonJson(p8.filterKeys { it != "fingerprint" })))
         Json.text(payload) // also rejects NaN/infinity and unsupported output values
@@ -321,7 +370,21 @@ class ProductionAdapter(
             val dir = working.resolve(market.lowercase())
             val payload = Json.objectAt(dir.resolve("latest.json"))
             validatePayload(payload, market, h)
-            Json.objectAt(dir.resolve("history.json"))
+            val historyIndex = Json.objectAt(dir.resolve("history.json"))
+            require(
+                historyIndex["market"] == market &&
+                    historyIndex["count"].int() == historyIndex["records"].list().size
+            )
+            for (record in historyIndex["records"].list()) {
+                val entry = record.map()
+                val date = entry["target_date"] as String
+                LocalDate.parse(date)
+                require(
+                    entry["market"] == market &&
+                        entry["archive_path"] ==
+                            "public/predictions/${market.lowercase()}/archive/$date.json"
+                )
+            }
             for (value in payload["visual_patterns"].list()) {
                 val relative = value.map()["image_path"] as String
                 val p = working.resolve(relative.removePrefix("predictions/")).normalize()
@@ -333,7 +396,12 @@ class ProductionAdapter(
                 )
             }
         }
-        Json.objectAt(statusPath)
+        val packageStatus = Json.objectAt(statusPath)
+        OffsetDateTime.parse(packageStatus["generated_at"] as String)
+        require(
+            packageStatus["engine"] == ENGINE_VERSION &&
+                packageStatus["markets"].map().keys.containsAll(options.markets)
+        )
         val after = treeHashes(working)
         require(after.keys.containsAll(before.keys)) { "Existing archive/SVG would be deleted" }
         for ((market, h) in histories) {
