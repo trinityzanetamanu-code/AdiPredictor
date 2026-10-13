@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-13T15:15:13+07:00",
+  "collected_at": "2026-10-13T23:08:43+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -62,11 +62,11 @@
           "latest_date": "2026-10-12",
           "latest_result": "6754",
           "source_first_seen_at": "2026-10-12T23:30:24+07:00",
-          "expected_draw_date": "2026-10-12",
+          "expected_draw_date": "2026-10-13",
           "latency_minutes": 30,
-          "source_stale": false,
-          "reason": "FRESH",
-          "health": "HEALTHY"
+          "source_stale": true,
+          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
+          "health": "STALE"
         },
         "livenomor_hk": {
           "market_identity_match": true,
@@ -76,15 +76,15 @@
           "latest_date": "2026-10-12",
           "latest_result": "6754",
           "source_first_seen_at": "2026-10-12T23:30:24+07:00",
-          "expected_draw_date": "2026-10-12",
+          "expected_draw_date": "2026-10-13",
           "latency_minutes": 30,
-          "source_stale": false,
-          "reason": "FRESH",
-          "health": "HEALTHY"
+          "source_stale": true,
+          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
+          "health": "STALE"
         }
       },
       "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-13T15:15:13+07:00",
+      "last_source_check": "2026-10-13T23:08:43+07:00",
       "latest_source_draw_date": "2026-10-12"
     },
     "SDY": {
@@ -99,23 +99,18 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 256,
+        "waroengtogel_sdy": 257,
         "datatogel_sdy": 286,
         "livenomor_sdy": 285
       },
       "verified_count": 286,
-      "new_count": 2,
+      "new_count": 1,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-10-03",
-          "number": "5604",
-          "verification": "confirmed_2_sources"
-        },
-        {
           "date": "2026-10-13",
           "number": "9013",
-          "verification": "confirmed_2_sources"
+          "verification": "confirmed_3_sources"
         }
       ],
       "latest": {
@@ -130,25 +125,27 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-13T15:15:13+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-10-13T23:08:43+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "latest_verified": {
         "date": "2026-10-13",
         "number": "9013",
-        "verification": "confirmed_2_sources",
+        "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-13T15:15:13+07:00",
-      "last_source_check": "2026-10-13T15:15:13+07:00",
+      "last_successful_data_update": "2026-10-13T23:08:43+07:00",
+      "last_source_check": "2026-10-13T23:08:43+07:00",
       "latest_source_draw_date": "2026-10-13"
     },
     "SGP": {
@@ -197,7 +194,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-13T15:15:13+07:00",
+      "last_source_check": "2026-10-13T23:08:43+07:00",
       "latest_source_draw_date": "2026-10-12"
     }
   }
