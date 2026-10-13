@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-12T23:30:24+07:00",
+  "collected_at": "2026-10-13T15:15:13+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "nexipools_hk",
@@ -17,15 +17,9 @@
         "livenomor_hk": 285
       },
       "verified_count": 285,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-12",
-          "number": "6754",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261012,
         "tanggal": "12 Okt 2026",
@@ -90,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-12T23:30:24+07:00",
+      "last_source_check": "2026-10-13T15:15:13+07:00",
       "latest_source_draw_date": "2026-10-12"
     },
     "SDY": {
@@ -106,57 +100,60 @@
       "parsed_counts": {
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 256,
-        "datatogel_sdy": 285,
-        "livenomor_sdy": 284
+        "datatogel_sdy": 286,
+        "livenomor_sdy": 285
       },
-      "verified_count": 285,
-      "new_count": 1,
+      "verified_count": 286,
+      "new_count": 2,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-10-12",
-          "number": "0157",
-          "verification": "confirmed_3_sources"
+          "date": "2026-10-03",
+          "number": "5604",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-10-13",
+          "number": "9013",
+          "verification": "confirmed_2_sources"
         }
       ],
       "latest": {
-        "id": 20261012,
-        "tanggal": "12 Okt 2026",
-        "periode": "SD-3572",
-        "nomor": "0157",
-        "result_date": "2026-10-12",
+        "id": 20261013,
+        "tanggal": "13 Okt 2026",
+        "periode": "SD-3573",
+        "nomor": "9013",
+        "result_date": "2026-10-13",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-12T23:30:24+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-10-13T15:15:13+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-12",
-        "number": "0157",
-        "verification": "confirmed_3_sources",
+        "date": "2026-10-13",
+        "number": "9013",
+        "verification": "confirmed_2_sources",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-12T23:30:24+07:00",
-      "latest_source_draw_date": "2026-10-12"
+      "last_successful_data_update": "2026-10-13T15:15:13+07:00",
+      "last_source_check": "2026-10-13T15:15:13+07:00",
+      "latest_source_draw_date": "2026-10-13"
     },
     "SGP": {
       "market": "SGP",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
@@ -167,15 +164,9 @@
         "nexipools_sgp": 30
       },
       "verified_count": 30,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-12",
-          "number": "9450",
-          "verification": "confirmed_2_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261012,
         "tanggal": "12 Okt 2026",
@@ -206,7 +197,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-12T23:30:24+07:00",
+      "last_source_check": "2026-10-13T15:15:13+07:00",
       "latest_source_draw_date": "2026-10-12"
     }
   }
