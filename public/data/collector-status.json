@@ -1,53 +1,59 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-13T23:08:43+07:00",
+  "collected_at": "2026-10-14T04:14:26+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
-        "nexipools_hk",
         "livenomor_hk"
       ],
       "parsed_counts": {
-        "nexipools_hk": 29,
-        "livenomor_hk": 285
+        "livenomor_hk": 286
       },
-      "verified_count": 285,
-      "new_count": 0,
+      "verified_count": 286,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-13",
+          "number": "5805",
+          "verification": "provisional_primary"
+        }
+      ],
       "latest": {
-        "id": 20261012,
-        "tanggal": "12 Okt 2026",
-        "periode": "HK-3572",
-        "nomor": "6754",
-        "result_date": "2026-10-12",
+        "id": 20261013,
+        "tanggal": "13 Okt 2026",
+        "periode": "HK-3573",
+        "nomor": "5805",
+        "result_date": "2026-10-13",
         "market": "HK",
-        "source_id": "nexipools_hk",
-        "source_name": "NexiPools Hongkong Pools",
-        "source_url": "https://www.nexipools.com/id/hongkong/paito/",
+        "source_id": "livenomor_hk",
+        "source_name": "LiveNomor Hongkong",
+        "source_url": "https://livenomor.com/",
         "source_ids": [
-          "nexipools_hk",
           "livenomor_hk"
         ],
-        "collected_at": "2026-10-12T23:30:24+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-10-14T04:14:26+07:00",
+        "verification": "provisional_primary",
+        "confirmations": 1
       },
       "latest_verified": {
-        "date": "2026-10-12",
-        "number": "6754",
-        "verification": "confirmed_2_sources",
+        "date": "2026-10-13",
+        "number": "5805",
+        "verification": "provisional_primary",
         "source_ids": [
-          "nexipools_hk",
           "livenomor_hk"
         ]
       },
       "source_errors": [
+        {
+          "source": "nexipools_hk",
+          "error": "MARKET_IDENTITY_MISMATCH matches=6 conflicts={}"
+        },
         {
           "source": "livedrawhk_crosscheck",
           "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5640 bytes"
@@ -55,41 +61,41 @@
       ],
       "source_health": {
         "nexipools_hk": {
-          "market_identity_match": true,
-          "historical_sequence_matches": 7,
-          "historical_sequence_compared": 7,
+          "market_identity_match": false,
+          "historical_sequence_matches": 6,
+          "historical_sequence_compared": 6,
           "historical_conflicts": {},
-          "latest_date": "2026-10-12",
-          "latest_result": "6754",
-          "source_first_seen_at": "2026-10-12T23:30:24+07:00",
+          "latest_date": "2026-10-13",
+          "latest_result": "5805",
+          "source_first_seen_at": "2026-10-14T04:14:26+07:00",
           "expected_draw_date": "2026-10-13",
-          "latency_minutes": 30,
-          "source_stale": true,
-          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
-          "health": "STALE"
+          "latency_minutes": 314,
+          "source_stale": false,
+          "reason": "FRESH",
+          "health": "HEALTHY"
         },
         "livenomor_hk": {
           "market_identity_match": true,
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-10-12",
-          "latest_result": "6754",
-          "source_first_seen_at": "2026-10-12T23:30:24+07:00",
+          "latest_date": "2026-10-13",
+          "latest_result": "5805",
+          "source_first_seen_at": "2026-10-14T04:14:26+07:00",
           "expected_draw_date": "2026-10-13",
-          "latency_minutes": 30,
-          "source_stale": true,
-          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
-          "health": "STALE"
+          "latency_minutes": 314,
+          "source_stale": false,
+          "reason": "FRESH",
+          "health": "HEALTHY"
         }
       },
-      "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-13T23:08:43+07:00",
-      "latest_source_draw_date": "2026-10-12"
+      "last_successful_data_update": "2026-10-14T04:14:26+07:00",
+      "last_source_check": "2026-10-14T04:14:26+07:00",
+      "latest_source_draw_date": "2026-10-13"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -104,15 +110,9 @@
         "livenomor_sdy": 285
       },
       "verified_count": 286,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-13",
-          "number": "9013",
-          "verification": "confirmed_3_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261013,
         "tanggal": "13 Okt 2026",
@@ -145,7 +145,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-13T23:08:43+07:00",
-      "last_source_check": "2026-10-13T23:08:43+07:00",
+      "last_source_check": "2026-10-14T04:14:26+07:00",
       "latest_source_draw_date": "2026-10-13"
     },
     "SGP": {
@@ -194,7 +194,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-13T23:08:43+07:00",
+      "last_source_check": "2026-10-14T04:14:26+07:00",
       "latest_source_draw_date": "2026-10-12"
     }
   }

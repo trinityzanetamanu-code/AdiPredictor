@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-10-13T23:08:43+07:00",
+  "retrieved_at": "2026-10-14T04:14:26+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -55,34 +55,33 @@
       ],
       "full_first_prize_6d": "536987",
       "derived_4d": "6987",
-      "dataset_4d": "6754",
+      "dataset_4d": "5805",
       "matches_dataset": null,
       "verification": "dataset_date_mismatch",
       "retrieved_at": "2026-10-01T23:33:43+07:00",
-      "dataset_latest_date": "2026-10-12",
+      "dataset_latest_date": "2026-10-13",
       "source_verification": "matches_prediction_dataset"
     }
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-10-13T23:08:43+07:00",
+      "last_checked_at": "2026-10-14T04:14:26+07:00",
       "last_valid_result": {
-        "id": 20261012,
-        "tanggal": "12 Okt 2026",
-        "periode": "HK-3572",
-        "nomor": "6754",
-        "result_date": "2026-10-12",
+        "id": 20261013,
+        "tanggal": "13 Okt 2026",
+        "periode": "HK-3573",
+        "nomor": "5805",
+        "result_date": "2026-10-13",
         "market": "HK",
-        "source_id": "nexipools_hk",
-        "source_name": "NexiPools Hongkong Pools",
-        "source_url": "https://www.nexipools.com/id/hongkong/paito/",
+        "source_id": "livenomor_hk",
+        "source_name": "LiveNomor Hongkong",
+        "source_url": "https://livenomor.com/",
         "source_ids": [
-          "nexipools_hk",
           "livenomor_hk"
         ],
-        "collected_at": "2026-10-12T23:30:24+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-10-14T04:14:26+07:00",
+        "verification": "provisional_primary",
+        "confirmations": 1
       },
       "selected_source": "https://rankcrack.com/hk.php",
       "source_draw_date": "2026-09-30",
@@ -90,7 +89,7 @@
       "fetch_errors": [
         {
           "market": "HK",
-          "error": "[{\"source_url\": \"https://www.hongkongpools.com/live.html\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live.html\"}, {\"source_url\": \"https://www.hongkongpools.com/live\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live\"}, {\"source_url\": \"https://rankcrack.com/hk.php\", \"error\": \"HTTP 503 dari https://rankcrack.com/hk.php\"}]"
+          "error": "[{\"source_url\": \"https://www.hongkongpools.com/live.html\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live.html\"}, {\"source_url\": \"https://www.hongkongpools.com/live\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live\"}, {\"source_url\": \"https://rankcrack.com/hk.php\", \"error\": \"Draw date tidak ditemukan\"}]"
         }
       ],
       "conflicts": [],
@@ -103,7 +102,7 @@
       "health": "FAILED"
     },
     "SDY": {
-      "last_checked_at": "2026-10-13T23:08:43+07:00",
+      "last_checked_at": "2026-10-14T04:14:26+07:00",
       "last_valid_result": {
         "id": 20261013,
         "tanggal": "13 Okt 2026",
