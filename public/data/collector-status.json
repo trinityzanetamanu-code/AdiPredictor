@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-14T17:09:41+07:00",
+  "collected_at": "2026-10-14T22:07:07+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -84,12 +84,12 @@
         }
       },
       "last_successful_data_update": "2026-10-14T04:14:26+07:00",
-      "last_source_check": "2026-10-14T17:09:41+07:00",
+      "last_source_check": "2026-10-14T22:07:07+07:00",
       "latest_source_draw_date": "2026-10-13"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -104,20 +104,9 @@
         "livenomor_sdy": 286
       },
       "verified_count": 287,
-      "new_count": 2,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-04",
-          "number": "7933",
-          "verification": "confirmed_2_sources"
-        },
-        {
-          "date": "2026-10-14",
-          "number": "9804",
-          "verification": "confirmed_3_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261014,
         "tanggal": "14 Okt 2026",
@@ -150,31 +139,37 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-14T17:09:41+07:00",
-      "last_source_check": "2026-10-14T17:09:41+07:00",
+      "last_source_check": "2026-10-14T22:07:07+07:00",
       "latest_source_draw_date": "2026-10-14"
     },
     "SGP": {
       "market": "SGP",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
         "nexipools_sgp"
       ],
       "parsed_counts": {
-        "paitosgplengkap": 203,
+        "paitosgplengkap": 204,
         "nexipools_sgp": 30
       },
       "verified_count": 30,
-      "new_count": 0,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-14",
+          "number": "0300",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20261012,
-        "tanggal": "12 Okt 2026",
-        "periode": "SGP-2496",
-        "nomor": "9450",
-        "result_date": "2026-10-12",
+        "id": 20261014,
+        "tanggal": "14 Okt 2026",
+        "periode": "SGP-2497",
+        "nomor": "0300",
+        "result_date": "2026-10-14",
         "market": "SGP",
         "source_id": "paitosgplengkap",
         "source_name": "Paito SGP Lengkap",
@@ -183,13 +178,13 @@
           "paitosgplengkap",
           "nexipools_sgp"
         ],
-        "collected_at": "2026-10-12T23:30:24+07:00",
+        "collected_at": "2026-10-14T22:07:07+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-12",
-        "number": "9450",
+        "date": "2026-10-14",
+        "number": "0300",
         "verification": "confirmed_2_sources",
         "source_ids": [
           "paitosgplengkap",
@@ -198,9 +193,9 @@
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-12T23:30:24+07:00",
-      "last_source_check": "2026-10-14T17:09:41+07:00",
-      "latest_source_draw_date": "2026-10-12"
+      "last_successful_data_update": "2026-10-14T22:07:07+07:00",
+      "last_source_check": "2026-10-14T22:07:07+07:00",
+      "latest_source_draw_date": "2026-10-14"
     }
   }
 }
