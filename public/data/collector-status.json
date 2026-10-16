@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-16T16:20:19+07:00",
+  "collected_at": "2026-10-16T21:04:07+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -84,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-10-16T01:58:59+07:00",
-      "last_source_check": "2026-10-16T16:20:19+07:00",
+      "last_source_check": "2026-10-16T21:04:07+07:00",
       "latest_source_draw_date": "2026-10-15"
     },
     "SDY": {
@@ -99,23 +99,18 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 259,
+        "waroengtogel_sdy": 260,
         "datatogel_sdy": 289,
         "livenomor_sdy": 288
       },
       "verified_count": 289,
-      "new_count": 2,
+      "new_count": 1,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-10-06",
-          "number": "3398",
-          "verification": "confirmed_2_sources"
-        },
-        {
           "date": "2026-10-16",
           "number": "7838",
-          "verification": "confirmed_2_sources"
+          "verification": "confirmed_3_sources"
         }
       ],
       "latest": {
@@ -130,49 +125,57 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-16T16:20:19+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-10-16T21:04:07+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "latest_verified": {
         "date": "2026-10-16",
         "number": "7838",
-        "verification": "confirmed_2_sources",
+        "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-16T16:20:19+07:00",
-      "last_source_check": "2026-10-16T16:20:19+07:00",
+      "last_successful_data_update": "2026-10-16T21:04:07+07:00",
+      "last_source_check": "2026-10-16T21:04:07+07:00",
       "latest_source_draw_date": "2026-10-16"
     },
     "SGP": {
       "market": "SGP",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "paitosgplengkap",
         "nexipools_sgp"
       ],
       "parsed_counts": {
-        "paitosgplengkap": 204,
+        "paitosgplengkap": 205,
         "nexipools_sgp": 30
       },
-      "verified_count": 29,
-      "new_count": 0,
+      "verified_count": 30,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-15",
+          "number": "0314",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20261014,
-        "tanggal": "14 Okt 2026",
-        "periode": "SGP-2497",
-        "nomor": "0300",
-        "result_date": "2026-10-14",
+        "id": 20261015,
+        "tanggal": "15 Okt 2026",
+        "periode": "SGP-2498",
+        "nomor": "0314",
+        "result_date": "2026-10-15",
         "market": "SGP",
         "source_id": "paitosgplengkap",
         "source_name": "Paito SGP Lengkap",
@@ -181,13 +184,13 @@
           "paitosgplengkap",
           "nexipools_sgp"
         ],
-        "collected_at": "2026-10-14T22:07:07+07:00",
+        "collected_at": "2026-10-16T21:04:07+07:00",
         "verification": "confirmed_2_sources",
         "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-14",
-        "number": "0300",
+        "date": "2026-10-15",
+        "number": "0314",
         "verification": "confirmed_2_sources",
         "source_ids": [
           "paitosgplengkap",
@@ -196,9 +199,9 @@
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-14T22:07:07+07:00",
-      "last_source_check": "2026-10-16T16:20:19+07:00",
-      "latest_source_draw_date": "2026-10-14"
+      "last_successful_data_update": "2026-10-16T21:04:07+07:00",
+      "last_source_check": "2026-10-16T21:04:07+07:00",
+      "latest_source_draw_date": "2026-10-15"
     }
   }
 }
