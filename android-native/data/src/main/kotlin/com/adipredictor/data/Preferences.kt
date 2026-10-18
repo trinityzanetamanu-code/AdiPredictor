@@ -3,8 +3,8 @@ package com.adipredictor.data
 import kotlinx.serialization.json.*
 
 val notificationDefaults = mapOf("master" to false, "result" to true, "prediction" to true, "liveDraw" to true, "audit" to true, "appUpdate" to true, "collector" to false)
+private val deliveredEventsLock = Any()
 class Preferences(private val store: Store) {
-    private companion object { val deliveryLock = Any() }
     fun notifications(): Map<String, Boolean> {
         val value = runCatching { wireJson.parseToJsonElement(store.read("preferences:notifications") ?: "{}") }.getOrNull()
         return notificationDefaults.mapValues { (k, default) -> (value.field(k) as? JsonPrimitive)?.booleanOrNull ?: default }
@@ -12,7 +12,7 @@ class Preferences(private val store: Store) {
     fun notifications(values: Map<String, Boolean>) { store.write("preferences:notifications", JsonObject(notificationDefaults.mapValues { (key, default) -> JsonPrimitive(values[key] ?: default) }).toString()) }
     fun get(key: String, default: String): String = store.read("preference:$key") ?: default
     fun set(key: String, value: String) { store.write("preference:$key", value) }
-    fun claim(key: String): Boolean = synchronized(deliveryLock) {
+    fun claim(key: String): Boolean = synchronized(deliveredEventsLock) {
         val previous = runCatching { wireJson.parseToJsonElement(store.read("notifications:delivered") ?: "[]").arr().map { it.text() } }.getOrDefault(emptyList())
         if (key in previous) return@synchronized false
         store.write("notifications:delivered", JsonArray((previous + key).takeLast(500).map { JsonPrimitive(it) }).toString())
@@ -73,8 +73,13 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
                     val parsedEvents = wireJson.parseToJsonElement(raw)
                     require(parsedEvents is JsonArray && parsedEvents.all { it is JsonPrimitive && it.isString && it.content.isNotBlank() && it.content.length <= 512 }) { "INVALID_DELIVERED_EVENTS" }
                     val incoming = parsedEvents.map { it.text() }
-                    val old = wireJson.parseToJsonElement(store.read("notifications:delivered") ?: "[]").arr().map { it.text() }
-                    store.write("notifications:delivered", JsonArray((old + incoming).distinct().takeLast(500).map { JsonPrimitive(it) }).toString()); imported += key
+                    synchronized(deliveredEventsLock) {
+                        val old = wireJson.parseToJsonElement(store.read("notifications:delivered") ?: "[]").arr().map { it.text() }
+                        // Imported history must not evict more recent native claims.
+                        val merged = (incoming.filterNot { it in old } + old).distinct().takeLast(500)
+                        store.write("notifications:delivered", JsonArray(merged.map { JsonPrimitive(it) }).toString())
+                    }
+                    imported += key
                 }
                 key.startsWith("CANONICAL_CACHE_V1:") -> {
                     val path = key.removePrefix("CANONICAL_CACHE_V1:")
@@ -86,7 +91,11 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
                     if (path.startsWith("data/")) require(dataset(data).all { it.wire.string("market").ifEmpty { market } == market })
                     else require(data.string("market") == market && data.field("final_candidates") is JsonObject && data.string("dataset_fingerprint").matches(Regex("[a-f0-9]{64}")))
                     val prior = store.read("canonical:$path")?.let { wireJson.parseToJsonElement(it) }
-                    if (prior == null || !regression(data, prior)) { store.write("canonical:$path", data.toString()); imported += key } else skipped += key
+                    // Equal latest draw does not prove an older exported whole
+                    // dataset is the current revision. Retain native on ambiguity.
+                    val ambiguousRevision = prior != null && head(data) == head(prior) && data != prior &&
+                        (path.startsWith("data/") || (data.string("metadata_revision").toIntOrNull() ?: 0) <= (prior.string("metadata_revision").toIntOrNull() ?: 0))
+                    if (prior == null || !regression(data, prior) && !ambiguousRevision) { store.write("canonical:$path", data.toString()); imported += key } else skipped += key
                 }
                 key == "HK_LAST_VERIFIED_BOARD" -> {
                     val board = wireJson.parseToJsonElement(raw)

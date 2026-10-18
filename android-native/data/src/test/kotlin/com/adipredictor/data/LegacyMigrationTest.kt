@@ -88,4 +88,26 @@ class LegacyMigrationTest {
         assertEquals("001234", conflict.state.value.files["runtime/board/HK"].field("runtime_conflicts").arr().single().string("incoming_first"))
         assertNull(store.read("canonical:data/hk.json"))
     }
+    @Test fun largeOldImportCannotEvictRecentNativeDeliveryClaims() {
+        val store = MemoryStore()
+        repeat(500) { assertTrue(Preferences(store).claim("NATIVE:$it")) }
+        val incoming = JsonArray((listOf("NATIVE:499") + List(500) { "LEGACY:$it" }).map { JsonPrimitive(it) })
+        val export = JsonObject(mapOf("adipredictor:delivered-notification-events:v1" to incoming)).toString()
+        repeat(2) { assertTrue(migrateLegacy(export, store).errors.isEmpty()) }
+        repeat(500) { assertFalse(Preferences(store).claim("NATIVE:$it")) }
+        assertEquals(500, wireJson.parseToJsonElement(store.read("notifications:delivered")!!).arr().size)
+    }
+    @Test fun sameHeadOlderWholeDatasetCannotReplaceAlignedNativeRevision() {
+        val store = MemoryStore()
+        val full = published("data/hk.json")
+        store.write("canonical:data/hk.json", full.toString())
+        store.write("canonical:predictions/hk/latest.json", published("predictions/hk/latest.json").toString())
+        val truncated = JsonArray(full.arr().dropLast(1))
+        assertEquals(head(full), head(truncated))
+        val export = JsonObject(mapOf("CANONICAL_CACHE_V1:data/hk.json" to wrapper(truncated))).toString()
+        val report = migrateLegacy(export, store)
+        assertEquals(1, report.skipped.size)
+        assertEquals(full.toString(), store.read("canonical:data/hk.json"))
+        assertEquals("MATCH", Repository(Transport { error("OFFLINE") }, store).state.value.bundles["HK"]!!.alignment)
+    }
 }
