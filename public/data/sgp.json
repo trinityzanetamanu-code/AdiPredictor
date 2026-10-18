@@ -1,5 +1,23 @@
 [
   {
+    "id": 20261018,
+    "tanggal": "18 Okt 2026",
+    "periode": "SGP-2500",
+    "nomor": "1927",
+    "result_date": "2026-10-18",
+    "market": "SGP",
+    "source_id": "paitosgplengkap",
+    "source_name": "Paito SGP Lengkap",
+    "source_url": "https://paitosgplengkap.org/data/2026/",
+    "source_ids": [
+      "paitosgplengkap",
+      "nexipools_sgp"
+    ],
+    "collected_at": "2026-10-18T20:37:04+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20261017,
     "tanggal": "17 Okt 2026",
     "periode": "SGP-2499",
