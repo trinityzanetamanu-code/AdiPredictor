@@ -27,10 +27,22 @@ class Repository(private val remote: Transport, private val store: Store, privat
             if (valid(path, it)) { retained[path] = it; files[path] = it; observations[path] = Observation("CACHE") }
         } }
         markets.forEach { market ->
-            val raw = store.read("runtime:board:$market") ?: if (market == "HK") store.read("legacy:runtime:HK") else null
-            runCatching { raw?.let { wireJson.parseToJsonElement(it) } }.getOrNull()?.let { files["runtime/board/$market"] = it }
+            val current = runCatching { store.read("runtime:board:$market")?.let { wireJson.parseToJsonElement(it) } }.getOrNull()
+            (if (market == "HK") mergeLegacyHKRuntime(current) else current)?.let { files["runtime/board/$market"] = it }
         }
         _state.value = assemble(files, observations)
+    }
+    private fun mergeLegacyHKRuntime(current: JsonElement?): JsonElement? {
+        val imported = runCatching { store.read("legacy:runtime:HK")?.let { wireJson.parseToJsonElement(it) } }.getOrNull() ?: return current
+        if (current == null || imported.string("draw_date") > current.string("draw_date")) return imported
+        if (imported.string("draw_date") == current.string("draw_date") && imported.string("first") != current.string("first")) {
+            val conflict = buildJsonObject {
+                put("draw_date", imported.string("draw_date")); put("retained_first", current.string("first"))
+                put("incoming_first", imported.string("first")); put("status", "RUNTIME_CONFLICT_UNVERIFIED")
+            }
+            return JsonObject(current.obj() + ("runtime_conflicts" to JsonArray((current.field("runtime_conflicts").arr() + conflict).distinct().takeLast(8))))
+        }
+        return current
     }
     private fun paths(): List<String> = markets.flatMap { listOf("data/${it.lowercase()}.json", "predictions/${it.lowercase()}/latest.json", "predictions/${it.lowercase()}/history.json") } +
         listOf("data/live-draw.json", "data/collector-status.json", "data/singapore-official.json", "data/tafsir.json", "app-release.json")
@@ -85,11 +97,7 @@ class Repository(private val remote: Transport, private val store: Store, privat
     suspend fun reloadCacheAfterMigration() = mutex.withLock {
         val files = _state.value.files.toMutableMap()
         paths().forEach { path -> store.read("canonical:$path")?.let { raw -> runCatching { wireJson.parseToJsonElement(raw) }.getOrNull()?.takeIf { valid(path, it) }?.let { files[path] = it; retained[path] = it } } }
-        store.read("legacy:runtime:HK")?.let {
-            val imported = wireJson.parseToJsonElement(it)
-            val current = files["runtime/board/HK"]
-            if (current == null || imported.string("draw_date") > current.string("draw_date")) files["runtime/board/HK"] = imported
-        }
+        mergeLegacyHKRuntime(files["runtime/board/HK"])?.let { files["runtime/board/HK"] = it }
         _state.value = assemble(files, _state.value.observations)
     }
     private suspend fun fetch(path: String): Pair<JsonElement?, Observation> {

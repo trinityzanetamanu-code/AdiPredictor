@@ -99,3 +99,45 @@ def test_installed_identity_is_separate_from_remote_stable_and_signing_fails_clo
     assert "Versi terpasang" in ui and "Metadata stable dari server" in ui
     ledger = json.loads((ROOT / "android-native/release/version-ledger.json").read_text())
     assert ledger["last_reserved_code"] >= 100141
+
+
+def test_signed_apk_verification_rejects_certificate_and_web_main_ui(monkeypatch, tmp_path):
+    import os
+    import zipfile
+    stable = json.loads((ROOT / 'public/app-release.json').read_text())
+    fingerprint = stable['certificate_sha256']
+    monkeypatch.setenv('ANDROID_HOME', str(tmp_path))
+    monkeypatch.setenv('EXPECTED_CERT_SHA256', fingerprint)
+    apk = tmp_path / 'candidate.apk'
+    with zipfile.ZipFile(apk, 'w') as z:
+        z.writestr('assets/public/index.html', '<html>React shell</html>')
+        for abi in ('arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'):
+            z.writestr(f'lib/{abi}/libtest.so', b'fixture')
+    args = type('Args', (), dict(apk=str(apk), code='100143', name='2.0.0-native-rc100143', kind='native', source=SHA, output=str(tmp_path / 'report.json')))()
+    monkeypatch.setattr(native.subprocess, 'check_output', lambda command, **kwargs: 'Signer #1 certificate SHA-256 digest: ' + '0' * 64 + '\n')
+    with pytest.raises(AssertionError, match='signer mismatch'):
+        native.verify(args)
+    assert not Path(args.output).exists()
+    monkeypatch.setattr(native.subprocess, 'check_output', lambda command, **kwargs: ('Signer #1 certificate SHA-256 digest: ' + fingerprint + '\n') if 'apksigner' in command[0] else badging())
+    with pytest.raises(AssertionError, match='Web main UI'):
+        native.verify(args)
+    assert not Path(args.output).exists()
+
+
+def test_ci_gate_rejects_incomplete_or_failed_exact_source(monkeypatch):
+    monkeypatch.setenv('GITHUB_REF', 'refs/heads/main')
+    monkeypatch.setenv('GITHUB_SHA', SHA)
+    monkeypatch.setattr(native.subprocess, 'check_output', lambda *args, **kwargs: SHA + '\n')
+    monkeypatch.setattr(native.subprocess, 'run', lambda *args, **kwargs: None)
+    runs = [dict(id=1, name='Android Native Validation', head_sha=SHA, head_branch='main', status='completed', conclusion='success')]
+    monkeypatch.setattr(native, 'paginated', lambda *args: runs)
+    with pytest.raises(AssertionError, match='Required CI missing: Code Validation'):
+        native.require_green(SHA)
+    runs.append(dict(id=2, name='Code Validation', head_sha=SHA, head_branch='main', status='in_progress', conclusion=None))
+    with pytest.raises(AssertionError, match='Required CI not green: Code Validation'):
+        native.require_green(SHA)
+    runs[-1].update(status='completed', conclusion='success')
+    native.require_green(SHA)
+    runs.append(dict(id=3, name='Kotlin Engine Parity', head_sha=SHA, head_branch='main', status='completed', conclusion='failure'))
+    with pytest.raises(AssertionError, match='Required CI not green: Kotlin Engine Parity'):
+        native.require_green(SHA)

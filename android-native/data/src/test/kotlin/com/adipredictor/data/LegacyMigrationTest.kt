@@ -72,4 +72,20 @@ class LegacyMigrationTest {
         assertEquals(1, report.errors.size)
         assertEquals(data.toString(), store.read("canonical:$path"))
     }
+    @Test fun newerImportedRuntimeSurvivesRestartAndSameDrawConflictRetainsNative() = runTest {
+        val store = MemoryStore()
+        store.write("runtime:board:HK", """{"draw_date":"2026-10-11","first":"000111","derived_4d":"0111"}""")
+        val export = """{"HK_LAST_VERIFIED_BOARD":{"market":"HK","draw_date":"2026-10-12","first":"001234"}}"""
+        val repository = Repository(Transport { error("OFFLINE") }, store)
+        migrateLegacy(export, store); repository.reloadCacheAfterMigration()
+        assertEquals("001234", repository.state.value.files["runtime/board/HK"].string("first"))
+        val restarted = Repository(Transport { error("OFFLINE") }, store)
+        assertEquals("001234", restarted.state.value.files["runtime/board/HK"].string("first"))
+        assertEquals("1234", restarted.state.value.files["runtime/board/HK"].string("derived_4d"))
+        store.write("runtime:board:HK", """{"draw_date":"2026-10-12","first":"009999","derived_4d":"9999"}""")
+        val conflict = Repository(Transport { error("OFFLINE") }, store)
+        assertEquals("009999", conflict.state.value.files["runtime/board/HK"].string("first"))
+        assertEquals("001234", conflict.state.value.files["runtime/board/HK"].field("runtime_conflicts").arr().single().string("incoming_first"))
+        assertNull(store.read("canonical:data/hk.json"))
+    }
 }

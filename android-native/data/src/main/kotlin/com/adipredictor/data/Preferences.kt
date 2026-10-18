@@ -92,10 +92,11 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
                     val board = wireJson.parseToJsonElement(raw)
                     require(board.string("market").ifEmpty { "HK" } == "HK") { "RUNTIME_MARKET_MISMATCH" }
                     require(board.string("first").matches(Regex("[0-9]{6}")))
+                    require(board.string("derived_4d").ifEmpty { board.string("first").takeLast(4) } == board.string("first").takeLast(4)) { "RUNTIME_DERIVATION_MISMATCH" }
                     java.time.LocalDate.parse(board.string("draw_date"))
                     val prior = store.read("legacy:runtime:HK")?.let { wireJson.parseToJsonElement(it) }
                     if (prior == null || board.string("draw_date") > prior.string("draw_date")) {
-                        store.write("legacy:runtime:HK", raw); imported += key
+                        store.write("legacy:runtime:HK", JsonObject(board.obj() + ("derived_4d" to JsonPrimitive(board.string("first").takeLast(4)))).toString()); imported += key
                     } else skipped += key
                 }
                 else -> skipped += key // Runtime boards remain separate and are not canonicalized.
