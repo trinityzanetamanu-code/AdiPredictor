@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-17T23:26:58+07:00",
+  "collected_at": "2026-10-18T16:44:13+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 290
       },
       "verified_count": 290,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-17",
-          "number": "5379",
-          "verification": "provisional_primary"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261017,
         "tanggal": "17 Okt 2026",
@@ -56,7 +50,7 @@
         },
         {
           "source": "livedrawhk_crosscheck",
-          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5640 bytes"
+          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5661 bytes"
         }
       ],
       "source_health": {
@@ -90,12 +84,12 @@
         }
       },
       "last_successful_data_update": "2026-10-17T23:26:58+07:00",
-      "last_source_check": "2026-10-17T23:26:58+07:00",
+      "last_source_check": "2026-10-18T16:44:13+07:00",
       "latest_source_draw_date": "2026-10-17"
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -105,48 +99,57 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 261,
-        "datatogel_sdy": 290,
-        "livenomor_sdy": 289
+        "waroengtogel_sdy": 262,
+        "datatogel_sdy": 291,
+        "livenomor_sdy": 290
       },
-      "verified_count": 290,
-      "new_count": 0,
+      "verified_count": 291,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-08",
+          "number": "5814",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-10-18",
+          "number": "0196",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20261017,
-        "tanggal": "17 Okt 2026",
-        "periode": "SD-3577",
-        "nomor": "5174",
-        "result_date": "2026-10-17",
+        "id": 20261018,
+        "tanggal": "18 Okt 2026",
+        "periode": "SD-3578",
+        "nomor": "0196",
+        "result_date": "2026-10-18",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-17T20:14:37+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-10-18T16:44:13+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-10-17",
-        "number": "5174",
-        "verification": "confirmed_3_sources",
+        "date": "2026-10-18",
+        "number": "0196",
+        "verification": "confirmed_2_sources",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "datatogel_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-17T20:14:37+07:00",
-      "last_source_check": "2026-10-17T23:26:58+07:00",
-      "latest_source_draw_date": "2026-10-17"
+      "last_successful_data_update": "2026-10-18T16:44:13+07:00",
+      "last_source_check": "2026-10-18T16:44:13+07:00",
+      "latest_source_draw_date": "2026-10-18"
     },
     "SGP": {
       "market": "SGP",
@@ -194,7 +197,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-17T20:14:37+07:00",
-      "last_source_check": "2026-10-17T23:26:58+07:00",
+      "last_source_check": "2026-10-18T16:44:13+07:00",
       "latest_source_draw_date": "2026-10-17"
     }
   }
