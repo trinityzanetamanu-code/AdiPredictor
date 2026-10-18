@@ -4,6 +4,7 @@ import kotlinx.serialization.json.*
 
 val notificationDefaults = mapOf("master" to false, "result" to true, "prediction" to true, "liveDraw" to true, "audit" to true, "appUpdate" to true, "collector" to false)
 class Preferences(private val store: Store) {
+    private companion object { val deliveryLock = Any() }
     fun notifications(): Map<String, Boolean> {
         val value = runCatching { wireJson.parseToJsonElement(store.read("preferences:notifications") ?: "{}") }.getOrNull()
         return notificationDefaults.mapValues { (k, default) -> (value.field(k) as? JsonPrimitive)?.booleanOrNull ?: default }
@@ -11,11 +12,11 @@ class Preferences(private val store: Store) {
     fun notifications(values: Map<String, Boolean>) { store.write("preferences:notifications", JsonObject(notificationDefaults.mapValues { (key, default) -> JsonPrimitive(values[key] ?: default) }).toString()) }
     fun get(key: String, default: String): String = store.read("preference:$key") ?: default
     fun set(key: String, value: String) { store.write("preference:$key", value) }
-    @Synchronized fun claim(key: String): Boolean {
+    fun claim(key: String): Boolean = synchronized(deliveryLock) {
         val previous = runCatching { wireJson.parseToJsonElement(store.read("notifications:delivered") ?: "[]").arr().map { it.text() } }.getOrDefault(emptyList())
-        if (key in previous) return false
+        if (key in previous) return@synchronized false
         store.write("notifications:delivered", JsonArray((previous + key).takeLast(500).map { JsonPrimitive(it) }).toString())
-        return true
+        true
     }
 }
 data class Notice(val key: String, val category: String, val title: String, val body: String, val market: String = "HK", val target: String = "Analisis")
@@ -75,7 +76,9 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
                     val wrapper = wireJson.parseToJsonElement(raw)
                     require(wrapper.field("meta").string("source") == "REMOTE")
                     val data = wrapper.field("data") ?: error("NO_DATA")
-                    if (path.startsWith("data/")) dataset(data) else require(data.field("final_candidates") is JsonObject)
+                    val market = path.split('/')[1].removeSuffix(".json").uppercase()
+                    if (path.startsWith("data/")) require(dataset(data).all { it.wire.string("market").ifEmpty { market } == market })
+                    else require(data.string("market") == market && data.field("final_candidates") is JsonObject && data.string("dataset_fingerprint").matches(Regex("[a-f0-9]{64}")))
                     val prior = store.read("canonical:$path")?.let { wireJson.parseToJsonElement(it) }
                     if (prior == null || !regression(data, prior)) { store.write("canonical:$path", data.toString()); imported += key } else skipped += key
                 }

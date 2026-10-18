@@ -12,10 +12,14 @@ class MainActivity : ComponentActivity() {
     private val route = mutableStateOf<Pair<String, String>?>(null)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        acceptIntent(intent)
+        // Saved Compose state already includes a consumed deep link. Replaying the
+        // original intent on recreation would discard the user's later navigation.
+        if (savedInstanceState == null) acceptIntent(intent)
         setContent { NativeApp(model, route.value) { route.value = null } }
     }
-    public override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); setIntent(intent); acceptIntent(intent) }
+    // Navigation owns and saves the consumed route. Keep the launch intent
+    // stable rather than retaining an already-consumed notification intent.
+    public override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); acceptIntent(intent) }
     private fun acceptIntent(intent: Intent?) {
         val uri = intent?.data ?: return
         if (uri.scheme == "adipredictor" && uri.host == "open") {

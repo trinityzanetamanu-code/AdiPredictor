@@ -42,6 +42,7 @@ class DataTest {
         assertTrue(regression(rows("2026-10-11"), rows()))
         assertTrue(regression(rows(number = "1234"), rows()))
         assertFalse(regression(rows("2026-10-13"), rows()))
+        assertFalse(regression(JsonArray(rows("2026-10-11").arr() + rows("2026-10-13").arr()), rows()))
     }
     @Test fun olderMetadataCannotOverwritePrediction() {
         val p = wireJson.parseToJsonElement(published("predictions/hk/latest.json")).obj()
@@ -150,5 +151,31 @@ class DataTest {
         val store = MemoryStore(); store.write("preferences:notifications", "{\"master\":true}")
         val report = migrateLegacy("{\"adipredictor:notification-preferences:v1\":\"bad\"}", store)
         assertEquals(1, report.errors.size); assertTrue(Preferences(store).notifications()["master"] == true)
+    }
+    @Test fun simultaneousDeliveryClaimsFromSeparateInstancesOnlyDeliverOnce() {
+        val store = MemoryStore()
+        val pool = java.util.concurrent.Executors.newFixedThreadPool(8)
+        try {
+            val results = pool.invokeAll(List(40) { java.util.concurrent.Callable { Preferences(store).claim("RESULT:HK:concurrent:0000") } })
+            assertEquals(1, results.count { it.get() })
+        } finally { pool.shutdownNow() }
+    }
+    @Test fun legacyImportCannotOverwriteNewerNativeRuntimeBoard() = runTest {
+        val store = MemoryStore()
+        val native = """{"draw_date":"2026-10-13","first":"001234","derived_4d":"1234"}"""
+        store.write("runtime:board:HK", native)
+        val r = Repository(Transport { error("OFFLINE") }, store)
+        migrateLegacy("""{"HK_LAST_VERIFIED_BOARD":{"draw_date":"2026-10-12","first":"009999"}}""", store)
+        r.reloadCacheAfterMigration()
+        assertEquals("001234", r.state.value.files["runtime/board/HK"].string("first"))
+        assertEquals(native, store.read("runtime:board:HK"))
+    }
+    @Test fun wrongMarketLegacyCacheIsRejectedWithoutReplacingExistingData() {
+        val store = MemoryStore(); store.write("canonical:data/hk.json", rows().toString())
+        val wrapper = JsonObject(mapOf("data" to rows("2026-10-13").toString().replace("HK", "SGP").let { wireJson.parseToJsonElement(it) },
+            "meta" to JsonObject(mapOf("source" to JsonPrimitive("REMOTE")))))
+        val report = migrateLegacy(JsonObject(mapOf("CANONICAL_CACHE_V1:data/hk.json" to wrapper)).toString(), store)
+        assertEquals(1, report.errors.size)
+        assertEquals("2026-10-12", dataset(wireJson.parseToJsonElement(store.read("canonical:data/hk.json")!!)).first().date)
     }
 }

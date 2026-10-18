@@ -17,7 +17,7 @@ data class Snapshot(val bundles: Map<String, Bundle> = emptyMap(), val files: Ma
 class Repository(private val remote: Transport, private val store: Store, private val fallback: Transport? = null,
     private val clock: () -> String = { java.time.Instant.now().toString() }) {
     private val mutex = Mutex()
-    private val retained = mutableMapOf<String, JsonElement>()
+    private val retained = java.util.concurrent.ConcurrentHashMap<String, JsonElement>()
     private val _state = MutableStateFlow(Snapshot())
     val state: StateFlow<Snapshot> = _state.asStateFlow()
     init {
@@ -85,7 +85,11 @@ class Repository(private val remote: Transport, private val store: Store, privat
     suspend fun reloadCacheAfterMigration() = mutex.withLock {
         val files = _state.value.files.toMutableMap()
         paths().forEach { path -> store.read("canonical:$path")?.let { raw -> runCatching { wireJson.parseToJsonElement(raw) }.getOrNull()?.takeIf { valid(path, it) }?.let { files[path] = it; retained[path] = it } } }
-        store.read("legacy:runtime:HK")?.let { files["runtime/board/HK"] = wireJson.parseToJsonElement(it) }
+        store.read("legacy:runtime:HK")?.let {
+            val imported = wireJson.parseToJsonElement(it)
+            val current = files["runtime/board/HK"]
+            if (current == null || imported.string("draw_date") > current.string("draw_date")) files["runtime/board/HK"] = imported
+        }
         _state.value = assemble(files, _state.value.observations)
     }
     private suspend fun fetch(path: String): Pair<JsonElement?, Observation> {

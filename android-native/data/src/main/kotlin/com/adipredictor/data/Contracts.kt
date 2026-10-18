@@ -10,6 +10,8 @@ fun JsonElement?.arr(): JsonArray = this as? JsonArray ?: JsonArray(emptyList())
 fun JsonElement?.text(): String = (this as? JsonPrimitive)?.contentOrNull ?: ""
 fun JsonElement?.field(key: String): JsonElement? = obj()[key]
 fun JsonElement?.string(key: String): String = field(key).text()
+// v1 archives store 4D slots as strings; v2 adds published ranking metadata.
+fun candidateNumber(value: JsonElement?): String = value.string("number").ifEmpty { value.text() }
 fun sha256(value: String): String = MessageDigest.getInstance("SHA-256").digest(value.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
 val markets = listOf("HK", "SDY", "SGP")
 
@@ -48,7 +50,7 @@ fun alignment(market: String, rows: List<Draw>, p: JsonElement?): String {
     return "MATCH"
 }
 fun head(value: JsonElement?): Pair<String, String> = when (value) {
-    is JsonArray -> value.firstOrNull().let { it.string("result_date") to it.string("nomor") }
+    is JsonArray -> value.maxByOrNull { it.string("result_date") }.let { it.string("result_date") to it.string("nomor") }
     else -> value.field("latest_result").let { it.string("date") to it.string("number") }
 }
 fun regression(incoming: JsonElement, old: JsonElement): Boolean {
