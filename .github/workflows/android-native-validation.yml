@@ -27,9 +27,16 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Install explicit SDK
         run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-      - name: Unit tests, lint, unsigned release compile
+      - name: JVM data and contract tests
         working-directory: android-native
-        run: ./gradlew :data:test :app:testReleaseUnitTest :app:lintRelease :app:assembleRelease --no-daemon --console=plain
+        run: ./gradlew :data:test --no-daemon --console=plain
+      - name: Controlled Android UI, lifecycle and notification tests
+        timeout-minutes: 8
+        working-directory: android-native
+        run: ./gradlew :app:testReleaseUnitTest --no-daemon --console=plain
+      - name: Lint and unsigned release compile
+        working-directory: android-native
+        run: ./gradlew :app:lintRelease :app:assembleRelease --no-daemon --console=plain
       - name: Verify release is unsigned
         run: |
           test -f android-native/app/build/outputs/apk/release/app-release-unsigned.apk

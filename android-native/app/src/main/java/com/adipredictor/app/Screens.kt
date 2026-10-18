@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -44,6 +45,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
     var page by rememberSaveable { mutableStateOf(model.preferences.get("page", "Analisis")) }
     var market by rememberSaveable { mutableStateOf(model.preferences.get("market", "HK")) }
     var selectedDate by rememberSaveable { mutableStateOf("") }
+    val pageState = rememberSaveableStateHolder()
     LaunchedEffect(route) { route?.let { market = it.first; page = it.second; selectedDate = ""; model.clearArchive(); consumeRoute() } }
     LaunchedEffect(page, market) { model.preferences.set("page", page); model.preferences.set("market", market) }
     LaunchedEffect(selectedDate, market, snapshot.bundles[market]?.history) {
@@ -67,7 +69,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
                 }
                 if (message.isNotEmpty()) Text(message, Modifier.padding(12.dp), color = MaterialTheme.colorScheme.primary)
                 val bundle = snapshot.bundles[market] ?: Bundle()
-                when (page) {
+                pageState.SaveableStateProvider("$page:$market") { when (page) {
                     "Analisis" -> Analysis(market, bundle, snapshot) { page = "Histori" }
                     "Data" -> DataScreen(bundle)
                     "LiveDraw" -> LiveScreen(market, bundle, snapshot)
@@ -75,7 +77,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
                     "Tafsir" -> TafsirScreen(snapshot.files["data/tafsir.json"])
                     "Pengaturan" -> SettingsScreen(model, snapshot)
                     "Histori" -> HistoryScreen(bundle, archive, svgs, selectedDate, onSelect = { selectedDate = it.string("target_date"); model.selectArchive(market, it) }, onBack = { selectedDate = ""; model.clearArchive() })
-                }
+                } }
             }
         }
     }
@@ -89,9 +91,9 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
         }
     }
 }
-@Composable private fun CopyText(value: String, label: String = "Salin") {
+@Composable private fun CopyText(value: String, label: String = "Salin", tag: String = "") {
     val clipboard = LocalClipboardManager.current
-    TextButton(onClick = { clipboard.setText(AnnotatedString(value)) }) { Text(label) }
+    TextButton(onClick = { clipboard.setText(AnnotatedString(value)) }, modifier = if (tag.isEmpty()) Modifier else Modifier.testTag(tag)) { Text(label) }
 }
 // All published diagnostics remain accessible, including fields introduced by the backend.
 @Composable private fun Details(title: String, value: JsonElement?) {
@@ -152,9 +154,10 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
     CardSection("BBFS") { Fields(candidates.field("bbfs")); CopyText(candidates.field("bbfs").toString()) }
     CardSection("Kandidat 4D") {
         candidates.field("four_d").obj().filterKeys { it in listOf("main", "alternative", "reserve", "single_pair") }.forEach { (slot, candidate) ->
-            Text("${slot.replace('_', ' ')}: ${candidate.string("number")} ${candidate.string("star_label")}", style = MaterialTheme.typography.titleLarge)
-            Text("Model ${candidate.field("supported_by").arr().joinToString { it.text() }} · skor ${candidate.string("reliability_weighted_score")} · rank ${candidate.string("weighted_rank")}")
-            CopyText(candidate.string("number"))
+            val number = candidateNumber(candidate)
+            Text("${slot.replace('_', ' ')}: $number ${candidate.string("star_label")}", style = MaterialTheme.typography.titleLarge)
+            if (candidate is JsonObject) Text("Model ${candidate.field("supported_by").arr().joinToString { it.text() }} · skor ${candidate.string("reliability_weighted_score")} · rank ${candidate.string("weighted_rank")}")
+            CopyText(number, tag = "copy4d:$slot")
         }
     }
     Details("3D · depan dan belakang", candidates.field("three_d"))
@@ -233,7 +236,10 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
         } else {
             item { TextButton(onClick = onBack) { Text("Kembali ke daftar") } }
             if (archive != null) {
-                item { CardSection("Arsip ${archive.string("target_date")}") { Text("${archive.string("target_period")} · basis ${archive.string("prediction_basis_date")} ${archive.string("prediction_basis_result")}"); Text("Fingerprint ${archive.string("dataset_fingerprint")}") } }
+                item { CardSection("Arsip ${archive.string("target_date")}") {
+                    Text("${archive.string("target_period")} · basis ${archive.string("prediction_basis_date").ifEmpty { archive.field("latest_result").string("date") }} ${archive.string("prediction_basis_result").ifEmpty { archive.field("latest_result").string("number") }}")
+                    Text("Fingerprint ${archive.string("dataset_fingerprint").ifEmpty { "tidak tersedia pada arsip asli" }}")
+                } }
                 item { CandidateCards(archive.field("final_candidates") ?: archive.field("quick_view")) }
                 item { Details("Quick View", archive.field("quick_view")) }
                 item { Details("Model P1–P7 dan P5", archive.field("models")) }
@@ -242,28 +248,35 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
                 item { Details("Konsensus weighted", archive.field("weighted_consensus")) }
                 item { Details("Outcome audit", bundle.history.field("records").arr().find { it.string("target_date") == date }.field("outcome_audit") ?: archive.field("outcome_audit")) }
                 items(archive.field("visual_patterns").arr()) { pattern -> CardSection("Pola Visual · ${pattern.string("pattern_name")}") {
-                    Fields(pattern)
                     val xml = svgs[pattern.string("image_path")]
-                    if (xml == null) Text("SVG asli belum tersedia") else OriginalSvg(xml)
+                    if (xml == null) Text("SVG asli belum tersedia") else OriginalSvg(xml, pattern.string("image_path"))
+                    Details("Detail pola ${pattern.string("pattern_name")}", pattern)
                 } }
                 item { Details("Payload arsip lengkap", archive) }
             }
         }
     }
 }
-@Composable private fun OriginalSvg(xml: String) {
+@Composable private fun OriginalSvg(xml: String, path: String) {
     var zoom by rememberSaveable { mutableFloatStateOf(1f) }
     var picture by remember(xml) { mutableStateOf<Picture?>(null) }
-    LaunchedEffect(xml) { picture = withContext(Dispatchers.Default) { runCatching { SVG.getFromString(xml).renderToPicture() }.getOrNull() } }
-    if (picture == null) Text("Memuat SVG…")
+    var renderError by remember(xml) { mutableStateOf<String?>(null) }
+    LaunchedEffect(xml) {
+        val parsed = withContext(Dispatchers.Default) { runCatching { SVG.getFromString(xml).renderToPicture() } }
+        picture = parsed.getOrNull(); renderError = parsed.exceptionOrNull()?.let { "${it.javaClass.simpleName}: ${it.message}" }
+    }
+    if (picture == null) Text(renderError?.let { "SVG gagal dirender: $it" } ?: "Memuat SVG…")
     else {
         Text("SVG asli · zoom ${"%.1f".format(zoom)}×")
         Slider(zoom, { zoom = it }, valueRange = 1f..3f)
-        Box(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
+        BoxWithConstraints(Modifier.fillMaxWidth()) {
+            val imageWidth = maxWidth * zoom
+            Box(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())) {
             AndroidView(factory = { context -> object : View(context) {
                 var source: Picture? = null
                 override fun onDraw(canvas: AndroidCanvas) { super.onDraw(canvas); source?.let { canvas.save(); canvas.scale(width.toFloat() / it.width, height.toFloat() / it.height); canvas.drawPicture(it); canvas.restore() } }
-            } }, update = { view -> view.source = picture; view.invalidate() }, modifier = Modifier.width((340 * zoom).dp).height((picture!!.height.toFloat() / picture!!.width * 340 * zoom).dp))
+            } }, update = { view -> view.source = picture; view.invalidate() }, modifier = Modifier.testTag("svg:$path").width(imageWidth).height(imageWidth * (picture!!.height.toFloat() / picture!!.width)))
+            }
         }
     }
 }
@@ -277,7 +290,7 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
         notifications = notifications + ("master" to granted); model.preferences.notifications(notifications); scheduleReminders(context)
     }
     val import = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        uri?.let { runCatching { context.contentResolver.openInputStream(it)?.bufferedReader(Charsets.UTF_8)?.use { reader -> reader.readText() } }.getOrNull()?.let(model::importLegacy) }
+        uri?.let(model::importLegacyDocument)
     }
     LazyColumn(Modifier.testTag("content").padding(horizontal = 12.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
         item { CardSection("Notifikasi") {

@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins { id("com.android.application"); kotlin("android"); id("org.jetbrains.kotlin.plugin.compose") }
 val robolectricSdk by configurations.creating
 val robolectricCompileSdk by configurations.creating
@@ -15,6 +17,7 @@ android {
     buildFeatures { compose = true; buildConfig = true }
     lint { abortOnError = true; warningsAsErrors = false }
     testOptions { unitTests.isIncludeAndroidResources = true; unitTests.all {
+        it.timeout.set(Duration.ofMinutes(6))
         it.dependsOn(prepareRobolectricSdk)
         it.systemProperty("repo.root", rootProject.projectDir.parentFile.absolutePath)
         it.systemProperty("robolectric.offline", "true")

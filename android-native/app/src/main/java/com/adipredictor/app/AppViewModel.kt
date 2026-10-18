@@ -69,6 +69,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     fun clearArchive() { archiveJob?.cancel(); archiveGeneration++; _archive.value = null; _svg.value = emptyMap(); _message.value = "" }
+    fun importLegacyDocument(uri: android.net.Uri) { viewModelScope.launch(Dispatchers.IO) {
+        runCatching {
+            getApplication<Application>().contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+                ?: error("Dokumen tidak dapat dibaca")
+        }.onSuccess(::importLegacy).onFailure { _message.value = "Impor gagal: ${it.message}" }
+    } }
     fun importLegacy(text: String) { viewModelScope.launch(Dispatchers.IO) {
         runCatching { migrateLegacy(text, store) }.onSuccess { _message.value = "Migrasi: ${it.imported.size} diimpor, ${it.skipped.size} dilewati, ${it.errors.joinToString()}" }
             .onFailure { _message.value = "Migrasi gagal: ${it.message}" }
