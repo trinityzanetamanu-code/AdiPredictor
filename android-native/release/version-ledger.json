@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "last_reserved_code": 100141,
+  "baseline_audit": {
+    "stable_code": 100010,
+    "stable_run_id": 35737227153,
+    "highest_previous_artifact_code": 100141,
+    "highest_previous_artifact_run_id": 38083141293,
+    "previous_signed_owner_candidates_found": 0,
+    "note": "All 677 workflow runs audited at 28a0bfe. Include old debug build in the floor; its signer is not claimed compatible. Installed owner version is unknown."
+  },
+  "reservations": []
+}

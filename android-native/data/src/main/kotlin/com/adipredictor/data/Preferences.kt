@@ -53,7 +53,10 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
     val parsed = wireJson.parseToJsonElement(export)
     require(parsed is JsonObject) { "INVALID_LEGACY_EXPORT" }
     val value = parsed
-    val source = if (value.containsKey("localStorage")) value.field("localStorage").obj() else value
+    val source = if (value.containsKey("localStorage")) {
+        require(value.field("localStorage") is JsonObject) { "INVALID_LOCAL_STORAGE_EXPORT" }
+        value.field("localStorage").obj()
+    } else value
     val imported = mutableListOf<String>(); val skipped = mutableListOf<String>(); val errors = mutableListOf<String>()
     source.forEach { (key, entry) ->
         val raw = if (entry is JsonPrimitive && entry.isString) entry.content else entry.toString()
@@ -63,10 +66,13 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
                     val p = wireJson.parseToJsonElement(raw)
                     require(p is JsonObject) { "INVALID_PREFERENCES" }
                     require(p.values.all { (it as? JsonPrimitive)?.booleanOrNull != null })
-                    if (store.read("preferences:notifications") == null) { store.write("preferences:notifications", raw); imported += key } else skipped += key
+                    val known = JsonObject(p.filterKeys { it in notificationDefaults })
+                    if (store.read("preferences:notifications") == null) { store.write("preferences:notifications", known.toString()); imported += key } else skipped += key
                 }
                 key == "adipredictor:delivered-notification-events:v1" -> {
-                    val incoming = wireJson.parseToJsonElement(raw).arr().map { it.text() }
+                    val parsedEvents = wireJson.parseToJsonElement(raw)
+                    require(parsedEvents is JsonArray && parsedEvents.all { it is JsonPrimitive && it.isString && it.content.isNotBlank() && it.content.length <= 512 }) { "INVALID_DELIVERED_EVENTS" }
+                    val incoming = parsedEvents.map { it.text() }
                     val old = wireJson.parseToJsonElement(store.read("notifications:delivered") ?: "[]").arr().map { it.text() }
                     store.write("notifications:delivered", JsonArray((old + incoming).distinct().takeLast(500).map { JsonPrimitive(it) }).toString()); imported += key
                 }
@@ -84,6 +90,7 @@ fun migrateLegacy(export: String, store: Store): MigrationReport {
                 }
                 key == "HK_LAST_VERIFIED_BOARD" -> {
                     val board = wireJson.parseToJsonElement(raw)
+                    require(board.string("market").ifEmpty { "HK" } == "HK") { "RUNTIME_MARKET_MISMATCH" }
                     require(board.string("first").matches(Regex("[0-9]{6}")))
                     java.time.LocalDate.parse(board.string("draw_date"))
                     val prior = store.read("legacy:runtime:HK")?.let { wireJson.parseToJsonElement(it) }

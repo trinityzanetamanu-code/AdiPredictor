@@ -129,6 +129,14 @@ class NativeUiTest {
         page("Pengaturan")
         ui.onNodeWithText("Notifikasi").assertExists()
         screenshot("settings-phone")
+        assertTrue(ui.activity.applicationInfo.icon != 0)
+        assertFalse(BuildConfig.DEBUG)
+        ui.onNodeWithTag("content").performScrollToNode(hasText("Versi terpasang"))
+        ui.onNodeWithText("UPDATE_CHANNEL_READY=false").assertExists()
+        screenshot("installed-build-identity-phone")
+        ui.onNodeWithTag("content").performScrollToNode(hasText("Metadata stable dari server"))
+        ui.onNodeWithText("Metadata stable dari server").assertIsDisplayed()
+        ui.onNodeWithTag("content").performScrollToIndex(0)
         ui.activityRule.scenario.recreate(); ui.waitForIdle(); ui.onNodeWithText("Notifikasi").assertExists()
         // Android resolves a component before delivering onNewIntent. Preserve
         // that contract so ActivityScenario can track the recreated Activity.

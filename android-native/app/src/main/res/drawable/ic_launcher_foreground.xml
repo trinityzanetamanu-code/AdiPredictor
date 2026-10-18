@@ -1,0 +1,6 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- Existing App.jsx identity: slate lightning bolt on emerald. Lucide Zap path. -->
+    <group android:translateX="30" android:translateY="30" android:scaleX="2" android:scaleY="2">
+        <path android:fillColor="#020617" android:pathData="M13,2 L3,14 L12,14 L11,22 L21,10 L12,10 Z" />
+    </group>
+</vector>

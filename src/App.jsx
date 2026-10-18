@@ -1853,6 +1853,15 @@ function SettingsPanel() {
           setDiagnosticText(JSON.stringify(exportLegacyStorage(window.localStorage), null, 2));
           setCopyResult('Simpan JSON ini sebagai adipredictor-legacy.json, lalu impor di aplikasi native.');
         }}>Tampilkan ekspor data lama</button>
+        <button type="button" className="ml-2 mt-3 min-h-11 rounded-lg border border-emerald-500/30 px-3" onClick={() => {
+          const json = JSON.stringify(exportLegacyStorage(window.localStorage), null, 2);
+          const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+          const link = document.createElement('a');
+          link.href = url; link.download = 'adipredictor-legacy.json'; link.click();
+          setTimeout(() => URL.revokeObjectURL(url), 30000);
+          setDiagnosticText(json);
+          setCopyResult('Jika unduhan tidak tersedia pada WebView HP, pilih semua JSON di bawah, salin dan simpan sebelum memasang native.');
+        }}>Unduh JSON data lama</button>
       </section>
       <section className="rounded-2xl border border-sky-500/25 bg-slate-900/90 p-5 text-xs text-slate-300" data-device-diagnostics>
         <h3 className="font-bold text-sky-200">Diagnostik pembaruan dan LiveDraw</h3>

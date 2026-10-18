@@ -6,12 +6,40 @@ val robolectricCompileSdk by configurations.creating
 val prepareRobolectricSdk by tasks.registering(Copy::class) {
     from(robolectricSdk, robolectricCompileSdk); into(layout.buildDirectory.dir("robolectric-sdk"))
 }
+val candidate = providers.environmentVariable("ANDROID_BUILD_CHANNEL").orNull == "release-candidate"
+val candidateCode = providers.environmentVariable("ANDROID_VERSION_CODE").orNull?.toIntOrNull()
+val candidateName = providers.environmentVariable("ANDROID_VERSION_NAME").orNull
+val sourceCommit = providers.environmentVariable("ANDROID_SOURCE_COMMIT").orNull ?: "LOCAL_UNVERIFIED"
+val keystorePath = providers.environmentVariable("ANDROID_KEYSTORE_PATH").orNull
+if (candidate) {
+    require(candidateCode?.let { it in 100142..2100000000 } == true) { "Invalid reserved candidate versionCode" }
+    require(candidateName?.matches(Regex("[0-9A-Za-z.+_-]+-native-rc[0-9]+")) == true) { "Invalid native RC versionName" }
+    require(sourceCommit.matches(Regex("[0-9a-f]{40}"))) { "Candidate requires exact source SHA" }
+    require(!keystorePath.isNullOrBlank() && listOf("ANDROID_KEYSTORE_PASSWORD", "ANDROID_KEY_ALIAS", "ANDROID_KEY_PASSWORD").all { !System.getenv(it).isNullOrBlank() }) { "Protected signing unavailable" }
+}
 android {
     namespace = "com.adipredictor.app"
     compileSdk = 35
     buildToolsVersion = "35.0.0"
-    defaultConfig { applicationId = "com.adipredictor.app"; minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "4A-preview"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
-    buildTypes { release { isMinifyEnabled = false; signingConfig = null } }
+    defaultConfig {
+        applicationId = "com.adipredictor.app"; minSdk = 26; targetSdk = 35
+        versionCode = if (candidate) candidateCode!! else 1
+        versionName = if (candidate) candidateName!! else "4B-validation"
+        buildConfigField("String", "BUILD_CHANNEL", "\"${if (candidate) "release-candidate" else "validation"}\"")
+        buildConfigField("String", "SOURCE_COMMIT", "\"$sourceCommit\"")
+        buildConfigField("boolean", "UPDATE_CHANNEL_READY", "false")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    if (candidate) signingConfigs.create("protectedRelease") {
+        storeFile = file(keystorePath!!)
+        storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+        keyAlias = System.getenv("ANDROID_KEY_ALIAS")
+        keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+    }
+    buildTypes { release {
+        isDebuggable = false; isMinifyEnabled = false
+        signingConfig = if (candidate) signingConfigs.getByName("protectedRelease") else null
+    } }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true; buildConfig = true }

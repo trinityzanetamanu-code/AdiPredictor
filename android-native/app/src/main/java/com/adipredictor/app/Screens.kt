@@ -308,7 +308,16 @@ private val theme = darkColorScheme(primary = Color(0xff34d399), background = Co
             Button(onClick = { import.launch(arrayOf("application/json", "text/plain")) }) { Text("Impor preferensi/cache lama") }
             TextButton(onClick = { clipboard.getText()?.text?.let(model::importLegacy) }) { Text("Impor JSON dari clipboard") }
         } }
-        item { CardSection("Versi") { Text("${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) · Android native preview"); Text("Backend produksi Kotlin · stable React/Capacitor tetap tersedia"); Fields(snapshot.files["app-release.json"]) } }
+        item { CardSection("Versi terpasang") {
+            Text("${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+            Text("Android native · ${BuildConfig.BUILD_CHANNEL}")
+            Text("Source: ${BuildConfig.SOURCE_COMMIT}")
+            Text("UPDATE_CHANNEL_READY=${BuildConfig.UPDATE_CHANNEL_READY}")
+        } }
+        item { CardSection("Metadata stable dari server") {
+            Text("Informasi stable yang dibaca dari server; identitas versi terpasang tercantum di atas.")
+            Fields(snapshot.files["app-release.json"])
+        } }
         item { Details("Diagnostic collector", snapshot.files["data/collector-status.json"]) }
         item { CardSection("Diagnostic sinkronisasi") { snapshot.observations.forEach { (path, observation) -> Text("$path\n${observation.origin}: ${observation.reason}\n${observation.checkedAt}") }; CopyText(snapshot.observations.toString(), "Salin diagnostic") } }
     }

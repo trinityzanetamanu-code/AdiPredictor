@@ -1,0 +1,223 @@
+name: Signed Native Release Candidate
+run-name: Native RC from ${{ github.sha }} (attempt ${{ github.run_attempt }})
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: 'Exact verified implementation SHA on main; blank selects dispatch SHA'
+        required: false
+        type: string
+      installed_version_code:
+        description: 'Owner installed versionCode if known; 0 means unknown (never assumes upgrade PASS)'
+        required: true
+        type: string
+        default: '0'
+permissions:
+  contents: read
+concurrency:
+  group: adipredictor-native-candidate-version-allocation
+  cancel-in-progress: false
+jobs:
+  reserve:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      source_sha: ${{ steps.version.outputs.source_sha }}
+      native_code: ${{ steps.version.outputs.native_code }}
+      native_name: ${{ steps.version.outputs.native_name }}
+      legacy_code: ${{ steps.version.outputs.legacy_code }}
+      legacy_name: ${{ steps.version.outputs.legacy_name }}
+      attempt: ${{ steps.version.outputs.attempt }}
+      reservation_commit: ${{ steps.version.outputs.reservation_commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require verified main source and successful validation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
+        run: python3 scripts/native_candidate.py gate --source "$SOURCE_SHA"
+      - name: Reserve monotonically increasing versions on main
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
+          OWNER_INSTALLED_CODE: ${{ inputs.installed_version_code }}
+        run: python3 scripts/native_candidate.py reserve --source "$SOURCE_SHA" --installed "$OWNER_INSTALLED_CODE"
+  signed-candidate:
+    needs: reserve
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
+    environment: android-release
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Require main and current reservation attempt
+        env:
+          RESERVED_ATTEMPT: ${{ needs.reserve.outputs.attempt }}
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF" == 'refs/heads/main' ]]
+          [[ "$GITHUB_RUN_ATTEMPT" == "$RESERVED_ATTEMPT" ]] || {
+            echo 'Re-run the entire workflow to reserve fresh versions.' >&2
+            exit 1
+          }
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.reserve.outputs.source_sha }}
+          persist-credentials: false
+      - name: Freeze stable metadata and protected production inputs
+        run: python3 android-native/scripts/verify_protected_inputs.py --capture "$RUNNER_TEMP/protected-before.json"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install explicit SDK
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Validate protected signing configuration against published stable certificate
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          EXPECTED_CERT_SHA256: ${{ vars.ANDROID_EXPECTED_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, re
+          for name in ('KEYSTORE_BASE64', 'ANDROID_KEYSTORE_PASSWORD', 'ANDROID_KEY_ALIAS', 'ANDROID_KEY_PASSWORD', 'EXPECTED_CERT_SHA256'):
+              assert os.environ.get(name), f'Protected signing input missing: {name}'
+          stable = json.load(open('public/app-release.json'))
+          expected = re.sub(r'[:\s]', '', os.environ['EXPECTED_CERT_SHA256']).lower()
+          assert re.fullmatch(r'[0-9a-f]{64}', expected), 'Invalid protected public fingerprint'
+          assert expected == stable['certificate_sha256'] == stable['expected_certificate_sha256'], 'Protected/stable certificate mismatch'
+          assert stable['release_signing_runtime_verified'] is True and stable['channel'] == 'stable'
+          PY
+          umask 077
+          mkdir -m 700 "$RUNNER_TEMP/native-rc-signing"
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/native-rc-signing/release.jks"
+          chmod 600 "$RUNNER_TEMP/native-rc-signing/release.jks"
+      - name: Confirm existing key certificate before any APK build
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          EXPECTED_CERT_SHA256: ${{ vars.ANDROID_EXPECTED_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          keytool -exportcert -keystore "$RUNNER_TEMP/native-rc-signing/release.jks" -alias "$ANDROID_KEY_ALIAS" -storepass:env ANDROID_KEYSTORE_PASSWORD > "$RUNNER_TEMP/native-rc-signing/public.der"
+          python3 - <<'PY'
+          import hashlib, os, pathlib, re
+          actual = hashlib.sha256((pathlib.Path(os.environ['RUNNER_TEMP']) / 'native-rc-signing/public.der').read_bytes()).hexdigest()
+          expected = re.sub(r'[:\s]', '', os.environ['EXPECTED_CERT_SHA256']).lower()
+          assert actual == expected, 'Existing key fingerprint mismatch; refusing candidate build'
+          print('Existing stable signing certificate verified')
+          PY
+      - name: Native data contracts and controlled UI tests
+        working-directory: android-native
+        timeout-minutes: 12
+        run: ./gradlew :data:test :app:testReleaseUnitTest --no-daemon --console=plain
+      - name: Lint native release
+        working-directory: android-native
+        run: ./gradlew :app:lintRelease --no-daemon --console=plain
+      - name: Build signed native release candidate
+        working-directory: android-native
+        env:
+          ANDROID_BUILD_CHANNEL: release-candidate
+          ANDROID_VERSION_CODE: ${{ needs.reserve.outputs.native_code }}
+          ANDROID_VERSION_NAME: ${{ needs.reserve.outputs.native_name }}
+          ANDROID_SOURCE_COMMIT: ${{ needs.reserve.outputs.source_sha }}
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/native-rc-signing/release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease --no-daemon --console=plain
+      - name: Prepare separate legacy export intermediary (no stable publication)
+        env:
+          ANDROID_VERSION_CODE: ${{ needs.reserve.outputs.legacy_code }}
+          ANDROID_VERSION_NAME: ${{ needs.reserve.outputs.legacy_name }}
+        run: |
+          npm ci
+          npm run test:live
+          npm run build
+          npx cap add android
+          npx cap copy android
+          node scripts/configure_android_release.mjs
+      - name: Build signed legacy export intermediary
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/native-rc-signing/release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --console=plain
+      - name: Verify both actual APKs and record public metadata
+        env:
+          NATIVE_CODE: ${{ needs.reserve.outputs.native_code }}
+          NATIVE_NAME: ${{ needs.reserve.outputs.native_name }}
+          LEGACY_CODE: ${{ needs.reserve.outputs.legacy_code }}
+          LEGACY_NAME: ${{ needs.reserve.outputs.legacy_name }}
+          SOURCE_SHA: ${{ needs.reserve.outputs.source_sha }}
+          RESERVATION_COMMIT: ${{ needs.reserve.outputs.reservation_commit }}
+          EXPECTED_CERT_SHA256: ${{ vars.ANDROID_EXPECTED_CERT_SHA256 }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/native artifacts/legacy-export
+          native="artifacts/native/AdiPredictor-build${NATIVE_CODE}-native-release-candidate.apk"
+          legacy="artifacts/legacy-export/AdiPredictor-build${LEGACY_CODE}-legacy-export-release-candidate.apk"
+          cp android-native/app/build/outputs/apk/release/app-release.apk "$native"
+          cp android/app/build/outputs/apk/release/app-release.apk "$legacy"
+          python3 scripts/native_candidate.py verify --kind native --apk "$native" --code "$NATIVE_CODE" --name "$NATIVE_NAME" --source "$SOURCE_SHA" --output artifacts/native/app-build-candidate.json
+          python3 scripts/native_candidate.py verify --kind legacy-export --apk "$legacy" --code "$LEGACY_CODE" --name "$LEGACY_NAME" --source "$SOURCE_SHA" --output artifacts/legacy-export/app-build-candidate.json
+          cp android-native/docs/owner-rc-test.md artifacts/native/PETUNJUK-UJI-HP.md
+          cp android-native/docs/owner-rc-test.md artifacts/legacy-export/PETUNJUK-EKSPOR-HP.md
+          {
+            echo '### Verified signed native RC and separate legacy exporter'
+            echo "Source SHA: $SOURCE_SHA"
+            echo "Version reservation commit: $RESERVATION_COMMIT"
+            cat artifacts/native/app-build-candidate.json
+            echo 'UPDATE_CHANNEL_READY=false; device upgrade NOT_TESTED; no stable publication.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove temporary signing material
+        if: always()
+        run: |
+          if [[ -d "$RUNNER_TEMP/native-rc-signing" ]]; then
+            find "$RUNNER_TEMP/native-rc-signing" -type f -exec shred -u {} +
+            rm -rf "$RUNNER_TEMP/native-rc-signing"
+          fi
+      - name: Verify stable metadata and protected inputs unchanged
+        if: always()
+        run: python3 android-native/scripts/verify_protected_inputs.py --compare "$RUNNER_TEMP/protected-before.json" --report artifacts/protected-inputs.json
+      - name: Upload verified native RC only
+        uses: actions/upload-artifact@v4
+        with:
+          name: AdiPredictor-build${{ needs.reserve.outputs.native_code }}-native-release-candidate.apk
+          path: |
+            artifacts/native/
+            artifacts/protected-inputs.json
+          if-no-files-found: error
+      - name: Upload separate legacy export intermediary only
+        uses: actions/upload-artifact@v4
+        with:
+          name: AdiPredictor-build${{ needs.reserve.outputs.legacy_code }}-legacy-export-release-candidate.apk
+          path: |
+            artifacts/legacy-export/
+            artifacts/protected-inputs.json
+          if-no-files-found: error
