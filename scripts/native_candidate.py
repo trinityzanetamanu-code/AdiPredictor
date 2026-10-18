@@ -189,6 +189,7 @@ def verify(args):
         else:
             assert "assets/public/index.html" in entries, "Legacy export intermediary must retain Capacitor storage origin"
             assert any(b"Tampilkan ekspor data lama" in archive.read(p) for p in entries if p.startswith("assets/public/") and p.endswith(".js")), "Legacy exporter missing from actual APK"
+            assert all(any(descriptor in archive.read(p) for p in entries if re.fullmatch(r"classes\d*\.dex", p)) for descriptor in (b"Lcom/adipredictor/app/LegacyExportPlugin;", b"Lcom/adipredictor/app/LegacyExportDocument;")), "Native SAF exporter missing from intermediary APK"
     metadata = {
         "schema_version": 1, "channel": "release-candidate", "package_kind": args.kind,
         "application_id": "com.adipredictor.app", "version_code": code(args.code), "version_name": args.name,

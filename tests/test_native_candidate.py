@@ -143,3 +143,42 @@ def test_ci_gate_rejects_incomplete_or_failed_exact_source(monkeypatch):
     runs.append(dict(id=3, name='Kotlin Engine Parity', head_sha=SHA, head_branch='main', status='completed', conclusion='failure'))
     with pytest.raises(AssertionError, match='Required CI not green: Kotlin Engine Parity'):
         native.require_green(SHA)
+
+
+def test_candidate_only_legacy_export_adapter_is_idempotent_and_refuses_other_id(tmp_path):
+    import os
+    import subprocess
+    project = tmp_path / 'android'
+    java = project / 'app/src/main/java/com/adipredictor/app'
+    java.mkdir(parents=True)
+    gradle = project / 'app/build.gradle'
+    gradle.write_text('android { defaultConfig { applicationId "com.adipredictor.app" } }')
+    main = java / 'MainActivity.java'
+    main.write_text('class MainActivity extends BridgeActivity { void onCreate() { registerPlugin(HKVerificationPlugin.class); } }')
+    env = {**os.environ, 'ANDROID_LEGACY_PROJECT_PATH': str(project)}
+    for _ in range(2):
+        result = subprocess.run(['node', str(ROOT / 'scripts/configure_legacy_export.mjs')], env=env, capture_output=True, text=True)
+        assert result.returncode == 0, result.stderr
+    assert main.read_text().count('registerPlugin(LegacyExportPlugin.class);') == 1
+    for name in ('LegacyExportDocument.java', 'LegacyExportPlugin.java'):
+        assert (java / name).read_bytes() == (ROOT / 'scripts/android' / name).read_bytes()
+    original = main.read_bytes()
+    gradle.write_text('applicationId "other.app"')
+    rejected = subprocess.run(['node', str(ROOT / 'scripts/configure_legacy_export.mjs')], env=env, capture_output=True, text=True)
+    assert rejected.returncode != 0
+    assert main.read_bytes() == original
+
+
+def test_large_export_uses_saf_and_never_saves_payload_in_pending_activity_state():
+    plugin = (ROOT / 'scripts/android/LegacyExportPlugin.java').read_text()
+    writer = (ROOT / 'scripts/android/LegacyExportDocument.java').read_text()
+    workflow = (ROOT / '.github/workflows/android-native-candidate.yml').read_text()
+    stable = (ROOT / '.github/workflows/android-release.yml').read_text()
+    assert plugin.index('call.getData().remove("json")') < plugin.index('startActivityForResult(')
+    assert 'AtomicBoolean' in plugin and 'EXPORT_INTERRUPTED_RETRY' in plugin
+    assert 'execute(() ->' in plugin and 'finally { clear(); }' in plugin
+    assert 'ACTION_CREATE_DOCUMENT' in writer and 'openOutputStream(uri, "wt")' in writer
+    assert 'putExtra(Intent.EXTRA_TITLE' in writer and 'putExtra("json"' not in writer
+    assert 'node scripts/configure_legacy_export.mjs' in workflow
+    assert 'configure_legacy_export' not in stable
+    assert 'LegacyExportDocument.java' in (ROOT / 'android-native/app/build.gradle.kts').read_text()

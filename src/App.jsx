@@ -5,7 +5,7 @@ import React, {
   createContext,
   useContext,
 } from 'react';
-import { exportLegacyStorage } from './legacyNativeMigration';
+import { exportLegacyStorage, saveLegacyStorageFile } from './legacyNativeMigration';
 import {
   Sparkles,
   BarChart3,
@@ -1821,6 +1821,7 @@ function SettingsPanel() {
   const { marketData, predictions, predictionHistory, runtimeLatestResults, collectorStatus, lastRefresh, dataError } = useApp();
   const [diagnosticText, setDiagnosticText] = useState('');
   const [copyResult, setCopyResult] = useState('');
+  const [exportingData, setExportingData] = useState(false);
   const copyDeviceDiagnostics = async () => {
     const report = buildRuntimeDiagnostics({
       marketData, predictions, histories: predictionHistory, runtimeResults: runtimeLatestResults,
@@ -1848,20 +1849,20 @@ function SettingsPanel() {
       <NotificationSettingsPanel />
       <section className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 text-xs text-slate-300">
         <h3 className="font-bold text-emerald-200">Ekspor data untuk aplikasi native</h3>
-        <p className="mt-2">Salin JSON preferensi dan cache untuk diimpor lewat Pengaturan native. Data lama tetap tersimpan.</p>
+        <p className="mt-2">Simpan JSON preferensi dan cache lewat pemilih file Android, lalu impor di native. Data lama tetap tersimpan. Ekspor lengkap dapat melebihi batas clipboard.</p>
         <button type="button" className="mt-3 min-h-11 rounded-lg border border-emerald-500/30 px-3" onClick={() => {
           setDiagnosticText(JSON.stringify(exportLegacyStorage(window.localStorage), null, 2));
           setCopyResult('Simpan JSON ini sebagai adipredictor-legacy.json, lalu impor di aplikasi native.');
         }}>Tampilkan ekspor data lama</button>
-        <button type="button" className="ml-2 mt-3 min-h-11 rounded-lg border border-emerald-500/30 px-3" onClick={() => {
-          const json = JSON.stringify(exportLegacyStorage(window.localStorage), null, 2);
-          const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-          const link = document.createElement('a');
-          link.href = url; link.download = 'adipredictor-legacy.json'; link.click();
-          setTimeout(() => URL.revokeObjectURL(url), 30000);
-          setDiagnosticText(json);
-          setCopyResult('Jika unduhan tidak tersedia pada WebView HP, pilih semua JSON di bawah, salin dan simpan sebelum memasang native.');
-        }}>Unduh JSON data lama</button>
+        <button type="button" disabled={exportingData} className="ml-2 mt-3 min-h-11 rounded-lg border border-emerald-500/30 px-3 disabled:opacity-50" onClick={async () => {
+          setExportingData(true);
+          try {
+            const result = await saveLegacyStorageFile(window.localStorage);
+            setCopyResult(result.status === 'SAVED' ? `File JSON tersimpan (${result.bytes} byte). Periksa lokasi yang dipilih sebelum memasang native.` : result.status === 'CANCELLED' ? 'Ekspor dibatalkan. Data lama tetap tersimpan.' : 'Unduhan JSON diminta. Periksa hasil unduhan sebelum memasang native.');
+          } catch {
+            setCopyResult('Ekspor file gagal atau perantara ekspor belum terpasang. Jangan hapus data atau memasang native sebelum file cadangan tersimpan; coba lagi melalui APK perantara.');
+          } finally { setExportingData(false); }
+        }}>{exportingData ? 'Menyimpan…' : 'Simpan JSON ke file'}</button>
       </section>
       <section className="rounded-2xl border border-sky-500/25 bg-slate-900/90 p-5 text-xs text-slate-300" data-device-diagnostics>
         <h3 className="font-bold text-sky-200">Diagnostik pembaruan dan LiveDraw</h3>

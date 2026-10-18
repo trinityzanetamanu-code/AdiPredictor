@@ -79,3 +79,11 @@ val bundlePublic by tasks.registering(Sync::class) {
 }
 android.sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/assets"))
 tasks.named("preBuild") { dependsOn(bundlePublic) }
+// Compile the actual candidate-only SAF writer into the test classpath only.
+// Capacitor and its exporter are never part of the native application's main UI.
+val prepareLegacyExportContract by tasks.registering(Copy::class) {
+    from(rootProject.projectDir.parentFile.resolve("scripts/android/LegacyExportDocument.java"))
+    into(layout.buildDirectory.dir("generated/legacy-export-test"))
+}
+android.sourceSets["test"].java.srcDir(layout.buildDirectory.dir("generated/legacy-export-test"))
+tasks.named("preBuild") { dependsOn(prepareLegacyExportContract) }

@@ -159,6 +159,7 @@ jobs:
           npx cap add android
           npx cap copy android
           node scripts/configure_android_release.mjs
+          node scripts/configure_legacy_export.mjs
       - name: Build signed legacy export intermediary
         working-directory: android
         env:
