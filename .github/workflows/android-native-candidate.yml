@@ -36,7 +36,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.source_sha || github.sha }}
+          # Validate the input with the trusted dispatch commit's code first.
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Require verified main source and successful validation

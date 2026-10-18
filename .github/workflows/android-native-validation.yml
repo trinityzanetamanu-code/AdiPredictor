@@ -2,7 +2,7 @@ name: Android Native Validation
 on:
   push:
     branches: [main]
-    paths: ['android-native/**', '.github/workflows/android-native-validation.yml', 'public/data/**', 'public/predictions/**']
+    paths: ['android-native/**', '.github/workflows/android-native-validation.yml', '.github/workflows/android-native-candidate.yml', 'scripts/native_candidate.py', 'tests/test_native_candidate.py', 'public/data/**', 'public/predictions/**']
   workflow_dispatch:
 permissions:
   contents: read

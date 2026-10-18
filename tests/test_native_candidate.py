@@ -70,6 +70,8 @@ def test_workflow_is_manual_main_protected_exact_source_and_no_stable_publicatio
     assert workflow.count("github.ref == 'refs/heads/main'") == 2
     assert "environment: android-release" in workflow
     assert "ref: ${{ needs.reserve.outputs.source_sha }}" in workflow
+    assert "ref: ${{ github.sha }}" in workflow.split("signed-candidate:")[0]
+    assert "ref: ${{ inputs.source_sha || github.sha }}" not in workflow
     assert "persist-credentials: false" in workflow
     assert "scripts/native_candidate.py gate" in workflow and "scripts/native_candidate.py reserve" in workflow
     assert "contents: write" in workflow.split("signed-candidate:")[0]

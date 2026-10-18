@@ -69,7 +69,7 @@ def read_content(path):
 def require_green(source):
     assert os.environ["GITHUB_REF"] == "refs/heads/main", "Only main is allowed"
     assert re.fullmatch(r"[0-9a-f]{40}", source), "Exact source SHA required"
-    assert subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() == source, "Checkout/source mismatch"
+    assert subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() == os.environ["GITHUB_SHA"], "Trusted dispatch checkout mismatch"
     subprocess.run(["git", "merge-base", "--is-ancestor", source, "origin/main"], check=True)
     # An older verified commit is allowed after data-only collector updates, but
     # cannot bypass newly reviewed packaging guards in the dispatched workflow.
@@ -93,7 +93,8 @@ def reserve(source, installed):
     assert os.environ["GITHUB_REPOSITORY"] == REPO
     artifacts = paginated("actions/artifacts", "artifacts")
     artifact_codes = [int(m[1]) for a in artifacts if (m := re.search(r"-build(\d+)-", a["name"]))]
-    package_version = json.loads((ROOT / "package.json").read_text())["version"]
+    package_version = json.loads(subprocess.check_output(["git", "show", f"{source}:package.json"], text=True))["version"]
+    assert re.fullmatch(r"[0-9A-Za-z][0-9A-Za-z.+_-]*", package_version), "Invalid package version"
     for _ in range(5):
         content, ledger = read_content(LEDGER)
         _, stable = read_content("public/app-release.json")
@@ -183,6 +184,8 @@ def verify(args):
             supers = [dex_superclass(archive.read(p), "Lcom/adipredictor/app/MainActivity;") for p in entries if re.fullmatch(r"classes\d*\.dex", p)]
             assert [x for x in supers if x] == ["Landroidx/activity/ComponentActivity;"], "MainActivity is not native ComponentActivity"
             assert any(b"Landroidx/compose/" in archive.read(p) for p in entries if re.fullmatch(r"classes\d*\.dex", p)), "Compose missing"
+            dex_bytes = [archive.read(p) for p in entries if re.fullmatch(r"classes\d*\.dex", p)]
+            assert all(any(value.encode() in data for data in dex_bytes) for value in (args.source, args.name, "release-candidate")), "Installed build identity missing from actual DEX"
         else:
             assert "assets/public/index.html" in entries, "Legacy export intermediary must retain Capacitor storage origin"
             assert any(b"Tampilkan ekspor data lama" in archive.read(p) for p in entries if p.startswith("assets/public/") and p.endswith(".js")), "Legacy exporter missing from actual APK"
