@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-10-19T13:51:58+07:00",
+  "retrieved_at": "2026-10-19T21:06:36+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -22,11 +22,11 @@
       "market_timezone": "Australia/Sydney",
       "result_status": "unknown",
       "finality_evidence": null,
-      "verification": "dataset_date_mismatch",
+      "verification": "matches_prediction_dataset",
       "retrieved_at": "2026-10-19T13:51:58+07:00",
-      "dataset_4d": "0196",
-      "matches_dataset": null,
-      "dataset_latest_date": "2026-10-18",
+      "dataset_4d": "6468",
+      "matches_dataset": true,
+      "dataset_latest_date": "2026-10-19",
       "source_verification": "structurally_valid_single_source"
     },
     "HK": {
@@ -65,7 +65,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-10-19T13:51:58+07:00",
+      "last_checked_at": "2026-10-19T21:06:36+07:00",
       "last_valid_result": {
         "id": 20261018,
         "tanggal": "18 Okt 2026",
@@ -102,24 +102,25 @@
       "health": "FAILED"
     },
     "SDY": {
-      "last_checked_at": "2026-10-19T13:51:58+07:00",
+      "last_checked_at": "2026-10-19T21:06:36+07:00",
       "last_valid_result": {
-        "id": 20261018,
-        "tanggal": "18 Okt 2026",
-        "periode": "SD-3578",
-        "nomor": "0196",
-        "result_date": "2026-10-18",
+        "id": 20261019,
+        "tanggal": "19 Okt 2026",
+        "periode": "SD-3579",
+        "nomor": "6468",
+        "result_date": "2026-10-19",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-18T16:44:13+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-10-19T21:06:36+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
       "source_draw_date": "2026-10-19",
