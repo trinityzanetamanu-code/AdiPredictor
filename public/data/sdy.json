@@ -1,5 +1,24 @@
 [
   {
+    "id": 20261022,
+    "tanggal": "22 Okt 2026",
+    "periode": "SD-3582",
+    "nomor": "0031",
+    "result_date": "2026-10-22",
+    "market": "SDY",
+    "source_id": "lomba4d_sdy",
+    "source_name": "Lomba4D Sydney Results",
+    "source_url": "https://www.lomba4dqueen.com/hasil/SY",
+    "source_ids": [
+      "lomba4d_sdy",
+      "waroengtogel_sdy",
+      "datatogel_sdy"
+    ],
+    "collected_at": "2026-10-22T20:03:21+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
+  },
+  {
     "id": 20261021,
     "tanggal": "21 Okt 2026",
     "periode": "SD-3581",

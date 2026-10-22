@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-10-22T14:19:17+07:00",
+  "retrieved_at": "2026-10-22T20:03:21+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -22,11 +22,11 @@
       "market_timezone": "Australia/Sydney",
       "result_status": "unknown",
       "finality_evidence": null,
-      "verification": "dataset_date_mismatch",
+      "verification": "matches_prediction_dataset",
       "retrieved_at": "2026-10-22T14:19:17+07:00",
-      "dataset_4d": "3426",
-      "matches_dataset": null,
-      "dataset_latest_date": "2026-10-21",
+      "dataset_4d": "0031",
+      "matches_dataset": true,
+      "dataset_latest_date": "2026-10-22",
       "source_verification": "structurally_valid_single_source"
     },
     "HK": {
@@ -65,7 +65,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-10-22T14:19:17+07:00",
+      "last_checked_at": "2026-10-22T20:03:21+07:00",
       "last_valid_result": {
         "id": 20261021,
         "tanggal": "21 Okt 2026",
@@ -102,13 +102,13 @@
       "health": "FAILED"
     },
     "SDY": {
-      "last_checked_at": "2026-10-22T14:19:17+07:00",
+      "last_checked_at": "2026-10-22T20:03:21+07:00",
       "last_valid_result": {
-        "id": 20261021,
-        "tanggal": "21 Okt 2026",
-        "periode": "SD-3581",
-        "nomor": "3426",
-        "result_date": "2026-10-21",
+        "id": 20261022,
+        "tanggal": "22 Okt 2026",
+        "periode": "SD-3582",
+        "nomor": "0031",
+        "result_date": "2026-10-22",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
@@ -118,7 +118,7 @@
           "waroengtogel_sdy",
           "datatogel_sdy"
         ],
-        "collected_at": "2026-10-22T00:36:08+07:00",
+        "collected_at": "2026-10-22T20:03:21+07:00",
         "verification": "confirmed_3_sources",
         "confirmations": 3
       },
