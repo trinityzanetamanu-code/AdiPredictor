@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-24T01:39:16+07:00",
+  "collected_at": "2026-10-24T11:25:17+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 296
       },
       "verified_count": 296,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-23",
-          "number": "3581",
-          "verification": "provisional_primary"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261023,
         "tanggal": "23 Okt 2026",
@@ -56,7 +50,7 @@
         },
         {
           "source": "livedrawhk_crosscheck",
-          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5640 bytes"
+          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5661 bytes"
         }
       ],
       "source_health": {
@@ -90,12 +84,12 @@
         }
       },
       "last_successful_data_update": "2026-10-24T01:39:16+07:00",
-      "last_source_check": "2026-10-24T01:39:16+07:00",
+      "last_source_check": "2026-10-24T11:25:17+07:00",
       "latest_source_draw_date": "2026-10-23"
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -107,12 +101,138 @@
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 267,
         "datatogel_sdy": 296,
-        "livenomor_sdy": 295
+        "livenomor_sdy": 296
       },
       "verified_count": 296,
-      "new_count": 0,
+      "new_count": 25,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-09-29",
+          "number": "2953",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-09-30",
+          "number": "6079",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-01",
+          "number": "5493",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-02",
+          "number": "5392",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-03",
+          "number": "5604",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-04",
+          "number": "7933",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-05",
+          "number": "9383",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-06",
+          "number": "3398",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-07",
+          "number": "0569",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-08",
+          "number": "5814",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-09",
+          "number": "6915",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-10",
+          "number": "2331",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-11",
+          "number": "2895",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-12",
+          "number": "0157",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-13",
+          "number": "9013",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-14",
+          "number": "9804",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-15",
+          "number": "3184",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-16",
+          "number": "7838",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-17",
+          "number": "5174",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-18",
+          "number": "0196",
+          "verification": "confirmed_3_sources"
+        },
+        {
+          "date": "2026-10-19",
+          "number": "6468",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-20",
+          "number": "6274",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-21",
+          "number": "3426",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-22",
+          "number": "0031",
+          "verification": "confirmed_4_sources"
+        },
+        {
+          "date": "2026-10-23",
+          "number": "7069",
+          "verification": "confirmed_4_sources"
+        }
+      ],
       "latest": {
         "id": 20261023,
         "tanggal": "23 Okt 2026",
@@ -126,26 +246,28 @@
         "source_ids": [
           "lomba4d_sdy",
           "waroengtogel_sdy",
-          "datatogel_sdy"
+          "datatogel_sdy",
+          "livenomor_sdy"
         ],
-        "collected_at": "2026-10-23T21:27:01+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-10-24T11:25:17+07:00",
+        "verification": "confirmed_4_sources",
+        "confirmations": 4
       },
       "latest_verified": {
         "date": "2026-10-23",
         "number": "7069",
-        "verification": "confirmed_3_sources",
+        "verification": "confirmed_4_sources",
         "source_ids": [
           "lomba4d_sdy",
           "waroengtogel_sdy",
-          "datatogel_sdy"
+          "datatogel_sdy",
+          "livenomor_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-23T21:27:01+07:00",
-      "last_source_check": "2026-10-24T01:39:16+07:00",
+      "last_successful_data_update": "2026-10-24T11:25:17+07:00",
+      "last_source_check": "2026-10-24T11:25:17+07:00",
       "latest_source_draw_date": "2026-10-23"
     },
     "SGP": {
@@ -194,7 +316,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-22T20:03:21+07:00",
-      "last_source_check": "2026-10-24T01:39:16+07:00",
+      "last_source_check": "2026-10-24T11:25:17+07:00",
       "latest_source_draw_date": "2026-10-22"
     }
   }
