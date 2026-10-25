@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-25T23:10:33+07:00",
+  "collected_at": "2026-10-26T02:02:05+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 298
       },
       "verified_count": 298,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-25",
-          "number": "5480",
-          "verification": "provisional_primary"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261025,
         "tanggal": "25 Okt 2026",
@@ -56,7 +50,7 @@
         },
         {
           "source": "livedrawhk_crosscheck",
-          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5640 bytes"
+          "error": "Fetch gagal untuk https://www.livedrawhkpools6d.com/: HTTP 403, body=5661 bytes"
         }
       ],
       "source_health": {
@@ -65,14 +59,14 @@
           "historical_sequence_matches": 0,
           "historical_sequence_compared": 0,
           "historical_conflicts": {},
-          "latest_date": "2026-10-24",
-          "latest_result": "1269",
-          "source_first_seen_at": "2026-10-24T23:43:39+07:00",
+          "latest_date": "2026-10-25",
+          "latest_result": "5480",
+          "source_first_seen_at": "2026-10-25T23:10:33+07:00",
           "expected_draw_date": "2026-10-25",
-          "latency_minutes": 43,
-          "source_stale": true,
-          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
-          "health": "STALE"
+          "latency_minutes": 10,
+          "source_stale": false,
+          "reason": "FRESH",
+          "health": "HEALTHY"
         },
         "livenomor_hk": {
           "market_identity_match": true,
@@ -90,7 +84,7 @@
         }
       },
       "last_successful_data_update": "2026-10-25T23:10:33+07:00",
-      "last_source_check": "2026-10-25T23:10:33+07:00",
+      "last_source_check": "2026-10-26T02:02:05+07:00",
       "latest_source_draw_date": "2026-10-25"
     },
     "SDY": {
@@ -145,7 +139,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-25T19:08:55+07:00",
-      "last_source_check": "2026-10-25T23:10:33+07:00",
+      "last_source_check": "2026-10-26T02:02:05+07:00",
       "latest_source_draw_date": "2026-10-25"
     },
     "SGP": {
@@ -194,7 +188,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-25T19:08:55+07:00",
-      "last_source_check": "2026-10-25T23:10:33+07:00",
+      "last_source_check": "2026-10-26T02:02:05+07:00",
       "latest_source_draw_date": "2026-10-25"
     }
   }
