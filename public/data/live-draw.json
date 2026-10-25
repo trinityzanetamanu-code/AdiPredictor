@@ -1,31 +1,31 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-10-25T08:38:59+07:00",
+  "retrieved_at": "2026-10-25T13:51:49+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
       "source": "SydneyPoolsToday Market Source",
       "source_url": "https://www.sydneypoolstoday.com/live.html",
-      "draw_date": "2026-10-24",
-      "first": "547606",
-      "second": "731537",
-      "third": "603292",
+      "draw_date": "2026-10-25",
+      "first": "916241",
+      "second": "545421",
+      "third": "275452",
       "starter": [
-        "289916"
+        "692030"
       ],
       "consolation": [
-        "125263"
+        "029717"
       ],
-      "full_first_prize_6d": "547606",
-      "derived_4d": "7606",
+      "full_first_prize_6d": "916241",
+      "derived_4d": "6241",
       "source_timezone": "Australia/Sydney",
       "market_timezone": "Australia/Sydney",
       "result_status": "unknown",
       "finality_evidence": null,
-      "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-10-24T16:03:23+07:00",
+      "verification": "dataset_date_mismatch",
+      "retrieved_at": "2026-10-25T13:51:49+07:00",
       "dataset_4d": "7606",
-      "matches_dataset": true,
+      "matches_dataset": null,
       "dataset_latest_date": "2026-10-24",
       "source_verification": "structurally_valid_single_source"
     },
@@ -65,7 +65,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-10-25T08:38:59+07:00",
+      "last_checked_at": "2026-10-25T13:51:49+07:00",
       "last_valid_result": {
         "id": 20261024,
         "tanggal": "24 Okt 2026",
@@ -102,7 +102,7 @@
       "health": "FAILED"
     },
     "SDY": {
-      "last_checked_at": "2026-10-25T08:38:59+07:00",
+      "last_checked_at": "2026-10-25T13:51:49+07:00",
       "last_valid_result": {
         "id": 20261024,
         "tanggal": "24 Okt 2026",
@@ -124,7 +124,7 @@
         "confirmations": 4
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
-      "source_draw_date": "2026-10-24",
+      "source_draw_date": "2026-10-25",
       "result_status": "unknown",
       "fetch_errors": [],
       "conflicts": [],
