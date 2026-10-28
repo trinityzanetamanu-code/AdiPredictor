@@ -1,5 +1,22 @@
 [
   {
+    "id": 20261028,
+    "tanggal": "28 Okt 2026",
+    "periode": "HK-3588",
+    "nomor": "7174",
+    "result_date": "2026-10-28",
+    "market": "HK",
+    "source_id": "livenomor_hk",
+    "source_name": "LiveNomor Hongkong",
+    "source_url": "https://livenomor.com/",
+    "source_ids": [
+      "livenomor_hk"
+    ],
+    "collected_at": "2026-10-29T03:25:11+07:00",
+    "verification": "provisional_primary",
+    "confirmations": 1
+  },
+  {
     "id": 20261027,
     "tanggal": "27 Okt 2026",
     "periode": "HK-3587",
