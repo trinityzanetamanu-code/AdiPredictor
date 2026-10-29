@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-30T01:41:56+07:00",
+  "collected_at": "2026-10-30T06:00:18+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 302
       },
       "verified_count": 302,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-29",
-          "number": "4830",
-          "verification": "provisional_primary"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261029,
         "tanggal": "29 Okt 2026",
@@ -93,18 +87,18 @@
           "historical_sequence_matches": 0,
           "historical_sequence_compared": 0,
           "historical_conflicts": {},
-          "latest_date": "2026-10-28",
-          "latest_result": "7174",
-          "source_first_seen_at": "2026-10-29T03:25:11+07:00",
+          "latest_date": "2026-10-29",
+          "latest_result": "4830",
+          "source_first_seen_at": "2026-10-30T01:41:56+07:00",
           "expected_draw_date": "2026-10-29",
-          "latency_minutes": 265,
-          "source_stale": true,
-          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
-          "health": "STALE"
+          "latency_minutes": 161,
+          "source_stale": false,
+          "reason": "FRESH",
+          "health": "HEALTHY"
         }
       },
       "last_successful_data_update": "2026-10-30T01:41:56+07:00",
-      "last_source_check": "2026-10-30T01:41:56+07:00",
+      "last_source_check": "2026-10-30T06:00:18+07:00",
       "latest_source_draw_date": "2026-10-29"
     },
     "SDY": {
@@ -161,7 +155,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-29T19:45:04+07:00",
-      "last_source_check": "2026-10-30T01:41:56+07:00",
+      "last_source_check": "2026-10-30T06:00:18+07:00",
       "latest_source_draw_date": "2026-10-29"
     },
     "SGP": {
@@ -210,7 +204,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-29T19:45:04+07:00",
-      "last_source_check": "2026-10-30T01:41:56+07:00",
+      "last_source_check": "2026-10-30T06:00:18+07:00",
       "latest_source_draw_date": "2026-10-29"
     }
   }
