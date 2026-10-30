@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-10-30T22:25:43+07:00",
+  "retrieved_at": "2026-10-31T03:01:57+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -55,23 +55,23 @@
       ],
       "full_first_prize_6d": "536987",
       "derived_4d": "6987",
-      "dataset_4d": "4830",
+      "dataset_4d": "7231",
       "matches_dataset": null,
       "verification": "dataset_date_mismatch",
       "retrieved_at": "2026-10-01T23:33:43+07:00",
-      "dataset_latest_date": "2026-10-29",
+      "dataset_latest_date": "2026-10-30",
       "source_verification": "matches_prediction_dataset"
     }
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-10-30T22:25:43+07:00",
+      "last_checked_at": "2026-10-31T03:01:57+07:00",
       "last_valid_result": {
-        "id": 20261029,
-        "tanggal": "29 Okt 2026",
-        "periode": "HK-3589",
-        "nomor": "4830",
-        "result_date": "2026-10-29",
+        "id": 20261030,
+        "tanggal": "30 Okt 2026",
+        "periode": "HK-3590",
+        "nomor": "7231",
+        "result_date": "2026-10-30",
         "market": "HK",
         "source_id": "livenomor_hk",
         "source_name": "LiveNomor Hongkong",
@@ -79,7 +79,7 @@
         "source_ids": [
           "livenomor_hk"
         ],
-        "collected_at": "2026-10-30T01:41:56+07:00",
+        "collected_at": "2026-10-31T03:01:57+07:00",
         "verification": "provisional_primary",
         "confirmations": 1
       },
@@ -102,7 +102,7 @@
       "health": "FAILED"
     },
     "SDY": {
-      "last_checked_at": "2026-10-30T22:25:43+07:00",
+      "last_checked_at": "2026-10-31T03:01:57+07:00",
       "last_valid_result": {
         "id": 20261030,
         "tanggal": "30 Okt 2026",

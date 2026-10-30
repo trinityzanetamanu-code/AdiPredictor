@@ -1,29 +1,35 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-30T22:25:43+07:00",
+  "collected_at": "2026-10-31T03:01:57+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
       ],
       "parsed_counts": {
-        "livenomor_hk": 302
+        "livenomor_hk": 303
       },
-      "verified_count": 302,
-      "new_count": 0,
+      "verified_count": 303,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-10-30",
+          "number": "7231",
+          "verification": "provisional_primary"
+        }
+      ],
       "latest": {
-        "id": 20261029,
-        "tanggal": "29 Okt 2026",
-        "periode": "HK-3589",
-        "nomor": "4830",
-        "result_date": "2026-10-29",
+        "id": 20261030,
+        "tanggal": "30 Okt 2026",
+        "periode": "HK-3590",
+        "nomor": "7231",
+        "result_date": "2026-10-30",
         "market": "HK",
         "source_id": "livenomor_hk",
         "source_name": "LiveNomor Hongkong",
@@ -31,13 +37,13 @@
         "source_ids": [
           "livenomor_hk"
         ],
-        "collected_at": "2026-10-30T01:41:56+07:00",
+        "collected_at": "2026-10-31T03:01:57+07:00",
         "verification": "provisional_primary",
         "confirmations": 1
       },
       "latest_verified": {
-        "date": "2026-10-29",
-        "number": "4830",
+        "date": "2026-10-30",
+        "number": "7231",
         "verification": "provisional_primary",
         "source_ids": [
           "livenomor_hk"
@@ -59,11 +65,11 @@
           "historical_sequence_matches": 0,
           "historical_sequence_compared": 0,
           "historical_conflicts": {},
-          "latest_date": "2026-10-29",
-          "latest_result": "4830",
-          "source_first_seen_at": "2026-10-30T01:41:56+07:00",
-          "expected_draw_date": "2026-10-29",
-          "latency_minutes": 161,
+          "latest_date": "2026-10-30",
+          "latest_result": "7231",
+          "source_first_seen_at": "2026-10-31T03:01:57+07:00",
+          "expected_draw_date": "2026-10-30",
+          "latency_minutes": 241,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -73,11 +79,11 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-10-29",
-          "latest_result": "4830",
-          "source_first_seen_at": "2026-10-30T01:41:56+07:00",
-          "expected_draw_date": "2026-10-29",
-          "latency_minutes": 161,
+          "latest_date": "2026-10-30",
+          "latest_result": "7231",
+          "source_first_seen_at": "2026-10-31T03:01:57+07:00",
+          "expected_draw_date": "2026-10-30",
+          "latency_minutes": 241,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -87,23 +93,23 @@
           "historical_sequence_matches": 0,
           "historical_sequence_compared": 0,
           "historical_conflicts": {},
-          "latest_date": "2026-10-29",
-          "latest_result": "4830",
-          "source_first_seen_at": "2026-10-30T01:41:56+07:00",
-          "expected_draw_date": "2026-10-29",
-          "latency_minutes": 161,
+          "latest_date": "2026-10-30",
+          "latest_result": "7231",
+          "source_first_seen_at": "2026-10-31T03:01:57+07:00",
+          "expected_draw_date": "2026-10-30",
+          "latency_minutes": 241,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
         }
       },
-      "last_successful_data_update": "2026-10-30T01:41:56+07:00",
-      "last_source_check": "2026-10-30T22:25:43+07:00",
-      "latest_source_draw_date": "2026-10-29"
+      "last_successful_data_update": "2026-10-31T03:01:57+07:00",
+      "last_source_check": "2026-10-31T03:01:57+07:00",
+      "latest_source_draw_date": "2026-10-30"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -118,15 +124,9 @@
         "livenomor_sdy": 303
       },
       "verified_count": 303,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-10-30",
-          "number": "3235",
-          "verification": "confirmed_4_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261030,
         "tanggal": "30 Okt 2026",
@@ -161,7 +161,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-30T22:25:43+07:00",
-      "last_source_check": "2026-10-30T22:25:43+07:00",
+      "last_source_check": "2026-10-31T03:01:57+07:00",
       "latest_source_draw_date": "2026-10-30"
     },
     "SGP": {
@@ -210,7 +210,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-29T19:45:04+07:00",
-      "last_source_check": "2026-10-30T22:25:43+07:00",
+      "last_source_check": "2026-10-31T03:01:57+07:00",
       "latest_source_draw_date": "2026-10-29"
     }
   }
