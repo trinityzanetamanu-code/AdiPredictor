@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-10-30T15:54:25+07:00",
+  "collected_at": "2026-10-30T22:25:43+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -98,7 +98,7 @@
         }
       },
       "last_successful_data_update": "2026-10-30T01:41:56+07:00",
-      "last_source_check": "2026-10-30T15:54:25+07:00",
+      "last_source_check": "2026-10-30T22:25:43+07:00",
       "latest_source_draw_date": "2026-10-29"
     },
     "SDY": {
@@ -113,23 +113,18 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 273,
+        "waroengtogel_sdy": 274,
         "datatogel_sdy": 303,
         "livenomor_sdy": 303
       },
       "verified_count": 303,
-      "new_count": 2,
+      "new_count": 1,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-10-20",
-          "number": "6274",
-          "verification": "confirmed_3_sources"
-        },
-        {
           "date": "2026-10-30",
           "number": "3235",
-          "verification": "confirmed_3_sources"
+          "verification": "confirmed_4_sources"
         }
       ],
       "latest": {
@@ -144,27 +139,29 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-10-30T15:54:25+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-10-30T22:25:43+07:00",
+        "verification": "confirmed_4_sources",
+        "confirmations": 4
       },
       "latest_verified": {
         "date": "2026-10-30",
         "number": "3235",
-        "verification": "confirmed_3_sources",
+        "verification": "confirmed_4_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "datatogel_sdy",
           "livenomor_sdy"
         ]
       },
       "source_errors": [],
       "source_health": {},
-      "last_successful_data_update": "2026-10-30T15:54:25+07:00",
-      "last_source_check": "2026-10-30T15:54:25+07:00",
+      "last_successful_data_update": "2026-10-30T22:25:43+07:00",
+      "last_source_check": "2026-10-30T22:25:43+07:00",
       "latest_source_draw_date": "2026-10-30"
     },
     "SGP": {
@@ -213,7 +210,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-10-29T19:45:04+07:00",
-      "last_source_check": "2026-10-30T15:54:25+07:00",
+      "last_source_check": "2026-10-30T22:25:43+07:00",
       "latest_source_draw_date": "2026-10-29"
     }
   }
