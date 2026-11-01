@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-01T21:51:31+07:00",
+  "retrieved_at": "2026-11-02T02:16:06+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -33,45 +33,68 @@
       "market": "HK",
       "source": "KocokHK Mirror",
       "source_url": "https://rankcrack.com/hk.php",
-      "draw_date": "2026-09-30",
-      "first": "536987",
-      "second": "387592",
-      "third": "493792",
+      "draw_date": "2026-11-01",
+      "first": "890509",
+      "second": "155369",
+      "third": "370220",
       "starter": [
-        "732189",
-        "136532",
-        "513632",
-        "549532"
+        "516927",
+        "743212",
+        "482339",
+        "919043"
       ],
       "consolation": [
-        "011044",
-        "240350",
-        "564819",
-        "123027",
-        "946032",
-        "707141",
-        "610125",
-        "536463"
+        "650955",
+        "079988",
+        "003812",
+        "374715",
+        "373944",
+        "101914",
+        "822641",
+        "176245"
       ],
-      "full_first_prize_6d": "536987",
-      "derived_4d": "6987",
-      "dataset_4d": "7256",
-      "matches_dataset": null,
-      "verification": "dataset_date_mismatch",
-      "retrieved_at": "2026-10-01T23:33:43+07:00",
-      "dataset_latest_date": "2026-10-31",
-      "source_verification": "matches_prediction_dataset"
+      "full_first_prize_6d": "890509",
+      "derived_4d": "0509",
+      "source_timezone": "Asia/Hong_Kong",
+      "market_timezone": "Asia/Hong_Kong",
+      "result_status": "unknown",
+      "finality_evidence": null,
+      "verification": "matches_prediction_dataset",
+      "response_url": "https://rankcrack.com/hk.php",
+      "fetch_errors": [
+        {
+          "source_url": "https://www.hongkongpools.com/live.html",
+          "error": "HTTP 403 dari https://www.hongkongpools.com/live.html"
+        },
+        {
+          "source_url": "https://www.hongkongpools.com/live",
+          "error": "HTTP 403 dari https://www.hongkongpools.com/live"
+        }
+      ],
+      "source_observations": [
+        {
+          "draw_date": "2026-11-01",
+          "first": "890509",
+          "source_url": "https://rankcrack.com/hk.php"
+        }
+      ],
+      "source_conflicts": [],
+      "retrieved_at": "2026-11-02T02:16:06+07:00",
+      "dataset_4d": "0509",
+      "matches_dataset": true,
+      "dataset_latest_date": "2026-11-01",
+      "source_verification": "structurally_valid_single_source"
     }
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-01T21:51:31+07:00",
+      "last_checked_at": "2026-11-02T02:16:06+07:00",
       "last_valid_result": {
-        "id": 20261031,
-        "tanggal": "31 Okt 2026",
-        "periode": "HK-3591",
-        "nomor": "7256",
-        "result_date": "2026-10-31",
+        "id": 20261101,
+        "tanggal": "01 Nov 2026",
+        "periode": "HK-3592",
+        "nomor": "0509",
+        "result_date": "2026-11-01",
         "market": "HK",
         "source_id": "livenomor_hk",
         "source_name": "LiveNomor Hongkong",
@@ -79,30 +102,34 @@
         "source_ids": [
           "livenomor_hk"
         ],
-        "collected_at": "2026-11-01T02:18:28+07:00",
+        "collected_at": "2026-11-02T02:16:06+07:00",
         "verification": "provisional_primary",
         "confirmations": 1
       },
       "selected_source": "https://rankcrack.com/hk.php",
-      "source_draw_date": "2026-09-30",
+      "source_draw_date": "2026-11-01",
       "result_status": "unknown",
       "fetch_errors": [
         {
-          "market": "HK",
-          "error": "[{\"source_url\": \"https://www.hongkongpools.com/live.html\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live.html\"}, {\"source_url\": \"https://www.hongkongpools.com/live\", \"error\": \"HTTP 403 dari https://www.hongkongpools.com/live\"}, {\"source_url\": \"https://rankcrack.com/hk.php\", \"error\": \"Draw date tidak ditemukan\"}]"
+          "source_url": "https://www.hongkongpools.com/live.html",
+          "error": "HTTP 403 dari https://www.hongkongpools.com/live.html"
+        },
+        {
+          "source_url": "https://www.hongkongpools.com/live",
+          "error": "HTTP 403 dari https://www.hongkongpools.com/live"
         }
       ],
       "conflicts": [],
       "dataset_conflict": false,
-      "cache_status": "cache",
+      "cache_status": "source_observation",
       "canonical_acceptance": {
         "status": "blocked",
         "reason": "HK_PRIMARY_UNAVAILABLE"
       },
-      "health": "FAILED"
+      "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-01T21:51:31+07:00",
+      "last_checked_at": "2026-11-02T02:16:06+07:00",
       "last_valid_result": {
         "id": 20261101,
         "tanggal": "01 Nov 2026",
