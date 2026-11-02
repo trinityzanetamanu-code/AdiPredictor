@@ -1,5 +1,23 @@
 [
   {
+    "id": 20261102,
+    "tanggal": "02 Nov 2026",
+    "periode": "SD-3593",
+    "nomor": "3475",
+    "result_date": "2026-11-02",
+    "market": "SDY",
+    "source_id": "lomba4d_sdy",
+    "source_name": "Lomba4D Sydney Results",
+    "source_url": "https://www.lomba4dqueen.com/hasil/SY",
+    "source_ids": [
+      "lomba4d_sdy",
+      "livenomor_sdy"
+    ],
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
+  },
+  {
     "id": 20261101,
     "tanggal": "01 Nov 2026",
     "periode": "SD-3592",
@@ -12,12 +30,11 @@
     "source_ids": [
       "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-11-01T21:51:31+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20261031,
@@ -31,12 +48,11 @@
     "source_url": "https://www.lomba4dqueen.com/hasil/SY",
     "source_ids": [
       "lomba4d_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-31T15:56:00+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261030,
@@ -51,12 +67,11 @@
     "source_ids": [
       "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-30T22:25:43+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20261029,
@@ -71,12 +86,11 @@
     "source_ids": [
       "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-29T19:45:04+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20261028,
@@ -91,12 +105,11 @@
     "source_ids": [
       "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-28T22:22:55+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20261027,
@@ -111,12 +124,11 @@
     "source_ids": [
       "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-27T21:23:21+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20261026,
@@ -131,12 +143,11 @@
     "source_ids": [
       "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-27T21:23:21+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20261025,
@@ -150,12 +161,11 @@
     "source_url": "https://www.lomba4dqueen.com/hasil/SY",
     "source_ids": [
       "lomba4d_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-25T19:08:55+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261024,
@@ -170,12 +180,11 @@
     "source_ids": [
       "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T20:16:12+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
   },
   {
     "id": 20261023,
@@ -184,18 +193,16 @@
     "nomor": "7069",
     "result_date": "2026-10-23",
     "market": "SDY",
-    "source_id": "lomba4d_sdy",
-    "source_name": "Lomba4D Sydney Results",
-    "source_url": "https://www.lomba4dqueen.com/hasil/SY",
+    "source_id": "waroengtogel_sdy",
+    "source_name": "WaroengTogel SDY",
+    "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
-      "lomba4d_sdy",
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_4_sources",
-    "confirmations": 4
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261022,
@@ -209,12 +216,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-11-01T14:58:14+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261021,
@@ -228,12 +234,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-31T15:56:00+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261020,
@@ -247,12 +252,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-30T15:54:25+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261019,
@@ -266,12 +270,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-29T19:45:04+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261018,
@@ -303,12 +306,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-27T15:03:57+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261016,
@@ -322,12 +324,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-26T13:58:22+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261015,
@@ -341,12 +342,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-25T19:08:55+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261014,
@@ -360,12 +360,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T16:03:23+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261013,
@@ -379,12 +378,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261012,
@@ -398,12 +396,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261011,
@@ -417,12 +414,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261010,
@@ -436,12 +432,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261009,
@@ -455,12 +450,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261008,
@@ -474,12 +468,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261007,
@@ -493,12 +486,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261006,
@@ -512,12 +504,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261005,
@@ -531,12 +522,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261004,
@@ -550,12 +540,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261003,
@@ -569,12 +558,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261002,
@@ -588,12 +576,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20261001,
@@ -607,12 +594,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260930,
@@ -626,12 +612,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260929,
@@ -645,12 +630,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-24T11:25:17+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260928,
@@ -664,12 +648,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-08T17:53:48+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260927,
@@ -683,12 +666,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-07T20:55:43+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260926,
@@ -702,12 +684,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-06T17:13:00+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260925,
@@ -721,12 +702,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-05T15:39:59+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260924,
@@ -740,12 +720,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-04T19:35:20+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260923,
@@ -759,12 +738,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-03T19:02:36+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260922,
@@ -778,12 +756,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-02T20:16:50+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260921,
@@ -797,12 +774,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-10-01T16:19:38+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260920,
@@ -816,12 +792,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-30T15:29:55+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260919,
@@ -835,12 +810,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-29T14:31:39+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260918,
@@ -872,12 +846,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-27T14:47:45+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260916,
@@ -891,12 +864,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-26T18:02:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260915,
@@ -910,12 +882,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-25T17:30:24+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260914,
@@ -929,12 +900,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-24T18:21:44+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260913,
@@ -948,12 +918,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-23T19:07:39+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260912,
@@ -967,12 +936,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-22T14:58:00+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260911,
@@ -986,12 +954,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-21T14:08:15+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260910,
@@ -1005,12 +972,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-20T16:41:06+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260909,
@@ -1024,12 +990,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260908,
@@ -1043,12 +1008,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260907,
@@ -1080,12 +1044,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260905,
@@ -1099,12 +1062,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260904,
@@ -1118,12 +1080,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260903,
@@ -1137,12 +1098,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260902,
@@ -1156,12 +1116,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260901,
@@ -1175,12 +1134,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260831,
@@ -1194,12 +1152,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260830,
@@ -1213,12 +1170,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260829,
@@ -1232,12 +1188,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260828,
@@ -1251,12 +1206,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260827,
@@ -1270,12 +1224,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260826,
@@ -1289,12 +1242,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260825,
@@ -1308,12 +1260,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260824,
@@ -1327,12 +1278,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260823,
@@ -1364,12 +1314,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260821,
@@ -1383,12 +1332,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260820,
@@ -1402,12 +1350,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260819,
@@ -1421,12 +1368,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260818,
@@ -1440,12 +1386,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260817,
@@ -1459,12 +1404,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260816,
@@ -1478,12 +1422,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260815,
@@ -1551,12 +1494,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260811,
@@ -1570,12 +1512,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260810,
@@ -1589,12 +1530,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260809,
@@ -1608,12 +1548,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260808,
@@ -1627,12 +1566,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260807,
@@ -1646,12 +1584,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260806,
@@ -1665,12 +1602,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260805,
@@ -1684,12 +1620,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260804,
@@ -1703,12 +1638,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260803,
@@ -1722,12 +1656,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260802,
@@ -1741,12 +1674,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260801,
@@ -1760,12 +1692,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260731,
@@ -1779,12 +1710,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260730,
@@ -1798,12 +1728,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260729,
@@ -1817,12 +1746,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260728,
@@ -1836,12 +1764,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260727,
@@ -1855,12 +1782,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260726,
@@ -1874,12 +1800,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260725,
@@ -1893,12 +1818,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260724,
@@ -1912,12 +1836,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260723,
@@ -1931,12 +1854,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260722,
@@ -1950,12 +1872,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260721,
@@ -1969,12 +1890,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260720,
@@ -1988,12 +1908,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260719,
@@ -2007,12 +1926,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260718,
@@ -2026,12 +1944,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260717,
@@ -2045,12 +1962,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260716,
@@ -2064,12 +1980,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260715,
@@ -2083,12 +1998,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260714,
@@ -2102,12 +2016,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260713,
@@ -2121,12 +2034,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260712,
@@ -2140,12 +2052,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260711,
@@ -2159,12 +2070,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260710,
@@ -2178,12 +2088,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260709,
@@ -2197,12 +2106,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260708,
@@ -2216,12 +2124,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260707,
@@ -2235,12 +2142,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260706,
@@ -2254,12 +2160,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260705,
@@ -2273,12 +2178,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260704,
@@ -2292,12 +2196,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260703,
@@ -2311,12 +2214,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260702,
@@ -2330,12 +2232,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260701,
@@ -2349,12 +2250,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260630,
@@ -2368,12 +2268,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260629,
@@ -2387,12 +2286,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260628,
@@ -2406,12 +2304,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260627,
@@ -2425,12 +2322,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260626,
@@ -2444,12 +2340,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260625,
@@ -2463,12 +2358,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260624,
@@ -2482,12 +2376,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260623,
@@ -2501,12 +2394,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260622,
@@ -2520,12 +2412,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260621,
@@ -2539,12 +2430,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260620,
@@ -2558,12 +2448,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260619,
@@ -2595,12 +2484,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260617,
@@ -2614,12 +2502,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260616,
@@ -2633,12 +2520,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260615,
@@ -2652,12 +2538,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260614,
@@ -2671,12 +2556,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260613,
@@ -2690,12 +2574,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260612,
@@ -2709,12 +2592,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260611,
@@ -2728,12 +2610,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260610,
@@ -2747,12 +2628,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260609,
@@ -2766,12 +2646,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260608,
@@ -2785,12 +2664,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260607,
@@ -2804,12 +2682,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260606,
@@ -2823,12 +2700,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260605,
@@ -2842,12 +2718,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260604,
@@ -2861,12 +2736,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260603,
@@ -2880,12 +2754,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260602,
@@ -2917,12 +2790,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260531,
@@ -2936,12 +2808,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260530,
@@ -2955,12 +2826,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260529,
@@ -2974,12 +2844,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260528,
@@ -2993,12 +2862,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260527,
@@ -3012,12 +2880,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260526,
@@ -3031,12 +2898,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260525,
@@ -3050,12 +2916,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260524,
@@ -3069,12 +2934,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260523,
@@ -3088,12 +2952,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260522,
@@ -3107,12 +2970,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260521,
@@ -3126,12 +2988,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260520,
@@ -3145,12 +3006,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260519,
@@ -3164,12 +3024,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260518,
@@ -3183,12 +3042,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260517,
@@ -3202,12 +3060,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260516,
@@ -3221,12 +3078,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260515,
@@ -3240,12 +3096,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260514,
@@ -3259,12 +3114,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260513,
@@ -3278,12 +3132,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260512,
@@ -3297,12 +3150,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260511,
@@ -3316,12 +3168,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260510,
@@ -3335,12 +3186,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260509,
@@ -3354,12 +3204,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260508,
@@ -3373,12 +3222,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260507,
@@ -3392,12 +3240,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260506,
@@ -3411,12 +3258,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260505,
@@ -3430,12 +3276,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260504,
@@ -3449,12 +3294,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260503,
@@ -3468,12 +3312,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260502,
@@ -3487,12 +3330,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260501,
@@ -3506,12 +3348,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260430,
@@ -3525,12 +3366,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260429,
@@ -3544,12 +3384,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260428,
@@ -3563,12 +3402,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260427,
@@ -3582,12 +3420,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260426,
@@ -3601,12 +3438,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260425,
@@ -3620,12 +3456,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260424,
@@ -3639,12 +3474,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260423,
@@ -3658,12 +3492,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260422,
@@ -3677,12 +3510,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260421,
@@ -3696,12 +3528,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260420,
@@ -3715,12 +3546,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260419,
@@ -3734,12 +3564,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260418,
@@ -3753,12 +3582,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260417,
@@ -3772,12 +3600,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260416,
@@ -3791,12 +3618,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260415,
@@ -3810,12 +3636,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260414,
@@ -3829,12 +3654,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260413,
@@ -3848,12 +3672,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260412,
@@ -3867,12 +3690,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260411,
@@ -3886,12 +3708,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260410,
@@ -3905,12 +3726,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260409,
@@ -3924,12 +3744,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260408,
@@ -3943,12 +3762,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260407,
@@ -3962,12 +3780,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260406,
@@ -3981,12 +3798,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260405,
@@ -4000,12 +3816,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260404,
@@ -4019,12 +3834,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260403,
@@ -4038,12 +3852,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260402,
@@ -4057,12 +3870,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260401,
@@ -4076,12 +3888,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260331,
@@ -4095,12 +3906,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260330,
@@ -4114,12 +3924,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260329,
@@ -4133,12 +3942,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260328,
@@ -4152,12 +3960,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260327,
@@ -4171,12 +3978,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260326,
@@ -4190,12 +3996,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260325,
@@ -4209,12 +4014,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260324,
@@ -4228,12 +4032,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260323,
@@ -4247,12 +4050,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260322,
@@ -4266,12 +4068,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260321,
@@ -4285,12 +4086,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260320,
@@ -4304,12 +4104,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260319,
@@ -4323,12 +4122,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260318,
@@ -4342,12 +4140,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260317,
@@ -4361,12 +4158,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260316,
@@ -4380,12 +4176,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260315,
@@ -4399,12 +4194,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260314,
@@ -4418,12 +4212,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260313,
@@ -4437,12 +4230,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260312,
@@ -4456,12 +4248,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260311,
@@ -4475,12 +4266,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260310,
@@ -4494,12 +4284,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260309,
@@ -4513,12 +4302,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260308,
@@ -4532,12 +4320,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260307,
@@ -4551,12 +4338,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260306,
@@ -4570,12 +4356,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260305,
@@ -4589,12 +4374,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260304,
@@ -4608,12 +4392,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260303,
@@ -4627,12 +4410,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260302,
@@ -4646,12 +4428,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260301,
@@ -4665,12 +4446,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260228,
@@ -5188,12 +4968,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260130,
@@ -5207,12 +4986,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260129,
@@ -5226,12 +5004,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260128,
@@ -5263,12 +5040,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260126,
@@ -5282,12 +5058,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260125,
@@ -5301,12 +5076,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260124,
@@ -5320,12 +5094,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260123,
@@ -5339,12 +5112,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260122,
@@ -5358,12 +5130,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260121,
@@ -5377,12 +5148,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260120,
@@ -5396,12 +5166,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260119,
@@ -5415,12 +5184,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260118,
@@ -5434,12 +5202,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260117,
@@ -5453,12 +5220,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260116,
@@ -5472,12 +5238,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260115,
@@ -5491,12 +5256,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260114,
@@ -5510,12 +5274,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260113,
@@ -5529,12 +5292,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260112,
@@ -5548,12 +5310,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260111,
@@ -5567,12 +5328,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260110,
@@ -5586,12 +5346,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260109,
@@ -5605,12 +5364,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260108,
@@ -5624,12 +5382,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260107,
@@ -5643,12 +5400,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260106,
@@ -5662,12 +5418,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260105,
@@ -5681,12 +5436,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260104,
@@ -5700,12 +5454,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260103,
@@ -5719,12 +5472,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260102,
@@ -5738,12 +5490,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20260101,
@@ -5757,12 +5508,11 @@
     "source_url": "https://waroengtogel2.com/data-togel-sdy-2026/",
     "source_ids": [
       "waroengtogel_sdy",
-      "datatogel_sdy",
       "livenomor_sdy"
     ],
-    "collected_at": "2026-09-19T19:17:31+07:00",
-    "verification": "confirmed_3_sources",
-    "confirmations": 3
+    "collected_at": "2026-11-02T16:30:08+07:00",
+    "verification": "confirmed_2_sources",
+    "confirmations": 2
   },
   {
     "id": 20251231,
