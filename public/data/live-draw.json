@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-03T15:40:41+07:00",
+  "retrieved_at": "2026-11-03T23:33:27+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -33,28 +33,28 @@
       "market": "HK",
       "source": "KocokHK Mirror",
       "source_url": "https://rankcrack.com/hk.php",
-      "draw_date": "2026-11-02",
-      "first": "764580",
-      "second": "974608",
-      "third": "983879",
+      "draw_date": "2026-11-03",
+      "first": "503834",
+      "second": "835806",
+      "third": "398468",
       "starter": [
-        "677913",
-        "522163",
-        "387448",
-        "688918"
+        "946514",
+        "270812",
+        "763205",
+        "822432"
       ],
       "consolation": [
-        "278376",
-        "076619",
-        "163245",
-        "056090",
-        "683390",
-        "492223",
-        "927258",
-        "311466"
+        "288569",
+        "274690",
+        "730037",
+        "299395",
+        "890737",
+        "614054",
+        "881316",
+        "736140"
       ],
-      "full_first_prize_6d": "764580",
-      "derived_4d": "4580",
+      "full_first_prize_6d": "503834",
+      "derived_4d": "3834",
       "source_timezone": "Asia/Hong_Kong",
       "market_timezone": "Asia/Hong_Kong",
       "result_status": "unknown",
@@ -73,28 +73,28 @@
       ],
       "source_observations": [
         {
-          "draw_date": "2026-11-02",
-          "first": "764580",
+          "draw_date": "2026-11-03",
+          "first": "503834",
           "source_url": "https://rankcrack.com/hk.php"
         }
       ],
       "source_conflicts": [],
-      "retrieved_at": "2026-11-03T02:43:02+07:00",
-      "dataset_4d": "4580",
+      "retrieved_at": "2026-11-03T23:33:27+07:00",
+      "dataset_4d": "3834",
       "matches_dataset": true,
-      "dataset_latest_date": "2026-11-02",
+      "dataset_latest_date": "2026-11-03",
       "source_verification": "structurally_valid_single_source"
     }
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-03T15:40:41+07:00",
+      "last_checked_at": "2026-11-03T23:33:27+07:00",
       "last_valid_result": {
-        "id": 20261102,
-        "tanggal": "02 Nov 2026",
-        "periode": "HK-3593",
-        "nomor": "4580",
-        "result_date": "2026-11-02",
+        "id": 20261103,
+        "tanggal": "03 Nov 2026",
+        "periode": "HK-3594",
+        "nomor": "3834",
+        "result_date": "2026-11-03",
         "market": "HK",
         "source_id": "livenomor_hk",
         "source_name": "LiveNomor Hongkong",
@@ -102,12 +102,12 @@
         "source_ids": [
           "livenomor_hk"
         ],
-        "collected_at": "2026-11-03T02:43:02+07:00",
+        "collected_at": "2026-11-03T23:33:27+07:00",
         "verification": "provisional_primary",
         "confirmations": 1
       },
       "selected_source": "https://rankcrack.com/hk.php",
-      "source_draw_date": "2026-11-02",
+      "source_draw_date": "2026-11-03",
       "result_status": "unknown",
       "fetch_errors": [
         {
@@ -129,7 +129,7 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-03T15:40:41+07:00",
+      "last_checked_at": "2026-11-03T23:33:27+07:00",
       "last_valid_result": {
         "id": 20261103,
         "tanggal": "03 Nov 2026",
@@ -142,11 +142,12 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-03T15:40:41+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-11-03T23:33:27+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
       "source_draw_date": "2026-11-03",
