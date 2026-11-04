@@ -1,32 +1,32 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-04T09:01:29+07:00",
+  "retrieved_at": "2026-11-04T15:56:55+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
       "source": "SydneyPoolsToday Market Source",
       "source_url": "https://www.sydneypoolstoday.com/live.html",
-      "draw_date": "2026-11-03",
-      "first": "341941",
-      "second": "026631",
-      "third": "562588",
+      "draw_date": "2026-11-04",
+      "first": "575983",
+      "second": "953710",
+      "third": "706512",
       "starter": [
-        "263252"
+        "106178"
       ],
       "consolation": [
-        "122550"
+        "756548"
       ],
-      "full_first_prize_6d": "341941",
-      "derived_4d": "1941",
+      "full_first_prize_6d": "575983",
+      "derived_4d": "5983",
       "source_timezone": "Australia/Sydney",
       "market_timezone": "Australia/Sydney",
       "result_status": "unknown",
       "finality_evidence": null,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-11-03T15:40:41+07:00",
-      "dataset_4d": "1941",
+      "retrieved_at": "2026-11-04T15:56:55+07:00",
+      "dataset_4d": "5983",
       "matches_dataset": true,
-      "dataset_latest_date": "2026-11-03",
+      "dataset_latest_date": "2026-11-04",
       "source_verification": "structurally_valid_single_source"
     },
     "HK": {
@@ -88,7 +88,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-04T09:01:29+07:00",
+      "last_checked_at": "2026-11-04T15:56:55+07:00",
       "last_valid_result": {
         "id": 20261103,
         "tanggal": "03 Nov 2026",
@@ -129,28 +129,27 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-04T09:01:29+07:00",
+      "last_checked_at": "2026-11-04T15:56:55+07:00",
       "last_valid_result": {
-        "id": 20261103,
-        "tanggal": "03 Nov 2026",
-        "periode": "SD-3594",
-        "nomor": "1941",
-        "result_date": "2026-11-03",
+        "id": 20261104,
+        "tanggal": "04 Nov 2026",
+        "periode": "SD-3595",
+        "nomor": "5983",
+        "result_date": "2026-11-04",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-03T23:33:27+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-11-04T15:56:55+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
-      "source_draw_date": "2026-11-03",
+      "source_draw_date": "2026-11-04",
       "result_status": "unknown",
       "fetch_errors": [],
       "conflicts": [],
