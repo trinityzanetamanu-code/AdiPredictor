@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-11-04T23:58:19+07:00",
+  "collected_at": "2026-11-05T16:52:32+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 308
       },
       "verified_count": 308,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-11-04",
-          "number": "1510",
-          "verification": "provisional_primary"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261104,
         "tanggal": "04 Nov 2026",
@@ -104,7 +98,7 @@
         }
       },
       "last_successful_data_update": "2026-11-04T23:58:19+07:00",
-      "last_source_check": "2026-11-04T23:58:19+07:00",
+      "last_source_check": "2026-11-05T16:52:32+07:00",
       "latest_source_draw_date": "2026-11-04"
     },
     "SDY": {
@@ -119,57 +113,60 @@
       "parsed_counts": {
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 279,
-        "livenomor_sdy": 308
+        "livenomor_sdy": 309
       },
-      "verified_count": 269,
-      "new_count": 1,
+      "verified_count": 270,
+      "new_count": 2,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-11-04",
-          "number": "5983",
-          "verification": "confirmed_3_sources"
+          "date": "2026-10-26",
+          "number": "5017",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-11-05",
+          "number": "2855",
+          "verification": "confirmed_2_sources"
         }
       ],
       "latest": {
-        "id": 20261104,
-        "tanggal": "04 Nov 2026",
-        "periode": "SD-3595",
-        "nomor": "5983",
-        "result_date": "2026-11-04",
+        "id": 20261105,
+        "tanggal": "05 Nov 2026",
+        "periode": "SD-3596",
+        "nomor": "2855",
+        "result_date": "2026-11-05",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-04T23:58:19+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-11-05T16:52:32+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-11-04",
-        "number": "5983",
-        "verification": "confirmed_3_sources",
+        "date": "2026-11-05",
+        "number": "2855",
+        "verification": "confirmed_2_sources",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "livenomor_sdy"
         ]
       },
       "source_errors": [
         {
           "source": "datatogel_sdy",
-          "error": "Fetch gagal untuk https://w2.datatogel.fit/data-sdy/: HTTPSConnectionPool(host='w2.datatogel.fit', port=443): Max retries exceeded with url: /data-sdy/ (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1018)')))"
+          "error": "Fetch gagal untuk https://w2.datatogel.fit/data-sdy/: HTTPSConnectionPool(host='w2.datatogel.fit', port=443): Max retries exceeded with url: /data-sdy/ (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1016)')))"
         }
       ],
       "source_health": {},
-      "last_successful_data_update": "2026-11-04T23:58:19+07:00",
-      "last_source_check": "2026-11-04T23:58:19+07:00",
-      "latest_source_draw_date": "2026-11-04"
+      "last_successful_data_update": "2026-11-05T16:52:32+07:00",
+      "last_source_check": "2026-11-05T16:52:32+07:00",
+      "latest_source_draw_date": "2026-11-05"
     },
     "SGP": {
       "market": "SGP",
@@ -217,7 +214,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-11-03T02:43:02+07:00",
-      "last_source_check": "2026-11-04T23:58:19+07:00",
+      "last_source_check": "2026-11-05T16:52:32+07:00",
       "latest_source_draw_date": "2026-11-02"
     }
   }
