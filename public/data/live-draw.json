@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-11T01:56:52+07:00",
+  "retrieved_at": "2026-11-11T06:57:52+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -88,7 +88,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-11T01:56:52+07:00",
+      "last_checked_at": "2026-11-11T06:57:52+07:00",
       "last_valid_result": {
         "id": 20261110,
         "tanggal": "10 Nov 2026",
@@ -129,7 +129,7 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-11T01:56:52+07:00",
+      "last_checked_at": "2026-11-11T06:57:52+07:00",
       "last_valid_result": {
         "id": 20261110,
         "tanggal": "10 Nov 2026",
