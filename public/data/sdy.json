@@ -1,5 +1,24 @@
 [
   {
+    "id": 20261110,
+    "tanggal": "10 Nov 2026",
+    "periode": "SD-3601",
+    "nomor": "3427",
+    "result_date": "2026-11-10",
+    "market": "SDY",
+    "source_id": "lomba4d_sdy",
+    "source_name": "Lomba4D Sydney Results",
+    "source_url": "https://www.lomba4dqueen.com/hasil/SY",
+    "source_ids": [
+      "lomba4d_sdy",
+      "waroengtogel_sdy",
+      "livenomor_sdy"
+    ],
+    "collected_at": "2026-11-10T18:53:03+07:00",
+    "verification": "confirmed_3_sources",
+    "confirmations": 3
+  },
+  {
     "id": 20261109,
     "tanggal": "09 Nov 2026",
     "periode": "SD-3600",
