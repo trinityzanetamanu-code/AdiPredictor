@@ -1,29 +1,35 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-11-14T17:50:47+07:00",
+  "collected_at": "2026-11-14T23:46:13+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
       ],
       "parsed_counts": {
-        "livenomor_hk": 317
+        "livenomor_hk": 318
       },
-      "verified_count": 317,
-      "new_count": 0,
+      "verified_count": 318,
+      "new_count": 1,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-11-14",
+          "number": "0528",
+          "verification": "provisional_primary"
+        }
+      ],
       "latest": {
-        "id": 20261113,
-        "tanggal": "13 Nov 2026",
-        "periode": "HK-3604",
-        "nomor": "8981",
-        "result_date": "2026-11-13",
+        "id": 20261114,
+        "tanggal": "14 Nov 2026",
+        "periode": "HK-3605",
+        "nomor": "0528",
+        "result_date": "2026-11-14",
         "market": "HK",
         "source_id": "livenomor_hk",
         "source_name": "LiveNomor Hongkong",
@@ -31,13 +37,13 @@
         "source_ids": [
           "livenomor_hk"
         ],
-        "collected_at": "2026-11-14T01:06:55+07:00",
+        "collected_at": "2026-11-14T23:46:13+07:00",
         "verification": "provisional_primary",
         "confirmations": 1
       },
       "latest_verified": {
-        "date": "2026-11-13",
-        "number": "8981",
+        "date": "2026-11-14",
+        "number": "0528",
         "verification": "provisional_primary",
         "source_ids": [
           "livenomor_hk"
@@ -59,11 +65,11 @@
           "historical_sequence_matches": 0,
           "historical_sequence_compared": 0,
           "historical_conflicts": {},
-          "latest_date": "2026-11-13",
-          "latest_result": "8981",
-          "source_first_seen_at": "2026-11-14T01:06:55+07:00",
-          "expected_draw_date": "2026-11-13",
-          "latency_minutes": 126,
+          "latest_date": "2026-11-14",
+          "latest_result": "0528",
+          "source_first_seen_at": "2026-11-14T23:46:13+07:00",
+          "expected_draw_date": "2026-11-14",
+          "latency_minutes": 46,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -73,11 +79,11 @@
           "historical_sequence_matches": 8,
           "historical_sequence_compared": 8,
           "historical_conflicts": {},
-          "latest_date": "2026-11-13",
-          "latest_result": "8981",
-          "source_first_seen_at": "2026-11-14T01:06:55+07:00",
-          "expected_draw_date": "2026-11-13",
-          "latency_minutes": 126,
+          "latest_date": "2026-11-14",
+          "latest_result": "0528",
+          "source_first_seen_at": "2026-11-14T23:46:13+07:00",
+          "expected_draw_date": "2026-11-14",
+          "latency_minutes": 46,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -90,16 +96,16 @@
           "latest_date": "2026-11-13",
           "latest_result": "8981",
           "source_first_seen_at": "2026-11-14T01:06:55+07:00",
-          "expected_draw_date": "2026-11-13",
+          "expected_draw_date": "2026-11-14",
           "latency_minutes": 126,
-          "source_stale": false,
-          "reason": "FRESH",
-          "health": "HEALTHY"
+          "source_stale": true,
+          "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
+          "health": "STALE"
         }
       },
-      "last_successful_data_update": "2026-11-14T01:06:55+07:00",
-      "last_source_check": "2026-11-14T17:50:47+07:00",
-      "latest_source_draw_date": "2026-11-13"
+      "last_successful_data_update": "2026-11-14T23:46:13+07:00",
+      "last_source_check": "2026-11-14T23:46:13+07:00",
+      "latest_source_draw_date": "2026-11-14"
     },
     "SDY": {
       "market": "SDY",
@@ -112,22 +118,17 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 288,
+        "waroengtogel_sdy": 289,
         "livenomor_sdy": 318
       },
       "verified_count": 278,
-      "new_count": 2,
+      "new_count": 1,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-11-04",
-          "number": "5983",
-          "verification": "confirmed_2_sources"
-        },
-        {
           "date": "2026-11-14",
           "number": "5078",
-          "verification": "confirmed_2_sources"
+          "verification": "confirmed_3_sources"
         }
       ],
       "latest": {
@@ -142,18 +143,20 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-14T17:50:47+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-11-14T23:46:13+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "latest_verified": {
         "date": "2026-11-14",
         "number": "5078",
-        "verification": "confirmed_2_sources",
+        "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "livenomor_sdy"
         ]
       },
@@ -164,8 +167,8 @@
         }
       ],
       "source_health": {},
-      "last_successful_data_update": "2026-11-14T17:50:47+07:00",
-      "last_source_check": "2026-11-14T17:50:47+07:00",
+      "last_successful_data_update": "2026-11-14T23:46:13+07:00",
+      "last_source_check": "2026-11-14T23:46:13+07:00",
       "latest_source_draw_date": "2026-11-14"
     },
     "SGP": {
@@ -177,7 +180,7 @@
         "nexipools_sgp"
       ],
       "parsed_counts": {
-        "paitosgplengkap": 225,
+        "paitosgplengkap": 226,
         "nexipools_sgp": 30
       },
       "verified_count": 30,
@@ -214,7 +217,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-11-06T00:43:19+07:00",
-      "last_source_check": "2026-11-14T17:50:47+07:00",
+      "last_source_check": "2026-11-14T23:46:13+07:00",
       "latest_source_draw_date": "2026-11-04"
     }
   }

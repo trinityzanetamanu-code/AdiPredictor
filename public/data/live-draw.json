@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-14T17:50:47+07:00",
+  "retrieved_at": "2026-11-14T23:46:13+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -59,7 +59,7 @@
       "market_timezone": "Asia/Hong_Kong",
       "result_status": "unknown",
       "finality_evidence": null,
-      "verification": "matches_prediction_dataset",
+      "verification": "dataset_date_mismatch",
       "response_url": "https://rankcrack.com/hk.php",
       "fetch_errors": [
         {
@@ -80,21 +80,21 @@
       ],
       "source_conflicts": [],
       "retrieved_at": "2026-11-14T01:06:55+07:00",
-      "dataset_4d": "8981",
-      "matches_dataset": true,
-      "dataset_latest_date": "2026-11-13",
+      "dataset_4d": "0528",
+      "matches_dataset": null,
+      "dataset_latest_date": "2026-11-14",
       "source_verification": "structurally_valid_single_source"
     }
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-14T17:50:47+07:00",
+      "last_checked_at": "2026-11-14T23:46:13+07:00",
       "last_valid_result": {
-        "id": 20261113,
-        "tanggal": "13 Nov 2026",
-        "periode": "HK-3604",
-        "nomor": "8981",
-        "result_date": "2026-11-13",
+        "id": 20261114,
+        "tanggal": "14 Nov 2026",
+        "periode": "HK-3605",
+        "nomor": "0528",
+        "result_date": "2026-11-14",
         "market": "HK",
         "source_id": "livenomor_hk",
         "source_name": "LiveNomor Hongkong",
@@ -102,7 +102,7 @@
         "source_ids": [
           "livenomor_hk"
         ],
-        "collected_at": "2026-11-14T01:06:55+07:00",
+        "collected_at": "2026-11-14T23:46:13+07:00",
         "verification": "provisional_primary",
         "confirmations": 1
       },
@@ -129,7 +129,7 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-14T17:50:47+07:00",
+      "last_checked_at": "2026-11-14T23:46:13+07:00",
       "last_valid_result": {
         "id": 20261114,
         "tanggal": "14 Nov 2026",
@@ -142,11 +142,12 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-14T17:50:47+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-11-14T23:46:13+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
       "source_draw_date": "2026-11-14",
