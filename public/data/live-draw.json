@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-15T14:41:13+07:00",
+  "retrieved_at": "2026-11-15T21:59:14+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -88,7 +88,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-15T14:41:13+07:00",
+      "last_checked_at": "2026-11-15T21:59:14+07:00",
       "last_valid_result": {
         "id": 20261114,
         "tanggal": "14 Nov 2026",
@@ -129,7 +129,7 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-15T14:41:13+07:00",
+      "last_checked_at": "2026-11-15T21:59:14+07:00",
       "last_valid_result": {
         "id": 20261115,
         "tanggal": "15 Nov 2026",
@@ -142,11 +142,12 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-15T14:41:13+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-11-15T21:59:14+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
       "source_draw_date": "2026-11-15",
