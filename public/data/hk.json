@@ -1,5 +1,22 @@
 [
   {
+    "id": 20261116,
+    "tanggal": "16 Nov 2026",
+    "periode": "HK-3607",
+    "nomor": "5091",
+    "result_date": "2026-11-16",
+    "market": "HK",
+    "source_id": "livenomor_hk",
+    "source_name": "LiveNomor Hongkong",
+    "source_url": "https://livenomor.com/",
+    "source_ids": [
+      "livenomor_hk"
+    ],
+    "collected_at": "2026-11-17T06:51:52+07:00",
+    "verification": "provisional_primary",
+    "confirmations": 1
+  },
+  {
     "id": 20261115,
     "tanggal": "15 Nov 2026",
     "periode": "HK-3606",
