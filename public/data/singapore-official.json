@@ -1,6 +1,6 @@
 {
   "source": "Singapore Pools",
-  "retrieved_at": "2026-11-18T19:21:53+07:00",
+  "retrieved_at": "2026-11-20T01:59:42+07:00",
   "official_4d": {
     "draw_date": "2026-11-18",
     "draw_no": "5563",
@@ -34,17 +34,17 @@
     "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/fourd_result_top_draws_en.html"
   },
   "official_toto": {
-    "draw_date": "2026-11-16",
-    "draw_no": "4235",
+    "draw_date": "2026-11-19",
+    "draw_no": "4236",
     "winning_numbers": [
-      "02",
-      "22",
-      "24",
-      "31",
-      "36",
-      "43"
+      "08",
+      "26",
+      "28",
+      "37",
+      "41",
+      "42"
     ],
-    "additional_number": "41",
+    "additional_number": "34",
     "source_url": "https://www.singaporepools.com.sg/DataFileArchive/Lottery/Output/toto_result_top_draws_en.html"
   }
 }
