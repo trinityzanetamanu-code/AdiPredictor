@@ -1,32 +1,32 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-19T09:02:12+07:00",
+  "retrieved_at": "2026-11-19T17:11:12+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
       "source": "SydneyPoolsToday Market Source",
       "source_url": "https://www.sydneypoolstoday.com/live.html",
-      "draw_date": "2026-11-18",
-      "first": "849761",
-      "second": "328286",
-      "third": "058629",
+      "draw_date": "2026-11-19",
+      "first": "827617",
+      "second": "186857",
+      "third": "908237",
       "starter": [
-        "859206"
+        "963977"
       ],
       "consolation": [
-        "153451"
+        "381287"
       ],
-      "full_first_prize_6d": "849761",
-      "derived_4d": "9761",
+      "full_first_prize_6d": "827617",
+      "derived_4d": "7617",
       "source_timezone": "Australia/Sydney",
       "market_timezone": "Australia/Sydney",
       "result_status": "unknown",
       "finality_evidence": null,
       "verification": "matches_prediction_dataset",
-      "retrieved_at": "2026-11-18T19:21:53+07:00",
-      "dataset_4d": "9761",
+      "retrieved_at": "2026-11-19T17:11:12+07:00",
+      "dataset_4d": "7617",
       "matches_dataset": true,
-      "dataset_latest_date": "2026-11-18",
+      "dataset_latest_date": "2026-11-19",
       "source_verification": "structurally_valid_single_source"
     },
     "HK": {
@@ -88,7 +88,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-19T09:02:12+07:00",
+      "last_checked_at": "2026-11-19T17:11:12+07:00",
       "last_valid_result": {
         "id": 20261118,
         "tanggal": "18 Nov 2026",
@@ -129,13 +129,13 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-19T09:02:12+07:00",
+      "last_checked_at": "2026-11-19T17:11:12+07:00",
       "last_valid_result": {
-        "id": 20261118,
-        "tanggal": "18 Nov 2026",
-        "periode": "SD-3609",
-        "nomor": "9761",
-        "result_date": "2026-11-18",
+        "id": 20261119,
+        "tanggal": "19 Nov 2026",
+        "periode": "SD-3610",
+        "nomor": "7617",
+        "result_date": "2026-11-19",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
@@ -145,12 +145,12 @@
           "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-18T19:21:53+07:00",
+        "collected_at": "2026-11-19T17:11:12+07:00",
         "verification": "confirmed_3_sources",
         "confirmations": 3
       },
       "selected_source": "https://www.sydneypoolstoday.com/live.html",
-      "source_draw_date": "2026-11-18",
+      "source_draw_date": "2026-11-19",
       "result_status": "unknown",
       "fetch_errors": [],
       "conflicts": [],
