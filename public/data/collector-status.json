@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-11-24T03:05:24+07:00",
+  "collected_at": "2026-11-24T22:22:13+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
     "HK": {
       "market": "HK",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck_or_qualified_primary",
       "successful_sources": [
         "livenomor_hk"
@@ -15,15 +15,9 @@
         "livenomor_hk": 327
       },
       "verified_count": 327,
-      "new_count": 1,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-11-23",
-          "number": "3843",
-          "verification": "provisional_primary"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261123,
         "tanggal": "23 Nov 2026",
@@ -104,7 +98,7 @@
         }
       },
       "last_successful_data_update": "2026-11-24T03:05:24+07:00",
-      "last_source_check": "2026-11-24T03:05:24+07:00",
+      "last_source_check": "2026-11-24T22:22:13+07:00",
       "latest_source_draw_date": "2026-11-23"
     },
     "SDY": {
@@ -118,25 +112,30 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 298,
-        "livenomor_sdy": 327
+        "waroengtogel_sdy": 299,
+        "livenomor_sdy": 328
       },
-      "verified_count": 287,
-      "new_count": 1,
+      "verified_count": 288,
+      "new_count": 2,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-11-23",
-          "number": "6187",
+          "date": "2026-11-14",
+          "number": "5078",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-11-24",
+          "number": "1079",
           "verification": "confirmed_3_sources"
         }
       ],
       "latest": {
-        "id": 20261123,
-        "tanggal": "23 Nov 2026",
-        "periode": "SD-3614",
-        "nomor": "6187",
-        "result_date": "2026-11-23",
+        "id": 20261124,
+        "tanggal": "24 Nov 2026",
+        "periode": "SD-3615",
+        "nomor": "1079",
+        "result_date": "2026-11-24",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
@@ -146,13 +145,13 @@
           "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-24T03:05:24+07:00",
+        "collected_at": "2026-11-24T22:22:13+07:00",
         "verification": "confirmed_3_sources",
         "confirmations": 3
       },
       "latest_verified": {
-        "date": "2026-11-23",
-        "number": "6187",
+        "date": "2026-11-24",
+        "number": "1079",
         "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
@@ -163,13 +162,13 @@
       "source_errors": [
         {
           "source": "datatogel_sdy",
-          "error": "Fetch gagal untuk https://w2.datatogel.fit/data-sdy/: HTTPSConnectionPool(host='w2.datatogel.fit', port=443): Max retries exceeded with url: /data-sdy/ (Caused by NameResolutionError(\"HTTPSConnection(host='w2.datatogel.fit', port=443): Failed to resolve 'w2.datatogel.fit' ([Errno -3] Temporary failure in name resolution)\"))"
+          "error": "Fetch gagal untuk https://w2.datatogel.fit/data-sdy/: HTTPSConnectionPool(host='w2.datatogel.fit', port=443): Max retries exceeded with url: /data-sdy/ (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1018)')))"
         }
       ],
       "source_health": {},
-      "last_successful_data_update": "2026-11-24T03:05:24+07:00",
-      "last_source_check": "2026-11-24T03:05:24+07:00",
-      "latest_source_draw_date": "2026-11-23"
+      "last_successful_data_update": "2026-11-24T22:22:13+07:00",
+      "last_source_check": "2026-11-24T22:22:13+07:00",
+      "latest_source_draw_date": "2026-11-24"
     },
     "SGP": {
       "market": "SGP",
@@ -180,7 +179,7 @@
         "nexipools_sgp"
       ],
       "parsed_counts": {
-        "paitosgplengkap": 232,
+        "paitosgplengkap": 233,
         "nexipools_sgp": 30
       },
       "verified_count": 30,
@@ -217,7 +216,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-11-06T00:43:19+07:00",
-      "last_source_check": "2026-11-24T03:05:24+07:00",
+      "last_source_check": "2026-11-24T22:22:13+07:00",
       "latest_source_draw_date": "2026-11-04"
     }
   }
