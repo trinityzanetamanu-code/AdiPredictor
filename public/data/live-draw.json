@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-24T22:22:13+07:00",
+  "retrieved_at": "2026-11-25T06:59:07+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -33,33 +33,33 @@
       "market": "HK",
       "source": "KocokHK Mirror",
       "source_url": "https://rankcrack.com/hk.php",
-      "draw_date": "2026-11-23",
-      "first": "213843",
-      "second": "894227",
-      "third": "676245",
+      "draw_date": "2026-11-24",
+      "first": "809146",
+      "second": "847017",
+      "third": "635817",
       "starter": [
-        "459109",
-        "610497",
-        "229037",
-        "455293"
+        "891893",
+        "843681",
+        "159856",
+        "357978"
       ],
       "consolation": [
-        "714070",
-        "464215",
-        "751759",
-        "736312",
-        "611071",
-        "158851",
-        "672404",
-        "833241"
+        "170618",
+        "842684",
+        "214038",
+        "003902",
+        "433058",
+        "940124",
+        "781232",
+        "956813"
       ],
-      "full_first_prize_6d": "213843",
-      "derived_4d": "3843",
+      "full_first_prize_6d": "809146",
+      "derived_4d": "9146",
       "source_timezone": "Asia/Hong_Kong",
       "market_timezone": "Asia/Hong_Kong",
       "result_status": "unknown",
       "finality_evidence": null,
-      "verification": "matches_prediction_dataset",
+      "verification": "dataset_date_mismatch",
       "response_url": "https://rankcrack.com/hk.php",
       "fetch_errors": [
         {
@@ -73,22 +73,22 @@
       ],
       "source_observations": [
         {
-          "draw_date": "2026-11-23",
-          "first": "213843",
+          "draw_date": "2026-11-24",
+          "first": "809146",
           "source_url": "https://rankcrack.com/hk.php"
         }
       ],
       "source_conflicts": [],
-      "retrieved_at": "2026-11-24T03:05:24+07:00",
+      "retrieved_at": "2026-11-25T06:59:07+07:00",
       "dataset_4d": "3843",
-      "matches_dataset": true,
+      "matches_dataset": null,
       "dataset_latest_date": "2026-11-23",
       "source_verification": "structurally_valid_single_source"
     }
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-24T22:22:13+07:00",
+      "last_checked_at": "2026-11-25T06:59:07+07:00",
       "last_valid_result": {
         "id": 20261123,
         "tanggal": "23 Nov 2026",
@@ -107,7 +107,7 @@
         "confirmations": 1
       },
       "selected_source": "https://rankcrack.com/hk.php",
-      "source_draw_date": "2026-11-23",
+      "source_draw_date": "2026-11-24",
       "result_status": "unknown",
       "fetch_errors": [
         {
@@ -129,7 +129,7 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-24T22:22:13+07:00",
+      "last_checked_at": "2026-11-25T06:59:07+07:00",
       "last_valid_result": {
         "id": 20261124,
         "tanggal": "24 Nov 2026",
