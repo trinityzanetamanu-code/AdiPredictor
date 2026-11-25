@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-11-25T06:59:07+07:00",
+  "collected_at": "2026-11-25T14:41:49+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -98,12 +98,12 @@
         }
       },
       "last_successful_data_update": "2026-11-24T03:05:24+07:00",
-      "last_source_check": "2026-11-25T06:59:07+07:00",
+      "last_source_check": "2026-11-25T14:41:49+07:00",
       "latest_source_draw_date": "2026-11-23"
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -113,51 +113,60 @@
       "parsed_counts": {
         "lomba4d_sdy": 10,
         "waroengtogel_sdy": 299,
-        "livenomor_sdy": 328
+        "livenomor_sdy": 329
       },
-      "verified_count": 288,
-      "new_count": 0,
+      "verified_count": 289,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-11-15",
+          "number": "9432",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-11-25",
+          "number": "9583",
+          "verification": "confirmed_2_sources"
+        }
+      ],
       "latest": {
-        "id": 20261124,
-        "tanggal": "24 Nov 2026",
-        "periode": "SD-3615",
-        "nomor": "1079",
-        "result_date": "2026-11-24",
+        "id": 20261125,
+        "tanggal": "25 Nov 2026",
+        "periode": "SD-3616",
+        "nomor": "9583",
+        "result_date": "2026-11-25",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-24T22:22:13+07:00",
-        "verification": "confirmed_3_sources",
-        "confirmations": 3
+        "collected_at": "2026-11-25T14:41:49+07:00",
+        "verification": "confirmed_2_sources",
+        "confirmations": 2
       },
       "latest_verified": {
-        "date": "2026-11-24",
-        "number": "1079",
-        "verification": "confirmed_3_sources",
+        "date": "2026-11-25",
+        "number": "9583",
+        "verification": "confirmed_2_sources",
         "source_ids": [
           "lomba4d_sdy",
-          "waroengtogel_sdy",
           "livenomor_sdy"
         ]
       },
       "source_errors": [
         {
           "source": "datatogel_sdy",
-          "error": "Fetch gagal untuk https://w2.datatogel.fit/data-sdy/: HTTPSConnectionPool(host='w2.datatogel.fit', port=443): Max retries exceeded with url: /data-sdy/ (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1018)')))"
+          "error": "Fetch gagal untuk https://w2.datatogel.fit/data-sdy/: HTTPSConnectionPool(host='w2.datatogel.fit', port=443): Max retries exceeded with url: /data-sdy/ (Caused by NameResolutionError(\"HTTPSConnection(host='w2.datatogel.fit', port=443): Failed to resolve 'w2.datatogel.fit' ([Errno -3] Temporary failure in name resolution)\"))"
         }
       ],
       "source_health": {},
-      "last_successful_data_update": "2026-11-24T22:22:13+07:00",
-      "last_source_check": "2026-11-25T06:59:07+07:00",
-      "latest_source_draw_date": "2026-11-24"
+      "last_successful_data_update": "2026-11-25T14:41:49+07:00",
+      "last_source_check": "2026-11-25T14:41:49+07:00",
+      "latest_source_draw_date": "2026-11-25"
     },
     "SGP": {
       "market": "SGP",
@@ -205,7 +214,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-11-06T00:43:19+07:00",
-      "last_source_check": "2026-11-25T06:59:07+07:00",
+      "last_source_check": "2026-11-25T14:41:49+07:00",
       "latest_source_draw_date": "2026-11-04"
     }
   }
