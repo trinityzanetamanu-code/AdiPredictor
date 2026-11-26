@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-11-26T17:06:16+07:00",
+  "collected_at": "2026-11-27T02:36:21+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -59,11 +59,11 @@
           "historical_sequence_matches": 0,
           "historical_sequence_compared": 0,
           "historical_conflicts": {},
-          "latest_date": "2026-11-25",
-          "latest_result": "1430",
-          "source_first_seen_at": "2026-11-26T01:12:19+07:00",
-          "expected_draw_date": "2026-11-25",
-          "latency_minutes": 132,
+          "latest_date": "2026-11-26",
+          "latest_result": "0025",
+          "source_first_seen_at": "2026-11-27T02:36:21+07:00",
+          "expected_draw_date": "2026-11-26",
+          "latency_minutes": 216,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -76,7 +76,7 @@
           "latest_date": "2026-11-23",
           "latest_result": "3843",
           "source_first_seen_at": "2026-11-24T03:05:24+07:00",
-          "expected_draw_date": "2026-11-25",
+          "expected_draw_date": "2026-11-26",
           "latency_minutes": 245,
           "source_stale": true,
           "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
@@ -90,7 +90,7 @@
           "latest_date": "2026-11-20",
           "latest_result": "7281",
           "source_first_seen_at": "2026-11-21T00:11:31+07:00",
-          "expected_draw_date": "2026-11-25",
+          "expected_draw_date": "2026-11-26",
           "latency_minutes": 71,
           "source_stale": true,
           "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
@@ -98,7 +98,7 @@
         }
       },
       "last_successful_data_update": "2026-11-24T03:05:24+07:00",
-      "last_source_check": "2026-11-26T17:06:16+07:00",
+      "last_source_check": "2026-11-27T02:36:21+07:00",
       "latest_source_draw_date": "2026-11-23"
     },
     "SDY": {
@@ -112,22 +112,17 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 300,
+        "waroengtogel_sdy": 301,
         "livenomor_sdy": 330
       },
       "verified_count": 290,
-      "new_count": 2,
+      "new_count": 1,
       "replaced_legacy_count": 0,
       "new_results": [
         {
-          "date": "2026-11-16",
-          "number": "8145",
-          "verification": "confirmed_2_sources"
-        },
-        {
           "date": "2026-11-26",
           "number": "5072",
-          "verification": "confirmed_2_sources"
+          "verification": "confirmed_3_sources"
         }
       ],
       "latest": {
@@ -142,18 +137,20 @@
         "source_url": "https://www.lomba4dqueen.com/hasil/SY",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-26T17:06:16+07:00",
-        "verification": "confirmed_2_sources",
-        "confirmations": 2
+        "collected_at": "2026-11-27T02:36:21+07:00",
+        "verification": "confirmed_3_sources",
+        "confirmations": 3
       },
       "latest_verified": {
         "date": "2026-11-26",
         "number": "5072",
-        "verification": "confirmed_2_sources",
+        "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
+          "waroengtogel_sdy",
           "livenomor_sdy"
         ]
       },
@@ -164,8 +161,8 @@
         }
       ],
       "source_health": {},
-      "last_successful_data_update": "2026-11-26T17:06:16+07:00",
-      "last_source_check": "2026-11-26T17:06:16+07:00",
+      "last_successful_data_update": "2026-11-27T02:36:21+07:00",
+      "last_source_check": "2026-11-27T02:36:21+07:00",
       "latest_source_draw_date": "2026-11-26"
     },
     "SGP": {
@@ -177,7 +174,7 @@
         "nexipools_sgp"
       ],
       "parsed_counts": {
-        "paitosgplengkap": 234,
+        "paitosgplengkap": 235,
         "nexipools_sgp": 30
       },
       "verified_count": 30,
@@ -214,7 +211,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-11-06T00:43:19+07:00",
-      "last_source_check": "2026-11-26T17:06:16+07:00",
+      "last_source_check": "2026-11-27T02:36:21+07:00",
       "latest_source_draw_date": "2026-11-04"
     }
   }
