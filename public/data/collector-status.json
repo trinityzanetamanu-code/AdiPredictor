@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-11-27T18:16:16+07:00",
+  "collected_at": "2026-11-28T03:04:48+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -59,11 +59,11 @@
           "historical_sequence_matches": 0,
           "historical_sequence_compared": 0,
           "historical_conflicts": {},
-          "latest_date": "2026-11-26",
-          "latest_result": "0025",
-          "source_first_seen_at": "2026-11-27T02:36:21+07:00",
-          "expected_draw_date": "2026-11-26",
-          "latency_minutes": 216,
+          "latest_date": "2026-11-27",
+          "latest_result": "3714",
+          "source_first_seen_at": "2026-11-28T03:04:48+07:00",
+          "expected_draw_date": "2026-11-27",
+          "latency_minutes": 244,
           "source_stale": false,
           "reason": "FRESH",
           "health": "HEALTHY"
@@ -76,7 +76,7 @@
           "latest_date": "2026-11-23",
           "latest_result": "3843",
           "source_first_seen_at": "2026-11-24T03:05:24+07:00",
-          "expected_draw_date": "2026-11-26",
+          "expected_draw_date": "2026-11-27",
           "latency_minutes": 245,
           "source_stale": true,
           "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
@@ -90,7 +90,7 @@
           "latest_date": "2026-11-20",
           "latest_result": "7281",
           "source_first_seen_at": "2026-11-21T00:11:31+07:00",
-          "expected_draw_date": "2026-11-26",
+          "expected_draw_date": "2026-11-27",
           "latency_minutes": 71,
           "source_stale": true,
           "reason": "EXPECTED_NEW_DRAW_BUT_SOURCE_STALE",
@@ -98,12 +98,12 @@
         }
       },
       "last_successful_data_update": "2026-11-24T03:05:24+07:00",
-      "last_source_check": "2026-11-27T18:16:16+07:00",
+      "last_source_check": "2026-11-28T03:04:48+07:00",
       "latest_source_draw_date": "2026-11-23"
     },
     "SDY": {
       "market": "SDY",
-      "status": "updated",
+      "status": "no_change",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -116,20 +116,9 @@
         "livenomor_sdy": 331
       },
       "verified_count": 291,
-      "new_count": 2,
+      "new_count": 0,
       "replaced_legacy_count": 0,
-      "new_results": [
-        {
-          "date": "2026-11-17",
-          "number": "2081",
-          "verification": "confirmed_2_sources"
-        },
-        {
-          "date": "2026-11-27",
-          "number": "9765",
-          "verification": "confirmed_3_sources"
-        }
-      ],
+      "new_results": [],
       "latest": {
         "id": 20261127,
         "tanggal": "27 Nov 2026",
@@ -167,7 +156,7 @@
       ],
       "source_health": {},
       "last_successful_data_update": "2026-11-27T18:16:16+07:00",
-      "last_source_check": "2026-11-27T18:16:16+07:00",
+      "last_source_check": "2026-11-28T03:04:48+07:00",
       "latest_source_draw_date": "2026-11-27"
     },
     "SGP": {
@@ -216,7 +205,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-11-06T00:43:19+07:00",
-      "last_source_check": "2026-11-27T18:16:16+07:00",
+      "last_source_check": "2026-11-28T03:04:48+07:00",
       "latest_source_draw_date": "2026-11-04"
     }
   }

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "retrieved_at": "2026-11-27T18:16:16+07:00",
+  "retrieved_at": "2026-11-28T03:04:48+07:00",
   "markets": {
     "SDY": {
       "market": "SDY",
@@ -33,28 +33,28 @@
       "market": "HK",
       "source": "KocokHK Mirror",
       "source_url": "https://rankcrack.com/hk.php",
-      "draw_date": "2026-11-26",
-      "first": "490025",
-      "second": "237157",
-      "third": "140145",
+      "draw_date": "2026-11-27",
+      "first": "563714",
+      "second": "127149",
+      "third": "645379",
       "starter": [
-        "796944",
-        "819904",
-        "382641",
-        "289366"
+        "702108",
+        "563531",
+        "251816",
+        "208358"
       ],
       "consolation": [
-        "769760",
-        "834836",
-        "469449",
-        "897062",
-        "896076",
-        "815500",
-        "076900",
-        "437912"
+        "602122",
+        "602774",
+        "616893",
+        "132393",
+        "121553",
+        "502640",
+        "174134",
+        "993673"
       ],
-      "full_first_prize_6d": "490025",
-      "derived_4d": "0025",
+      "full_first_prize_6d": "563714",
+      "derived_4d": "3714",
       "source_timezone": "Asia/Hong_Kong",
       "market_timezone": "Asia/Hong_Kong",
       "result_status": "unknown",
@@ -73,13 +73,13 @@
       ],
       "source_observations": [
         {
-          "draw_date": "2026-11-26",
-          "first": "490025",
+          "draw_date": "2026-11-27",
+          "first": "563714",
           "source_url": "https://rankcrack.com/hk.php"
         }
       ],
       "source_conflicts": [],
-      "retrieved_at": "2026-11-27T02:36:21+07:00",
+      "retrieved_at": "2026-11-28T03:04:48+07:00",
       "dataset_4d": "3843",
       "matches_dataset": null,
       "dataset_latest_date": "2026-11-23",
@@ -88,7 +88,7 @@
   },
   "status": {
     "HK": {
-      "last_checked_at": "2026-11-27T18:16:16+07:00",
+      "last_checked_at": "2026-11-28T03:04:48+07:00",
       "last_valid_result": {
         "id": 20261123,
         "tanggal": "23 Nov 2026",
@@ -107,7 +107,7 @@
         "confirmations": 1
       },
       "selected_source": "https://rankcrack.com/hk.php",
-      "source_draw_date": "2026-11-26",
+      "source_draw_date": "2026-11-27",
       "result_status": "unknown",
       "fetch_errors": [
         {
@@ -129,7 +129,7 @@
       "health": "DEGRADED"
     },
     "SDY": {
-      "last_checked_at": "2026-11-27T18:16:16+07:00",
+      "last_checked_at": "2026-11-28T03:04:48+07:00",
       "last_valid_result": {
         "id": 20261127,
         "tanggal": "27 Nov 2026",
