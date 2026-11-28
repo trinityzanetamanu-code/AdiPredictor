@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "collected_at": "2026-11-28T03:04:48+07:00",
+  "collected_at": "2026-11-28T17:53:46+07:00",
   "target_year": 2026,
   "timezone": "Asia/Jakarta",
   "markets": {
@@ -98,12 +98,12 @@
         }
       },
       "last_successful_data_update": "2026-11-24T03:05:24+07:00",
-      "last_source_check": "2026-11-28T03:04:48+07:00",
+      "last_source_check": "2026-11-28T17:53:46+07:00",
       "latest_source_draw_date": "2026-11-23"
     },
     "SDY": {
       "market": "SDY",
-      "status": "no_change",
+      "status": "updated",
       "verification_mode": "crosscheck",
       "successful_sources": [
         "lomba4d_sdy",
@@ -112,19 +112,30 @@
       ],
       "parsed_counts": {
         "lomba4d_sdy": 10,
-        "waroengtogel_sdy": 302,
-        "livenomor_sdy": 331
+        "waroengtogel_sdy": 303,
+        "livenomor_sdy": 332
       },
-      "verified_count": 291,
-      "new_count": 0,
+      "verified_count": 292,
+      "new_count": 2,
       "replaced_legacy_count": 0,
-      "new_results": [],
+      "new_results": [
+        {
+          "date": "2026-11-18",
+          "number": "9761",
+          "verification": "confirmed_2_sources"
+        },
+        {
+          "date": "2026-11-28",
+          "number": "6395",
+          "verification": "confirmed_3_sources"
+        }
+      ],
       "latest": {
-        "id": 20261127,
-        "tanggal": "27 Nov 2026",
-        "periode": "SD-3618",
-        "nomor": "9765",
-        "result_date": "2026-11-27",
+        "id": 20261128,
+        "tanggal": "28 Nov 2026",
+        "periode": "SD-3619",
+        "nomor": "6395",
+        "result_date": "2026-11-28",
         "market": "SDY",
         "source_id": "lomba4d_sdy",
         "source_name": "Lomba4D Sydney Results",
@@ -134,13 +145,13 @@
           "waroengtogel_sdy",
           "livenomor_sdy"
         ],
-        "collected_at": "2026-11-27T18:16:16+07:00",
+        "collected_at": "2026-11-28T17:53:46+07:00",
         "verification": "confirmed_3_sources",
         "confirmations": 3
       },
       "latest_verified": {
-        "date": "2026-11-27",
-        "number": "9765",
+        "date": "2026-11-28",
+        "number": "6395",
         "verification": "confirmed_3_sources",
         "source_ids": [
           "lomba4d_sdy",
@@ -155,9 +166,9 @@
         }
       ],
       "source_health": {},
-      "last_successful_data_update": "2026-11-27T18:16:16+07:00",
-      "last_source_check": "2026-11-28T03:04:48+07:00",
-      "latest_source_draw_date": "2026-11-27"
+      "last_successful_data_update": "2026-11-28T17:53:46+07:00",
+      "last_source_check": "2026-11-28T17:53:46+07:00",
+      "latest_source_draw_date": "2026-11-28"
     },
     "SGP": {
       "market": "SGP",
@@ -205,7 +216,7 @@
       "source_errors": [],
       "source_health": {},
       "last_successful_data_update": "2026-11-06T00:43:19+07:00",
-      "last_source_check": "2026-11-28T03:04:48+07:00",
+      "last_source_check": "2026-11-28T17:53:46+07:00",
       "latest_source_draw_date": "2026-11-04"
     }
   }
